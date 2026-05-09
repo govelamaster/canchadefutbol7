@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Originales sueltos (ya copiados a assets/)
+download (*.jpeg
+
+# Screenshots / capturas temporales
+image.png
+
+# Claude / herramientas locales
+.claude/
+.cache/
+
+# Node (por si llega un build setup en el futuro)
+node_modules/
