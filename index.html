@@ -5416,5 +5416,115 @@ Constructores de parques, colegios y escuelas, fraccionamientos residenciales, e
 4.9/5.0 estrellas con +127 reseñas verificadas
 -->
 
+<!-- ===== STICKY CTA BAR ===== -->
+<style>
+.sticky-cta-bar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:#fff;
+  box-shadow:0 -6px 24px rgba(0,0,0,.12);
+  transform:translateY(110%);
+  transition:transform .4s cubic-bezier(.22,1,.36,1);
+  z-index:990;
+  padding:14px 20px;
+  border-top:3px solid #139D45;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Helvetica Neue',Arial,sans-serif;
+}
+.sticky-cta-bar.visible{transform:translateY(0)}
+.sticky-cta-content{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+.sticky-cta-text strong{
+  display:block;
+  font-size:16px;
+  color:#1a1a1a;
+  font-weight:800;
+  line-height:1.3;
+  letter-spacing:-.01em;
+}
+.sticky-cta-text span{
+  font-size:13px;
+  color:#5a6b78;
+  font-weight:500;
+}
+.sticky-cta-actions{display:flex;gap:10px;align-items:center}
+.sticky-cta-btn{
+  background:#139D45;
+  color:#fff;
+  padding:13px 26px;
+  border-radius:50px;
+  text-decoration:none;
+  font-weight:800;
+  font-size:15px;
+  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  letter-spacing:-.01em;
+  transition:background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.sticky-cta-btn:hover{
+  background:#0f7a35;
+  transform:translateY(-1px);
+  box-shadow:0 6px 14px rgba(19,157,69,.35);
+}
+.sticky-cta-wa{
+  background:#25D366;
+  color:#fff;
+  width:46px;height:46px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  flex-shrink:0;
+  transition:background .2s ease, transform .2s ease;
+}
+.sticky-cta-wa:hover{background:#1fb855;transform:translateY(-1px)}
+.sticky-cta-wa svg{width:22px;height:22px;fill:#fff}
+@media (max-width:768px){
+  .sticky-cta-bar{padding:10px 14px}
+  .sticky-cta-text{display:none}
+  .sticky-cta-content{gap:10px}
+  .sticky-cta-btn{flex:1;text-align:center;padding:13px 16px;font-size:14px;justify-content:center}
+}
+</style>
+
+<div class="sticky-cta-bar" id="stickyCta">
+  <div class="sticky-cta-content">
+    <div class="sticky-cta-text">
+      <strong>¿Listo para tu cancha de fútbol 7?</strong>
+      <span>Cotización por WhatsApp en menos de 1 hora</span>
+    </div>
+    <div class="sticky-cta-actions">
+      <a href="#cotizar" class="sticky-cta-btn">Cotizar mi cancha</a>
+      <a href="https://wa.me/525539887615?text=Hola%20Sportmaster!%20Quiero%20cotizar%20mi%20cancha%20de%20futbol%207." class="sticky-cta-wa" target="_blank" rel="noopener" aria-label="Cotizar por WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.6 6.32A7.85 7.85 0 0012 4a7.94 7.94 0 00-6.83 11.93L4 20l4.18-1.1A7.92 7.92 0 0012 19.94 7.94 7.94 0 0017.6 6.32zm-5.6 12.2a6.6 6.6 0 01-3.36-.92l-.24-.14-2.49.65.66-2.42-.16-.25a6.59 6.59 0 1112.22-3.5 6.6 6.6 0 01-6.63 6.58zm3.62-4.93c-.2-.1-1.18-.58-1.36-.65s-.32-.1-.45.1-.51.65-.63.78-.23.15-.43.05a5.42 5.42 0 01-1.59-.98 5.97 5.97 0 01-1.1-1.37c-.12-.2 0-.3.09-.4s.2-.23.3-.34.13-.2.2-.33.03-.25 0-.35l-.6-1.46c-.16-.39-.32-.33-.45-.34h-.38a.73.73 0 00-.53.25 2.22 2.22 0 00-.69 1.65 3.85 3.85 0 00.81 2.05 8.83 8.83 0 003.39 3 11.42 11.42 0 001.13.42 2.72 2.72 0 001.25.08 2.04 2.04 0 001.34-.95 1.66 1.66 0 00.12-.95c-.05-.08-.18-.13-.38-.23z"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var bar = document.getElementById('stickyCta');
+  if(!bar) return;
+  var wa = document.querySelector('.wa-float');
+  var threshold = 600;
+  function check(){
+    var visible = window.scrollY > threshold;
+    bar.classList.toggle('visible', visible);
+    if(wa) wa.style.bottom = visible ? '95px' : '';
+  }
+  window.addEventListener('scroll', check, {passive:true});
+  check();
+})();
+</script>
+
 </body>
 </html>
