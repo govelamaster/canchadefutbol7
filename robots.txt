@@ -1,0 +1,29 @@
+# robots.txt — canchadefutbol7.mx (Sportmaster)
+# https://canchadefutbol7.mx
+
+User-agent: *
+Allow: /
+
+# AI crawlers permitidos
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+Sitemap: https://canchadefutbol7.mx/sitemap.xml
