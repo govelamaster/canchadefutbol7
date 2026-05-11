@@ -570,8 +570,8 @@ a{color:inherit;text-decoration:none}
 
 /* HERO REDESIGN - LIGHT IMPACT */
 .hero{
-  position:relative;min-height:100vh;
-  padding:140px 24px 80px;
+  position:relative;
+  padding:100px 24px 24px;
   background:#ffffff;
   overflow:hidden;
   display:flex;align-items:center;
@@ -2175,6 +2175,113 @@ section{padding:100px 24px}
   .footer-logo-box{padding:18px 26px}
 }
 </style>
+
+<style>
+/* ===== TRUST STRIP MARQUEE (entre hero y siguiente sección) ===== */
+.trust-strip{
+  position:relative;
+  background:linear-gradient(180deg,#fafafa 0%,#f5f5f2 100%);
+  border-top:1px solid #e8e8e3;
+  border-bottom:1px solid #e8e8e3;
+  padding:14px 0;
+  overflow:hidden;
+}
+.trust-strip__viewport{
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+.trust-strip__track{
+  display:flex;
+  width:max-content;
+  animation:trustScroll 38s linear infinite;
+  will-change:transform;
+}
+.trust-strip__track:hover{animation-play-state:paused}
+.trust-strip__item{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  padding:0 28px;
+  font-family:"Inter Tight","Inter",sans-serif;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#1a1a1a;
+  white-space:nowrap;
+}
+.trust-strip__item svg{
+  width:18px;height:18px;
+  color:#139D45;
+  flex-shrink:0;
+}
+.trust-strip__sep{
+  display:inline-flex;
+  align-items:center;
+  color:#cbcbcb;
+  padding:0 4px;
+  font-size:12px;
+}
+@keyframes trustScroll{
+  from{transform:translate3d(0,0,0)}
+  to  {transform:translate3d(-50%,0,0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .trust-strip__track{animation:none}
+}
+
+/* ===== SCROLL INDICATOR (chevron animado debajo del trust strip) ===== */
+.scroll-hint{
+  background:#ffffff;
+  padding:18px 24px 22px;
+  text-align:center;
+  border-bottom:1px solid #f0f0ec;
+}
+.scroll-hint__link{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  text-decoration:none;
+  color:#525252;
+  font-family:"Inter Tight","Inter",sans-serif;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  transition:color .25s ease;
+}
+.scroll-hint__link:hover{color:#0a7a2e}
+.scroll-hint__chev{
+  width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  color:#139D45;
+  animation:bounceY 1.8s ease-in-out infinite;
+}
+@keyframes bounceY{
+  0%,100%{transform:translateY(0);opacity:.6}
+  50%    {transform:translateY(6px);opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .scroll-hint__chev{animation:none}
+}
+
+/* Counter animation hint (state="counting" while animating) */
+.trust-num[data-target]{font-variant-numeric:tabular-nums}
+
+/* Hero parallax — solo desktop */
+@media(min-width:768px){
+  .hero-visual img{will-change:transform}
+}
+
+@media(max-width:680px){
+  .trust-strip__item{padding:0 18px;font-size:11.5px;letter-spacing:.12em}
+  .trust-strip__track{animation-duration:30s}
+  .scroll-hint{padding:14px 18px 18px}
+}
+</style>
+
 </head>
 <body>
 
@@ -2262,6 +2369,57 @@ section{padding:100px 24px}
     </div>
   </div>
 </header>
+
+<!-- Trust strip + scroll indicator -->
+<section class="trust-strip" aria-label="Sellos de confianza">
+  <div class="trust-strip__viewport">
+    <div class="trust-strip__track" aria-hidden="false">
+      <!-- Set 1 -->
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Reconocido FIFA Quality</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 9h6M9 13h6M9 17h6"/></svg>Programas SOBSE &amp; SEDATU</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L9 18l-5-5"/></svg>+3,000 obras entregadas</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Toda la República Mexicana</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Garantía 9 años pasto</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Facturación formal</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>Mano de obra calificada</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Pasto sintético importado</span>
+      <span class="trust-strip__sep">●</span>
+      <!-- Set 2 (duplicado exacto para loop infinito) -->
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Reconocido FIFA Quality</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 9h6M9 13h6M9 17h6"/></svg>Programas SOBSE &amp; SEDATU</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L9 18l-5-5"/></svg>+3,000 obras entregadas</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Toda la República Mexicana</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Garantía 9 años pasto</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Facturación formal</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>Mano de obra calificada</span>
+      <span class="trust-strip__sep">●</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Pasto sintético importado</span>
+      <span class="trust-strip__sep">●</span>
+    </div>
+  </div>
+</section>
+
+<div class="scroll-hint">
+  <a class="scroll-hint__link" href="#turf-types" aria-label="Descubre los tipos de pasto">
+    <span class="scroll-hint__chev">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </span>
+    <span>Descubre los 3 tipos de pasto</span>
+  </a>
+</div>
 
 <main id="main-content">
 
@@ -2417,7 +2575,7 @@ section{padding:100px 24px}
 }
 </style>
 
-<section class="turf-types-section">
+<section class="turf-types-section" id="turf-types">
   <div class="tt-container">
     <div class="tt-eyebrow">
       <span>01 — Tres tipos de</span>
@@ -5826,6 +5984,82 @@ Constructores de parques, colegios y escuelas, fraccionamientos residenciales, e
   }
   window.addEventListener('scroll', check, {passive:true});
   check();
+})();
+</script>
+
+
+<script>
+/* Counter animation for stats — anima cuando entran en viewport */
+(function(){
+  function parse(str){
+    var s = str.replace(/\s/g,'');
+    var num = parseFloat(s.replace(/[^0-9.]/g,''));
+    if(isNaN(num)) return null;
+    var prefix = (s.match(/^[^0-9.]+/) || [''])[0];
+    var suffix = (s.match(/[^0-9.]+$/) || [''])[0];
+    return {num: num, prefix: prefix, suffix: suffix, original: str};
+  }
+  function format(n, decimals){
+    var str = decimals ? n.toFixed(decimals) : Math.round(n).toString();
+    var parts = str.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  }
+  function animate(el){
+    if(el.dataset.counted) return;
+    el.dataset.counted = '1';
+    var info = parse(el.textContent);
+    if(!info) return;
+    var target = info.num;
+    var hasDecimal = info.original.indexOf('.') !== -1;
+    var duration = 1100;
+    var start = performance.now();
+    function tick(now){
+      var p = Math.min(1, (now - start) / duration);
+      var ease = 1 - Math.pow(1 - p, 3);  // easeOutCubic
+      var current = target * ease;
+      el.textContent = info.prefix + format(current, hasDecimal ? 1 : 0) + info.suffix;
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = info.original;  // snap to exact final
+    }
+    requestAnimationFrame(tick);
+  }
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.hero-trust .trust-num').forEach(animate);
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        animate(e.target);
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold: 0.4});
+  document.querySelectorAll('.hero-trust .trust-num').forEach(function(el){ io.observe(el); });
+})();
+
+/* Hero parallax sutil — desktop only, respeta reduced motion */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(window.matchMedia('(max-width: 767px)').matches) return;
+  var img = document.querySelector('.hero-visual img');
+  if(!img) return;
+  var ticking = false;
+  function update(){
+    var y = window.scrollY;
+    // Translate up to ~40px while hero is in view
+    var shift = Math.max(-40, Math.min(0, -y * 0.15));
+    img.style.transform = 'translate3d(0,' + shift + 'px,0) scale(1.04)';
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, {passive: true});
+  update();
 })();
 </script>
 
