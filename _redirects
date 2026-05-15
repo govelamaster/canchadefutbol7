@@ -1,0 +1,11 @@
+# Cloudflare Pages _redirects
+# Format: source destination [status]
+
+# Old URLs from sportmaster.com.mx redirected to home
+/canchas/futbol-7/*       /                 301
+/canchas/futbol-7         /                 301
+/canchas/futbol-5/*       /                 301
+/canchas/futbol-11/*      /                 301
+/canchas/futbol-rapido/*  /                 301
+/cuanto-cuesta-cancha-futbol-7  /           301
+/canchas/*                /                 301
