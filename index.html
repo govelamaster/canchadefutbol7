@@ -5221,18 +5221,18 @@ section{padding:56px 24px}
 <section class="form-section" id="cotizar">
   <div class="form-wrap">
     <div class="form-eyebrow">Cotiza por WhatsApp</div>
-    <h2 class="form-title">Recibe tu cotización en menos de 1 hora</h2>
-    <p class="form-sub">Sin compromiso. Te respondemos por WhatsApp con asesoría personalizada.</p>
+    <h2 class="form-title">Tu cotización en menos de 1 hora</h2>
+    <p class="form-sub">Sin compromiso. <strong>Dos datos y listo</strong> — el resto lo platicamos por WhatsApp.</p>
     <form id="leadForm" novalidate>
       <div class="form-group">
-        <label class="form-label" for="nombre">Tu nombre completo</label>
-        <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Ej. Carlos Hernández" required>
+        <label class="form-label" for="nombre">¿Cómo te llamas?</label>
+        <input class="form-input" type="text" id="nombre" name="nombre" placeholder="Carlos Hernández" required autocomplete="name">
         <div class="form-error" id="err-nombre">Por favor ingresa tu nombre</div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="tipo">¿Qué cancha vas a hacer?</label>
+        <label class="form-label" for="tipo">¿Qué tipo de cancha?</label>
         <select class="form-select" id="tipo" name="tipo" required>
-          <option value="">Selecciona el tipo de cancha</option>
+          <option value="">Selecciona una opción</option>
           <option value="Futbol 7">Cancha de Futbol 7</option>
           <option value="Soccer / Futbol 11">Cancha de Soccer / Futbol 11</option>
           <option value="Futbol 5 / Rápido">Cancha de Futbol 5 / Rápido</option>
@@ -5245,23 +5245,15 @@ section{padding:56px 24px}
         <div class="form-error" id="err-tipo">Selecciona el tipo de cancha</div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="comentarios">Cuéntanos del proyecto (medidas, ciudad, plazo)</label>
-        <textarea class="form-textarea" id="comentarios" name="comentarios" placeholder="Ej. Cancha de 60x40m en Monterrey, queremos iniciar en 2 meses"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="whatsapp">Tu WhatsApp</label>
-        <div class="phone-wrap">
-          <input class="form-input phone-input" type="tel" id="whatsapp" name="whatsapp" placeholder="10 dígitos" maxlength="14" required inputmode="numeric" autocomplete="tel">
-          <span class="phone-icon" id="phoneIcon"></span>
-        </div>
-        <div class="form-error" id="err-whatsapp">Ingresa 10 dígitos</div>
+        <label class="form-label" for="comentarios">Cuéntanos lo básico <span style="font-weight:500;color:#888">(opcional)</span></label>
+        <textarea class="form-textarea" id="comentarios" name="comentarios" placeholder="Ej: 60×40m en Monterrey, queremos arrancar en 2 meses"></textarea>
       </div>
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
       <button type="submit" class="form-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.32A7.85 7.85 0 0012 4a7.94 7.94 0 00-6.83 11.93L4 20l4.18-1.1A7.92 7.92 0 0012 19.94 7.94 7.94 0 0017.6 6.32zm-5.6 12.2a6.6 6.6 0 01-3.36-.92l-.24-.14-2.49.65.66-2.42-.16-.25a6.59 6.59 0 1112.22-3.5 6.6 6.6 0 01-6.63 6.58zm3.62-4.93c-.2-.1-1.18-.58-1.36-.65s-.32-.1-.45.1-.51.65-.63.78-.23.15-.43.05a5.42 5.42 0 01-1.59-.98 5.97 5.97 0 01-1.1-1.37c-.12-.2 0-.3.09-.4s.2-.23.3-.34.13-.2.2-.33.03-.25 0-.35l-.6-1.46c-.16-.39-.32-.33-.45-.34h-.38a.73.73 0 00-.53.25 2.22 2.22 0 00-.69 1.65 3.85 3.85 0 00.81 2.05 8.83 8.83 0 003.39 3 11.42 11.42 0 001.13.42 2.72 2.72 0 001.25.08 2.04 2.04 0 001.34-.95 1.66 1.66 0 00.12-.95c-.05-.08-.18-.13-.38-.23z"/></svg>
-        Enviar a WhatsApp
+        Continuar en WhatsApp →
       </button>
-      <p class="form-consent">Al enviar aceptas que te contactemos por WhatsApp para asesoría sobre tu proyecto. Sin spam.</p>
+      <p class="form-consent">Al continuar te abrimos WhatsApp con el mensaje pre-llenado. Tu número queda solo en el chat. Sin spam.</p>
     </form>
   </div>
 </section>
@@ -5594,12 +5586,13 @@ async function enviarASlack(data){
 }
 
 function abrirWhatsApp(data){
-  const detallesBlock = data.mensaje ? `\n\nDetalles del proyecto:\n${data.mensaje}` : '';
-  const texto = `Hola Sportmaster! 👋\n\nQuiero cotizar una ${data.tipo}.${detallesBlock}\n\nMi WhatsApp: ${data.telefono}\n\n*Toca 'Enviar' para recibir tu cotización.*`;
+  // Resumen limpio: nombre, tipo, comentarios (el teléfono lo agrega WhatsApp automático del chat del usuario)
+  const detallesBlock = data.mensaje ? `\n📝 Detalles: ${data.mensaje}` : '';
+  const texto = `Hola Sportmaster 👋\n\nSoy ${data.nombre} y quiero cotizar una *${data.tipo}*.${detallesBlock}\n\n¿Me pueden enviar información y precio? Gracias.`;
   window.open(`https://wa.me/525539887615?text=${encodeURIComponent(texto)}`, '_blank');
 }
 
-// Form submit -> Sheet + Slack + WhatsApp
+// Form submit -> Sheet + Slack + WhatsApp (solo nombre y tipo, comentarios opcional)
 document.getElementById('leadForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -5612,7 +5605,6 @@ document.getElementById('leadForm').addEventListener('submit', async (e) => {
   const nombre = document.getElementById('nombre').value.trim();
   const tipo = document.getElementById('tipo').value;
   const comentarios = document.getElementById('comentarios').value.trim();
-  const whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, '');
 
   if(nombre.length < 2){
     document.getElementById('err-nombre').classList.add('show');
@@ -5620,13 +5612,6 @@ document.getElementById('leadForm').addEventListener('submit', async (e) => {
   }
   if(!tipo){
     document.getElementById('err-tipo').classList.add('show');
-    valid = false;
-  }
-  if(whatsapp.length !== 10){
-    document.getElementById('err-whatsapp').classList.add('show');
-    phoneInput.classList.add('invalid');
-    phoneIcon.classList.add('show','invalid');
-    phoneIcon.innerHTML = xSVG;
     valid = false;
   }
 
@@ -5637,12 +5622,12 @@ document.getElementById('leadForm').addEventListener('submit', async (e) => {
     return;
   }
 
-  // Captura datos completos del lead
+  // Captura datos del lead (teléfono queda implícito en el WhatsApp del usuario al enviar)
   const leadData = {
     nombre: nombre,
     tipo: tipo,
     mensaje: comentarios,
-    telefono: whatsapp,
+    telefono: '(viene en WhatsApp)',
     fuente: 'Formulario completo',
     empresa: 'Sportmaster',
     timestamp: new Date().toISOString()
