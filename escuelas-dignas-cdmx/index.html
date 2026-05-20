@@ -571,6 +571,40 @@ section{padding:96px 24px;position:relative}
 }
 @media(max-width:900px){
   .reviews-grid{grid-template-columns:1fr;gap:18px}
+
+/* CANCHAS ESCOLARES */
+.canchas-escolares{background:var(--gray-50);border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200)}
+.canchas-esc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+.cancha-esc-card{position:relative;border-radius:var(--radius-xl);overflow:hidden;aspect-ratio:4/5;cursor:pointer;transition:transform .35s ease,box-shadow .35s ease}
+.cancha-esc-card:hover{transform:translateY(-6px);box-shadow:0 30px 60px -25px rgba(0,0,0,0.3)}
+.cancha-esc-card img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease}
+.cancha-esc-card:hover img{transform:scale(1.05)}
+.cancha-esc-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(0,0,0,0.88) 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:28px 26px;color:#fff}
+.cancha-esc-tag{display:inline-block;background:rgba(255,255,255,0.97);color:var(--black);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.8px;padding:6px 12px;border-radius:100px;margin-bottom:14px;width:max-content}
+.cancha-esc-tag.green{background:var(--green-bright);color:#fff}
+.cancha-esc-title{font-size:22px;font-weight:900;letter-spacing:-0.01em;margin-bottom:6px;color:#fff}
+.cancha-esc-spec{font-size:13px;color:rgba(255,255,255,0.88);font-weight:600;line-height:1.4}
+@media(max-width:900px){.canchas-esc-grid{grid-template-columns:1fr 1fr;gap:14px}}
+@media(max-width:560px){.canchas-esc-grid{grid-template-columns:1fr}.cancha-esc-card{aspect-ratio:16/10}}
+
+/* EQUIPAMIENTO ESCOLAR */
+.equipo-escolar{background:var(--white)}
+.equipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.equipo-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);overflow:hidden;transition:transform .25s ease,box-shadow .25s ease,border-color .25s}
+.equipo-card:hover{transform:translateY(-4px);box-shadow:0 28px 50px -28px rgba(0,0,0,0.2);border-color:var(--green)}
+.equipo-img{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--gray-100)}
+.equipo-img img{width:100%;height:100%;object-fit:cover}
+.equipo-num{position:absolute;top:14px;left:14px;background:rgba(0,0,0,0.75);color:#fff;font-size:11px;font-weight:900;padding:6px 12px;border-radius:100px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);letter-spacing:0.6px}
+.equipo-body{padding:24px 22px}
+.equipo-cat{font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;display:block}
+.equipo-card h3{font-size:20px;font-weight:900;color:var(--black);letter-spacing:-0.01em;margin-bottom:10px}
+.equipo-card p{font-size:14px;color:var(--gray-600);line-height:1.55;font-weight:500}
+.equipo-bullets{margin-top:14px;padding:0;list-style:none}
+.equipo-bullets li{font-size:13px;color:var(--gray-700);font-weight:600;padding:6px 0 6px 22px;position:relative;line-height:1.4}
+.equipo-bullets li::before{content:'¹3';position:absolute;left:0;color:var(--green);font-weight:900}
+@media(max-width:900px){.equipo-grid{grid-template-columns:1fr 1fr;gap:18px}}
+@media(max-width:560px){.equipo-grid{grid-template-columns:1fr}}
+
 </style>
 <script type="application/ld+json">
 {
@@ -668,6 +702,55 @@ section{padding:96px 24px;position:relative}
       "value": 950000000,
       "unitCode": "MXN",
       "unitText": "MXN"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://canchadefutbol7.mx/escuelas-dignas-cdmx/#faq-aeo",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Cuánto da La Escuela Es Nuestra a una escuela pública de CDMX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Entre $250,000 y $700,000 MXN por escuela según nivel y matrícula. Primarias chicas (<150 alumnos): $250K. Primarias medianas (150-500): $500K. Primarias y secundarias grandes (>500): $600K. Telesecundarias rurales: hasta $700K. El recurso se deposita directo al CEAP del plantel sin pasar por intermediarios."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuánto cuesta una cancha de fútbol 7 con pasto sintético en CDMX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Desde $491,000 MXN llave en mano (32×52 m) incluyendo pasto sintético con 9 años de garantía contra decoloración UV, porterías oficiales de aluminio, malla ciclónica perimetral y trazado de líneas. Sí alcanza con el monto típico de $600K de LEEN."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué escuelas de CDMX pueden aplicar a La Escuela Es Nuestra?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Las 2,309 escuelas públicas registradas en SEP del estado de CDMX, distribuidas en 16 alcaldías. Aplica a educación inicial, preescolar, primaria, secundaria, CAM, CONAFE, telesecundaria y desde 2025 media superior (bachillerato y prepa). Las escuelas privadas NO aplican."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuándo se entrega el dinero del programa La Escuela Es Nuestra en CDMX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "El depósito al CEAP se hace una vez al año durante el ciclo escolar, normalmente entre febrero y mayo. Para usarlo en cancha de fútbol 7, la asamblea debe votar el destino del recurso, levantar acta y comprobar con CFDI 4.0 y periódico mural en los 3 meses posteriores al gasto."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Sportmaster construye canchas para escuelas LEEN en CDMX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. Sportmaster México ha construido canchas en +200 escuelas participantes en programas federales similares, con factura CFDI 4.0 a nombre del CEAP y cobertura nacional incluyendo CDMX. La obra civil (base) la realiza el contratista local de la escuela; Sportmaster instala pasto, porterías, malla, alumbrado y gradas."
+      }
     }
   ]
 }
@@ -889,8 +972,8 @@ section{padding:96px 24px;position:relative}
   <div class="container">
     <div class="section-header-center">
       <span class="section-eyebrow">03 · Calculadora CDMX</span>
-      <h2 class="section-title">¿Cuántos m² de cancha alcanzas<br>en tu escuela de CDMX?</h2>
-      <p class="section-sub">3 pasos. Sin registro. Te decimos exactamente cuántos m² de cancha de fútbol 7 puedes construir en el patio de tu escuela CDMX con tu monto del programa.</p>
+      <h2 class="section-title">¿Te alcanza para una<br><span style="background:linear-gradient(120deg,var(--green-bright),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">cancha de fútbol 7</span> en tu escuela?</h2>
+      <p class="section-sub"><strong>3 pasos. 30 segundos. Sin registro.</strong> Te decimos exactamente cuántos m² puedes construir en el patio de tu escuela CDMX con tu monto LEEN — y si llegas a una <strong>cancha de fútbol 7 oficial (1,560 m²)</strong>, a una <strong>cancha de fútbol 5 (800 m²)</strong> o a un <strong>patio polivalente (400 m²)</strong>.</p>
     </div>
 
     <div class="calc-wrap">
