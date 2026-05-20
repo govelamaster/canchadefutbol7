@@ -6,39 +6,25 @@
 <style>
 @page {
   size: letter;
-  margin: 18mm 18mm 32mm 18mm;
+  margin: 18mm;
 }
 @page :first { margin: 0 }
 
-/* WATERMARK — sportmaster.mx diagonal, sutil */
+/* WATERMARK — sportmaster.mx diagonal · UNICA marca en cada hoja */
 .watermark{
   position:fixed;
   top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(-28deg);
-  font-size:62pt;font-weight:900;
-  color:rgba(10,122,46,0.045);
-  letter-spacing:-0.02em;
+  transform:translate(-50%,-50%) rotate(-32deg);
+  font-size:56pt;
+  font-weight:900;
+  color:rgba(10,122,46,0.075);
+  letter-spacing:-0.015em;
   white-space:nowrap;
   pointer-events:none;
   z-index:0;
   font-family:-apple-system,Inter,Helvetica,Arial,sans-serif;
+  text-transform:lowercase;
 }
-/* Watermark logo removed — solo el texto diagonal */
-
-/* FOOTER GLOBAL — visible en cada página interior */
-.page-foot-global{
-  position:fixed;
-  bottom:12mm;left:18mm;right:18mm;
-  padding-top:8pt;
-  border-top:1pt solid #d4d4d4;
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:9pt;color:#525252;font-weight:600;
-  z-index:5;
-  background:#fff;
-}
-.page-foot-global-left{display:flex;align-items:center;gap:8pt}
-.page-foot-global-logo{height:14pt;width:auto}
-.page-foot-global-url{color:#0a7a2e;font-weight:800;text-decoration:none;font-size:10pt}
 
 /* All sections must be above watermark */
 .cover, .toc, .section{position:relative;z-index:2}
@@ -935,15 +921,8 @@ ul.num li::before{
   </div>
 </section>
 
-<!-- WATERMARK + FOOTER URL — fijos en cada página -->
+<!-- MARCA DE AGUA · unica en cada hoja, diagonal · sportmaster.mx -->
 <div class="watermark">sportmaster.mx</div>
-<div class="page-foot-global">
-  <div class="page-foot-global-left">
-    <img class="page-foot-global-logo" src="../assets/sportmaster-m-xico-pasto-sin-f7aaa128.png" alt="Sportmaster">
-    <span>Guía La Escuela Es Nuestra 2026</span>
-  </div>
-  <a href="https://www.sportmaster.mx" class="page-foot-global-url">www.sportmaster.mx</a>
-</div>
 
 </body>
 </html>
