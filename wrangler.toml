@@ -1,0 +1,8 @@
+name = "canchadefutbol7"
+compatibility_date = "2025-05-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "canchadefutbol7-leads"
+database_id = "6ce87ead-3292-430b-bdd1-e3a4b50d4650"

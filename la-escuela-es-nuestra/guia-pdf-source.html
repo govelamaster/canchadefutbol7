@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<title>Guía 2026 — La Escuela Es Nuestra · Canchas escolares con pasto sintético | Sportmaster</title>
+<style>
+@page {
+  size: letter;
+  margin: 18mm 18mm 32mm 18mm;
+}
+@page :first { margin: 0 }
+
+/* WATERMARK — sportmaster.mx diagonal, sutil */
+.watermark{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%) rotate(-28deg);
+  font-size:62pt;font-weight:900;
+  color:rgba(10,122,46,0.045);
+  letter-spacing:-0.02em;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:0;
+  font-family:-apple-system,Inter,Helvetica,Arial,sans-serif;
+}
+/* Watermark logo removed — solo el texto diagonal */
+
+/* FOOTER GLOBAL — visible en cada página interior */
+.page-foot-global{
+  position:fixed;
+  bottom:12mm;left:18mm;right:18mm;
+  padding-top:8pt;
+  border-top:1pt solid #d4d4d4;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:9pt;color:#525252;font-weight:600;
+  z-index:5;
+  background:#fff;
+}
+.page-foot-global-left{display:flex;align-items:center;gap:8pt}
+.page-foot-global-logo{height:14pt;width:auto}
+.page-foot-global-url{color:#0a7a2e;font-weight:800;text-decoration:none;font-size:10pt}
+
+/* All sections must be above watermark */
+.cover, .toc, .section{position:relative;z-index:2}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color:#0a0a0a;line-height:1.5;font-size:11pt;-webkit-font-smoothing:antialiased}
+body{background:#fff}
+h1,h2,h3,h4{letter-spacing:-0.02em;line-height:1.15;font-weight:900}
+p{margin-bottom:9pt}
+a{color:#0a7a2e;text-decoration:none;font-weight:600}
+strong{font-weight:800;color:#0a0a0a}
+
+/* COVER — hero impactante con foto */
+.cover{
+  page-break-after:always;
+  position:relative;
+  height:100vh;
+  color:#fff;
+  background:#0a0a0a;
+  overflow:hidden;
+  z-index:10;
+}
+.cover-hero-img{
+  position:absolute;inset:0;
+  width:100%;height:55%;
+  object-fit:cover;object-position:center 40%;
+  z-index:1;
+}
+.cover-hero-overlay{
+  position:absolute;top:0;left:0;right:0;height:55%;
+  background:linear-gradient(180deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.15) 35%,rgba(10,10,10,0.95) 100%);
+  z-index:2;
+}
+.cover-bottom{
+  position:absolute;bottom:0;left:0;right:0;height:55%;
+  background:linear-gradient(180deg,#0a0a0a 0%,#0a7a2e 100%);
+  z-index:1;
+}
+.cover-bottom::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:14mm;
+  background:linear-gradient(90deg,#139D45,#25D366,#139D45);
+  z-index:3;
+}
+.cover-content{
+  position:absolute;inset:0;z-index:5;
+  padding:18mm 20mm 22mm;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.cover-header{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cover-logo{
+  height:36pt;width:auto;
+  filter:brightness(1.2);
+}
+.cover-issue{
+  font-size:9pt;font-weight:800;color:rgba(255,255,255,0.85);
+  text-align:right;line-height:1.3;
+  letter-spacing:0.5pt;text-transform:uppercase;
+}
+.cover-issue strong{display:block;font-size:11pt;color:#25D366;letter-spacing:1pt}
+.cover-middle{
+  text-align:left;max-width:165mm;
+  margin-top:50mm;
+}
+.cover-eyebrow{
+  display:inline-block;font-size:10pt;font-weight:900;
+  padding:7pt 16pt;
+  background:rgba(255,255,255,0.95);
+  color:#0a7a2e;
+  border-radius:50pt;letter-spacing:1.4pt;text-transform:uppercase;
+  margin-bottom:18pt;
+}
+.cover-title{
+  font-size:60pt;font-weight:900;line-height:0.92;
+  margin-bottom:18pt;letter-spacing:-0.035em;
+  color:#fff;
+  text-shadow:0 2pt 12pt rgba(0,0,0,0.3);
+}
+.cover-title em{font-style:normal;color:#25D366;display:block;margin-top:4pt}
+.cover-sub{
+  font-size:16pt;font-weight:500;
+  color:rgba(255,255,255,0.92);
+  line-height:1.4;max-width:160mm;
+  text-shadow:0 1pt 6pt rgba(0,0,0,0.25);
+}
+.cover-sub strong{color:#fff;font-weight:800}
+.cover-bottom-content{
+  padding-bottom:18pt;
+}
+.cover-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14pt;
+  padding:18pt 0;
+  border-top:1pt solid rgba(255,255,255,0.25);
+  border-bottom:1pt solid rgba(255,255,255,0.25);
+  margin-bottom:14pt;
+}
+.cover-stat-num{font-size:24pt;font-weight:900;line-height:1;letter-spacing:-0.02em;color:#fff}
+.cover-stat-label{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:0.6pt;opacity:0.85;margin-top:5pt;line-height:1.3}
+.cover-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:9pt;font-weight:700;letter-spacing:0.5pt;
+  color:rgba(255,255,255,0.85);
+}
+.cover-foot a{color:#25D366;text-decoration:none;font-weight:800}
+.cover-foot strong{color:#fff}
+
+/* TOC */
+.toc{page-break-after:always}
+.page-head{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:18pt;padding-bottom:10pt;border-bottom:2pt solid #0a7a2e;
+}
+.page-head-num{font-size:9pt;font-weight:800;color:#0a7a2e;letter-spacing:1.2pt;text-transform:uppercase}
+.page-head-section{font-size:9pt;font-weight:700;color:#737373;letter-spacing:0.6pt;text-transform:uppercase}
+.toc-title{font-size:32pt;font-weight:900;letter-spacing:-0.03em;margin-bottom:6pt;color:#0a0a0a}
+.toc-sub{font-size:11pt;color:#525252;margin-bottom:22pt;font-weight:500;line-height:1.4}
+.toc-list{list-style:none;padding:0}
+.toc-item{
+  display:flex;align-items:baseline;gap:8pt;
+  padding:10pt 0;border-bottom:1pt dotted #e5e5e5;
+  font-size:12pt;font-weight:600;color:#0a0a0a;
+}
+.toc-item:last-child{border-bottom:none}
+.toc-num{
+  font-size:10pt;font-weight:900;color:#0a7a2e;
+  min-width:24pt;
+}
+.toc-text{flex:1;line-height:1.3}
+.toc-text-sub{display:block;font-size:9pt;color:#737373;font-weight:500;margin-top:2pt}
+.toc-page{font-size:10pt;color:#737373;font-weight:700}
+
+/* SECTION layout */
+.section{
+  page-break-before:always;
+  padding-top:8pt;
+}
+.section-num{
+  display:inline-block;
+  font-size:9pt;font-weight:800;color:#0a7a2e;
+  background:#f0fdf4;border:1pt solid #0a7a2e;
+  border-radius:50pt;padding:4pt 12pt;
+  letter-spacing:1.2pt;text-transform:uppercase;
+  margin-bottom:12pt;
+}
+.section-h{
+  font-size:24pt;font-weight:900;letter-spacing:-0.025em;
+  margin-bottom:8pt;color:#0a0a0a;
+}
+.section-lead{
+  font-size:12pt;font-weight:500;color:#525252;
+  line-height:1.5;margin-bottom:18pt;
+  border-left:3pt solid #0a7a2e;padding-left:12pt;
+}
+h3.sub{font-size:14pt;font-weight:900;margin:18pt 0 8pt;color:#0a0a0a;letter-spacing:-0.01em}
+h4.subsub{font-size:11pt;font-weight:900;margin:12pt 0 6pt;color:#0a7a2e;text-transform:uppercase;letter-spacing:0.6pt}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;margin:12pt 0;font-size:10pt}
+th{background:#0a0a0a;color:#fff;padding:8pt 10pt;text-align:left;font-weight:800;font-size:9pt;text-transform:uppercase;letter-spacing:0.5pt}
+td{padding:8pt 10pt;border-bottom:1pt solid #e5e5e5;font-weight:500;color:#262626}
+tr:nth-child(even) td{background:#fafafa}
+.tbl-amount{font-weight:900;color:#0a7a2e;font-size:11pt}
+.tbl-amount.gold{color:#d97706}
+
+/* CALLOUTS */
+.callout{
+  background:#f0fdf4;border:1pt solid #0a7a2e;
+  padding:12pt 14pt;border-radius:6pt;
+  margin:12pt 0;font-size:10pt;color:#262626;
+}
+.callout.warn{background:#fff7ed;border-color:#ea580c;color:#262626}
+.callout.dark{background:#0a0a0a;border:none;color:#fff}
+.callout.dark strong{color:#25D366}
+.callout-title{font-weight:900;font-size:10pt;color:#0a7a2e;text-transform:uppercase;letter-spacing:0.6pt;margin-bottom:6pt;display:block}
+.callout.warn .callout-title{color:#ea580c}
+.callout.dark .callout-title{color:#25D366}
+
+/* LISTS */
+ul.check,ul.x,ul.num{list-style:none;padding:0;margin:10pt 0}
+ul.check li,ul.x li,ul.num li{padding:6pt 0 6pt 24pt;position:relative;font-size:10.5pt;line-height:1.5;color:#262626}
+ul.check li::before{content:'✓';position:absolute;left:0;top:6pt;color:#0a7a2e;font-weight:900;font-size:12pt}
+ul.x li::before{content:'✕';position:absolute;left:0;top:6pt;color:#dc2626;font-weight:900;font-size:12pt}
+ul.num{counter-reset:n}
+ul.num li{counter-increment:n;padding-left:32pt}
+ul.num li::before{
+  content:counter(n);
+  position:absolute;left:0;top:4pt;
+  width:22pt;height:22pt;border-radius:50%;
+  background:linear-gradient(135deg,#139D45,#0a7a2e);color:#fff;
+  font-size:10pt;font-weight:900;line-height:22pt;text-align:center;
+}
+
+/* GRID 2 col */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10pt;margin:10pt 0}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8pt;margin:10pt 0}
+.card{background:#fafafa;border:1pt solid #e5e5e5;border-radius:6pt;padding:11pt 12pt}
+.card-tag{font-size:8pt;font-weight:900;color:#0a7a2e;text-transform:uppercase;letter-spacing:0.6pt;margin-bottom:5pt;display:block}
+.card h4{font-size:11pt;font-weight:900;margin-bottom:5pt;letter-spacing:-0.01em}
+.card p{font-size:9.5pt;color:#525252;margin:0;line-height:1.45}
+
+/* QUOTE / verbatim */
+.quote{
+  background:#fafafa;border-left:4pt solid #0a0a0a;
+  padding:12pt 16pt;margin:12pt 0;
+  font-size:10pt;line-height:1.5;color:#262626;
+  font-style:italic;
+}
+.quote-source{display:block;margin-top:6pt;font-size:9pt;font-weight:700;color:#737373;font-style:normal}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8pt;margin:12pt 0}
+.stat-c{
+  background:#0a0a0a;color:#fff;
+  padding:12pt 10pt;border-radius:6pt;
+  text-align:center;
+}
+.stat-c-num{font-size:18pt;font-weight:900;color:#25D366;line-height:1;letter-spacing:-0.02em}
+.stat-c-lbl{font-size:7.5pt;color:rgba(255,255,255,0.7);font-weight:700;text-transform:uppercase;letter-spacing:0.5pt;margin-top:4pt;line-height:1.3}
+
+/* FOOTER on each page */
+.page-foot{
+  position:fixed;bottom:8mm;left:16mm;right:16mm;
+  font-size:8pt;color:#a3a3a3;
+  display:flex;justify-content:space-between;
+  border-top:1pt solid #e5e5e5;padding-top:6pt;
+  font-weight:600;
+}
+.page-foot strong{color:#0a7a2e}
+
+/* CONTACT FINAL */
+.contact-block{
+  background:linear-gradient(135deg,#0a7a2e 0%,#139D45 100%);
+  color:#fff;padding:18pt 20pt;border-radius:10pt;
+  margin:14pt 0;
+}
+.contact-block h3{color:#fff;font-size:16pt;margin-bottom:10pt}
+.contact-block a{color:#fff;text-decoration:underline}
+.contact-item{display:flex;align-items:center;gap:8pt;font-size:11pt;padding:4pt 0;font-weight:600}
+
+/* keyword density text spans */
+.kw{font-weight:700;color:#0a7a2e}
+</style>
+</head>
+<body>
+
+<!-- ============== COVER (hero impactante) ============== -->
+<section class="cover">
+  <img class="cover-hero-img" src="../assets/cuanto-cuesta-cancha-futbol-7-monterrey.jpg" alt="Cancha de fútbol 7 con pasto sintético Sportmaster">
+  <div class="cover-hero-overlay"></div>
+  <div class="cover-bottom"></div>
+  <div class="cover-content">
+    <div class="cover-header">
+      <img class="cover-logo" src="../assets/sportmaster-m-xico-pasto-sin-f7aaa128.png" alt="Sportmaster México">
+      <div class="cover-issue">Edición Mayo 2026<strong>v1.0</strong></div>
+    </div>
+    <div class="cover-middle">
+      <span class="cover-eyebrow">Guía oficial 2026 · 24 páginas · gratis</span>
+      <h1 class="cover-title">La Escuela<br>Es Nuestra<em>Tu cancha de fútbol 7</em></h1>
+      <p class="cover-sub">Cómo implementar el <strong>programa La Escuela Es Nuestra</strong> en tu plantel y construir cancha de fútbol 7 con pasto sintético. Reglas de operación, montos, CEAP, formatos PDF y comprobación.</p>
+    </div>
+    <div class="cover-bottom-content">
+      <div class="cover-stats">
+        <div><div class="cover-stat-num">$26 mmdp</div><div class="cover-stat-label">Presupuesto<br>federal 2026</div></div>
+        <div><div class="cover-stat-num">80,000</div><div class="cover-stat-label">Planteles<br>beneficiados</div></div>
+        <div><div class="cover-stat-num">$1.5M</div><div class="cover-stat-label">Monto<br>máximo</div></div>
+        <div><div class="cover-stat-num">+200</div><div class="cover-stat-label">Escuelas<br>Sportmaster</div></div>
+      </div>
+      <div class="cover-foot">
+        <span><strong>canchadefutbol7.mx</strong> · <a href="https://www.sportmaster.mx">www.sportmaster.mx</a></span>
+        <span>Sportmaster · México</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TOC ============== -->
+<section class="toc">
+  <div class="page-head"><span class="page-head-num">Tabla de contenidos</span><span class="page-head-section">Guía LEEN 2026</span></div>
+  <h2 class="toc-title">Lo que vas a aprender</h2>
+  <p class="toc-sub">15 capítulos. Ruta completa para que tu Comité Escolar (CEAP) implemente el <span class="kw">programa La Escuela Es Nuestra</span> y construya una <span class="kw">cancha de fútbol 7</span> con pasto sintético en su plantel.</p>
+  <ol class="toc-list">
+    <li class="toc-item"><span class="toc-num">01</span><span class="toc-text">¿Qué es el programa La Escuela Es Nuestra?<span class="toc-text-sub">El programa federal más grande para infraestructura escolar</span></span><span class="toc-page">p. 03</span></li>
+    <li class="toc-item"><span class="toc-num">02</span><span class="toc-text">¿Cuál es el objetivo del programa La Escuela Es Nuestra?<span class="toc-text-sub">Dignificar espacios + decisión comunitaria</span></span><span class="toc-page">p. 04</span></li>
+    <li class="toc-item"><span class="toc-num">03</span><span class="toc-text">Reglas de operación 2026<span class="toc-text-sub">Lo publicado en el DOF + niveles cubiertos</span></span><span class="toc-page">p. 05</span></li>
+    <li class="toc-item"><span class="toc-num">04</span><span class="toc-text">Tabla oficial de montos por escuela<span class="toc-text-sub">Cuánto recibe tu plantel en 2026</span></span><span class="toc-page">p. 07</span></li>
+    <li class="toc-item"><span class="toc-num">05</span><span class="toc-text">En qué se puede gastar (¿incluye cancha?)<span class="toc-text-sub">Rubros permitidos y NO permitidos</span></span><span class="toc-page">p. 08</span></li>
+    <li class="toc-item"><span class="toc-num">06</span><span class="toc-text">Cómo inscribirse al programa La Escuela Es Nuestra<span class="toc-text-sub">5 pasos oficiales · 30 días total</span></span><span class="toc-page">p. 10</span></li>
+    <li class="toc-item"><span class="toc-num">07</span><span class="toc-text">El CEAP — Comité Escolar de Administración Participativa<span class="toc-text-sub">Quién lo conforma y quién decide</span></span><span class="toc-page">p. 12</span></li>
+    <li class="toc-item"><span class="toc-num">08</span><span class="toc-text">Cuándo llega el apoyo de La Escuela Es Nuestra<span class="toc-text-sub">Calendario 2026 y depósito al Banco del Bienestar</span></span><span class="toc-page">p. 13</span></li>
+    <li class="toc-item"><span class="toc-num">09</span><span class="toc-text">Beneficios reales para tu plantel<span class="toc-text-sub">Pedagógicos, sociales y de infraestructura</span></span><span class="toc-page">p. 14</span></li>
+    <li class="toc-item"><span class="toc-num">10</span><span class="toc-text">Combinar con Mundial Social 2026<span class="toc-text-sub">El gancho histórico: SEDATU + CONADE + LEEN</span></span><span class="toc-page">p. 15</span></li>
+    <li class="toc-item"><span class="toc-num">11</span><span class="toc-text">Tipos de canchas escolares con pasto sintético<span class="toc-text-sub">Fútbol 7, Soccer/Fútbol 11, Fútbol 5</span></span><span class="toc-page">p. 16</span></li>
+    <li class="toc-item"><span class="toc-num">12</span><span class="toc-text">Equipamiento que el programa también cubre<span class="toc-text-sub">Gradas, bancas, porterías, malla, alumbrado, marcador</span></span><span class="toc-page">p. 18</span></li>
+    <li class="toc-item"><span class="toc-num">13</span><span class="toc-text">Calculadora rápida de m² por monto<span class="toc-text-sub">Tabla de equivalencias por calidad de pasto</span></span><span class="toc-page">p. 19</span></li>
+    <li class="toc-item"><span class="toc-num">14</span><span class="toc-text">Cotización + comprobación con CEAP<span class="toc-text-sub">Qué documentos exigir al proveedor</span></span><span class="toc-page">p. 20</span></li>
+    <li class="toc-item"><span class="toc-num">15</span><span class="toc-text">Fuentes oficiales y contacto<span class="toc-text-sub">Enlaces SEP, DOF, CONADE, SEDATU, Bienestar</span></span><span class="toc-page">p. 22</span></li>
+  </ol>
+</section>
+
+<!-- ============== 01 ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 01</span><span class="page-head-section">El programa</span></div>
+  <span class="section-num">01 · El programa</span>
+  <h2 class="section-h">¿Qué es el programa La Escuela Es Nuestra?</h2>
+  <p class="section-lead">Es el programa federal más grande de México para dignificar la infraestructura de escuelas públicas. Opera desde 2019 y en 2026 alcanza su mayor cobertura: <strong>80,000 planteles beneficiados</strong> con un presupuesto de <strong>$26 mil millones de pesos</strong>.</p>
+
+  <h3 class="sub">Cómo funciona en 3 frases</h3>
+  <p>La <span class="kw">Secretaría de Educación Pública</span> (SEP), a través de los Programas para el Bienestar, deposita el dinero <strong>directamente</strong> en una tarjeta del Banco del Bienestar a nombre del Tesorero del Comité Escolar de Administración Participativa (<span class="kw">CEAP</span>) — formado por padres, madres, docentes y alumnos del propio plantel.</p>
+  <p>El recurso <strong>no pasa por gobierno estatal, municipal ni intermediarios</strong>. La comunidad escolar decide en asamblea en qué se gasta, lo ejecuta y lo comprueba ante la SEP con periódico mural.</p>
+  <p>Aplica a educación inicial, preescolar, primaria, secundaria, CAM, CONAFE y desde 2025 también a <strong>media superior (preparatoria y bachillerato)</strong>.</p>
+
+  <div class="callout">
+    <span class="callout-title">¿Por qué importa para construir una cancha?</span>
+    Porque <strong>las reglas de operación 2026</strong> permiten gastar el recurso en "obras de rehabilitación y ampliación", rubro que incluye explícitamente <strong>obras exteriores</strong> como canchas deportivas, instalaciones de iluminación, drenaje pluvial y rehabilitación de patios escolares.
+  </div>
+
+  <h3 class="sub">Las 4 cifras que tu CEAP debe memorizar</h3>
+  <div class="stat-grid">
+    <div class="stat-c"><div class="stat-c-num">$26 MMDP</div><div class="stat-c-lbl">Presupuesto<br>federal 2026</div></div>
+    <div class="stat-c"><div class="stat-c-num">80,000</div><div class="stat-c-lbl">Escuelas<br>beneficiadas</div></div>
+    <div class="stat-c"><div class="stat-c-num">9.5 mill</div><div class="stat-c-lbl">Estudiantes<br>atendidos</div></div>
+    <div class="stat-c"><div class="stat-c-num">$1.5M</div><div class="stat-c-lbl">Tope<br>por plantel</div></div>
+  </div>
+</section>
+
+<!-- ============== 02 ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 02</span><span class="page-head-section">Objetivo</span></div>
+  <span class="section-num">02 · Objetivo</span>
+  <h2 class="section-h">¿Cuál es el objetivo del programa La Escuela Es Nuestra?</h2>
+  <p class="section-lead">Promover la <strong>participación de la comunidad escolar</strong> mediante la conformación de un Comité Escolar de Administración Participativa (CEAP) que decide, en acuerdo con la Asamblea, el uso de los recursos federales destinados a dignificar los espacios educativos públicos.</p>
+
+  <h3 class="sub">El objetivo en lenguaje simple</h3>
+  <p>El gobierno reconoció que durante décadas el dinero para infraestructura escolar pasaba por demasiados intermediarios (estados, municipios, contratistas únicos). Mucho recurso se diluía. La <span class="kw">solución del programa La Escuela Es Nuestra</span> es radical: <strong>entregar el dinero directamente a la comunidad escolar</strong> y que ella, a través de un comité elegido, decida y ejecute.</p>
+
+  <h3 class="sub">3 pilares del programa</h3>
+  <ul class="check">
+    <li><strong>Decisión democrática:</strong> la asamblea escolar elige al CEAP en una reunión abierta. Cualquier padre, madre o tutor puede ser candidato. Los alumnos a partir de 4º de primaria también participan con voz.</li>
+    <li><strong>Recurso directo:</strong> el dinero se transfiere a una tarjeta del Banco del Bienestar a nombre del Tesorero del CEAP. Se usa con factura CFDI 4.0 y se comprueba con periódico mural ante la comunidad.</li>
+    <li><strong>Autonomía local:</strong> cada plantel define qué necesita más. Una escuela puede priorizar techumbre, otra cancha de fútbol 7, otra equipamiento de cómputo. El programa no impone un menú único.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="callout-title">Cita oficial del programa</span>
+    "<em>La Escuela Es Nuestra promueve la participación de la Comunidad Escolar mediante la conformación de un Comité Escolar de Administración Participativa (CEAP), que decidirá, en acuerdo con la Asamblea, el uso de los recursos destinados a dignificar las condiciones de los espacios educativos públicos en beneficio de niñas, niños y adolescentes.</em>"
+    <span class="quote-source">— laescuelaesnuestra.sep.gob.mx</span>
+  </div>
+</section>
+
+<!-- ============== 03 ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 03</span><span class="page-head-section">Reglas 2026</span></div>
+  <span class="section-num">03 · Marco legal</span>
+  <h2 class="section-h">Reglas de operación 2026 del programa La Escuela Es Nuestra</h2>
+  <p class="section-lead">Las <span class="kw">reglas de operación de La Escuela Es Nuestra</span> 2026 fueron publicadas en el Diario Oficial de la Federación (DOF) el <strong>31 de diciembre de 2025</strong>. Establecen los montos, requisitos, niveles educativos cubiertos y procedimientos de comprobación.</p>
+
+  <h3 class="sub">Niveles educativos cubiertos en 2026</h3>
+  <table>
+    <thead>
+      <tr><th>Nivel</th><th>Incluye</th><th>Año de incorporación</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Inicial</td><td>Centros de Atención Infantil (CAI)</td><td>2019</td></tr>
+      <tr><td>Preescolar</td><td>Kinders públicos</td><td>2019</td></tr>
+      <tr><td>Primaria</td><td>Generales y rurales (CONAFE)</td><td>2019</td></tr>
+      <tr><td>Secundaria</td><td>Generales, técnicas y telesecundarias</td><td>2019</td></tr>
+      <tr><td>CAM</td><td>Centros de Atención Múltiple</td><td>2019</td></tr>
+      <tr><td>CONAFE</td><td>Comunidades rurales aisladas</td><td>2019</td></tr>
+      <tr><td><strong>Media superior</strong></td><td><strong>Preparatoria, bachillerato técnico, CETIS, CBTIS, CECYT</strong></td><td><strong>2025</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Lo que dicen las reglas textualmente</h3>
+  <p>Las reglas de operación establecen que el recurso puede usarse en <strong>3 rubros principales</strong>:</p>
+  <ol class="num">
+    <li><strong>Equipamiento</strong> (hasta el 100% del recurso): mobiliario escolar, equipo de cómputo, material didáctico, material deportivo (incluye balones, conos, redes), instrumentos de laboratorio.</li>
+    <li><strong>Obras de rehabilitación y ampliación:</strong> servicios de luz, agua, drenaje, internet; mejora de salones; <strong>obras exteriores</strong> (canchas, patios, bardas); pintura, utensilios escolares.</li>
+    <li><strong>Servicios complementarios:</strong> horario extendido y/o servicio de alimentación para alumnos de educación básica.</li>
+  </ol>
+
+  <div class="callout warn">
+    <span class="callout-title">Restricción importante</span>
+    El programa <strong>NO está orientado a resarcir gastos de operación ordinarios</strong> (papelería, fotocopiado, insumos de limpieza recurrentes, recibos mensuales, salarios). Es un programa de inversión en infraestructura y equipamiento — no de operación.
+  </div>
+</section>
+
+<!-- ============== 04 MONTOS ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 04</span><span class="page-head-section">Montos 2026</span></div>
+  <span class="section-num">04 · Tabla oficial</span>
+  <h2 class="section-h">¿Cuánto da La Escuela Es Nuestra a cada escuela en 2026?</h2>
+  <p class="section-lead">Los montos se asignan automáticamente según el nivel educativo y el tamaño de la matrícula registrada. No requieren trámite adicional una vez que el CEAP está validado por la SEP.</p>
+
+  <h3 class="sub">Educación básica (primaria · secundaria · CAM · CONAFE)</h3>
+  <table>
+    <thead>
+      <tr><th>Grupo</th><th>Matrícula</th><th>Monto MXN 2026</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Grupo I</td><td>3 a 50 alumnos</td><td class="tbl-amount">$200,000</td></tr>
+      <tr><td>Grupo II</td><td>51 a 150 alumnos</td><td class="tbl-amount">$250,000</td></tr>
+      <tr><td>Grupo III ⭐</td><td>151 alumnos o más</td><td class="tbl-amount">$600,000</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Media superior (preparatoria · bachillerato · CETIS · CBTIS · CECYT)</h3>
+  <table>
+    <thead>
+      <tr><th>Grupo</th><th>Matrícula</th><th>Monto MXN 2026</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Grupo I</td><td>Menos de 300 alumnos</td><td class="tbl-amount gold">$600,000</td></tr>
+      <tr><td>Grupo II ⭐</td><td>300 a 1,000 alumnos</td><td class="tbl-amount gold">$1,000,000</td></tr>
+      <tr><td>Grupo III ⭐⭐</td><td>Más de 1,000 alumnos</td><td class="tbl-amount gold">$1,500,000</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout dark">
+    <span class="callout-title">Para construir cancha de fútbol 7</span>
+    Con monto <strong>$600,000 (primaria grupo III)</strong> ya alcanza para cancha de fútbol 7 básica completa. Con <strong>$1,000,000 — $1,500,000</strong> de media superior alcanza para cancha premium con monofilamento 50mm + algunos accesorios (porterías + líneas oficiales + iluminación básica).
+  </div>
+
+  <h3 class="sub">Cifras nacionales del programa 2026</h3>
+  <div class="grid2">
+    <div class="card">
+      <span class="card-tag">Presupuesto</span>
+      <h4>$26,000 millones MXN</h4>
+      <p>Total destinado por la SEP y los Programas para el Bienestar para el ejercicio fiscal 2026.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Cobertura</span>
+      <h4>80,000 planteles</h4>
+      <p>Casi 8 de cada 10 escuelas públicas del país recibirán recurso este año.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Beneficiarios</span>
+      <h4>9.5 millones de estudiantes</h4>
+      <p>Niñas, niños y adolescentes en educación básica y media superior.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">Banco</span>
+      <h4>Banco del Bienestar</h4>
+      <p>Único banco que opera la dispersión de recursos a las tarjetas del Tesorero del CEAP.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 05 ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 05</span><span class="page-head-section">Uso del recurso</span></div>
+  <span class="section-num">05 · En qué gastar</span>
+  <h2 class="section-h">En qué se puede (y no se puede) gastar el recurso</h2>
+  <p class="section-lead">Esta es una de las preguntas más frecuentes del CEAP. Lo aclaramos por rubro y especialmente para el caso de las <span class="kw">canchas de escuelas</span> con pasto sintético.</p>
+
+  <h3 class="sub">SÍ está permitido</h3>
+  <ul class="check">
+    <li><strong>Obras de rehabilitación y ampliación</strong> — incluye cancha de fútbol 7 nueva, rehabilitación de cancha existente, iluminación LED, drenaje pluvial, base civil, pintura, líneas oficiales y porterías.</li>
+    <li><strong>Equipamiento deportivo</strong> — balones, conos, redes, porterías de aluminio reforzado, bancas de jugadores, gradas, marcadores digitales.</li>
+    <li><strong>Servicios de la cancha</strong> — instalación eléctrica para alumbrado, instalación hidráulica, sistema de drenaje pluvial, conexión a red.</li>
+    <li><strong>Mobiliario y cómputo escolar</strong> — escritorios, sillas, libreros, computadoras, impresoras, proyectores, equipo de audio y video.</li>
+    <li><strong>Equipo de seguridad</strong> — extintores, botiquines, alarmas contra incendio o sismo, señalamientos.</li>
+    <li><strong>Material didáctico</strong> — libros, mapas, programas educativos, pinturas, instrumentos musicales.</li>
+    <li><strong>Horario extendido y/o alimentación</strong> — en escuelas de educación básica.</li>
+  </ul>
+
+  <h3 class="sub">NO está permitido</h3>
+  <ul class="x">
+    <li><strong>Papelería de oficina recurrente</strong> (hojas, plumas, archivos)</li>
+    <li><strong>Fotocopiado</strong> (es gasto operativo, no inversión)</li>
+    <li><strong>Insumos de limpieza recurrentes</strong> (detergentes, jabones del mes)</li>
+    <li><strong>Pago de recibos mensuales</strong> (luz, agua, teléfono — son gasto corriente)</li>
+    <li><strong>Salarios o nómina</strong> (no es para pagar personal)</li>
+    <li><strong>Renta de inmuebles</strong> (no es propósito del programa)</li>
+    <li><strong>Mantenimiento ordinario</strong> que no implique mejora</li>
+  </ul>
+
+  <h3 class="sub">Resumen para tu CEAP</h3>
+  <p>El programa La Escuela Es Nuestra es para <strong>invertir en infraestructura y equipamiento que dure años</strong>, no para gastos del día a día. Una cancha de fútbol 7 con pasto sintético y garantía 9 años es exactamente el tipo de inversión que el programa quiere financiar.</p>
+</section>
+
+<!-- ============== 06 ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 06</span><span class="page-head-section">Inscripción</span></div>
+  <span class="section-num">06 · Paso a paso</span>
+  <h2 class="section-h">Cómo inscribirse al programa La Escuela Es Nuestra</h2>
+  <p class="section-lead">El proceso completo de inscripción al <span class="kw">programa La Escuela Es Nuestra</span> toma aproximadamente <strong>30 días</strong> entre la conformación del comité y el depósito del recurso en la tarjeta del Banco del Bienestar.</p>
+
+  <h3 class="sub">5 pasos oficiales para inscribirse</h3>
+  <ul class="num">
+    <li><strong>Conforma el CEAP en asamblea escolar.</strong> Convoca a padres, madres, docentes y alumnos a partir de 4º de primaria. Eligen Presidente, Secretario, Secretario Técnico, Tesorero, Vocales y representante estudiantil. Levanta acta firmada — es el primer documento oficial del expediente.</li>
+    <li><strong>Abre cuenta en Banco del Bienestar.</strong> El Tesorero acude con otro integrante del CEAP a la sucursal más cercana del Banco del Bienestar llevando identificación oficial, comprobante de domicilio y el acta de conformación del comité. Salen con la CLABE de 18 dígitos. La tarjeta llega después por mensajería a la dirección de la escuela.</li>
+    <li><strong>Elabora diagnóstico y plan de trabajo.</strong> Documenta matrícula actualizada, inventario, condiciones del plantel y fotos. Define el plan: por ejemplo, "construir cancha de fútbol 7 en el patio escolar de 1,500 m²". Aquí ya conviene tener una <strong>cotización preliminar</strong> de un proveedor especializado en <span class="kw">canchas de escuelas</span>.</li>
+    <li><strong>Registro en línea.</strong> Entra a laescuelaesnuestra.sep.gob.mx. Sube la cuenta bancaria (CLABE), el diagnóstico y el plan de trabajo. La SEP valida la documentación y autoriza el depósito. La validación toma entre 2 y 4 semanas.</li>
+    <li><strong>Recibe el dinero, contrata y comprueba.</strong> Una vez en la cuenta, el CEAP autoriza la contratación de la empresa proveedora, se firma contrato, se paga con factura CFDI 4.0, se ejecuta la obra y se comprueba con periódico mural ante la comunidad escolar.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="callout-title">Si ya tuviste CEAP el año pasado</span>
+    No necesitas conformar uno nuevo. Sólo <strong>ratificar o renovar</strong> al comité existente en asamblea, actualizar el diagnóstico, y subir la nueva información al portal. El proceso es más rápido (10-15 días).
+  </div>
+
+  <h3 class="sub">Documentos que necesitarás</h3>
+  <ul class="check">
+    <li>Acta de asamblea de conformación del CEAP (formato oficial SEP, descargable del portal)</li>
+    <li>Identificación oficial vigente de todos los integrantes del CEAP</li>
+    <li>Comprobante de domicilio del Tesorero (no mayor a 3 meses)</li>
+    <li>CLABE de 18 dígitos de cuenta Banco del Bienestar</li>
+    <li>Diagnóstico de infraestructura del plantel (formato oficial SEP)</li>
+    <li>Plan de trabajo con cotización preliminar (si vas a construir cancha, pide cotización a Sportmaster)</li>
+    <li>Fotografías del estado actual del plantel</li>
+  </ul>
+
+  <div class="callout dark">
+    <span class="callout-title">Formatos PDF 2026</span>
+    Todos los formatos oficiales del programa <strong>La Escuela Es Nuestra formatos PDF 2026</strong> están disponibles para descarga gratuita en <strong>laescuelaesnuestra.sep.gob.mx/normatividad</strong> y en la sección "Recursos" del portal.
+  </div>
+</section>
+
+<!-- ============== 07 CEAP ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 07</span><span class="page-head-section">CEAP</span></div>
+  <span class="section-num">07 · El comité</span>
+  <h2 class="section-h">CEAP — Comité Escolar de Administración Participativa</h2>
+  <p class="section-lead">El <span class="kw">CEAP La Escuela Es Nuestra</span> es el órgano elegido por la asamblea escolar responsable de decidir y comprobar el uso del recurso. Sin CEAP no hay programa — es la pieza más importante.</p>
+
+  <h3 class="sub">Quién integra el CEAP</h3>
+  <table>
+    <thead>
+      <tr><th>Cargo</th><th>Quién lo ocupa</th><th>Responsabilidad principal</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Presidente</strong></td><td>Padre/madre electo</td><td>Convoca asambleas y representa al comité</td></tr>
+      <tr><td><strong>Secretario</strong></td><td>Padre/madre electo</td><td>Levanta actas y resguarda documentos</td></tr>
+      <tr><td><strong>Secretario Técnico</strong></td><td>Padre/madre o docente</td><td>Apoya en diagnóstico y plan de trabajo</td></tr>
+      <tr><td><strong>Tesorero ⭐</strong></td><td>Padre/madre electo</td><td>Maneja tarjeta Banco del Bienestar, firma pagos y facturas</td></tr>
+      <tr><td><strong>Vocales (2-4)</strong></td><td>Padres/madres</td><td>Voz de la comunidad, votan decisiones</td></tr>
+      <tr><td><strong>Alumno representante</strong></td><td>Desde 4º de primaria</td><td>Voz estudiantil con derecho a opinar</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Reglas clave del CEAP</h3>
+  <ul class="check">
+    <li>El comité se elige cada ciclo escolar en asamblea abierta de la comunidad.</li>
+    <li>Los integrantes <strong>no reciben pago</strong> — es trabajo voluntario para la escuela.</li>
+    <li>Las decisiones se toman por mayoría en sesión documentada con acta.</li>
+    <li>El Tesorero es la única persona autorizada para operar la tarjeta del Banco del Bienestar, pero <strong>cada gasto debe estar aprobado por la asamblea</strong>.</li>
+    <li>El CEAP rinde cuentas con <strong>periódico mural</strong> donde publica los gastos con fotos, facturas y descripciones.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="callout-title">Consejo Sportmaster</span>
+    Cuando contactes a un proveedor para cotizar tu cancha de fútbol 7, <strong>pide que incluya al Tesorero del CEAP</strong> en la conversación desde el primer mensaje. Todos los documentos (cotización, contrato, factura CFDI 4.0, póliza de garantía) van a su nombre.
+  </div>
+</section>
+
+<!-- ============== 08 ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 08</span><span class="page-head-section">Calendario</span></div>
+  <span class="section-num">08 · Tiempos</span>
+  <h2 class="section-h">¿Cuándo llega el apoyo de La Escuela Es Nuestra?</h2>
+  <p class="section-lead">El <span class="kw">apoyo de La Escuela Es Nuestra</span> se deposita típicamente entre <strong>enero y abril</strong> de cada año en la tarjeta del Banco del Bienestar a nombre del Tesorero del CEAP, una vez que el plantel completó el registro y la SEP validó la documentación.</p>
+
+  <h3 class="sub">Calendario típico de un ciclo anual</h3>
+  <table>
+    <thead>
+      <tr><th>Mes</th><th>Hito del programa</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Diciembre año anterior</td><td>Publicación de reglas de operación en el DOF</td></tr>
+      <tr><td>Enero</td><td>Apertura del portal de registro · convocatoria abierta</td></tr>
+      <tr><td>Febrero — Marzo</td><td>Conformación de CEAP en planteles · captura de información</td></tr>
+      <tr><td><strong>Marzo — Abril</strong></td><td><strong>Inicio de dispersión de recursos a tarjetas</strong></td></tr>
+      <tr><td>Mayo — Octubre</td><td>Ejecución de obras y compras</td></tr>
+      <tr><td>Septiembre — Diciembre</td><td>Comprobación con periódico mural · cierre del ciclo</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Tiempos específicos 2026</h3>
+  <ul class="check">
+    <li><strong>31 diciembre 2025:</strong> publicación de Reglas de Operación 2026 en el DOF</li>
+    <li><strong>Enero 2026:</strong> portal de registro abre · planteles ratifican o renuevan CEAP</li>
+    <li><strong>Febrero — abril 2026:</strong> entrega masiva de tarjetas a tesoreros</li>
+    <li><strong>Hidalgo, Coahuila, Michoacán y otros estados:</strong> ya iniciaron entregas en abril</li>
+    <li><strong>Mayo — agosto 2026:</strong> ventana ideal para ejecutar la obra de cancha de fútbol 7 antes del Mundial 2026</li>
+  </ul>
+
+  <div class="callout warn">
+    <span class="callout-title">No esperes</span>
+    Si tu escuela quiere construir una cancha y aprovechar el Mundial 2026, <strong>arranca el CEAP ahora</strong>. Las escuelas que se inscribieron en enero ya tienen su tarjeta. Las que esperan hasta junio probablemente no alcanzan a inaugurar antes del Mundial.
+  </div>
+</section>
+
+<!-- ============== 09 BENEFICIOS ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 09</span><span class="page-head-section">Beneficios</span></div>
+  <span class="section-num">09 · Beneficios reales</span>
+  <h2 class="section-h">Beneficios de La Escuela Es Nuestra para tu plantel</h2>
+  <p class="section-lead">Los <span class="kw">beneficios de La Escuela Es Nuestra</span> van mucho más allá del dinero. Es un programa que transforma la cultura escolar y el espacio físico al mismo tiempo.</p>
+
+  <h3 class="sub">Beneficios para los estudiantes</h3>
+  <ul class="check">
+    <li><strong>Espacios deportivos dignos:</strong> una cancha de fútbol 7 con pasto sintético reemplaza patios de cemento donde los niños se lastimaban.</li>
+    <li><strong>Más horas de actividad física:</strong> al haber instalaciones adecuadas, la escuela puede ampliar el horario deportivo y reducir sedentarismo.</li>
+    <li><strong>Equipos representativos:</strong> escuelas con cancha propia entrenan y compiten en torneos interescolares — y muchos alumnos descubren su talento.</li>
+    <li><strong>Mejor rendimiento académico:</strong> múltiples estudios SEP correlacionan mejora en infraestructura con asistencia y aprovechamiento.</li>
+  </ul>
+
+  <h3 class="sub">Beneficios para los docentes y directivos</h3>
+  <ul class="check">
+    <li>Mayor matrícula porque las familias prefieren escuelas dignas.</li>
+    <li>Menos accidentes en clases de educación física (pasto sintético reduce lesiones 60% vs cemento).</li>
+    <li>Espacios para eventos comunitarios (clausuras, ferias, torneos abiertos).</li>
+    <li>Cumplimiento de estándares SEP de infraestructura escolar 2024.</li>
+  </ul>
+
+  <h3 class="sub">Beneficios para padres y comunidad</h3>
+  <ul class="check">
+    <li><strong>Participación real en la educación de sus hijos</strong> — el CEAP es voz directa de las familias.</li>
+    <li>Transparencia: cada peso gastado se publica en periódico mural.</li>
+    <li>Construcción de tejido social — vecinos que antes no se conocían ahora son comité.</li>
+    <li>Uso comunitario de la cancha fuera de horario escolar (con aprobación del comité).</li>
+  </ul>
+
+  <div class="callout dark">
+    <span class="callout-title">Lo que dicen las familias</span>
+    "<em>Antes los niños jugaban en cemento y se lastimaban. Ahora tenemos una cancha como las de la tele. Hasta los papás venimos los sábados a jugar entre todos.</em>"<br>
+    <span style="color:rgba(255,255,255,0.6);font-style:normal;font-weight:700">— Testimonio de comité CEAP, escuela primaria zona oriente CDMX</span>
+  </div>
+</section>
+
+<!-- ============== 10 MUNDIAL ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 10</span><span class="page-head-section">Mundial 2026</span></div>
+  <span class="section-num">10 · El gancho histórico</span>
+  <h2 class="section-h">Combina La Escuela Es Nuestra + Mundial Social 2026</h2>
+  <p class="section-lead">Esta es la oportunidad única del año. <strong>La Escuela Es Nuestra</strong> y <strong>Mundial Social 2026</strong> son programas distintos que tu escuela puede recibir <strong>simultáneamente</strong>.</p>
+
+  <h3 class="sub">Comparación lado a lado</h3>
+  <table>
+    <thead>
+      <tr><th></th><th>La Escuela Es Nuestra</th><th>Mundial Social 2026</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Operador</td><td>SEP + Bienestar</td><td>SEDATU + CONADE</td></tr>
+      <tr><td>Presupuesto / Volumen 2026</td><td>$26 mil mdp · 80,000 escuelas</td><td>4,208 canchas en 29 estados</td></tr>
+      <tr><td>Aplica a</td><td>Cualquier escuela pública</td><td>Espacios públicos y escolares</td></tr>
+      <tr><td>Decide</td><td>CEAP escolar</td><td>Institutos del deporte estatales</td></tr>
+      <tr><td>Monto típico por proyecto</td><td>$200K — $1.5M</td><td>Llave en mano (variable)</td></tr>
+      <tr><td>Comprobación</td><td>Periódico mural + factura CFDI</td><td>Convenio con instituto estatal</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Por qué combinarlos</h3>
+  <p>El presidente de la República y la SEDATU anunciaron <strong>1,200 canchas federales</strong> en el Mundial Social 2026, más 3,008 canchas a cargo de estados y municipios — total <strong>4,208 nacional</strong>. La cobertura es amplia y hay disponibilidad para escuelas en los 29 estados participantes.</p>
+  <p>Una escuela puede:</p>
+  <ol class="num">
+    <li><strong>Aplicar primero al Mundial Social 2026</strong> a través del instituto del deporte de su estado (depende del estado). Si gana, recibe cancha en convenio.</li>
+    <li><strong>Aplicar paralelamente a La Escuela Es Nuestra</strong> para complementar la cancha con equipamiento (gradas, bancas, iluminación, malla ciclónica).</li>
+    <li><strong>Inaugurar antes del Mundial 2026</strong> (junio-julio) para visibilidad pública.</li>
+  </ol>
+
+  <div class="callout">
+    <span class="callout-title">Estados ya activos</span>
+    Estados que ya iniciaron Mundial Social 2026: Tlaxcala (22 canchas), Zacatecas (100 canchas), entre otros. Si tu escuela está en uno de los 29 estados participantes, contacta al Instituto del Deporte estatal correspondiente.
+  </div>
+</section>
+
+<!-- ============== 11 TIPOS DE CANCHAS ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 11</span><span class="page-head-section">Tipos de cancha</span></div>
+  <span class="section-num">11 · Tu cancha ideal</span>
+  <h2 class="section-h">Tipos de canchas escolares con pasto sintético</h2>
+  <p class="section-lead">No todas las escuelas tienen el mismo patio ni el mismo monto. Por eso ofrecemos 3 tipos principales de <span class="kw">canchas de escuelas</span> con pasto sintético.</p>
+
+  <h3 class="sub">Cancha de Fútbol 7 (la más solicitada)</h3>
+  <div class="grid2">
+    <div>
+      <h4 class="subsub">Características</h4>
+      <ul class="check" style="margin-top:0">
+        <li>Medida mínima: 50×30 m (1,500 m²)</li>
+        <li>Pasto sintético 40–45 mm fibrilado o monofilamento</li>
+        <li>Hasta 14 jugadores en cancha</li>
+        <li>Ideal para primarias grupo III y secundarias grandes</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="subsub">Apoyo necesario</h4>
+      <p><strong>Primarias grupo III ($600K):</strong> alcanza para cancha completa básica.</p>
+      <p><strong>Media superior ($600K — $1.5M):</strong> alcanza para cancha completa premium + algunos accesorios.</p>
+    </div>
+  </div>
+
+  <h3 class="sub">Cancha de Soccer / Fútbol 11 (para prepa)</h3>
+  <div class="grid2">
+    <div>
+      <h4 class="subsub">Características</h4>
+      <ul class="check" style="margin-top:0">
+        <li>Medida estándar: 90×60 m (5,400 m²)</li>
+        <li>Pasto sintético 45–55 mm monofilamento</li>
+        <li>22 jugadores en cancha</li>
+        <li>Ideal para preparatorias con patio amplio</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="subsub">Apoyo necesario</h4>
+      <p><strong>Media superior grupo II ($1M):</strong> cubre cancha completa.</p>
+      <p><strong>Media superior grupo III ($1.5M):</strong> cubre cancha + porterías + líneas oficiales.</p>
+    </div>
+  </div>
+
+  <h3 class="sub">Cancha de Fútbol 5 / Rápido (patios chicos)</h3>
+  <div class="grid2">
+    <div>
+      <h4 class="subsub">Características</h4>
+      <ul class="check" style="margin-top:0">
+        <li>Medida estándar: 40×20 m (800 m²)</li>
+        <li>Pasto sintético 30–35 mm fibrilado</li>
+        <li>10 jugadores en cancha</li>
+        <li>Ideal para primarias grupo I y II con patios reducidos</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="subsub">Apoyo necesario</h4>
+      <p><strong>Primarias grupo II ($250K):</strong> cubre cancha básica + porterías.</p>
+      <p><strong>Primarias grupo III ($600K):</strong> cubre cancha premium + iluminación LED.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="callout-title">Recomendación Sportmaster</span>
+    Antes de decidir el tipo de cancha, manda por WhatsApp <strong>las medidas exactas o planos de tu patio</strong>. En un par de horas te entregamos cotización detallada con la opción óptima para tu monto LEEN 2026.
+  </div>
+</section>
+
+<!-- ============== 12 EQUIPAMIENTO ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 12</span><span class="page-head-section">Equipamiento</span></div>
+  <span class="section-num">12 · Bajo el mismo programa</span>
+  <h2 class="section-h">Equipamiento que cubre el programa La Escuela Es Nuestra</h2>
+  <p class="section-lead">Las reglas de operación 2026 permiten incluir el equipamiento deportivo dentro del rubro "equipamiento" o "ampliación". Una sola obra, un solo proveedor, llave en mano.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <span class="card-tag">01 · Capacidad</span>
+      <h4>Gradas</h4>
+      <p>Gradas metálicas con techo curvo de policarbonato traslúcido. Capacidad 25–200 espectadores.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">02 · Confort</span>
+      <h4>Bancas de jugadores</h4>
+      <p>Bancas con respaldo techado para banca local, visitante y árbitros. Capacidad 7–12.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">03 · Reglamentario</span>
+      <h4>Porterías oficiales</h4>
+      <p>Aluminio reforzado para fútbol 5, 7 y soccer. Medidas oficiales, red polietileno alta resistencia.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">04 · Seguridad</span>
+      <h4>Malla ciclónica perimetral</h4>
+      <p>Hasta 8 m de altura. Postes galvanizados anti-óxido. Calibre comercial o industrial.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">05 · Nocturno</span>
+      <h4>Alumbrado LED deportivo</h4>
+      <p>Reflectores 200W–400W de alta eficiencia. Postes 8–12 m. Iluminación uniforme sin sombras.</p>
+    </div>
+    <div class="card">
+      <span class="card-tag">06 · Control</span>
+      <h4>Marcadores digitales</h4>
+      <p>Visibilidad clara, operación sencilla. Estructura lista para instalación en cancha.</p>
+    </div>
+  </div>
+
+  <div class="callout dark">
+    <span class="callout-title">Una sola cotización</span>
+    Combina cancha + equipamiento en una sola cotización Sportmaster y tu CEAP lo comprueba bajo el mismo proyecto con factura CFDI 4.0, póliza única y garantía consolidada.
+  </div>
+</section>
+
+<!-- ============== 13 CALCULADORA ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 13</span><span class="page-head-section">Calculadora</span></div>
+  <span class="section-num">13 · Tabla rápida</span>
+  <h2 class="section-h">Cuántos m² de cancha alcanzan con tu monto</h2>
+  <p class="section-lead">Tabla de equivalencia precio por m² de pasto sintético según calidad. Para calcular m² disponibles, divide tu monto LEEN entre el precio por m² de la calidad elegida.</p>
+
+  <h3 class="sub">Calidades de pasto sintético Sportmaster</h3>
+  <table>
+    <thead>
+      <tr><th>Calidad</th><th>Tipo</th><th>Espesor</th><th>Precio por m² (MXN)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Económica</td><td>Fibrilado</td><td>30 mm</td><td class="tbl-amount">$245</td></tr>
+      <tr><td>Estándar (recomendada)</td><td>Fibrilado</td><td>40 mm</td><td class="tbl-amount">$285</td></tr>
+      <tr><td>Premium</td><td>Monofilamento</td><td>50 mm</td><td class="tbl-amount">$345</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Equivalencias por monto</h3>
+  <table>
+    <thead>
+      <tr><th>Monto LEEN</th><th>m² con Económica</th><th>m² con Estándar</th><th>m² con Premium</th><th>¿Cabe cancha F7?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>$200,000</td><td>816 m²</td><td>701 m²</td><td>579 m²</td><td>Cancha F5 sí</td></tr>
+      <tr><td>$250,000</td><td>1,020 m²</td><td>877 m²</td><td>724 m²</td><td>Cancha F5 sí · F7 parcial</td></tr>
+      <tr><td><strong>$600,000</strong></td><td><strong>2,448 m²</strong></td><td><strong>2,105 m²</strong></td><td><strong>1,739 m²</strong></td><td><strong>F7 completa ✓</strong></td></tr>
+      <tr><td><strong>$1,000,000</strong></td><td>4,081 m²</td><td>3,508 m²</td><td>2,898 m²</td><td><strong>F7 + extras ✓</strong></td></tr>
+      <tr><td><strong>$1,500,000</strong></td><td>6,122 m²</td><td>5,263 m²</td><td>4,347 m²</td><td><strong>F11 completa ✓</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <span class="callout-title">Nota importante</span>
+    Estos m² son <strong>solo pasto sintético + instalación</strong>. No incluye obra civil de base (que la escuela contrata por separado con un albañil local) ni accesorios como porterías, gradas o iluminación. Para cotización llave en mano completa, escríbenos por WhatsApp.
+  </div>
+</section>
+
+<!-- ============== 14 COTIZACIÓN ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 14</span><span class="page-head-section">Cotización</span></div>
+  <span class="section-num">14 · Para el CEAP</span>
+  <h2 class="section-h">Cotización y comprobación con tu CEAP</h2>
+  <p class="section-lead">Qué pedir a un proveedor profesional para que tu Tesorero pueda comprobar el gasto ante la SEP y la asamblea sin problemas.</p>
+
+  <h3 class="sub">Documentos que debe entregar el proveedor</h3>
+  <ul class="check">
+    <li><strong>Constancia de Situación Fiscal vigente</strong> (SAT)</li>
+    <li><strong>Factura CFDI 4.0</strong> a nombre del Comité Escolar (RFC genérico XAXX010101000 si es individual o el RFC del Tesorero si así lo determinaron)</li>
+    <li><strong>Contrato de obra firmado</strong> con desglose de partidas, tiempos y forma de pago</li>
+    <li><strong>Fianza de cumplimiento</strong> (típicamente 10% del valor del contrato)</li>
+    <li><strong>Póliza de garantía 9 años en pasto + 2 años en instalación</strong> (estándar Sportmaster)</li>
+    <li><strong>Plan de trabajo</strong> con cronograma semanal</li>
+    <li><strong>Reporte fotográfico semanal</strong> del avance de obra para que el CEAP comprueba ante la asamblea</li>
+    <li><strong>Acta de entrega-recepción</strong> firmada al cierre con plano final y especificaciones</li>
+  </ul>
+
+  <h3 class="sub">Lo que el CEAP debe publicar en periódico mural</h3>
+  <ul class="check">
+    <li>Monto recibido del programa La Escuela Es Nuestra</li>
+    <li>Decisión de la asamblea (qué se compró/construyó)</li>
+    <li>Empresa proveedora seleccionada y por qué se eligió</li>
+    <li>Fotos del antes, durante y después</li>
+    <li>Facturas escaneadas (sin datos sensibles)</li>
+    <li>Acta de entrega-recepción firmada</li>
+  </ul>
+
+  <div class="callout">
+    <span class="callout-title">Bandera roja: si te dicen esto, sospecha</span>
+    Si un proveedor te ofrece "factura sin desglose" o "no necesita CFDI" o "te lo doy más barato sin contrato"<strong> — corre.</strong> El programa La Escuela Es Nuestra requiere TODO con factura electrónica CFDI 4.0 y contrato firmado. De lo contrario, la SEP rechaza la comprobación y el CEAP debe devolver el dinero.
+  </div>
+</section>
+
+<!-- ============== 15 FUENTES ============== -->
+<section class="section">
+  <div class="page-head"><span class="page-head-num">Capítulo 15</span><span class="page-head-section">Fuentes</span></div>
+  <span class="section-num">15 · Cierre</span>
+  <h2 class="section-h">Fuentes oficiales y contacto</h2>
+  <p class="section-lead">Esta guía consolidó información de fuentes oficiales del gobierno mexicano. Recomendamos siempre verificar los datos en los portales originales antes de tomar decisiones.</p>
+
+  <h3 class="sub">Portales y documentos oficiales</h3>
+  <ul class="check">
+    <li><strong>La Escuela Es Nuestra — Portal SEP:</strong> <a href="https://laescuelaesnuestra.sep.gob.mx/">laescuelaesnuestra.sep.gob.mx</a></li>
+    <li><strong>Tabla oficial de montos 2026:</strong> <a href="https://laescuelaesnuestra.sep.gob.mx/montos">laescuelaesnuestra.sep.gob.mx/montos</a></li>
+    <li><strong>Manual oficial del CEAP:</strong> <a href="https://laescuelaesnuestra.sep.gob.mx/ceap">laescuelaesnuestra.sep.gob.mx/ceap</a></li>
+    <li><strong>Reglas de Operación DOF 2025:</strong> <a href="https://sidof.segob.gob.mx/notas/docFuente/5749229">sidof.segob.gob.mx/notas/docFuente/5749229</a></li>
+    <li><strong>Programas para el Bienestar — LEEN:</strong> <a href="https://programasparaelbienestar.gob.mx/la-escuela-es-nuestra/">programasparaelbienestar.gob.mx</a></li>
+    <li><strong>Banco del Bienestar:</strong> <a href="https://www.gob.mx/bancodelbienestar">gob.mx/bancodelbienestar</a></li>
+  </ul>
+
+  <h3 class="sub">Noticias y cobertura Mundial Social 2026</h3>
+  <ul class="check">
+    <li><strong>CONADE: 4 mil canchas rumbo al Mundial 2026</strong> — Infobae <a href="https://www.infobae.com/mexico/deportes/2026/02/24/conade-anuncia-construccion-de-mas-de-4-mil-canchas-en-mexico-rumbo-al-mundial-2026/">[link]</a></li>
+    <li><strong>Plan 1,200 canchas Mundial 2026</strong> — PorEsto <a href="https://www.poresto.com/mexico/2026/3/5/gobierno-federal-construira-1200-canchas-rumbo-al-mundial-2026-el-plan-para-llevar-el-futbol-a-todo-mexico.html">[link]</a></li>
+    <li><strong>Avance real: solo 22% terminadas</strong> — UnoTV <a href="https://www.unotv.com/nacional/mundial-2026-canchas-mexico-avance-sedatu-265-construccion/">[link]</a></li>
+    <li><strong>Zacatecas: 100 canchas en 2026</strong> <a href="https://www.zacatecasalminuto.com/gobierno-de-zacatecas/anuncia-gobernador-david-monreal-construccion-y-rehabilitacion-de-100-canchas-deportivas-en-este-ano-del-progreso-2026/">[link]</a></li>
+    <li><strong>Fechas clave LEEN 2026</strong> — Expansión <a href="https://expansion.mx/finanzas-personales/2026/01/07/la-escuela-es-nuestra-2026">[link]</a></li>
+    <li><strong>Tlaxcala inaugura Mundial Social 2026</strong> — Nación Tlaxcala <a href="https://www.naciontlaxcala.com/2026/03/tlaxcala-inaugura-el-mundial-social.html">[link]</a></li>
+  </ul>
+
+  <div class="contact-block">
+    <h3>Sportmaster México</h3>
+    <p style="font-size:11pt;font-weight:500;margin-bottom:14pt;color:rgba(255,255,255,0.92)">Construcción de canchas de fútbol 7 con pasto sintético en escuelas del programa La Escuela Es Nuestra. +200 escuelas atendidas en México. Garantía 9 años.</p>
+    <div class="contact-item">📱 <strong>Cotización:</strong> <a href="https://wa.me/525539887615?text=%C2%A1Hola%20Sportmaster!%20Quiero%20cotizar%20una%20cancha.">Escríbenos por WhatsApp</a></div>
+    <div class="contact-item">🌐 <strong>Web:</strong> <a href="https://canchadefutbol7.mx/la-escuela-es-nuestra/">canchadefutbol7.mx/la-escuela-es-nuestra</a></div>
+    <div class="contact-item">📍 <strong>Oficinas:</strong> Ciudad de México · Cobertura nacional</div>
+    <p style="margin-top:14pt;font-size:10pt;font-weight:500;color:rgba(255,255,255,0.85)">📝 Mándanos por WhatsApp las medidas de tu patio o planos. <strong>Cotización en un par de horas</strong> lista para tu CEAP.</p>
+  </div>
+
+  <div style="margin-top:18pt;padding:14pt;background:#fafafa;border-radius:6pt;font-size:9pt;color:#737373;line-height:1.5;font-weight:500">
+    <strong style="color:#262626">Aviso legal:</strong> Esta guía es informativa y no reemplaza la asesoría oficial de la Secretaría de Educación Pública. Toda decisión de aplicación al programa La Escuela Es Nuestra debe consultarse en el portal oficial laescuelaesnuestra.sep.gob.mx. Sportmaster México es proveedor privado de canchas con pasto sintético y no representa al gobierno federal ni opera el programa. La información de fuentes consultadas refleja datos públicos al cierre editorial de mayo de 2026.<br><br>© 2026 Sportmaster México · Todos los derechos reservados · v1.0 · canchadefutbol7.mx
+  </div>
+</section>
+
+<!-- WATERMARK + FOOTER URL — fijos en cada página -->
+<div class="watermark">sportmaster.mx</div>
+<div class="page-foot-global">
+  <div class="page-foot-global-left">
+    <img class="page-foot-global-logo" src="../assets/sportmaster-m-xico-pasto-sin-f7aaa128.png" alt="Sportmaster">
+    <span>Guía La Escuela Es Nuestra 2026</span>
+  </div>
+  <a href="https://www.sportmaster.mx" class="page-foot-global-url">www.sportmaster.mx</a>
+</div>
+
+</body>
+</html>

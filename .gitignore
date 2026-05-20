@@ -13,3 +13,4 @@ image.png
 
 # Node (por si llega un build setup en el futuro)
 node_modules/
+.wrangler/

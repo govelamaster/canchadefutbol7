@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect x="10" y="10" width="100" height="100" rx="14" fill="#E3000B"/>
+  <rect x="10" y="10" width="100" height="100" rx="14" fill="none" stroke="#000" stroke-width="3"/>
+  <text x="60" y="78" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-weight="900" font-size="36" fill="#FFFFFF" letter-spacing="-1" stroke="#000" stroke-width="2.5" paint-order="stroke">LEGO</text>
+  <circle cx="40" cy="100" r="5" fill="#E3000B" stroke="#000" stroke-width="2"/>
+  <circle cx="60" cy="100" r="5" fill="#E3000B" stroke="#000" stroke-width="2"/>
+  <circle cx="80" cy="100" r="5" fill="#E3000B" stroke="#000" stroke-width="2"/>
+</svg>

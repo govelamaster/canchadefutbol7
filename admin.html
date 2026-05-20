@@ -1,0 +1,2269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#0b0f14" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Panel de Leads · Sportmaster F7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{
+  margin:0; padding:0;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  color:#0b0f14;
+  background:#f4f5f7;
+}
+
+/* ============ LOGIN ============ */
+.login-wrap{
+  min-height:100vh; min-height:100dvh;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px 16px;
+  background:linear-gradient(180deg,#f6f7f8 0%,#e8ebee 100%);
+}
+.login-card{
+  width:100%; max-width:380px;
+  background:#fff;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  padding:32px 28px;
+  box-shadow:0 24px 60px rgba(15,23,42,.08);
+  text-align:center;
+}
+.login-card .logo{
+  width:48px; height:48px;
+  background:linear-gradient(180deg,#0b0f14,#1f2937);
+  border-radius:12px;
+  display:grid; place-items:center;
+  margin:0 auto 16px;
+  color:#fff;
+}
+.login-card .logo svg{ width:24px; height:24px; }
+.login-card h1{ margin:0 0 6px; font-size:20px; font-weight:800; letter-spacing:-.02em; color:#0b0f14; }
+.login-card p{ margin:0 0 22px; color:#6b7280; font-size:13.5px; }
+.login-card input{
+  width:100%; height:48px;
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:10px;
+  padding:0 14px;
+  font-size:15px; font-family:inherit;
+  outline:none; transition:all .2s;
+  text-align:center; letter-spacing:.05em;
+}
+.login-card input:focus{ border-color:#3f922a; box-shadow:0 0 0 4px rgba(63,146,42,.12); }
+.login-card button{
+  width:100%; height:48px; margin-top:12px;
+  border:0; border-radius:10px;
+  background:linear-gradient(180deg,#0b0f14,#1f2937);
+  color:#fff; font-size:14.5px; font-weight:700;
+  font-family:inherit; cursor:pointer;
+  transition:transform .15s, box-shadow .2s;
+}
+.login-card button:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(15,23,42,.18); }
+.login-error{ margin-top:10px; color:#dc2626; font-size:13px; font-weight:600; display:none; }
+.login-error.show{ display:block; }
+
+/* ============ DASHBOARD ============ */
+.dash{ display:none; }
+.dash.show{ display:block; }
+
+.dash-header{
+  background:#0b0f14; color:#fff;
+  padding:14px 22px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; flex-wrap:wrap;
+}
+.dash-header .brand{ display:flex; align-items:center; gap:10px; }
+.dash-header .brand-mark{
+  width:32px; height:32px;
+  background:linear-gradient(180deg,#3f922a,#2d7720);
+  border-radius:8px;
+  display:grid; place-items:center;
+}
+.dash-header .brand-mark svg{ width:18px; height:18px; }
+.dash-header h1{
+  margin:0; font-size:15px; font-weight:700; letter-spacing:-.01em;
+}
+.dash-header h1 small{
+  display:block; font-size:11px; font-weight:500;
+  color:rgba(255,255,255,.55);
+  letter-spacing:.04em; text-transform:uppercase;
+}
+.dash-header .actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.dash-header button{
+  height:34px; padding:0 12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06); color:#fff;
+  border-radius:8px;
+  font-size:12.5px; font-weight:600; font-family:inherit;
+  cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:all .15s;
+}
+.dash-header button:hover{ background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.35); }
+.dash-header button svg{ width:13px; height:13px; }
+.dash-header button.logout{ background:transparent; border-color:rgba(255,255,255,.12); color:rgba(255,255,255,.7); }
+.dash-header .asistente-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:0 12px; height:34px;
+  border-radius:8px;
+  background:rgba(63,146,42,.22);
+  border:1px solid rgba(63,146,42,.4);
+  font-size:12.5px; font-weight:700; color:#a3e635;
+  cursor:pointer;
+  font-family:inherit;
+}
+.dash-header .asistente-chip:hover{ background:rgba(63,146,42,.32); }
+.dash-header .asistente-chip svg{ width:12px; height:12px; }
+.dash-header .asistente-chip .avatar{
+  width:20px; height:20px; border-radius:50%;
+  background:#3f922a; color:#fff;
+  display:grid; place-items:center;
+  font-size:10px; font-weight:800;
+}
+
+/* ============ TABS ============ */
+.tabs{
+  background:#fff;
+  border-bottom:1px solid rgba(15,23,42,.08);
+  padding:0 22px;
+  display:flex; gap:4px;
+  overflow-x:auto;
+  position:sticky; top:0; z-index:10;
+}
+.tab-btn{
+  padding:14px 16px;
+  background:none; border:0;
+  border-bottom:3px solid transparent;
+  font-family:inherit;
+  font-size:13.5px; font-weight:700;
+  color:#6b7280;
+  cursor:pointer;
+  white-space:nowrap;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:all .15s;
+}
+.tab-btn:hover{ color:#0b0f14; background:rgba(15,23,42,.02); }
+.tab-btn.active{
+  color:#0b0f14;
+  border-bottom-color:#3f922a;
+}
+.tab-btn .count{
+  font-size:11px; font-weight:700;
+  padding:2px 7px; border-radius:999px;
+  background:rgba(15,23,42,.08);
+  color:#0b0f14;
+}
+.tab-btn.active .count{ background:#3f922a; color:#fff; }
+
+.tab-content{ display:none; }
+.tab-content.show{ display:block; }
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+  gap:12px;
+  padding:20px 22px;
+  max-width:100%; margin:0 auto;
+}
+.stat-card{
+  background:#fff;
+  border:1px solid rgba(15,23,42,.06);
+  border-radius:14px;
+  padding:16px 18px;
+}
+.stat-card .label{
+  font-size:11px; font-weight:600; color:#6b7280;
+  text-transform:uppercase; letter-spacing:.06em;
+}
+.stat-card .num{
+  margin-top:4px; font-size:28px; font-weight:800;
+  letter-spacing:-.02em; color:#0b0f14;
+}
+.stat-card.green .num{ color:#3f922a; }
+.stat-card.yellow .num{ color:#d97706; }
+
+/* Section card (corte hoy / por fuente) */
+.section{ max-width:100%; margin:0 auto 14px; padding:0 22px; }
+.section-card{
+  background:#fff; border:1px solid rgba(15,23,42,.06);
+  border-radius:14px; overflow:hidden;
+}
+.section-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px;
+  border-bottom:1px solid rgba(15,23,42,.06);
+  background:#fafbfb;
+}
+.section-head h2{
+  margin:0; font-size:13px; font-weight:700;
+  letter-spacing:.02em; color:#0b0f14;
+  display:flex; align-items:center; gap:8px;
+}
+.section-head h2 .emoji{ font-size:16px; }
+.section-head .meta{ font-size:12px; color:#6b7280; font-weight:500; }
+.section-body{ padding:14px 18px 16px; }
+
+.src-list{ display:flex; flex-direction:column; gap:8px; }
+.src-row{
+  display:grid; grid-template-columns:1fr auto;
+  align-items:center; gap:10px;
+  padding:10px 12px;
+  background:#fafbfb;
+  border:1px solid rgba(15,23,42,.04);
+  border-radius:10px;
+}
+.src-row .name{
+  font-size:13px; font-weight:700; color:#0b0f14;
+  display:flex; align-items:center; gap:8px; overflow:hidden;
+}
+.src-row .name code{
+  background:rgba(63,146,42,.10); color:#3f922a;
+  padding:2px 7px; border-radius:6px;
+  font-size:11.5px; font-family:'SF Mono',Menlo,monospace; font-weight:600;
+}
+.src-row .bar-wrap{
+  flex:1; height:6px;
+  background:rgba(15,23,42,.06);
+  border-radius:999px; overflow:hidden; margin-left:6px;
+}
+.src-row .bar{
+  height:100%; background:linear-gradient(90deg,#3f922a,#65bd3f);
+  border-radius:999px; transition:width .4s ease;
+}
+.src-row .count{
+  font-size:14px; font-weight:800; color:#0b0f14; white-space:nowrap;
+}
+.src-row .count small{
+  font-weight:500; color:#6b7280; margin-left:4px; font-size:11px;
+}
+.src-empty{ color:#9ca3af; font-size:13px; text-align:center; padding:14px 4px; }
+
+.src-table{ width:100%; font-size:13px; border-collapse:separate; border-spacing:0; }
+.src-table thead th{
+  text-align:left; padding:8px 12px;
+  font-size:10.5px; font-weight:700; color:#9ca3af;
+  text-transform:uppercase; letter-spacing:.06em;
+  border-bottom:1px solid rgba(15,23,42,.06);
+}
+.src-table tbody td{ padding:10px 12px; border-bottom:1px solid rgba(15,23,42,.04); }
+.src-table tbody tr:last-child td{ border-bottom:0; }
+.src-table tbody tr:hover{ background:rgba(63,146,42,.02); }
+.src-table .name code{
+  background:rgba(63,146,42,.10); color:#3f922a;
+  padding:2px 7px; border-radius:6px;
+  font-size:11.5px; font-family:'SF Mono',Menlo,monospace; font-weight:600;
+}
+.src-table .pct{ color:#3f922a; font-weight:700; }
+
+/* Toolbar */
+.toolbar{
+  max-width:100%; margin:0 auto;
+  padding:0 22px 14px;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+.toolbar input.search,
+.toolbar select.vendedor-filter{
+  height:40px;
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:10px;
+  padding:0 14px;
+  font-size:14px; font-family:inherit;
+  outline:none; background:#fff;
+  transition:all .2s;
+}
+.toolbar input.search{ flex:1 1 200px; }
+.toolbar select.vendedor-filter{ min-width:160px; }
+.toolbar input.search:focus,
+.toolbar select.vendedor-filter:focus{ border-color:#3f922a; box-shadow:0 0 0 4px rgba(63,146,42,.10); }
+.toolbar .filters{ display:flex; gap:6px; flex-wrap:wrap; }
+.toolbar .filter-pill{
+  height:40px; padding:0 14px;
+  border:1px solid rgba(15,23,42,.12);
+  background:#fff; color:#6b7280;
+  border-radius:10px;
+  font-size:13px; font-weight:600; font-family:inherit;
+  cursor:pointer; transition:all .15s;
+}
+.toolbar .filter-pill.active{ background:#0b0f14; color:#fff; border-color:#0b0f14; }
+
+/* ============ TABLE ============ */
+.table-wrap{
+  max-width:100%; margin:0 auto 40px;
+  padding:0 22px;
+  overflow-x:auto;
+}
+.lead-table{
+  width:100%; min-width:1200px;
+  background:#fff;
+  border:1px solid rgba(15,23,42,.06);
+  border-radius:14px;
+  border-collapse:separate; border-spacing:0;
+  overflow:hidden;
+  font-size:13px;
+}
+.lead-table thead th{
+  background:#fafbfb;
+  text-align:left;
+  padding:10px 12px;
+  font-size:10.5px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.06em;
+  color:#6b7280;
+  border-bottom:1px solid rgba(15,23,42,.08);
+  white-space:nowrap;
+  position:sticky; top:0; z-index:5;
+}
+.lead-table tbody td{
+  padding:10px 12px;
+  border-bottom:1px solid rgba(15,23,42,.04);
+  vertical-align:top;
+}
+.lead-table tbody tr:last-child td{ border-bottom:0; }
+.lead-table tbody tr:hover{ background:rgba(63,146,42,.02); }
+.lead-table .nombre{ font-weight:700; color:#0b0f14; }
+.lead-table .small-meta{
+  font-size:11px; color:#9ca3af; margin-top:3px;
+  font-weight:500;
+}
+
+/* Inline editable selects */
+.cell-select, .cell-textarea, .cell-input{
+  width:100%;
+  border:1px solid transparent;
+  background:transparent;
+  font-family:inherit;
+  font-size:12.5px;
+  font-weight:600;
+  padding:4px 6px;
+  border-radius:6px;
+  color:#0b0f14;
+  cursor:pointer;
+  transition:all .15s;
+  outline:none;
+  -webkit-appearance:none; appearance:none;
+}
+.cell-select:hover, .cell-textarea:hover, .cell-input:hover{ border-color:rgba(15,23,42,.12); background:#fafbfb; }
+.cell-select:focus, .cell-textarea:focus, .cell-input:focus{ border-color:#3f922a; background:#fff; box-shadow:0 0 0 3px rgba(63,146,42,.10); }
+.cell-textarea{
+  resize:vertical; min-height:32px; max-height:160px;
+  cursor:text; font-size:12px; font-weight:500;
+  line-height:1.4; width:200px;
+}
+.cell-input.nombre-input{
+  cursor:text; font-weight:700; color:#0b0f14; min-width:160px;
+}
+.ciudad-cell{
+  font-size:12.5px; font-weight:600; color:#374151;
+  white-space:nowrap;
+}
+/* Próxima acción */
+.accion-wrap{
+  display:flex; flex-direction:column; gap:3px; min-width:170px;
+  padding:6px 8px; border-radius:8px;
+  background:#f9fafb; border:1px solid #e5e7eb;
+}
+.accion-input{ font-size:12px !important; font-weight:600; padding:3px 6px !important; }
+.accion-date{ font-size:11.5px !important; font-weight:600; color:#6b7280; padding:2px 6px !important; }
+.accion-wrap.accion-today{
+  background:#fef9c3; border-color:#fde047;
+  box-shadow:0 0 0 2px rgba(253,224,71,.25);
+}
+.accion-wrap.accion-overdue{
+  background:#fee2e2; border-color:#fca5a5;
+  box-shadow:0 0 0 2px rgba(239,68,68,.25);
+}
+.accion-wrap.accion-future{
+  background:#eff6ff; border-color:#bfdbfe;
+}
+.accion-badge{
+  align-self:flex-start;
+  display:inline-block;
+  font-size:9.5px; font-weight:800;
+  letter-spacing:.05em;
+  padding:3px 7px; border-radius:5px;
+  white-space:nowrap;
+}
+.accion-badge.bg-red{ background:#fef2f2; color:#b91c1c; border:1px solid #fca5a5; }
+.accion-badge.bg-yellow{ background:#fef3c7; color:#92400e; border:1px solid #fcd34d; }
+.accion-badge.bg-blue{ background:#dbeafe; color:#1e40af; border:1px solid #93c5fd; }
+.row-overdue td{ background:rgba(254,226,226,.35); }
+.row-overdue td:first-child{ border-left:3px solid #ef4444; }
+.row-espera td{ background:rgba(254,243,199,.45); }
+.row-espera td:first-child{ border-left:3px solid #f59e0b; }
+/* ÚLTIMO CONTACTO */
+.contacto-wrap{
+  display:flex; flex-direction:column; gap:4px;
+  min-width:160px; padding:6px 8px;
+  background:#f9fafb; border:1px solid #e5e7eb;
+  border-radius:8px; position:relative;
+}
+.contacto-heat{
+  position:absolute; top:-6px; right:-6px; font-size:14px;
+}
+.contacto-label{
+  font-size:11.5px; font-weight:700;
+}
+.contacto-label.cli{ color:#b45309; }
+.contacto-label.yo{ color:#1e40af; }
+.contacto-label.sin{ color:#9ca3af; font-style:italic; font-weight:500; }
+.contacto-alert{
+  font-size:10.5px; font-weight:800;
+  color:#fff; background:#ef4444;
+  padding:2px 8px; border-radius:999px;
+  text-align:center; letter-spacing:.02em;
+  animation:pulse 2s infinite;
+}
+.contacto-alert.silencio{
+  background:#7c3aed;
+}
+@keyframes pulse {
+  0%,100%{ opacity:1; }
+  50%{ opacity:.7; }
+}
+.contacto-btns{
+  display:flex; gap:4px; margin-top:2px;
+}
+.contacto-btn{
+  flex:1; padding:5px 4px; border-radius:6px;
+  border:1px solid #d1d5db; background:#fff;
+  font-size:10.5px; font-weight:700; cursor:pointer;
+  transition:all .12s; color:#374151;
+  white-space:nowrap;
+}
+.contacto-btn.yo-btn:hover{ background:#dbeafe; border-color:#3b82f6; color:#1e40af; }
+.contacto-btn.cli-btn:hover{ background:#fed7aa; border-color:#ea580c; color:#9a3412; }
+.contacto-btn.saving{ opacity:.5; pointer-events:none; }
+.razon-perdida-chip{
+  display:inline-block; margin-top:4px;
+  font-size:11px; font-weight:700; color:#991b1b;
+  background:#fee2e2; padding:2px 8px; border-radius:999px;
+}
+.razon-grid{
+  display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;
+}
+.razon-grid button{
+  padding:12px 14px; border:1.5px solid #e5e7eb; background:#fff;
+  border-radius:10px; font-weight:700; font-size:13px;
+  text-align:left; cursor:pointer; transition:all .15s;
+  color:#0b0f14;
+}
+.razon-grid button:hover{ border-color:#3f922a; background:#f0fdf4; }
+.razon-grid button.selected{
+  border-color:#ef4444; background:#fee2e2; color:#991b1b;
+}
+/* VENDOR TRAY — leads asignados hoy (estilo Apple Mail) */
+.vendor-tray-card{ background:#fff; }
+.vendor-tray{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  column-gap:36px;
+  row-gap:0;
+}
+.v-row{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:14px; padding:11px 2px;
+  border-bottom:1px solid #f3f4f6;
+  position:relative;
+  transition:padding-left .18s ease, background .18s ease;
+}
+.v-row:hover{ background:#fafafa; padding-left:8px; }
+.v-row .v-name{
+  font-size:14px; font-weight:600;
+  color:#0b0f14; letter-spacing:-.01em;
+  flex:1; min-width:0;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.v-row .v-count{
+  font-size:17px; font-weight:700;
+  color:#0b0f14;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:'tnum';
+  letter-spacing:-.02em;
+  flex-shrink:0;
+  min-width:24px; text-align:right;
+}
+/* Vendedor sin leads — muted */
+.v-row.idle .v-name{ color:#9ca3af; font-weight:500; }
+.v-row.idle .v-count{ color:#d1d5db; font-weight:500; }
+/* Top performer del día — solo número en verde marca */
+.v-row.top .v-count{ color:#3f922a; font-weight:800; }
+/* Sin asignar — sutil punto naranja */
+.v-row.unassigned .v-name::before{
+  content:''; display:inline-block;
+  width:6px; height:6px; border-radius:50%;
+  background:#f59e0b; margin-right:8px;
+  vertical-align:middle;
+}
+.v-row.unassigned .v-name{ color:#9a3412; font-weight:700; }
+.v-row.unassigned .v-count{ color:#9a3412; }
+/* Separador sutil entre activos e idle */
+.v-row.divider-after{ border-bottom:1px solid #e5e7eb; }
+@media (max-width: 700px){
+  .vendor-tray{ grid-template-columns:1fr; column-gap:0; }
+}
+/* ESPERANDO RESPUESTA */
+.espera-card{
+  background:linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border:2px solid #fca5a5;
+}
+.espera-count{
+  display:inline-block; margin-left:6px;
+  padding:2px 10px; border-radius:999px;
+  background:#dc2626; color:#fff;
+  font-size:13px; font-weight:800;
+  animation:pulse 2s infinite;
+}
+/* HOY TE TOCA */
+.hoy-card{
+  background:linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border:2px solid #fed7aa;
+}
+.hoy-count{
+  display:inline-block; margin-left:6px;
+  padding:2px 10px; border-radius:999px;
+  background:#ea580c; color:#fff;
+  font-size:13px; font-weight:800;
+}
+.hoy-vendor-bar{
+  display:flex; flex-wrap:wrap; gap:8px;
+  align-items:center;
+  margin-bottom:14px; padding-bottom:14px;
+  border-bottom:1px solid rgba(234,88,12,.15);
+}
+.hoy-vendor-label{
+  font-size:11px; font-weight:700; color:#9a3412;
+  letter-spacing:.04em; text-transform:uppercase;
+  margin-right:4px;
+}
+.hoy-vendor-chip{
+  font-size:12.5px; font-weight:600;
+  padding:5px 11px; border-radius:999px;
+  background:#fff; border:1px solid #fed7aa;
+  color:#9a3412;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.hoy-vendor-chip strong{
+  font-weight:800; color:#0b0f14;
+  font-variant-numeric:tabular-nums;
+  min-width:14px; text-align:center;
+}
+.hoy-vendor-chip.unassigned{
+  border-color:#fde047; background:#fefce8;
+}
+.hoy-vendor-chip.unassigned strong{ color:#a16207; }
+.hoy-list{ display:flex; flex-direction:column; gap:10px; }
+.hoy-item{
+  display:flex; align-items:center; gap:14px;
+  padding:12px 14px; background:#fff;
+  border:1px solid #fed7aa; border-radius:10px;
+  transition:all .15s;
+}
+.hoy-item:hover{ border-color:#ea580c; transform:translateX(2px); }
+.hoy-item.overdue{ border-color:#ef4444; background:#fef2f2; }
+.hoy-item.overdue .hoy-badge{ background:#ef4444; }
+.hoy-badge{
+  font-size:10.5px; font-weight:800; color:#fff;
+  background:#ea580c; padding:3px 10px; border-radius:999px;
+  text-transform:uppercase; letter-spacing:.04em;
+  white-space:nowrap; min-width:80px; text-align:center;
+}
+.hoy-info{ flex:1; min-width:0; }
+.hoy-name{ font-weight:800; color:#0b0f14; font-size:14px; }
+.hoy-meta{ font-size:12px; color:#6b7280; margin-top:2px; }
+.hoy-accion{
+  margin-top:4px; font-size:12.5px; color:#9a3412;
+  font-weight:600; font-style:italic;
+}
+.hoy-actions{ display:flex; gap:6px; flex-shrink:0; }
+.hoy-actions a, .hoy-actions button{
+  padding:6px 10px; border-radius:8px;
+  font-size:11.5px; font-weight:700; text-decoration:none;
+  border:1px solid #e5e7eb; background:#fff; color:#0b0f14;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
+}
+.hoy-actions a.wa{ background:#25d366; color:#fff; border-color:#25d366; }
+.hoy-actions a.wa:hover{ background:#1ea952; }
+.hoy-actions button:hover{ border-color:#3f922a; background:#f0fdf4; }
+@media (max-width: 700px){
+  .hoy-item{ flex-wrap:wrap; }
+  .hoy-info{ flex-basis:100%; order:2; margin-top:6px; }
+  .hoy-actions{ flex-basis:100%; order:3; margin-top:6px; }
+}
+.form-name-chip{
+  display:inline-block; margin-top:3px;
+  font-size:10.5px; font-weight:600; color:#9ca3af;
+  background:#f3f4f6; padding:2px 8px; border-radius:999px;
+  font-style:italic; letter-spacing:.01em;
+}
+.cell-saving{
+  display:inline-block; width:6px; height:6px;
+  border-radius:50%; background:#f59e0b;
+  margin-left:4px; animation:cellPulse 1s infinite;
+}
+.cell-saved{
+  display:inline-block; width:6px; height:6px;
+  border-radius:50%; background:#3f922a;
+  margin-left:4px;
+}
+@keyframes cellPulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* Status badges (colored by value) */
+.status-Sin\.atender,
+.cell-select[data-val="Sin atender"]{ color:#6b7280; }
+.cell-select[data-val="Contactado"]{ color:#2563eb; }
+.cell-select[data-val="Cotizado"]{ color:#7c3aed; }
+.cell-select[data-val="Negociación"]{ color:#d97706; }
+.cell-select[data-val="Ganado"]{ color:#16803d; font-weight:800; }
+.cell-select[data-val="Perdido"]{ color:#dc2626; }
+.cell-select[data-val="Particular"]{ color:#2563eb; }
+.cell-select[data-val="Escuela"]{ color:#7c3aed; }
+.cell-select[data-val="Licitación"]{ color:#d97706; }
+.cell-select[data-val="Curioso"]{ color:#9ca3af; }
+
+/* Status badge (estado form) */
+.badge{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 8px;
+  font-size:11px; font-weight:700;
+  border-radius:999px;
+  text-transform:uppercase; letter-spacing:.04em;
+  white-space:nowrap;
+}
+.badge.completo{ background:#dcfce7; color:#16803d; }
+.badge.parcial{ background:#fef3c7; color:#92400e; }
+.badge .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+/* WA button */
+.wa-btn{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 9px;
+  background:#25D366; color:#fff;
+  font-size:11px; font-weight:700;
+  border-radius:7px; text-decoration:none;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.wa-btn:hover{ background:#1ebe57; transform:translateY(-1px); }
+.wa-btn svg{ width:11px; height:11px; }
+
+.empty{ text-align:center; padding:60px 20px; color:#9ca3af; }
+.empty h3{ margin:0 0 6px; color:#6b7280; font-size:16px; }
+.empty p{ margin:0; font-size:13.5px; }
+.fecha-cell{ color:#6b7280; font-size:11.5px; white-space:nowrap; }
+.whats-cell{ font-family:'SF Mono',Menlo,monospace; font-size:11.5px; color:#0b0f14; }
+
+/* Comentarios cliente */
+.cliente-coment{
+  max-width:200px;
+  font-size:11.5px; color:#6b7280; line-height:1.35;
+  font-style:italic;
+}
+
+/* ============ VIP TABLE ============ */
+.vip-banner{
+  max-width:100%; margin:0 auto 14px; padding:0 22px;
+}
+.vip-banner-card{
+  background:linear-gradient(135deg, #1f2937 0%, #0b0f14 100%);
+  border-radius:14px;
+  padding:18px 22px;
+  color:#fff;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap;
+}
+.vip-banner-card .title{
+  display:flex; align-items:center; gap:10px;
+}
+.vip-banner-card .crown{
+  width:42px; height:42px;
+  background:linear-gradient(135deg,#fbbf24,#d97706);
+  border-radius:10px;
+  display:grid; place-items:center;
+  box-shadow:0 8px 20px rgba(217,119,6,.4);
+}
+.vip-banner-card .crown svg{ width:22px; height:22px; color:#fff; }
+.vip-banner-card h2{ margin:0 0 2px; font-size:18px; font-weight:800; letter-spacing:-.02em; }
+.vip-banner-card p{ margin:0; font-size:13px; color:rgba(255,255,255,.7); }
+.vip-banner-card .vip-stats{ display:flex; gap:24px; flex-wrap:wrap; }
+.vip-banner-card .vip-stat{ text-align:center; }
+.vip-banner-card .vip-stat .n{ font-size:22px; font-weight:800; letter-spacing:-.02em; }
+.vip-banner-card .vip-stat .l{ font-size:10.5px; text-transform:uppercase; color:rgba(255,255,255,.5); font-weight:700; letter-spacing:.06em; }
+
+/* ============ LEADERBOARD ============ */
+.lb-toolbar{
+  max-width:100%; margin:0 auto;
+  padding:20px 22px 14px;
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+.lb-toolbar h2{ margin:0; font-size:18px; font-weight:800; letter-spacing:-.02em; flex:1; }
+.lb-toolbar h2 .emoji{ margin-right:6px; }
+.lb-toolbar .filter-pill{
+  height:36px; padding:0 14px;
+  border:1px solid rgba(15,23,42,.12);
+  background:#fff; color:#6b7280;
+  border-radius:8px;
+  font-size:13px; font-weight:600; font-family:inherit;
+  cursor:pointer; transition:all .15s;
+}
+.lb-toolbar .filter-pill.active{ background:#0b0f14; color:#fff; border-color:#0b0f14; }
+
+.lb-wrap{
+  max-width:100%; margin:0 auto 40px;
+  padding:0 22px;
+}
+.lb-table{
+  width:100%;
+  background:#fff;
+  border:1px solid rgba(15,23,42,.06);
+  border-radius:14px;
+  border-collapse:separate; border-spacing:0;
+  overflow:hidden;
+}
+.lb-table thead th{
+  background:#fafbfb; text-align:left;
+  padding:14px 16px;
+  font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.06em;
+  color:#6b7280;
+  border-bottom:1px solid rgba(15,23,42,.08);
+}
+.lb-table tbody td{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(15,23,42,.04);
+  vertical-align:middle;
+}
+.lb-table tbody tr:last-child td{ border-bottom:0; }
+.lb-table tbody tr:hover{ background:rgba(63,146,42,.02); }
+.lb-table .rank{
+  font-size:14px; font-weight:800;
+  width:32px; height:32px; border-radius:50%;
+  display:grid; place-items:center;
+  background:rgba(15,23,42,.06);
+  color:#6b7280;
+}
+.lb-table tr:nth-child(1) .rank{ background:linear-gradient(135deg,#fbbf24,#d97706); color:#fff; }
+.lb-table tr:nth-child(2) .rank{ background:linear-gradient(135deg,#9ca3af,#6b7280); color:#fff; }
+.lb-table tr:nth-child(3) .rank{ background:linear-gradient(135deg,#cd7f32,#92400e); color:#fff; }
+.lb-table .vendedor-name{ font-weight:800; font-size:15px; color:#0b0f14; }
+.lb-table .big-num{ font-size:22px; font-weight:800; letter-spacing:-.02em; color:#0b0f14; }
+.lb-table .big-num.green{ color:#3f922a; }
+.lb-table .sub{ font-size:11px; color:#6b7280; margin-top:2px; }
+
+/* ============ MODAL ============ */
+.modal-overlay{
+  display:none;
+  position:fixed; inset:0;
+  background:rgba(11,15,20,.55);
+  backdrop-filter:blur(4px);
+  z-index:100;
+  align-items:center; justify-content:center;
+  padding:20px;
+}
+.modal-overlay.show{ display:flex; animation:cotFadeIn .2s ease; }
+@keyframes cotFadeIn{ from{opacity:0} to{opacity:1} }
+.modal{
+  background:#fff; border-radius:18px;
+  width:100%; max-width:480px; padding:24px;
+  box-shadow:0 30px 60px rgba(15,23,42,.3);
+}
+.modal h3{ margin:0 0 4px; font-size:18px; font-weight:800; letter-spacing:-.02em; }
+.modal p{ margin:0 0 18px; color:#6b7280; font-size:13.5px; line-height:1.5; }
+.modal label{
+  display:block; font-size:12px; font-weight:700; color:#0b0f14;
+  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;
+}
+.modal input, .modal select{
+  width:100%; height:46px;
+  border:1px solid rgba(15,23,42,.12); border-radius:10px;
+  padding:0 14px; font-size:14px; font-family:inherit;
+  outline:none; transition:all .2s; background:#fff;
+}
+.modal input:focus, .modal select:focus{ border-color:#3f922a; box-shadow:0 0 0 4px rgba(63,146,42,.12); }
+.modal .hint{ font-size:11.5px; color:#9ca3af; margin-top:6px; }
+.modal .output{
+  margin-top:16px; padding:14px;
+  background:#f6f7f8;
+  border:1px solid rgba(15,23,42,.06);
+  border-radius:10px;
+  font-family:'SF Mono',Menlo,monospace;
+  font-size:12.5px; color:#0b0f14;
+  word-break:break-all; user-select:all; line-height:1.4;
+}
+.modal .actions{ margin-top:18px; display:flex; gap:8px; justify-content:flex-end; }
+.modal .actions button{
+  height:40px; padding:0 16px;
+  border-radius:10px; border:1px solid transparent;
+  font-size:13.5px; font-weight:700; cursor:pointer;
+  font-family:inherit; transition:all .15s;
+}
+.modal .actions .secondary{ background:transparent; color:#6b7280; border-color:rgba(15,23,42,.12); }
+.modal .actions .primary{ background:#0b0f14; color:#fff; }
+.modal .actions .primary:hover{ background:#1f2937; transform:translateY(-1px); }
+.modal .preset-pills{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.modal .preset-pills button{
+  padding:4px 10px;
+  background:rgba(63,146,42,.08); color:#3f922a;
+  border:0; border-radius:999px;
+  font-size:11.5px; font-weight:700; cursor:pointer;
+  font-family:inherit;
+}
+.modal .preset-pills button:hover{ background:rgba(63,146,42,.18); }
+.copy-feedback{ font-size:12px; color:#3f922a; font-weight:700; margin-top:6px; opacity:0; transition:opacity .2s; }
+.copy-feedback.show{ opacity:1; }
+
+/* Asistente picker grid */
+.asistente-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-top:12px; }
+.asistente-grid button{
+  height:auto; padding:16px 12px;
+  background:#fafbfb; color:#0b0f14;
+  border:2px solid rgba(15,23,42,.08);
+  border-radius:12px;
+  font-size:14px; font-weight:700; font-family:inherit;
+  cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  transition:all .15s;
+}
+.asistente-grid button .av{
+  width:42px; height:42px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#3f922a,#2d7720);
+  color:#fff; display:grid; place-items:center;
+  font-size:16px; font-weight:800;
+}
+.asistente-grid button:hover{ border-color:#3f922a; background:#f0fdf4; transform:translateY(-2px); }
+
+@media (max-width:640px){
+  .dash-header{ padding:12px 14px; }
+  .stats{ padding:14px; }
+  .section{ padding:0 14px; }
+  .toolbar, .lb-toolbar, .vip-banner{ padding-left:14px; padding-right:14px; }
+  .table-wrap, .lb-wrap{ padding:0 14px 30px; }
+  .lead-table{ font-size:12px; }
+  .tabs{ padding:0 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-wrap" id="loginView">
+  <form class="login-card" id="loginForm">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11 V7 a5 5 0 0 1 10 0 v4"/>
+      </svg>
+    </div>
+    <h1>Panel de Leads</h1>
+    <p>Cotizador de canchas de fútbol 7</p>
+    <input type="password" id="pwd" placeholder="Contraseña" autocomplete="current-password" required />
+    <button type="submit">Entrar</button>
+    <div class="login-error" id="loginError">Contraseña incorrecta</div>
+  </form>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div class="dash" id="dashView">
+  <header class="dash-header">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/>
+        </svg>
+      </div>
+      <h1>Leads · Cotizador F7<small id="lastUpdate">Cargando…</small></h1>
+    </div>
+    <div class="actions">
+      <button class="asistente-chip" id="asistenteChip" title="Cambiar usuario">
+        <span class="avatar" id="asistenteAvatar">?</span>
+        <span id="asistenteName">Elegir usuario</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <button id="refreshBtn" title="Refrescar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refrescar</button>
+      <button id="urlBuilderBtn" title="Generar URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>URL</button>
+      <button id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
+      <button id="logoutBtn" class="logout">Salir</button>
+    </div>
+  </header>
+
+  <!-- ============ TABS ============ -->
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="leads">📋 Leads <span class="count" id="tabCountLeads">0</span></button>
+    <button class="tab-btn" data-tab="vip">👑 VIP <span class="count" id="tabCountVip">0</span></button>
+    <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
+  </nav>
+
+  <!-- ============ TAB: LEADS ============ -->
+  <div class="tab-content show" data-tab-content="leads">
+
+    <!-- ============ LEADS ASIGNADOS HOY POR VENDEDOR ============ -->
+    <div class="section">
+      <div class="section-card vendor-tray-card">
+        <div class="section-head">
+          <h2><span class="emoji">🆕</span> Leads asignados hoy por vendedor</h2>
+          <span class="meta" id="vendorTrayMeta">—</span>
+        </div>
+        <div class="section-body">
+          <div class="vendor-tray" id="vendorTray"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <!-- ============ ESPERANDO MI RESPUESTA ============ -->
+    <div class="section" id="esperandoSection" style="display:none;">
+      <div class="section-card espera-card">
+        <div class="section-head">
+          <h2><span class="emoji">🚨</span> Esperando tu respuesta <span class="espera-count" id="esperaCount">0</span></h2>
+          <span class="meta" id="esperaMeta">Clientes que escribieron y no les hemos contestado</span>
+        </div>
+        <div class="section-body" id="esperandoBody"></div>
+      </div>
+    </div>
+
+    <!-- ============ HOY TE TOCA ============ -->
+    <div class="section" id="hoyTeTocaSection" style="display:none;">
+      <div class="section-card hoy-card">
+        <div class="section-head">
+          <h2><span class="emoji">🌅</span> Hoy te toca <span class="hoy-count" id="hoyCount">0</span></h2>
+          <span class="meta" id="hoyMeta">Acciones pendientes y vencidas</span>
+        </div>
+        <div class="section-body" id="hoyTeTocaBody"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-card">
+        <div class="section-head">
+          <h2><span class="emoji">📅</span> Corte de hoy</h2>
+          <span class="meta" id="todayMeta">—</span>
+        </div>
+        <div class="section-body" id="todayBreakdown"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" class="search" id="searchInput" placeholder="🔍 Buscar nombre, ciudad, WhatsApp, notas…" />
+      <select class="vendedor-filter" id="vendedorFilter">
+        <option value="all">👥 Todos los vendedores</option>
+      </select>
+      <div class="filters">
+        <button class="filter-pill active" data-filter="all">Todos</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="lead-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Form</th>
+            <th>Nombre</th>
+            <th>Ciudad</th>
+            <th>WhatsApp</th>
+            <th>M² · Timeline</th>
+            <th>Vendedor</th>
+            <th>Tipo</th>
+            <th>Status proyecto</th>
+            <th>📅 Próxima acción</th>
+            <th>🕐 Último contacto</th>
+            <th>Coment. cliente</th>
+            <th>Notas internas</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody"></tbody>
+      </table>
+      <div class="empty" id="emptyState" style="display:none">
+        <h3>Sin leads</h3>
+        <p>Aparecerán aquí cuando lleguen.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: VIP ============ -->
+  <div class="tab-content" data-tab-content="vip">
+    <div class="vip-banner">
+      <div class="vip-banner-card">
+        <div class="title">
+          <div class="crown">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17 L5 8 L9 12 L12 4 L15 12 L19 8 L22 17 Z M3 19 L21 19 L21 21 L3 21 Z"/></svg>
+          </div>
+          <div>
+            <h2>Proyectos VIP</h2>
+            <p>Canchas grandes (≥ 3,000 m²) — tratamiento especial</p>
+          </div>
+        </div>
+        <div class="vip-stats">
+          <div class="vip-stat"><div class="n" id="vipCount">0</div><div class="l">Proyectos</div></div>
+          <div class="vip-stat"><div class="n" id="vipM2">0</div><div class="l">M² totales</div></div>
+          <div class="vip-stat"><div class="n" id="vipGanados">0</div><div class="l">Ganados</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="lead-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>WhatsApp</th>
+            <th>Ciudad</th>
+            <th>M²</th>
+            <th>Vendedor</th>
+            <th>Tipo</th>
+            <th>Status</th>
+            <th>📅 Próxima acción</th>
+            <th>🕐 Último contacto</th>
+            <th>Notas internas</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="vipBody"></tbody>
+      </table>
+      <div class="empty" id="vipEmpty" style="display:none">
+        <h3>Sin proyectos VIP</h3>
+        <p>Cuando llegue un lead con ≥3,000 m² aparecerá aquí automáticamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: LEADERBOARD ============ -->
+  <div class="tab-content" data-tab-content="leaderboard">
+    <div class="lb-toolbar">
+      <h2><span class="emoji">🏆</span> Performance por vendedor</h2>
+      <button class="filter-pill" data-period="month">Este mes</button>
+      <button class="filter-pill active" data-period="month-current">Mes corriente</button>
+      <button class="filter-pill" data-period="quarter">Trimestre</button>
+      <button class="filter-pill" data-period="all">Todo el tiempo</button>
+    </div>
+
+    <div class="lb-wrap">
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Vendedor</th>
+            <th style="text-align:right">Cierres</th>
+            <th style="text-align:right">M² ganados</th>
+            <th style="text-align:right">Tasa cierre</th>
+            <th style="text-align:right">Pipeline activo</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+      <div class="empty" id="lbEmpty" style="display:none">
+        <h3>Sin datos aún</h3>
+        <p>Cuando asignes leads a vendedores y marques cierres aparecerán aquí.</p>
+      </div>
+    </div>
+
+    <!-- ============ ANÁLISIS DE FUENTES (movido del dash diario) ============ -->
+    <div class="section" style="margin-top:30px; padding:0;">
+      <div class="section-card">
+        <div class="section-head">
+          <h2><span class="emoji">📊</span> Por fuente — últimos 30 días</h2>
+          <span class="meta" id="srcMeta">—</span>
+        </div>
+        <div class="section-body" id="srcBreakdown"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ MODAL: URL BUILDER ============ -->
+<div class="modal-overlay" id="urlModal">
+  <div class="modal">
+    <h3>🔗 Generar URL trackeada</h3>
+    <p>Escribe el nombre de la fuente (ej. <code>home</code>, <code>ads-meta</code>). Sabrás cuántos leads vinieron de ahí.</p>
+    <label>Nombre de la fuente</label>
+    <input type="text" id="srcInput" placeholder="ej. home" autocomplete="off" />
+    <div class="preset-pills">
+      <button data-preset="home">home</button>
+      <button data-preset="blog">blog</button>
+      <button data-preset="ads-meta">ads-meta</button>
+      <button data-preset="ads-google">ads-google</button>
+      <button data-preset="footer">footer</button>
+      <button data-preset="whatsapp-button">whatsapp-button</button>
+    </div>
+    <div class="output" id="urlOutput">https://canchadefutbol7.mx/cotizar?src=</div>
+    <div class="copy-feedback" id="copyFeedback">✓ Copiada al portapapeles</div>
+    <div class="actions">
+      <button class="secondary" id="urlCloseBtn">Cerrar</button>
+      <button class="primary" id="urlCopyBtn">📋 Copiar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: ASISTENTE PICKER ============ -->
+<div class="modal-overlay" id="asistenteModal">
+  <div class="modal">
+    <h3>👋 ¿Quién está usando el panel?</h3>
+    <p>Esto nos permite saber quién tocó cada lead (sin login extra). Elige tu nombre:</p>
+    <div class="asistente-grid" id="asistenteGrid"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: RAZÓN DE PÉRDIDA ============ -->
+<div class="modal-overlay" id="razonModal">
+  <div class="modal">
+    <h3>❌ ¿Por qué se perdió este lead?</h3>
+    <p id="razonModalLead" style="margin-bottom:14px; color:#6b7280; font-size:13px;"></p>
+    <p style="margin:0 0 10px; font-size:13.5px; font-weight:600;">Selecciona la razón principal — esto nos ayuda a aprender y vender mejor:</p>
+    <div class="razon-grid" id="razonGrid">
+      <button data-razon="Precio">💰 Precio</button>
+      <button data-razon="Timing">⏰ Timing (no era ahora)</button>
+      <button data-razon="Competencia">🥊 Eligió competencia</button>
+      <button data-razon="No contestó">📵 No contestó</button>
+      <button data-razon="Sin presupuesto">💸 Sin presupuesto real</button>
+      <button data-razon="No calificado">❓ No calificado / curioso</button>
+    </div>
+    <div style="margin-top:14px;">
+      <label style="font-size:12.5px; font-weight:600; color:#374151;">Otro motivo (opcional):</label>
+      <input type="text" id="razonOtro" placeholder="Escribe el motivo si no encaja arriba…"
+        style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #e5e7eb; border-radius:8px; font-size:13.5px; outline:none;"/>
+    </div>
+    <div class="actions" style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+      <button class="secondary" id="razonCancelBtn">Cancelar</button>
+      <button class="primary" id="razonSaveBtn">Guardar razón</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CONFIG
+========================================================= */
+const STORAGE_KEY  = 'sm_admin_pwd';
+const STORAGE_USER = 'sm_admin_user';
+const API_LEADS    = '/api/leads';
+const API_UPDATE   = '/api/lead-update';
+
+const VENDEDORES = [
+  'Jorge Dantes','Blanca López','Susana','Carolina','Paola Ramos',
+  'Quijano','Jorge Padilla','Estefanía','Maribel','Yolanda',
+  'Gaby','Gloria','Melissa'
+];
+const ASISTENTES = ['Olga','Maribel','Melissa','Lucila','Karla'];
+const TIPOS_CLIENTE = ['Particular','Escuela','Licitación','Curioso'];
+const STATUS_PROYECTO = ['Sin atender','Contactado','Cotizado','Negociación','Ganado','Perdido'];
+
+const PRECIO_M2_MXN = 1500; // para pipeline value estimado
+
+let allLeads = [];
+let currentFilter = 'all';
+let currentSearch = '';
+let currentVendedor = 'all';
+let currentTab = 'leads';
+let currentPeriod = 'month-current';
+
+/* =========================================================
+   AUTH + ASISTENTE
+========================================================= */
+const loginView   = document.getElementById('loginView');
+const dashView    = document.getElementById('dashView');
+const loginForm   = document.getElementById('loginForm');
+const pwdInput    = document.getElementById('pwd');
+const loginErr    = document.getElementById('loginError');
+const asistChip   = document.getElementById('asistenteChip');
+const asistAvatar = document.getElementById('asistenteAvatar');
+const asistName   = document.getElementById('asistenteName');
+const asistModal  = document.getElementById('asistenteModal');
+const asistGrid   = document.getElementById('asistenteGrid');
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Render asistente grid
+  asistGrid.innerHTML = ASISTENTES.map(n => `
+    <button data-user="${n}">
+      <span class="av">${n[0]}</span>
+      <span>${n}</span>
+    </button>
+  `).join('');
+  asistGrid.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      setAsistente(b.dataset.user);
+      asistModal.classList.remove('show');
+    });
+  });
+  asistChip.addEventListener('click', () => asistModal.classList.add('show'));
+
+  // Auto-login
+  const params = new URLSearchParams(location.search);
+  const urlPwd = params.get('p');
+  const urlUser = params.get('u');
+  const saved  = localStorage.getItem(STORAGE_KEY);
+  const pwd    = urlPwd || saved;
+  if (pwd) tryLogin(pwd, /*silent*/ true);
+
+  // Asistente persisted (URL > localStorage)
+  if (urlUser && ASISTENTES.includes(urlUser)) {
+    setAsistente(urlUser);
+  } else {
+    const savedUser = localStorage.getItem(STORAGE_USER);
+    if (savedUser && ASISTENTES.includes(savedUser)) setAsistente(savedUser);
+  }
+});
+
+function setAsistente(name){
+  localStorage.setItem(STORAGE_USER, name);
+  asistAvatar.textContent = name[0];
+  asistName.textContent = name;
+}
+function currentUser(){ return localStorage.getItem(STORAGE_USER) || 'anónimo'; }
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  tryLogin(pwdInput.value, false);
+});
+
+async function tryLogin(pwd, silent){
+  try {
+    const r = await fetch(`${API_LEADS}?p=${encodeURIComponent(pwd)}`);
+    if (!r.ok) {
+      if (!silent) { loginErr.classList.add('show'); localStorage.removeItem(STORAGE_KEY); }
+      return;
+    }
+    const data = await r.json();
+    localStorage.setItem(STORAGE_KEY, pwd);
+    enterDash(data);
+    // Si no hay asistente seleccionado, pídelo
+    if (!localStorage.getItem(STORAGE_USER)) {
+      setTimeout(() => asistModal.classList.add('show'), 300);
+    }
+  } catch (err) {
+    if (!silent) { loginErr.classList.add('show'); loginErr.textContent = 'Error: ' + err.message; }
+  }
+}
+
+function enterDash(data){
+  loginView.style.display = 'none';
+  dashView.classList.add('show');
+  allLeads = (data.leads || []).map(normalizeLead);
+  refreshAll();
+}
+
+function normalizeLead(l){
+  return {
+    ...l,
+    vendedor: l.vendedor || '',
+    tipo_cliente: l.tipo_cliente || '',
+    status_proyecto: l.status_proyecto || 'Sin atender',
+    notas_internas: l.notas_internas || '',
+    nombre_real: l.nombre_real || '',
+    proxima_accion: l.proxima_accion || '',
+    proxima_fecha: l.proxima_fecha || '',
+    razon_perdida: l.razon_perdida || '',
+    ultimo_contacto_quien: l.ultimo_contacto_quien || '',
+    ultimo_contacto_fecha: l.ultimo_contacto_fecha || '',
+    tocado_por: l.tocado_por || '',
+    tocado_fecha: l.tocado_fecha || ''
+  };
+}
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  if (pwd) await tryLogin(pwd, true);
+});
+
+/* =========================================================
+   REFRESH ALL VIEWS
+========================================================= */
+function refreshAll(){
+  updateLastSync();
+  populateVendedorFilter();
+  renderVendorTray();
+  renderStats();
+  renderTodayBreakdown();
+  renderSourceBreakdown();
+  renderEsperando();
+  renderHoyTeToca();
+  renderTable();
+  renderVip();
+  renderLeaderboard();
+  document.getElementById('tabCountLeads').textContent = allLeads.length;
+  document.getElementById('tabCountVip').textContent = vipLeads().length;
+}
+
+/* =========================================================
+   VENDOR TRAY — leads asignados HOY por vendedor
+========================================================= */
+function renderVendorTray(){
+  const tray = document.getElementById('vendorTray');
+  const meta = document.getElementById('vendorTrayMeta');
+  if (!tray) return;
+  const today = new Date().toISOString().slice(0,10);
+  const todayLeads = allLeads.filter(l => (l.fecha || '').slice(0,10) === today);
+  const counts = {};
+  VENDEDORES.forEach(v => counts[v] = 0);
+  let sinAsignar = 0;
+  todayLeads.forEach(l => {
+    const v = (l.vendedor || '').trim();
+    if (!v) { sinAsignar++; return; }
+    if (counts[v] !== undefined) counts[v]++;
+  });
+  const total = todayLeads.length;
+  meta.textContent = total === 0
+    ? 'Aún no hay leads hoy'
+    : `${total} lead${total === 1 ? '' : 's'} hoy · ${sinAsignar} sin asignar`;
+
+  // Active first (count desc), then idle alphabetical
+  const active = VENDEDORES.filter(v => counts[v] > 0).sort((a,b) => counts[b] - counts[a] || a.localeCompare(b,'es'));
+  const idle   = VENDEDORES.filter(v => counts[v] === 0).sort((a,b) => a.localeCompare(b,'es'));
+  const maxCount = active.length ? counts[active[0]] : 0;
+
+  const rows = [];
+  if (sinAsignar > 0) {
+    rows.push(`<div class="v-row unassigned"><span class="v-name">Sin asignar</span><span class="v-count">${sinAsignar}</span></div>`);
+  }
+  active.forEach((v, i) => {
+    const isTop = counts[v] === maxCount;
+    const lastActive = i === active.length - 1 && idle.length > 0;
+    rows.push(`<div class="v-row ${isTop ? 'top' : ''} ${lastActive ? 'divider-after' : ''}"><span class="v-name">${escapeHtml(v)}</span><span class="v-count">${counts[v]}</span></div>`);
+  });
+  idle.forEach(v => {
+    rows.push(`<div class="v-row idle"><span class="v-name">${escapeHtml(v)}</span><span class="v-count">—</span></div>`);
+  });
+
+  tray.innerHTML = rows.join('');
+}
+
+function updateLastSync(){
+  const now = new Date();
+  document.getElementById('lastUpdate').textContent =
+    'Actualizado ' + now.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+}
+
+/* =========================================================
+   VENDEDORES — smart ordering
+========================================================= */
+function vendedoresOrdered(){
+  const counts = Object.fromEntries(VENDEDORES.map(v => [v, 0]));
+  allLeads.forEach(l => {
+    if (l.vendedor && counts[l.vendedor] !== undefined) counts[l.vendedor]++;
+  });
+  return [...VENDEDORES].sort((a,b) => (counts[b] - counts[a]) || a.localeCompare(b,'es'));
+}
+
+function populateVendedorFilter(){
+  const sel = document.getElementById('vendedorFilter');
+  const current = sel.value;
+  sel.innerHTML = `<option value="all">👥 Todos los vendedores</option>
+    <option value="">⏳ Sin asignar</option>
+    ${vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('')}`;
+  sel.value = current || 'all';
+}
+document.getElementById('vendedorFilter').addEventListener('change', (e) => {
+  currentVendedor = e.target.value;
+  renderTable();
+});
+
+/* =========================================================
+   STATS + CORTE HOY + POR FUENTE
+========================================================= */
+function renderStats(){
+  const total = allLeads.length;
+  const completos = allLeads.filter(l => l.estado === 'completo').length;
+  const parciales = allLeads.filter(l => l.estado === 'parcial').length;
+  const today = new Date().toISOString().slice(0,10);
+  const hoy = allLeads.filter(l => (l.fecha || '').startsWith(today)).length;
+  const ganados = allLeads.filter(l => l.status_proyecto === 'Ganado').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="label">Total Leads</div><div class="num">${total}</div></div>
+    <div class="stat-card green"><div class="label">Ganados</div><div class="num">${ganados}</div></div>
+    <div class="stat-card yellow"><div class="label">Parciales</div><div class="num">${parciales}</div></div>
+    <div class="stat-card"><div class="label">Hoy</div><div class="num">${hoy}</div></div>
+  `;
+}
+
+function renderTodayBreakdown(){
+  const today = new Date().toISOString().slice(0,10);
+  const todayLeads = allLeads.filter(l => (l.fecha || '').startsWith(today));
+  const meta = document.getElementById('todayMeta');
+  const body = document.getElementById('todayBreakdown');
+  const fechaFmt = new Date().toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
+  meta.textContent = fechaFmt;
+  if (todayLeads.length === 0) {
+    body.innerHTML = `<div class="src-empty">Aún no hay leads hoy. Te avisamos en cuanto llegue el primero.</div>`;
+    return;
+  }
+  const completos = todayLeads.filter(l => l.estado === 'completo').length;
+  const parciales = todayLeads.filter(l => l.estado === 'parcial').length;
+  const bySource = {};
+  todayLeads.forEach(l => {
+    const f = l.fuente || 'directo';
+    if (!bySource[f]) bySource[f] = {total:0, completos:0};
+    bySource[f].total++;
+    if (l.estado === 'completo') bySource[f].completos++;
+  });
+  const sources = Object.entries(bySource).sort((a,b) => b[1].total - a[1].total);
+  const maxCount = sources[0][1].total;
+  body.innerHTML = `
+    <div style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:14px; font-size:13px;">
+      <div><strong style="color:#0b0f14; font-size:18px;">${todayLeads.length}</strong> <span style="color:#6b7280">total</span></div>
+      <div><strong style="color:#3f922a; font-size:18px;">${completos}</strong> <span style="color:#6b7280">completos</span></div>
+      <div><strong style="color:#d97706; font-size:18px;">${parciales}</strong> <span style="color:#6b7280">parciales</span></div>
+    </div>
+    <div class="src-list">
+      ${sources.map(([name, data]) => {
+        const pct = Math.round((data.total / maxCount) * 100);
+        return `<div class="src-row"><div class="name"><code>${escapeHtml(name)}</code><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div></div><div class="count">${data.total}<small>${data.completos > 0 ? ` · ${data.completos} comp.` : ''}</small></div></div>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderSourceBreakdown(){
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const cutoff = thirtyDaysAgo.toISOString().slice(0,10);
+  const recent = allLeads.filter(l => (l.fecha || '') >= cutoff);
+  const meta = document.getElementById('srcMeta');
+  const body = document.getElementById('srcBreakdown');
+  if (recent.length === 0) { meta.textContent = '0 leads'; body.innerHTML = `<div class="src-empty">No hay leads en los últimos 30 días.</div>`; return; }
+  meta.textContent = `${recent.length} leads`;
+  const bySource = {};
+  recent.forEach(l => {
+    const f = l.fuente || 'directo';
+    if (!bySource[f]) bySource[f] = {total:0, completos:0};
+    bySource[f].total++;
+    if (l.estado === 'completo') bySource[f].completos++;
+  });
+  const total = recent.length;
+  const sources = Object.entries(bySource).map(([name, d]) => ({
+    name, total:d.total, completos:d.completos,
+    pct:((d.total/total)*100).toFixed(1),
+    convRate: d.total > 0 ? Math.round((d.completos/d.total)*100) : 0
+  })).sort((a,b) => b.total - a.total);
+  body.innerHTML = `<table class="src-table">
+    <thead><tr><th>Fuente</th><th style="text-align:right">Leads</th><th style="text-align:right">Completos</th><th style="text-align:right">% total</th><th style="text-align:right">Conversión</th></tr></thead>
+    <tbody>${sources.map(s => `<tr><td class="name"><code>${escapeHtml(s.name)}</code></td><td style="text-align:right; font-weight:700;">${s.total}</td><td style="text-align:right; color:#3f922a; font-weight:700;">${s.completos}</td><td style="text-align:right" class="pct">${s.pct}%</td><td style="text-align:right; color:${s.convRate >= 50 ? '#3f922a' : s.convRate >= 25 ? '#d97706' : '#6b7280'}; font-weight:700;">${s.convRate}%</td></tr>`).join('')}</tbody>
+  </table>`;
+}
+
+/* =========================================================
+   MAIN LEADS TABLE
+========================================================= */
+document.querySelectorAll('.filter-pill[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Si clickeas el pill ya activo → reset a "Todos"
+    const wasActive = btn.classList.contains('active');
+    document.querySelectorAll('.filter-pill[data-filter]').forEach(b => b.classList.remove('active'));
+    if (wasActive && btn.dataset.filter !== 'all') {
+      // Reactivar el "Todos"
+      document.querySelector('.filter-pill[data-filter="all"]').classList.add('active');
+      currentFilter = 'all';
+    } else {
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+    }
+    renderTable();
+  });
+});
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  currentSearch = e.target.value.toLowerCase().trim();
+  renderTable();
+});
+
+/* =========================================================
+   ESPERANDO RESPUESTA — clientes que escribieron último
+========================================================= */
+function renderEsperando(){
+  const section = document.getElementById('esperandoSection');
+  const body    = document.getElementById('esperandoBody');
+  const countEl = document.getElementById('esperaCount');
+  const metaEl  = document.getElementById('esperaMeta');
+  if (!body) return;
+  // Ordenar: más viejo arriba (más urgente)
+  const items = allLeads.filter(esperaRespuesta).sort((a,b) =>
+    (a.ultimo_contacto_fecha || '').localeCompare(b.ultimo_contacto_fecha || '')
+  );
+  if (items.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  countEl.textContent = items.length;
+  // Calcula cuántos llevan +2h sin respuesta (urgentes)
+  const urgentes = items.filter(l => {
+    const hrs = (Date.now() - new Date(l.ultimo_contacto_fecha).getTime()) / 3600000;
+    return hrs >= 2;
+  }).length;
+  metaEl.textContent = urgentes > 0
+    ? `⚠️ ${urgentes} llevan +2h esperando respuesta`
+    : `Todos respondidos en <2h, sigue así`;
+  body.innerHTML = `<div class="hoy-list">${items.map(l => renderEsperaItem(l)).join('')}</div>`;
+  body.querySelectorAll('.hoy-done').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = parseInt(btn.dataset.id, 10);
+      const lead = allLeads.find(x => x.id === id);
+      if (!lead) return;
+      const now = new Date().toISOString();
+      lead.ultimo_contacto_quien = 'yo';
+      lead.ultimo_contacto_fecha = now;
+      await saveField(id, 'ultimo_contacto_quien', 'yo', btn);
+      await saveField(id, 'ultimo_contacto_fecha', now, btn);
+      renderTable(); renderVip(); renderHoyTeToca(); renderEsperando();
+    });
+  });
+}
+function renderEsperaItem(l){
+  const ago = tiempoDesde(l.ultimo_contacto_fecha);
+  const hrs = (Date.now() - new Date(l.ultimo_contacto_fecha).getTime()) / 3600000;
+  const urgente = hrs >= 2;
+  const display = (l.nombre_real || l.nombre || 'Sin nombre').trim();
+  const waNum = (l.whatsapp || '').replace(/\D/g,'');
+  const waLink = waNum
+    ? `https://wa.me/52${waNum.startsWith('52') ? waNum.slice(2) : waNum}?text=${encodeURIComponent(buildReplyMsg(l))}`
+    : '';
+  return `
+    <div class="hoy-item ${urgente ? 'overdue' : ''}">
+      <span class="hoy-badge">${urgente ? `🚨 ${ago}` : `📥 ${ago}`}</span>
+      <div class="hoy-info">
+        <div class="hoy-name">${escapeHtml(display)} <span style="color:#9ca3af; font-weight:600; font-size:12px;">· ${escapeHtml(l.ciudad || '—')} · ${escapeHtml(l.m2 || '?')}m²</span></div>
+        <div class="hoy-meta">${escapeHtml(l.vendedor || 'Sin vendedor')} · ${escapeHtml(l.status_proyecto)}</div>
+        <div class="hoy-accion">📥 Cliente escribió hace ${ago} — esperando tu respuesta</div>
+      </div>
+      <div class="hoy-actions">
+        ${waLink ? `<a class="wa" target="_blank" href="${waLink}">Responder</a>` : ''}
+        <button class="hoy-done" data-id="${l.id}">✓ Ya contesté</button>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   HOY TE TOCA — alertas de acciones pendientes y vencidas
+========================================================= */
+function renderHoyTeToca(){
+  const section = document.getElementById('hoyTeTocaSection');
+  const body    = document.getElementById('hoyTeTocaBody');
+  const countEl = document.getElementById('hoyCount');
+  const metaEl  = document.getElementById('hoyMeta');
+  if (!body) return;
+
+  const overdueLeads = allLeads.filter(isOverdue);
+  const todayLeads   = allLeads.filter(isDueToday);
+  const items = [...overdueLeads, ...todayLeads];
+
+  if (items.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = '';
+  countEl.textContent = items.length;
+  metaEl.textContent = `${overdueLeads.length} vencidas · ${todayLeads.length} para hoy`;
+
+  // Vendor breakdown chip-bar
+  const byVendor = {};
+  items.forEach(l => {
+    const v = ((l.vendedor || '').trim()) || 'Sin asignar';
+    byVendor[v] = (byVendor[v] || 0) + 1;
+  });
+  const chipsHTML = Object.entries(byVendor)
+    .sort((a,b) => b[1] - a[1])
+    .map(([v, c]) => `<span class="hoy-vendor-chip ${v === 'Sin asignar' ? 'unassigned' : ''}">${escapeHtml(v)} <strong>${c}</strong></span>`)
+    .join('');
+  body.innerHTML = `
+    ${chipsHTML ? `<div class="hoy-vendor-bar"><span class="hoy-vendor-label">Por vendedor:</span>${chipsHTML}</div>` : ''}
+    <div class="hoy-list">${items.map(l => renderHoyItem(l)).join('')}</div>
+  `;
+  body.querySelectorAll('.hoy-done').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = parseInt(btn.dataset.id, 10);
+      const lead = allLeads.find(x => x.id === id);
+      if (!lead) return;
+      lead.proxima_accion = '';
+      lead.proxima_fecha = '';
+      await saveField(id, 'proxima_accion', '', btn);
+      await saveField(id, 'proxima_fecha', '', btn);
+      renderTable(); renderVip(); renderHoyTeToca();
+    });
+  });
+}
+function renderHoyItem(l){
+  const overdue = isOverdue(l);
+  const fecha = (l.proxima_fecha || '').slice(0,10);
+  const today = new Date().toISOString().slice(0,10);
+  let dayLabel;
+  if (overdue) {
+    const diff = Math.round((new Date(today) - new Date(fecha)) / 86400000);
+    dayLabel = `Vencida ${diff}d`;
+  } else {
+    dayLabel = 'HOY';
+  }
+  const display = (l.nombre_real || l.nombre || 'Sin nombre').trim();
+  const waNum = (l.whatsapp || '').replace(/\D/g,'');
+  const waLink = waNum
+    ? `https://wa.me/52${waNum.startsWith('52') ? waNum.slice(2) : waNum}?text=${encodeURIComponent(buildReplyMsg(l))}`
+    : '';
+  return `
+    <div class="hoy-item ${overdue ? 'overdue' : ''}">
+      <span class="hoy-badge">${dayLabel}</span>
+      <div class="hoy-info">
+        <div class="hoy-name">${escapeHtml(display)} <span style="color:#9ca3af; font-weight:600; font-size:12px;">· ${escapeHtml(l.ciudad || '—')} · ${escapeHtml(l.m2 || '?')}m²</span></div>
+        <div class="hoy-meta">${escapeHtml(l.vendedor || 'Sin vendedor')} · ${escapeHtml(l.status_proyecto)}</div>
+        <div class="hoy-accion">📌 ${escapeHtml(l.proxima_accion || 'Sin descripción')}</div>
+      </div>
+      <div class="hoy-actions">
+        ${waLink ? `<a class="wa" target="_blank" href="${waLink}">WhatsApp</a>` : ''}
+        <button class="hoy-done" data-id="${l.id}">✓ Hecho</button>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   RAZÓN DE PÉRDIDA — modal obligatorio al marcar Perdido
+========================================================= */
+function askRazonPerdida(lead){
+  return new Promise((resolve) => {
+    const modal     = document.getElementById('razonModal');
+    const grid      = document.getElementById('razonGrid');
+    const otroInput = document.getElementById('razonOtro');
+    const saveBtn   = document.getElementById('razonSaveBtn');
+    const cancelBtn = document.getElementById('razonCancelBtn');
+    const leadLabel = document.getElementById('razonModalLead');
+
+    const display = (lead && (lead.nombre_real || lead.nombre)) || 'Lead';
+    leadLabel.textContent = `${display} · ${(lead && lead.ciudad) || '—'} · ${(lead && lead.m2) || '?'}m²`;
+
+    // Reset
+    let selected = '';
+    otroInput.value = '';
+    grid.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+
+    function pick(razon){
+      selected = razon;
+      grid.querySelectorAll('button').forEach(b => b.classList.toggle('selected', b.dataset.razon === razon));
+      otroInput.value = '';
+    }
+    function cleanup(){
+      modal.classList.remove('show');
+      grid.querySelectorAll('button').forEach(b => b.replaceWith(b.cloneNode(true)));
+      saveBtn.onclick = null; cancelBtn.onclick = null;
+    }
+    grid.querySelectorAll('button').forEach(b => {
+      b.onclick = () => pick(b.dataset.razon);
+    });
+    otroInput.oninput = () => {
+      grid.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+      selected = '';
+    };
+    saveBtn.onclick = () => {
+      const razon = otroInput.value.trim() || selected;
+      if (!razon) { otroInput.focus(); return; }
+      cleanup(); resolve(razon);
+    };
+    cancelBtn.onclick = () => { cleanup(); resolve(null); };
+    modal.classList.add('show');
+  });
+}
+
+function renderTable(){
+  let rows = allLeads;
+  if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
+  if (currentVendedor !== 'all') rows = rows.filter(l => (l.vendedor || '') === currentVendedor);
+  if (currentSearch){
+    rows = rows.filter(l => {
+      const blob = `${l.nombre} ${l.nombre_real} ${l.whatsapp} ${l.ciudad} ${l.comentarios} ${l.notas_internas} ${l.vendedor} ${l.tipo_cliente}`.toLowerCase();
+      return blob.includes(currentSearch);
+    });
+  }
+  const body  = document.getElementById('leadsBody');
+  const empty = document.getElementById('emptyState');
+  if (rows.length === 0) {
+    body.innerHTML = '';
+    empty.style.display = 'block';
+    empty.querySelector('h3').textContent = allLeads.length === 0 ? 'Sin leads' : 'Sin resultados';
+    empty.querySelector('p').textContent  = allLeads.length === 0 ? 'Aparecerán aquí cuando lleguen.' : 'Prueba otro filtro o búsqueda.';
+    return;
+  }
+  empty.style.display = 'none';
+  body.innerHTML = rows.map(l => renderLeadRow(l, /*vip*/ false)).join('');
+  bindRowEvents(body);
+}
+
+function renderLeadRow(l, vip){
+  const fecha = formatFecha(l.fecha);
+  const waNum = (l.whatsapp || '').replace(/\D/g,'');
+  const waLink = waNum
+    ? `https://wa.me/52${waNum.startsWith('52') ? waNum.slice(2) : waNum}?text=${encodeURIComponent(buildReplyMsg(l))}`
+    : '#';
+  const badge = l.estado === 'completo'
+    ? '<span class="badge completo"><span class="dot"></span>Comp</span>'
+    : '<span class="badge parcial"><span class="dot"></span>Parc</span>';
+  const tocado = l.tocado_por
+    ? `<div class="small-meta">por ${escapeHtml(l.tocado_por)} · ${formatFecha(l.tocado_fecha)}</div>`
+    : '';
+
+  if (vip) {
+    const rowClassVip = isOverdue(l) ? 'row-overdue' : (esperaRespuesta(l) ? 'row-espera' : '');
+    return `<tr data-lead-id="${l.id}" class="${rowClassVip}">
+      <td class="fecha-cell">${escapeHtml(fecha)}</td>
+      <td>${nombreCell(l)}</td>
+      <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
+      <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
+      <td style="font-weight:800;">${escapeHtml(l.m2 || '—')}</td>
+      <td>${selectVendedor(l)}</td>
+      <td>${selectTipo(l)}</td>
+      <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
+      <td>${proximaAccionCell(l)}</td>
+      <td>${contactoCell(l)}</td>
+      <td>${notasTextarea(l)}${tocado}</td>
+      <td>${waNum ? waBtn(waLink) : ''}</td>
+    </tr>`;
+  }
+
+  const rowClass = isOverdue(l) ? 'row-overdue' : (esperaRespuesta(l) ? 'row-espera' : '');
+  return `<tr data-lead-id="${l.id}" class="${rowClass}">
+    <td class="fecha-cell">${escapeHtml(fecha)}</td>
+    <td>${badge}</td>
+    <td>${nombreCell(l)}</td>
+    <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
+    <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
+    <td><strong>${escapeHtml(l.m2 || '—')}</strong>${l.timeline ? ` <span class="small-meta">${escapeHtml(l.timeline)}</span>` : ''}</td>
+    <td>${selectVendedor(l)}</td>
+    <td>${selectTipo(l)}</td>
+    <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
+    <td>${proximaAccionCell(l)}</td>
+    <td>${contactoCell(l)}</td>
+    <td class="cliente-coment">${escapeHtml(l.comentarios || '—')}</td>
+    <td>${notasTextarea(l)}${tocado}</td>
+    <td>${waNum ? waBtn(waLink) : ''}</td>
+  </tr>`;
+}
+
+/* =========================================================
+   ÚLTIMO CONTACTO — quién escribió último + cuándo
+========================================================= */
+function esperaRespuesta(l){
+  return l.ultimo_contacto_quien === 'cliente' && !['Ganado','Perdido'].includes(l.status_proyecto);
+}
+function silencioCliente(l){
+  if (!l.ultimo_contacto_fecha || l.ultimo_contacto_quien !== 'yo') return false;
+  if (['Ganado','Perdido'].includes(l.status_proyecto)) return false;
+  const diffDays = (Date.now() - new Date(l.ultimo_contacto_fecha).getTime()) / 86400000;
+  return diffDays >= 3;
+}
+function tiempoDesde(iso){
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return '—';
+  const mins = Math.floor((Date.now() - d.getTime()) / 60000);
+  if (mins < 1) return 'ahora';
+  if (mins < 60) return `${mins}m`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 4) return `${weeks}sem`;
+  const months = Math.floor(days / 30);
+  return `${months}mes`;
+}
+function heatEmoji(l){
+  if (!l.ultimo_contacto_fecha) return '';
+  const hrs = (Date.now() - new Date(l.ultimo_contacto_fecha).getTime()) / 3600000;
+  if (hrs < 24) return '🔥';
+  if (hrs < 72) return '🌡️';
+  if (hrs < 168) return '';
+  return '❄️';
+}
+function contactoCell(l){
+  const quien = l.ultimo_contacto_quien;
+  const ago = l.ultimo_contacto_fecha ? tiempoDesde(l.ultimo_contacto_fecha) : '';
+  let label = '';
+  let badge = '';
+  if (quien === 'cliente') {
+    label = `<div class="contacto-label cli">📥 Cliente · hace ${ago}</div>`;
+    badge = `<div class="contacto-alert">🚨 Esperando tu respuesta</div>`;
+  } else if (quien === 'yo') {
+    const silencio = silencioCliente(l) ? '<div class="contacto-alert silencio">🥶 Sin contestar</div>' : '';
+    label = `<div class="contacto-label yo">📤 Tú · hace ${ago}</div>${silencio}`;
+  } else {
+    label = `<div class="contacto-label sin">Sin marcar</div>`;
+  }
+  const heat = heatEmoji(l);
+  return `
+    <div class="contacto-wrap">
+      ${heat ? `<div class="contacto-heat">${heat}</div>` : ''}
+      ${label}
+      ${badge}
+      <div class="contacto-btns">
+        <button class="contacto-btn yo-btn" data-action="yo">📤 Yo escribí</button>
+        <button class="contacto-btn cli-btn" data-action="cliente">📥 Me contestó</button>
+      </div>
+    </div>
+  `;
+}
+
+function isOverdue(l){
+  const fecha = (l.proxima_fecha || '').slice(0,10);
+  if (!fecha) return false;
+  if (['Ganado','Perdido'].includes(l.status_proyecto)) return false;
+  const today = new Date().toISOString().slice(0,10);
+  return fecha < today;
+}
+function isDueToday(l){
+  const fecha = (l.proxima_fecha || '').slice(0,10);
+  if (!fecha) return false;
+  if (['Ganado','Perdido'].includes(l.status_proyecto)) return false;
+  return fecha === new Date().toISOString().slice(0,10);
+}
+function diasFaltan(l){
+  const fecha = (l.proxima_fecha || '').slice(0,10);
+  if (!fecha) return null;
+  const today = new Date().toISOString().slice(0,10);
+  return Math.round((new Date(fecha) - new Date(today)) / 86400000);
+}
+function proximaAccionCell(l){
+  const overdue = isOverdue(l);
+  const today   = isDueToday(l);
+  const dias    = diasFaltan(l);
+  const isFuture = dias !== null && dias > 0 && !['Ganado','Perdido'].includes(l.status_proyecto);
+  let cls = '';
+  let badge = '';
+  if (overdue) {
+    cls = 'accion-overdue';
+    const d = Math.abs(dias);
+    badge = `<div class="accion-badge bg-red">⚠️ VENCIDA ${d}D</div>`;
+  } else if (today) {
+    cls = 'accion-today';
+    badge = `<div class="accion-badge bg-yellow">⏰ HOY</div>`;
+  } else if (isFuture) {
+    cls = 'accion-future';
+    let label;
+    if (dias === 1) label = 'MAÑANA';
+    else if (dias <= 6) label = `FALTAN ${dias}D`;
+    else if (dias <= 13) label = 'EN 1 SEM';
+    else if (dias <= 30) label = `EN ${Math.ceil(dias/7)} SEM`;
+    else label = '+1 MES';
+    badge = `<div class="accion-badge bg-blue">⏳ ${label}</div>`;
+  }
+  return `
+    <div class="accion-wrap ${cls}">
+      ${badge}
+      <input type="text" class="cell-input accion-input" data-field="proxima_accion" value="${escapeAttr(l.proxima_accion || '')}" placeholder="Ej: Llamar al cliente"/>
+      <input type="date" class="cell-input accion-date" data-field="proxima_fecha" value="${escapeAttr((l.proxima_fecha || '').slice(0,10))}"/>
+    </div>
+  `;
+}
+function razonPerdidaBadge(l){
+  if (l.status_proyecto !== 'Perdido' || !l.razon_perdida) return '';
+  return `<div class="razon-perdida-chip">❌ ${escapeHtml(l.razon_perdida)}</div>`;
+}
+
+function selectVendedor(l){
+  const options = ['<option value="">Sin asignar</option>']
+    .concat(vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}" ${l.vendedor === v ? 'selected' : ''}>${escapeHtml(v)}</option>`));
+  return `<select class="cell-select" data-field="vendedor" data-val="${escapeAttr(l.vendedor)}">${options.join('')}</select>`;
+}
+function selectTipo(l){
+  const options = ['<option value="">—</option>']
+    .concat(TIPOS_CLIENTE.map(t => `<option value="${t}" ${l.tipo_cliente === t ? 'selected' : ''}>${t}</option>`));
+  return `<select class="cell-select" data-field="tipo_cliente" data-val="${escapeAttr(l.tipo_cliente)}">${options.join('')}</select>`;
+}
+function selectStatus(l){
+  const options = STATUS_PROYECTO.map(s => `<option value="${s}" ${l.status_proyecto === s ? 'selected' : ''}>${s}</option>`);
+  return `<select class="cell-select" data-field="status_proyecto" data-val="${escapeAttr(l.status_proyecto)}">${options.join('')}</select>`;
+}
+function notasTextarea(l){
+  return `<textarea class="cell-textarea" data-field="notas_internas" placeholder="Notas internas…">${escapeHtml(l.notas_internas || '')}</textarea>`;
+}
+function nombreCell(l){
+  const formName = (l.nombre || '').trim();
+  const realName = (l.nombre_real || '').trim();
+  const displayValue = realName || formName;
+  const formChip = (realName && realName !== formName)
+    ? `<div class="form-name-chip" title="Nombre con el que se registró en el formulario">Form: ${escapeHtml(formName || '—')}</div>`
+    : '';
+  return `
+    <input type="text" class="cell-input nombre-input" data-field="nombre_real" value="${escapeAttr(displayValue)}" placeholder="${escapeAttr(formName || 'Nombre')}" />
+    ${formChip}
+  `;
+}
+function waBtn(href){
+  return `<a class="wa-btn" target="_blank" href="${href}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>Responder</a>`;
+}
+
+function bindRowEvents(container){
+  // Selects → onchange auto-save (con modal forzado si status=Perdido)
+  container.querySelectorAll('.cell-select').forEach(sel => {
+    sel.addEventListener('change', async (e) => {
+      const tr = e.target.closest('tr');
+      const id = parseInt(tr.dataset.leadId, 10);
+      const field = e.target.dataset.field;
+      const value = e.target.value;
+      e.target.dataset.val = value; // re-color
+
+      // Si el status nuevo es "Perdido" → forzar razón de pérdida
+      if (field === 'status_proyecto' && value === 'Perdido') {
+        const lead = allLeads.find(l => l.id === id);
+        const previousStatus = (lead && lead.status_proyecto) || 'Sin atender';
+        const razon = await askRazonPerdida(lead);
+        if (!razon) {
+          // Usuario canceló → revertir
+          e.target.value = previousStatus;
+          e.target.dataset.val = previousStatus;
+          return;
+        }
+        await saveField(id, 'razon_perdida', razon, e.target);
+        if (lead) lead.razon_perdida = razon;
+      }
+      await saveField(id, field, value, e.target);
+      // Si fue status, re-render para que aparezca/desaparezca el chip de razón
+      if (field === 'status_proyecto') {
+        const lead = allLeads.find(l => l.id === id);
+        if (lead) {
+          lead.status_proyecto = value;
+          renderTable();
+          renderVip();
+          renderHoyTeToca();
+        }
+      }
+    });
+  });
+  // Textareas → onblur auto-save (con debounce de 600ms)
+  container.querySelectorAll('.cell-textarea').forEach(ta => {
+    let timer;
+    ta.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const tr = ta.closest('tr');
+        const id = parseInt(tr.dataset.leadId, 10);
+        await saveField(id, 'notas_internas', ta.value, ta);
+      }, 800);
+    });
+    ta.addEventListener('blur', () => {
+      clearTimeout(timer);
+      const tr = ta.closest('tr');
+      const id = parseInt(tr.dataset.leadId, 10);
+      saveField(id, 'notas_internas', ta.value, ta);
+    });
+  });
+  // Inputs (nombre_real, proxima_accion, proxima_fecha) → onblur auto-save + Enter
+  container.querySelectorAll('.cell-input').forEach(inp => {
+    inp.addEventListener('blur', () => {
+      const tr = inp.closest('tr');
+      const id = parseInt(tr.dataset.leadId, 10);
+      const field = inp.dataset.field;
+      const value = inp.value.trim();
+      saveField(id, field, value, inp);
+      const lead = allLeads.find(l => l.id === id);
+      if (lead) lead[field] = value;
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+    });
+    // Date inputs → re-render al cambiar para refrescar overdue/today badges
+    if (inp.type === 'date') {
+      inp.addEventListener('change', () => {
+        const tr = inp.closest('tr');
+        const id = parseInt(tr.dataset.leadId, 10);
+        const lead = allLeads.find(l => l.id === id);
+        if (lead) {
+          lead.proxima_fecha = inp.value;
+          saveField(id, 'proxima_fecha', inp.value, inp);
+          renderTable();
+          renderVip();
+          renderHoyTeToca();
+        }
+      });
+    }
+  });
+  // Botones de contacto (📤 Yo escribí / 📥 Me contestó)
+  container.querySelectorAll('.contacto-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const tr = btn.closest('tr');
+      const id = parseInt(tr.dataset.leadId, 10);
+      const action = btn.dataset.action; // 'yo' o 'cliente'
+      const lead = allLeads.find(l => l.id === id);
+      if (!lead) return;
+      const now = new Date().toISOString();
+      btn.classList.add('saving');
+      lead.ultimo_contacto_quien = action;
+      lead.ultimo_contacto_fecha = now;
+      await saveField(id, 'ultimo_contacto_quien', action, btn);
+      await saveField(id, 'ultimo_contacto_fecha', now, btn);
+      btn.classList.remove('saving');
+      renderTable();
+      renderVip();
+      renderHoyTeToca();
+      renderEsperando();
+    });
+  });
+}
+
+async function saveField(id, field, value, el){
+  // Feedback visual
+  const dot = document.createElement('span');
+  dot.className = 'cell-saving';
+  el.parentNode.appendChild(dot);
+
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData();
+  fd.append('p', pwd);
+  fd.append('id', id);
+  fd.append('asistente', currentUser());
+  fd.append('field', field);
+  fd.append('value', value);
+  try {
+    const r = await fetch(API_UPDATE, {method:'POST', body: fd});
+    const data = await r.json();
+    if (!r.ok || !data.ok) throw new Error(data.error || 'Error');
+    // Update local
+    const lead = allLeads.find(l => l.id === id);
+    if (lead) {
+      lead[field] = value;
+      lead.tocado_por = data.tocado_por;
+      lead.tocado_fecha = data.tocado_fecha;
+    }
+    // Refresh affected views (stats, lb, vip) without losing focus
+    renderStats();
+    renderLeaderboard();
+    renderVip();
+    document.getElementById('tabCountVip').textContent = vipLeads().length;
+    populateVendedorFilter();
+    // Visual: switch to saved checkmark briefly
+    dot.className = 'cell-saved';
+    setTimeout(() => dot.remove(), 1500);
+  } catch (err) {
+    dot.remove();
+    alert('No se pudo guardar: ' + err.message);
+  }
+}
+
+/* =========================================================
+   VIP TAB
+========================================================= */
+function vipLeads(){
+  return allLeads.filter(l => parseInt(l.m2, 10) >= 3000);
+}
+function renderVip(){
+  const leads = vipLeads();
+  const body  = document.getElementById('vipBody');
+  const empty = document.getElementById('vipEmpty');
+  // Stats
+  const totalM2 = leads.reduce((s, l) => s + (parseInt(l.m2, 10) || 0), 0);
+  const ganados = leads.filter(l => l.status_proyecto === 'Ganado').length;
+  document.getElementById('vipCount').textContent = leads.length;
+  document.getElementById('vipM2').textContent = totalM2.toLocaleString('es-MX');
+  document.getElementById('vipGanados').textContent = ganados;
+  if (leads.length === 0) {
+    body.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  body.innerHTML = leads.map(l => renderLeadRow(l, /*vip*/ true)).join('');
+  bindRowEvents(body);
+}
+
+/* =========================================================
+   LEADERBOARD TAB
+========================================================= */
+document.querySelectorAll('.filter-pill[data-period]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill[data-period]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentPeriod = btn.dataset.period;
+    renderLeaderboard();
+  });
+});
+
+function periodFilter(leads){
+  if (currentPeriod === 'all') return leads;
+  const now = new Date();
+  let from;
+  if (currentPeriod === 'month-current') {
+    from = new Date(now.getFullYear(), now.getMonth(), 1);
+  } else if (currentPeriod === 'month') {
+    from = new Date(now); from.setDate(now.getDate() - 30);
+  } else if (currentPeriod === 'quarter') {
+    from = new Date(now); from.setDate(now.getDate() - 90);
+  }
+  const fromStr = from.toISOString().slice(0,10);
+  return leads.filter(l => (l.fecha || '') >= fromStr);
+}
+
+function renderLeaderboard(){
+  const filtered = periodFilter(allLeads);
+  const stats = {};
+  // Init all vendedores with 0s
+  VENDEDORES.forEach(v => stats[v] = {cierres:0, m2:0, asignados:0, pipeline:0});
+  filtered.forEach(l => {
+    const v = l.vendedor;
+    if (!v || !stats[v]) return;
+    stats[v].asignados++;
+    if (l.status_proyecto === 'Ganado') {
+      stats[v].cierres++;
+      stats[v].m2 += parseInt(l.m2, 10) || 0;
+    }
+    if (['Contactado','Cotizado','Negociación'].includes(l.status_proyecto)) {
+      stats[v].pipeline += (parseInt(l.m2, 10) || 0) * PRECIO_M2_MXN;
+    }
+  });
+  const rows = Object.entries(stats)
+    .map(([name, s]) => ({
+      name,
+      ...s,
+      tasaCierre: s.asignados > 0 ? Math.round((s.cierres / s.asignados) * 100) : 0
+    }))
+    .filter(r => r.asignados > 0 || r.cierres > 0)
+    .sort((a,b) => b.cierres - a.cierres || b.m2 - a.m2);
+  const body = document.getElementById('lbBody');
+  const empty = document.getElementById('lbEmpty');
+  if (rows.length === 0) {
+    body.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  body.innerHTML = rows.map((r, i) => `
+    <tr>
+      <td><div class="rank">${i+1}</div></td>
+      <td><div class="vendedor-name">${escapeHtml(r.name)}</div><div class="sub">${r.asignados} leads asignados</div></td>
+      <td style="text-align:right"><div class="big-num green">${r.cierres}</div></td>
+      <td style="text-align:right"><div class="big-num">${r.m2.toLocaleString('es-MX')}</div><div class="sub">m²</div></td>
+      <td style="text-align:right"><div class="big-num" style="color:${r.tasaCierre>=30?'#3f922a':r.tasaCierre>=15?'#d97706':'#6b7280'}">${r.tasaCierre}%</div></td>
+      <td style="text-align:right"><div class="big-num" style="font-size:16px">${formatMoney(r.pipeline)}</div></td>
+    </tr>
+  `).join('');
+}
+
+function formatMoney(n){
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return '$' + Math.round(n/1000) + 'k';
+  return '$' + n;
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+function activateTab(tab){
+  if (!tab) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('show'));
+  const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+  const content = document.querySelector(`[data-tab-content="${tab}"]`);
+  if (btn && content) {
+    btn.classList.add('active');
+    content.classList.add('show');
+    currentTab = tab;
+  }
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activateTab(btn.dataset.tab);
+    history.replaceState(null, '', '#' + btn.dataset.tab);
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+// On load, check hash
+window.addEventListener('load', () => {
+  const hash = location.hash.replace('#','');
+  if (['leads','vip','leaderboard'].includes(hash)) activateTab(hash);
+});
+
+/* =========================================================
+   HELPERS
+========================================================= */
+function formatFecha(iso){
+  if (!iso) return '—';
+  const d = new Date(iso.replace(' ', 'T') + 'Z');
+  if (isNaN(d)) return iso;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dDay = new Date(d); dDay.setHours(0,0,0,0);
+  const diff = (today - dDay) / 86400000;
+  const t = d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+  if (diff === 0) return `Hoy ${t}`;
+  if (diff === 1) return `Ayer ${t}`;
+  return d.toLocaleDateString('es-MX', {day:'2-digit', month:'short'}) + ` ${t}`;
+}
+function buildReplyMsg(l){
+  const displayName = (l.nombre_real || l.nombre || '').trim();
+  return `Hola ${displayName.split(' ')[0]}, soy de Sportmaster Canchas F7 👋 Recibí tu solicitud (${l.ciudad || ''}, ${l.m2 || '?'} m²). Te aterrizo el presupuesto ahora.`;
+}
+function escapeHtml(s){
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(s){
+  return escapeHtml(s).replace(/"/g,'&quot;');
+}
+
+/* =========================================================
+   EXPORT CSV
+========================================================= */
+document.getElementById('exportBtn').addEventListener('click', () => {
+  if (allLeads.length === 0) { alert('No hay leads que exportar.'); return; }
+  const headers = ['Fecha','Session','Estado form','Nombre (form)','Nombre real','WhatsApp','Ciudad','M²','Timeline','Coment. cliente','Fuente','Vendedor','Tipo cliente','Status proyecto','Razón pérdida','Próxima acción','Próxima fecha','Último contacto quién','Último contacto fecha','Notas internas','Tocado por','Tocado fecha'];
+  const rows = allLeads.map(l => [
+    l.fecha, l.session_id, l.estado, l.nombre, l.nombre_real, l.whatsapp, l.ciudad, l.m2, l.timeline, l.comentarios, l.fuente,
+    l.vendedor, l.tipo_cliente, l.status_proyecto, l.razon_perdida, l.proxima_accion, l.proxima_fecha, l.ultimo_contacto_quien, l.ultimo_contacto_fecha, l.notas_internas, l.tocado_por, l.tocado_fecha
+  ].map(csvEscape).join(','));
+  const csv = '﻿' + headers.join(',') + '\n' + rows.join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `leads-cotizador-${ts}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+function csvEscape(v){
+  if (v == null) return '';
+  const s = String(v);
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+/* =========================================================
+   URL BUILDER MODAL
+========================================================= */
+const urlModal       = document.getElementById('urlModal');
+const urlBuilderBtn  = document.getElementById('urlBuilderBtn');
+const urlCloseBtn    = document.getElementById('urlCloseBtn');
+const urlCopyBtn     = document.getElementById('urlCopyBtn');
+const srcInput       = document.getElementById('srcInput');
+const urlOutput      = document.getElementById('urlOutput');
+const copyFeedback   = document.getElementById('copyFeedback');
+const BASE_URL = 'https://canchadefutbol7.mx/cotizar';
+function rebuildUrl(){
+  const src = (srcInput.value || '').trim().toLowerCase().replace(/[^a-z0-9-_]/g,'-');
+  urlOutput.textContent = src ? `${BASE_URL}?src=${src}` : BASE_URL;
+}
+urlBuilderBtn.addEventListener('click', () => { urlModal.classList.add('show'); srcInput.value=''; rebuildUrl(); setTimeout(()=>srcInput.focus(), 100); });
+urlCloseBtn.addEventListener('click', () => urlModal.classList.remove('show'));
+urlModal.addEventListener('click', (e) => { if (e.target === urlModal) urlModal.classList.remove('show'); });
+asistModal.addEventListener('click', (e) => { if (e.target === asistModal && localStorage.getItem(STORAGE_USER)) asistModal.classList.remove('show'); });
+srcInput.addEventListener('input', rebuildUrl);
+document.querySelectorAll('.preset-pills button').forEach(btn => {
+  btn.addEventListener('click', () => { srcInput.value = btn.dataset.preset; rebuildUrl(); });
+});
+urlCopyBtn.addEventListener('click', async () => {
+  const url = urlOutput.textContent;
+  try { await navigator.clipboard.writeText(url); }
+  catch { const ta = document.createElement('textarea'); ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  copyFeedback.classList.add('show');
+  setTimeout(() => copyFeedback.classList.remove('show'), 2000);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (urlModal.classList.contains('show')) urlModal.classList.remove('show');
+    else if (asistModal.classList.contains('show') && localStorage.getItem(STORAGE_USER)) asistModal.classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>

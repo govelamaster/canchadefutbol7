@@ -1,6 +1,10 @@
 # Cloudflare Pages _redirects
 # Format: source destination [status]
 
+# pSEO URLs: CF Pages auto-sirve .html cuando pides la URL limpia.
+# No agregar reglas /pagina → /pagina.html con status 200 — causan loop con
+# el HTML auto-strip de CF Pages. Solo agregar reglas aquí si son 301 reales.
+
 # Old URLs from sportmaster.com.mx redirected to home
 /canchas/futbol-7/*       /                 301
 /canchas/futbol-7         /                 301
