@@ -1248,6 +1248,131 @@ section{padding:96px 24px;position:relative}
   </div>
 </section>
 
+
+<!-- ═══ BANNER GUIA PDF · VARIANTE A · mockup libro ═══ -->
+<section class="guia-pano-css reveal" aria-label="Descarga guia oficial La Escuela Es Nuestra 2026">
+  <div class="guia-pano-wrap">
+    <div class="guia-pano-img">
+      <img src="../assets/programatica/mockup-guia-leen-2026.webp"
+           alt="Portada Guia oficial La Escuela Es Nuestra 2026 - PDF descargable 24 paginas"
+           loading="lazy" decoding="async" width="200" height="266">
+    </div>
+    <div class="guia-pano-content">
+      <span class="guia-pano-eyebrow">Guia descargable · PDF gratis</span>
+      <h3 class="guia-pano-title">¿Primera vez aplicando a<br><strong>La Escuela Es Nuestra?</strong></h3>
+      <p class="guia-pano-meta">Esta guia te ahorra meses de prueba y error. Calendario LEEN, montos por nivel educativo, formato del CEAP y los <strong>8 errores tipicos</strong> que rechazan tu tramite.</p>
+      <div class="guia-pano-actions">
+        <a href="/la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026.pdf" class="guia-pano-cta" download>
+          <span>Descargar guia (PDF)</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        </a>
+        <span class="guia-pano-trust">24 pgs · Sin registro · 2 MB</span>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.guia-pano-css{
+  background: linear-gradient(180deg,#fafbf9 0%,#f1f7f2 100%);
+  border-top: 1px solid #e7ede5;
+  border-bottom: 1px solid #e7ede5;
+  padding: clamp(40px,5.5vw,72px) 24px;
+  overflow: hidden;
+}
+.guia-pano-wrap{
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: clamp(36px,5vw,72px);
+  align-items: center;
+}
+.guia-pano-img{
+  position: relative;
+}
+.guia-pano-img img{
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 22px 36px rgba(10,30,18,.18));
+  transform: rotate(-2deg);
+  transition: transform .35s ease;
+  border-radius: 4px;
+}
+.guia-pano-img img:hover{ transform: rotate(0deg) scale(1.04); }
+.guia-pano-content{ min-width: 0; }
+.guia-pano-eyebrow{
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #0a7a2e;
+  background: rgba(10,122,46,.1);
+  padding: 7px 13px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+.guia-pano-title{
+  margin: 0 0 12px;
+  font-size: clamp(22px,2.8vw,34px);
+  line-height: 1.12;
+  font-weight: 600;
+  color: #0d1f12;
+  letter-spacing: -.02em;
+}
+.guia-pano-title strong{ color: #0a7a2e; font-weight: 800; }
+.guia-pano-meta{
+  margin: 0 0 24px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #4a5759;
+  font-weight: 500;
+  max-width: 580px;
+}
+.guia-pano-meta strong{ color: #0a4a1c; font-weight: 700; }
+.guia-pano-actions{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.guia-pano-cta{
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #0a7a2e;
+  color: #fff !important;
+  padding: 15px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(10,122,46,.3);
+  transition: transform .2s ease,box-shadow .2s ease;
+}
+.guia-pano-cta:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(10,122,46,.42);
+}
+.guia-pano-trust{
+  font-size: 12.5px;
+  color: #5a6a5e;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+@media(max-width:780px){
+  .guia-pano-wrap{ grid-template-columns: 150px 1fr; gap: 24px; }
+}
+@media(max-width:520px){
+  .guia-pano-wrap{ grid-template-columns: 1fr; text-align: center; }
+  .guia-pano-img{ max-width: 160px; margin: 0 auto; }
+  .guia-pano-meta{ margin-left: auto; margin-right: auto; }
+  .guia-pano-actions{ justify-content: center; }
+  .guia-pano-cta{ width: 100%; justify-content: center; }
+}
+</style>
+
 <section id="preguntas-edomex" class="faq reveal">
   <div class="container">
     <div class="section-header-center">
@@ -1490,128 +1615,6 @@ section{padding:96px 24px;position:relative}
   </div>
 </section>
 
-
-<!-- ═══ BANNER PANORMICO GUA PDF (con mockup libro) ═══ -->
-<section class="guia-banner-pano reveal" aria-label="Descarga guía oficial LEEN 2026">
-  <div class="guia-pano-inner">
-    <div class="guia-pano-img">
-      <img src="../assets/programatica/mockup-guia-leen-2026.webp" alt="Guía oficial La Escuela Es Nuestra 2026 — PDF descargable 24 páginas" loading="lazy" decoding="async">
-    </div>
-    <div class="guia-pano-text">
-      <span class="guia-pano-eyebrow">Guía descargable</span>
-      <h3 class="guia-pano-title">Guía oficial <strong>La Escuela Es Nuestra 2026</strong></h3>
-      <p class="guia-pano-meta">24 páginas. Montos por nivel educativo, calendario LEEN, formato del CEAP y checklist anti-errores. <span>Gratis · Sin registro · 2 MB.</span></p>
-    </div>
-    <a href="/la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026.pdf" class="guia-pano-cta" download>
-      <span>Descargar PDF</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-    </a>
-  </div>
-</section>
-<style>
-.guia-banner-pano{
-  background: linear-gradient(180deg, #fafbf9 0%, #f1f7f2 100%);
-  border-top: 1px solid #e7ede5;
-  border-bottom: 1px solid #e7ede5;
-  padding: clamp(32px, 5vw, 56px) 24px;
-}
-.guia-pano-inner{
-  max-width: 1140px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 180px 1fr auto;
-  gap: clamp(28px, 4vw, 56px);
-  align-items: center;
-}
-.guia-pano-img{
-  position: relative;
-  align-self: center;
-}
-.guia-pano-img img{
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 14px 30px rgba(10,30,18,.18));
-  border-radius: 4px;
-  transform: rotate(-2deg);
-  transition: transform .3s ease;
-}
-.guia-pano-img img:hover{
-  transform: rotate(0deg) scale(1.02);
-}
-.guia-pano-text{
-  min-width: 0;
-}
-.guia-pano-eyebrow{
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: #0a7a2e;
-  background: rgba(10,122,46,.1);
-  padding: 6px 12px;
-  border-radius: 999px;
-  margin-bottom: 12px;
-}
-.guia-pano-title{
-  margin: 0 0 8px;
-  font-size: clamp(19px, 2.3vw, 26px);
-  line-height: 1.2;
-  font-weight: 600;
-  color: #0d1f12;
-  letter-spacing: -.015em;
-}
-.guia-pano-title strong{ color: #0a7a2e; font-weight: 700; }
-.guia-pano-meta{
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #4a5759;
-  font-weight: 500;
-  max-width: 560px;
-}
-.guia-pano-meta span{ color: #0a7a2e; font-weight: 700; }
-.guia-pano-cta{
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  background: #0a7a2e;
-  color: #fff !important;
-  padding: 14px 26px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 14.5px;
-  text-decoration: none;
-  box-shadow: 0 8px 22px rgba(10,122,46,.28);
-  transition: transform .2s ease, box-shadow .2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.guia-pano-cta:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(10,122,46,.38);
-}
-@media(max-width:780px){
-  .guia-pano-inner{
-    grid-template-columns: 130px 1fr;
-    grid-template-areas: 'img text' 'cta cta';
-    gap: 20px;
-  }
-  .guia-pano-img{ grid-area: img; }
-  .guia-pano-text{ grid-area: text; }
-  .guia-pano-cta{ grid-area: cta; justify-content: center; width: 100%; }
-}
-@media(max-width:480px){
-  .guia-pano-inner{
-    grid-template-columns: 1fr;
-    grid-template-areas: 'img' 'text' 'cta';
-    text-align: center;
-  }
-  .guia-pano-img{ max-width: 140px; margin: 0 auto; }
-  .guia-pano-meta{ margin-left: auto; margin-right: auto; }
-}
-</style>
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-col">
