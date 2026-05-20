@@ -3,24 +3,17 @@
 # ═══════════════════════════════════════════════════════════════════
 
 # ────────────────────────────────────────────────────────
-# GLOBAL · security + base
+# GLOBAL · security + HTML cache default
+# 5 min browser · 1h edge · 24h stale-while-revalidate
+# (Cache-Control aqui se aplica a HTML; assets lo overridean abajo)
 # ────────────────────────────────────────────────────────
 /*
+  Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-
-# ────────────────────────────────────────────────────────
-# HTML pages · short browser cache + long edge cache
-# 5 min browser · 1h edge · 24h stale-while-revalidate
-# ────────────────────────────────────────────────────────
-/*.html
-  Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400
-
-/
-  Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400
 
 # ────────────────────────────────────────────────────────
 # Static assets · 1 year + immutable
