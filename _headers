@@ -1,3 +1,31 @@
+# ═══════════════════════════════════════════════════════════════════
+# Cloudflare Pages headers · canchadefutbol7.mx
+# ═══════════════════════════════════════════════════════════════════
+
+# ────────────────────────────────────────────────────────
+# GLOBAL · security + base
+# ────────────────────────────────────────────────────────
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# ────────────────────────────────────────────────────────
+# HTML pages · short browser cache + long edge cache
+# 5 min browser · 1h edge · 24h stale-while-revalidate
+# ────────────────────────────────────────────────────────
+/*.html
+  Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400
+
+/
+  Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400
+
+# ────────────────────────────────────────────────────────
+# Static assets · 1 year + immutable
+# (files versioned by filename hash o por estado-slug)
+# ────────────────────────────────────────────────────────
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
@@ -18,3 +46,43 @@
 
 /*.woff2
   Cache-Control: public, max-age=31536000, immutable
+
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.ttf
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.ico
+  Cache-Control: public, max-age=86400
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# ────────────────────────────────────────────────────────
+# AEO / LLM crawler files · 1 day cache
+# ────────────────────────────────────────────────────────
+/llms.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+
+/llms-full.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+
+/robots.txt
+  Cache-Control: public, max-age=86400
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+  Content-Type: application/xml; charset=utf-8
+
+# ────────────────────────────────────────────────────────
+# PDFs · 1 day cache + download inline
+# ────────────────────────────────────────────────────────
+/*.pdf
+  Cache-Control: public, max-age=86400
+  Content-Disposition: inline
