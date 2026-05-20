@@ -13,3 +13,6 @@
 /canchas/futbol-rapido/*  /                 301
 /cuanto-cuesta-cancha-futbol-7  /           301
 /canchas/*                /                 301
+
+# PDF cache-bust: viejo -> nuevo (v2)
+/la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026.pdf  /la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026-v2.pdf  301
