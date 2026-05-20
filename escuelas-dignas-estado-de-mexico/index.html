@@ -1491,95 +1491,127 @@ section{padding:96px 24px;position:relative}
 </section>
 
 
-<!-- ═══ BANNER LIGERO GUA PDF LEEN ═══ -->
-<section class="guia-banner-light reveal" aria-label="Descarga guía oficial LEEN 2026">
-  <div class="guia-banner-inner">
-    <div class="guia-banner-icon" aria-hidden="true">
-      <svg width="38" height="46" viewBox="0 0 38 46" fill="none">
-        <rect x="1" y="1" width="36" height="44" rx="4" fill="#fff" stroke="#0a7a2e" stroke-width="1.5"/>
-        <path d="M8 14h22M8 21h22M8 28h14" stroke="#0a7a2e" stroke-width="1.5" stroke-linecap="round"/>
-        <rect x="22" y="32" width="12" height="10" rx="2" fill="#0a7a2e"/>
-        <text x="28" y="40" fill="#fff" font-size="7" font-weight="700" text-anchor="middle" font-family="system-ui">PDF</text>
-      </svg>
+<!-- ═══ BANNER PANORMICO GUA PDF (con mockup libro) ═══ -->
+<section class="guia-banner-pano reveal" aria-label="Descarga guía oficial LEEN 2026">
+  <div class="guia-pano-inner">
+    <div class="guia-pano-img">
+      <img src="../assets/programatica/mockup-guia-leen-2026.webp" alt="Guía oficial La Escuela Es Nuestra 2026 — PDF descargable 24 páginas" loading="lazy" decoding="async">
     </div>
-    <div class="guia-banner-text">
-      <p class="guia-banner-title">Guía oficial <strong>La Escuela Es Nuestra 2026</strong></p>
-      <p class="guia-banner-meta">24 páginas. Montos, calendario, formato CEAP y checklist anti-errores. <span>Gratis.</span></p>
+    <div class="guia-pano-text">
+      <span class="guia-pano-eyebrow">Guía descargable</span>
+      <h3 class="guia-pano-title">Guía oficial <strong>La Escuela Es Nuestra 2026</strong></h3>
+      <p class="guia-pano-meta">24 páginas. Montos por nivel educativo, calendario LEEN, formato del CEAP y checklist anti-errores. <span>Gratis · Sin registro · 2 MB.</span></p>
     </div>
-    <a href="/la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026.pdf" class="guia-banner-cta" download>
+    <a href="/la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026.pdf" class="guia-pano-cta" download>
       <span>Descargar PDF</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
     </a>
   </div>
 </section>
 <style>
-.guia-banner-light{
-  background: #fafbf9;
+.guia-banner-pano{
+  background: linear-gradient(180deg, #fafbf9 0%, #f1f7f2 100%);
   border-top: 1px solid #e7ede5;
   border-bottom: 1px solid #e7ede5;
-  padding: 26px 24px;
+  padding: clamp(32px, 5vw, 56px) 24px;
 }
-.guia-banner-inner{
-  max-width: 980px;
+.guia-pano-inner{
+  max-width: 1140px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  gap: clamp(28px, 4vw, 56px);
   align-items: center;
-  gap: 22px;
-  flex-wrap: wrap;
 }
-.guia-banner-icon{
-  flex-shrink: 0;
-  width: 50px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.guia-pano-img{
+  position: relative;
+  align-self: center;
 }
-.guia-banner-text{
-  flex: 1;
-  min-width: 220px;
+.guia-pano-img img{
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 14px 30px rgba(10,30,18,.18));
+  border-radius: 4px;
+  transform: rotate(-2deg);
+  transition: transform .3s ease;
 }
-.guia-banner-title{
-  margin: 0 0 4px;
-  font-size: 16px;
+.guia-pano-img img:hover{
+  transform: rotate(0deg) scale(1.02);
+}
+.guia-pano-text{
+  min-width: 0;
+}
+.guia-pano-eyebrow{
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #0a7a2e;
+  background: rgba(10,122,46,.1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+.guia-pano-title{
+  margin: 0 0 8px;
+  font-size: clamp(19px, 2.3vw, 26px);
+  line-height: 1.2;
   font-weight: 600;
   color: #0d1f12;
-  letter-spacing: -.01em;
+  letter-spacing: -.015em;
 }
-.guia-banner-title strong{ color: #0a7a2e; font-weight: 700; }
-.guia-banner-meta{
+.guia-pano-title strong{ color: #0a7a2e; font-weight: 700; }
+.guia-pano-meta{
   margin: 0;
-  font-size: 13.5px;
-  line-height: 1.45;
-  color: #5a6a5e;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a5759;
   font-weight: 500;
+  max-width: 560px;
 }
-.guia-banner-meta span{ color: #0a7a2e; font-weight: 700; }
-.guia-banner-cta{
+.guia-pano-meta span{ color: #0a7a2e; font-weight: 700; }
+.guia-pano-cta{
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   background: #0a7a2e;
   color: #fff !important;
-  padding: 12px 22px;
+  padding: 14px 26px;
   border-radius: 999px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 14.5px;
   text-decoration: none;
-  box-shadow: 0 6px 16px rgba(10,122,46,.22);
-  transition: transform .18s ease, box-shadow .18s ease;
+  box-shadow: 0 8px 22px rgba(10,122,46,.28);
+  transition: transform .2s ease, box-shadow .2s ease;
+  white-space: nowrap;
   flex-shrink: 0;
 }
-.guia-banner-cta:hover{
+.guia-pano-cta:hover{
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(10,122,46,.32);
+  box-shadow: 0 12px 28px rgba(10,122,46,.38);
 }
-@media(max-width:640px){
-  .guia-banner-cta{ width: 100%; justify-content: center; }
-  .guia-banner-text{ min-width: 0; }
+@media(max-width:780px){
+  .guia-pano-inner{
+    grid-template-columns: 130px 1fr;
+    grid-template-areas: 'img text' 'cta cta';
+    gap: 20px;
+  }
+  .guia-pano-img{ grid-area: img; }
+  .guia-pano-text{ grid-area: text; }
+  .guia-pano-cta{ grid-area: cta; justify-content: center; width: 100%; }
+}
+@media(max-width:480px){
+  .guia-pano-inner{
+    grid-template-columns: 1fr;
+    grid-template-areas: 'img' 'text' 'cta';
+    text-align: center;
+  }
+  .guia-pano-img{ max-width: 140px; margin: 0 auto; }
+  .guia-pano-meta{ margin-left: auto; margin-right: auto; }
 }
 </style>
-
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-col">
