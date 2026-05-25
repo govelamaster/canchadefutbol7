@@ -527,7 +527,7 @@
   .sticky.show{transform:translateY(0)}
   .sticky .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px}
   .sticky b{letter-spacing:-.02em}.sticky span{display:block;color:#65716a;font-size:13px;font-weight:700}
-  .reveal{opacity:0;transform:translateY(18px);transition:.65s cubic-bezier(.2,.8,.2,1)}
+  .reveal{opacity:1;transform:none;transition:.65s cubic-bezier(.2,.8,.2,1)}
   .reveal.visible{opacity:1;transform:none}
   @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.82);opacity:.62}}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
@@ -604,12 +604,10 @@
 <script>
 const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible');});},{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 const sticky=document.getElementById('stickyBar');const whatsappFloat=document.querySelector('.wa-float');const canonicalUrl=document.querySelector('link[rel="canonical"]')?.href||window.location.href.split('?')[0];
-function buildWhatsAppUrl(intent){const message=['Hola Sportmaster 👋','Vengo de su página:',canonicalUrl,`${intent} Me interesa lo siguiente:`].join('
-');return `https://api.whatsapp.com/send/?phone=525539887615&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;}
+function buildWhatsAppUrl(intent){const message=['Hola Sportmaster 👋','Vengo de su página:',canonicalUrl,`${intent} Me interesa lo siguiente:`].join('\n');return `https://api.whatsapp.com/send/?phone=525539887615&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;}
 document.querySelectorAll('[data-wa-intent]').forEach((link)=>{link.href=buildWhatsAppUrl(link.dataset.waIntent);});
 window.addEventListener('scroll',()=>{const showCtas=window.scrollY>650;sticky.classList.toggle('show',showCtas);whatsappFloat.classList.toggle('show',showCtas);});
-document.getElementById('quoteForm').addEventListener('submit',(event)=>{event.preventDefault();const name=document.getElementById('name').value.trim();const field=document.getElementById('field').value;const details=document.getElementById('details').value.trim();const text=['Hola Sportmaster 👋','Vengo de su página:',canonicalUrl,'Quiero cotizar una cancha de pasto sintético para una escuela o colegio. Me interesa lo siguiente:',`Nombre: ${name}`,`Tipo de cancha: ${field}`,`Medidas, ciudad y objetivo: ${details||'por definir'}`].join('
-');window.location.href=`https://api.whatsapp.com/send/?phone=525539887615&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;});
+document.getElementById('quoteForm').addEventListener('submit',(event)=>{event.preventDefault();const name=document.getElementById('name').value.trim();const field=document.getElementById('field').value;const details=document.getElementById('details').value.trim();const text=['Hola Sportmaster 👋','Vengo de su página:',canonicalUrl,'Quiero cotizar una cancha de pasto sintético para una escuela o colegio. Me interesa lo siguiente:',`Nombre: ${name}`,`Tipo de cancha: ${field}`,`Medidas, ciudad y objetivo: ${details||'por definir'}`].join('\n');window.location.href=`https://api.whatsapp.com/send/?phone=525539887615&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;});
 </script>
 </body>
 </html>
