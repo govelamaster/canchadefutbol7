@@ -280,8 +280,19 @@
   .check-list{display:grid;gap:10px;list-style:none;margin-top:22px}
   .check-list li{display:flex;gap:10px;align-items:flex-start;color:#465349;font-weight:800;font-size:14px}
   .mark{width:18px;height:18px;display:grid;place-items:center;flex:0 0 18px;margin-top:1px;border-radius:3px;background:var(--lime);color:#061006;font-size:12px;font-weight:900}
-  .kit-gallery{display:grid;grid-template-columns:1.06fr .86fr .86fr;gap:10px}
-  .kit-gallery figure{position:relative;overflow:hidden;min-height:390px;background:#cdd8cb}
+  .carousel-shell{position:relative}
+  .carousel-track{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .carousel-track::-webkit-scrollbar{display:none}
+  .kit-gallery figure{position:relative;overflow:hidden;min-height:390px;background:#cdd8cb;scroll-snap-align:start;flex:0 0 calc(33.333% - 8px)}
+  .kit-gallery figure:nth-child(1){flex-basis:38%}
   .kit-gallery img{width:100%;height:100%;object-fit:cover;filter:saturate(.92)}
   .kit-gallery figure::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.5))}
   .fixture,.post-visual{position:relative;background:#132018;min-height:390px;overflow:hidden}
@@ -306,16 +317,43 @@
   .split{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff}
   .night-panel{
     position:relative;
-    min-height:392px;
+    min-height:430px;
     padding:38px;
     display:flex;
     align-items:flex-end;
     overflow:hidden;
     color:#fff;
     background:#050b0f;
+    isolation:isolate;
   }
-  .night-panel::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.86)),url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat;filter:brightness(.78)}
-  .night-panel .inner{position:relative;z-index:1}
+  .night-panel::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.2) 42%,rgba(0,0,0,.72) 100%),
+      linear-gradient(90deg,rgba(3,8,11,.25),rgba(3,8,11,.02) 46%,rgba(3,8,11,.44)),
+      url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat;
+    filter:brightness(1.04) saturate(1.16) contrast(1.04);
+    transform:scale(1.015);
+    z-index:-3;
+  }
+  .night-panel::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse at 8% 13%,rgba(255,255,255,.98) 0 3%,rgba(188,229,255,.44) 9%,transparent 24%),
+      radial-gradient(ellipse at 57% 43%,rgba(255,255,255,.8) 0 2%,rgba(188,229,255,.28) 8%,transparent 19%),
+      radial-gradient(ellipse at 78% 78%,rgba(153,221,56,.44),rgba(153,221,56,.16) 21%,transparent 54%),
+      linear-gradient(100deg,transparent 8%,rgba(255,255,255,.2) 16%,transparent 30%),
+      linear-gradient(18deg,transparent 44%,rgba(153,221,56,.16) 56%,transparent 78%);
+    mix-blend-mode:screen;
+    opacity:.92;
+    z-index:-2;
+    pointer-events:none;
+  }
+  .night-panel .inner{position:relative;z-index:1;text-shadow:0 5px 26px rgba(0,0,0,.78)}
   .night-panel h2{font-size:34px}
   .night-panel p{margin-top:12px;color:rgba(255,255,255,.82);font-weight:800;max-width:360px}
   .config{padding:38px}
@@ -335,7 +373,7 @@
   .pole{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 6px rgba(153,221,56,.28),0 0 24px #fff}
   .p1{left:-18px;top:18%}.p2{left:-18px;bottom:18%}.p3{right:-18px;top:18%}.p4{right:-18px;bottom:18%}
   .config-list{list-style:none;display:grid;gap:10px;margin-top:20px}
-  .sport-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .sport-grid{margin-bottom:28px}
   .sport-card{
     position:relative;
     overflow:hidden;
@@ -347,6 +385,8 @@
     box-shadow:0 18px 54px rgba(4,10,8,.12);
     isolation:isolate;
     cursor:zoom-in;
+    scroll-snap-align:start;
+    flex:0 0 calc(25% - 12px);
   }
   .sport-card::before{
     content:"";
@@ -395,8 +435,8 @@
   .sport-card small{display:inline-flex;color:var(--lime);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:11px}
   .sport-card b{display:block;margin-top:120px;font-family:'Archivo';font-size:25px;line-height:1;text-transform:uppercase;letter-spacing:-.03em}
   .sport-card p{margin-top:10px;color:rgba(255,255,255,.72);font-size:13px;font-weight:800}
-  .ideal-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-  .ideal-card{background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(12,20,14,.05);overflow:hidden;position:relative;cursor:zoom-in}
+  .ideal-grid{margin-top:0}
+  .ideal-card{background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(12,20,14,.05);overflow:hidden;position:relative;cursor:zoom-in;scroll-snap-align:start;flex:0 0 calc(16.666% - 10px)}
   .ideal-card .thumb{height:116px;background:#111;position:relative;overflow:hidden}
   .ideal-card:nth-child(odd) .thumb{background:linear-gradient(180deg,rgba(5,10,12,.18),rgba(5,10,12,.8)),url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat}
   .ideal-card:nth-child(even) .thumb{background:linear-gradient(180deg,rgba(5,10,12,.12),rgba(5,10,12,.78)),url('assets/reflectores-led-futbol-poste-malla.webp') center/cover no-repeat}
@@ -512,6 +552,27 @@
     transition:.2s ease;
   }
   .lightbox-close:hover{background:var(--lime);color:#061006}
+  .lightbox-nav{
+    position:absolute;
+    top:50%;
+    z-index:5;
+    width:58px;
+    height:58px;
+    border:1px solid rgba(255,255,255,.24);
+    background:rgba(3,8,11,.72);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    transform:translateY(-50%);
+    transition:.2s ease;
+    backdrop-filter:blur(14px);
+    box-shadow:0 18px 48px rgba(0,0,0,.38);
+  }
+  .lightbox-nav:hover{background:var(--lime);color:#061006;transform:translateY(-50%) scale(1.04)}
+  .lightbox-nav svg{width:29px;height:29px}
+  .lightbox-prev{left:18px}
+  .lightbox-next{right:18px}
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
   .reveal.visible{opacity:1;transform:none}
   @keyframes heroDrift{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.1) translate3d(-18px,8px,0)}}
@@ -523,10 +584,12 @@
     .nav-links{display:none}
     .kit-grid,.split,.cta-band .wrap{grid-template-columns:1fr}
     .hero-orbit{display:none}
-    .hero-specs,.trustbar .wrap,.benefit-grid,.sport-grid{grid-template-columns:repeat(2,1fr)}
-    .ideal-grid,.faq-grid{grid-template-columns:repeat(3,1fr)}
-    .kit-gallery{grid-template-columns:1fr 1fr}
-    .fixture{grid-column:1/-1}
+    .hero-specs,.trustbar .wrap,.benefit-grid{grid-template-columns:repeat(2,1fr)}
+    .faq-grid{grid-template-columns:repeat(3,1fr)}
+    .kit-gallery figure{flex-basis:48%}
+    .kit-gallery figure:nth-child(1){flex-basis:48%}
+    .sport-card{flex-basis:46%}
+    .ideal-card{flex-basis:31%}
   }
   @media(max-width:640px){
     .wrap{padding:0 16px}
@@ -536,14 +599,22 @@
     .hero{min-height:720px;padding-top:104px}
     h1{font-size:47px}
     .hero p,.section-sub{font-size:16px}
-    .hero-specs,.trustbar .wrap,.benefit-grid,.ideal-grid,.faq-grid,.sport-grid{grid-template-columns:1fr}
+    .hero-specs,.trustbar .wrap,.benefit-grid,.faq-grid{grid-template-columns:1fr}
     .hero-actions .btn,.cta-band .btn{width:100%}
     section{padding:54px 0}
     .kit-card,.config,.night-panel{padding:26px}
-    .kit-gallery{grid-template-columns:1fr}
     .kit-gallery figure,.fixture,.post-visual{min-height:310px}
+    .kit-gallery figure,.kit-gallery figure:nth-child(1){flex-basis:84%}
+    .sport-card{flex-basis:82%;min-height:300px}
+    .ideal-card{flex-basis:72%}
     .ideal-card .thumb{height:150px}
     .footer .wrap{display:grid}
+    .lightbox{padding:14px}
+    .lightbox-panel{width:100%;height:82vh}
+    .lightbox-title{left:12px;right:12px;bottom:12px;max-width:none}
+    .lightbox-nav{width:46px;height:46px}
+    .lightbox-prev{left:8px}
+    .lightbox-next{right:8px}
   }
 </style>
 </head>
@@ -643,14 +714,16 @@
             <a class="btn btn-primary" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20el%20kit%20de%20alumbrado%20para%20futbol%207" target="_blank" rel="noopener">Quiero cotizar mi cancha</a>
           </div>
         </article>
-        <div class="kit-gallery" aria-label="Componentes del kit">
-          <figure class="fixture zoomable-photo" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Reflectores LED para cancha de futbol 7" aria-label="Reflectores LED reales para futbol 7">
-            <img src="assets/reflectores-led-futbol-poste-malla.webp" alt="Reflectores LED reales en poste para cancha de futbol 7 con malla perimetral" loading="lazy">
-          </figure>
-          <figure class="post-visual zoomable-photo" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Alumbrado LED instalado en cancha deportiva" aria-label="Poste, malla y alumbrado deportivo real">
-            <img src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" alt="Alumbrado LED real en cancha de futbol 7 nocturna con malla perimetral" loading="lazy">
-          </figure>
-          <figure class="zoomable-photo" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Cancha de futbol 7 iluminada con lamparas LED"><img src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" alt="Cancha de futbol 7 iluminada con lamparas LED y malla perimetral" loading="lazy"></figure>
+        <div class="carousel-shell">
+          <div class="kit-gallery carousel-track" aria-label="Componentes del kit">
+            <figure class="fixture zoomable-photo" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Reflectores LED para cancha de futbol 7" aria-label="Reflectores LED reales para futbol 7">
+              <img src="assets/reflectores-led-futbol-poste-malla.webp" alt="Reflectores LED reales en poste para cancha de futbol 7 con malla perimetral" loading="lazy">
+            </figure>
+            <figure class="post-visual zoomable-photo" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Alumbrado LED instalado en cancha deportiva" aria-label="Poste, malla y alumbrado deportivo real">
+              <img src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" alt="Alumbrado LED real en cancha de futbol 7 nocturna con malla perimetral" loading="lazy">
+            </figure>
+            <figure class="zoomable-photo" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Cancha de futbol 7 iluminada con lamparas LED"><img src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" alt="Cancha de futbol 7 iluminada con lamparas LED y malla perimetral" loading="lazy"></figure>
+          </div>
         </div>
       </div>
     </div>
@@ -695,39 +768,43 @@
         <h2>Alumbrado para <span>cada tipo de cancha.</span></h2>
         <p class="section-sub">Una cancha no se ilumina igual si es de renta nocturna, entrenamiento escolar, soccer competitivo o futbol rapido. Ajustamos potencia, altura, distribucion y angulo para que el juego se vea profesional.</p>
       </div>
-      <div class="sport-grid">
-        <article class="sport-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Futbol 7 / Canchas 53 x 33 m">
-          <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          <small>01 / Futbol 7</small>
-          <b>Canchas 53 x 33 m</b>
-          <p>Configuracion eficiente para renta, clubes y fraccionamientos con operacion nocturna.</p>
-        </article>
-        <article class="sport-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Soccer / Campos grandes">
-          <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          <small>02 / Soccer</small>
-          <b>Campos grandes</b>
-          <p>Mayor cobertura, altura y potencia para entrenamientos y partidos en campo completo.</p>
-        </article>
-        <article class="sport-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Futbol rapido / Juego intenso">
-          <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          <small>03 / Futbol rapido</small>
-          <b>Juego intenso</b>
-          <p>Luz uniforme para rebotes, bardas, porteria y velocidad de juego en espacios cerrados.</p>
-        </article>
-        <article class="sport-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Canchas multiusos / Todo tipo de cancha">
-          <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          <small>04 / Multiusos</small>
-          <b>Todo tipo de cancha</b>
-          <p>Soluciones para basquetbol, voleibol, tenis, padel, parques y complejos deportivos.</p>
-        </article>
+      <div class="carousel-shell">
+        <div class="sport-grid carousel-track">
+          <article class="sport-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Futbol 7 / Canchas 53 x 33 m">
+            <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <small>01 / Futbol 7</small>
+            <b>Canchas 53 x 33 m</b>
+            <p>Configuracion eficiente para renta, clubes y fraccionamientos con operacion nocturna.</p>
+          </article>
+          <article class="sport-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Soccer / Campos grandes">
+            <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <small>02 / Soccer</small>
+            <b>Campos grandes</b>
+            <p>Mayor cobertura, altura y potencia para entrenamientos y partidos en campo completo.</p>
+          </article>
+          <article class="sport-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Futbol rapido / Juego intenso">
+            <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <small>03 / Futbol rapido</small>
+            <b>Juego intenso</b>
+            <p>Luz uniforme para rebotes, bardas, porteria y velocidad de juego en espacios cerrados.</p>
+          </article>
+          <article class="sport-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Canchas multiusos / Todo tipo de cancha">
+            <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <small>04 / Multiusos</small>
+            <b>Todo tipo de cancha</b>
+            <p>Soluciones para basquetbol, voleibol, tenis, padel, parques y complejos deportivos.</p>
+          </article>
+        </div>
       </div>
-      <div class="ideal-grid">
-        <article class="ideal-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Clubes deportivos"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Clubes deportivos</b></article>
-        <article class="ideal-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Escuelas y universidades"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Escuelas y universidades</b></article>
-        <article class="ideal-card" data-zoom-src="assets/poste-con-luminaria-cancha-futbol.webp" data-zoom-title="Fraccionamientos / postes con luminaria"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Fraccionamientos</b></article>
-        <article class="ideal-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Hoteles y resorts"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Hoteles y resorts</b></article>
-        <article class="ideal-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Parques deportivos"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Parques deportivos</b></article>
-        <article class="ideal-card" data-zoom-src="assets/poste-con-luminaria-cancha-futbol.webp" data-zoom-title="Canchas de renta / postes con luminaria"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Canchas de renta</b></article>
+      <div class="carousel-shell">
+        <div class="ideal-grid carousel-track">
+          <article class="ideal-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Clubes deportivos"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Clubes deportivos</b></article>
+          <article class="ideal-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Escuelas y universidades"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Escuelas y universidades</b></article>
+          <article class="ideal-card" data-zoom-src="assets/poste-con-luminaria-cancha-futbol.webp" data-zoom-title="Fraccionamientos / postes con luminaria"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Fraccionamientos</b></article>
+          <article class="ideal-card" data-zoom-src="assets/reflectores-led-futbol-poste-malla.webp" data-zoom-title="Hoteles y resorts"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Hoteles y resorts</b></article>
+          <article class="ideal-card" data-zoom-src="assets/lamparas-led-cancha-futbol-7-nocturna.webp" data-zoom-title="Parques deportivos"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Parques deportivos</b></article>
+          <article class="ideal-card" data-zoom-src="assets/poste-con-luminaria-cancha-futbol.webp" data-zoom-title="Canchas de renta / postes con luminaria"><span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><div class="thumb"></div><b>Canchas de renta</b></article>
+        </div>
       </div>
     </div>
   </section>
@@ -814,6 +891,12 @@
 <div class="lightbox" id="photoLightbox" aria-modal="true" role="dialog" aria-label="Vista ampliada de imagen">
   <div class="lightbox-panel">
     <button class="lightbox-close" type="button" aria-label="Cerrar vista ampliada">×</button>
+    <button class="lightbox-nav lightbox-prev" type="button" aria-label="Imagen anterior">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="Imagen siguiente">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <img src="" alt="">
     <div class="lightbox-title"></div>
   </div>
@@ -846,14 +929,25 @@
   const lightboxImage = lightbox.querySelector('img');
   const lightboxTitle = lightbox.querySelector('.lightbox-title');
   const lightboxClose = lightbox.querySelector('.lightbox-close');
+  const lightboxPrev = lightbox.querySelector('.lightbox-prev');
+  const lightboxNext = lightbox.querySelector('.lightbox-next');
+  const zoomItems = Array.from(document.querySelectorAll('[data-zoom-src]'));
+  let currentZoomIndex = 0;
 
-  function openLightbox(src, title) {
-    lightboxImage.src = src;
-    lightboxImage.alt = title || 'Imagen ampliada de alumbrado deportivo';
-    lightboxTitle.textContent = title || 'Alumbrado deportivo Sportmaster';
+  function renderLightbox(index) {
+    currentZoomIndex = (index + zoomItems.length) % zoomItems.length;
+    const item = zoomItems[currentZoomIndex];
+    const title = item.dataset.zoomTitle || 'Alumbrado deportivo Sportmaster';
+    lightboxImage.src = item.dataset.zoomSrc;
+    lightboxImage.alt = title;
+    lightboxTitle.textContent = title;
+  }
+
+  function openLightbox(index) {
+    renderLightbox(index);
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
-    lightboxClose.focus();
+    lightboxNext.focus();
   }
 
   function closeLightbox() {
@@ -862,25 +956,38 @@
     lightboxImage.src = '';
   }
 
-  document.querySelectorAll('[data-zoom-src]').forEach((item) => {
+  function showPreviousImage() {
+    renderLightbox(currentZoomIndex - 1);
+  }
+
+  function showNextImage() {
+    renderLightbox(currentZoomIndex + 1);
+  }
+
+  zoomItems.forEach((item, index) => {
     item.setAttribute('tabindex', '0');
     item.setAttribute('role', 'button');
     item.setAttribute('aria-label', `Abrir imagen ampliada: ${item.dataset.zoomTitle || 'alumbrado deportivo'}`);
-    item.addEventListener('click', () => openLightbox(item.dataset.zoomSrc, item.dataset.zoomTitle));
+    item.addEventListener('click', () => openLightbox(index));
     item.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        openLightbox(item.dataset.zoomSrc, item.dataset.zoomTitle);
+        openLightbox(index);
       }
     });
   });
 
   lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', showPreviousImage);
+  lightboxNext.addEventListener('click', showNextImage);
   lightbox.addEventListener('click', (event) => {
     if (event.target === lightbox) closeLightbox();
   });
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    if (!lightbox.classList.contains('open')) return;
+    if (event.key === 'Escape') closeLightbox();
+    if (event.key === 'ArrowLeft') showPreviousImage();
+    if (event.key === 'ArrowRight') showNextImage();
   });
 </script>
 </body>
