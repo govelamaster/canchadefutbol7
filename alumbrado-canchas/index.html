@@ -177,21 +177,27 @@
       url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat;
     filter:saturate(.9) brightness(.72);
     transform:scale(1.04);
-    animation:heroDrift 18s ease-in-out infinite alternate;
+    animation:heroStadiumOn 1.85s cubic-bezier(.18,.9,.18,1) both,heroDrift 18s ease-in-out 1.85s infinite alternate;
   }
   .hero::after{
     content:"";
     position:absolute;
     inset:0;
     background:
+      radial-gradient(circle at 57% 44%, rgba(255,255,255,.98) 0 1.2%, rgba(195,226,255,.5) 2.6%, transparent 9%),
+      radial-gradient(ellipse at 59% 53%, rgba(210,235,255,.32), transparent 18%),
+      linear-gradient(108deg, transparent 26%, rgba(225,242,255,.26) 38%, rgba(225,242,255,.08) 48%, transparent 62%),
+      linear-gradient(0deg, rgba(125,210,46,.28), transparent 37%),
       radial-gradient(circle at 58% 22%, rgba(255,255,255,.65) 0 2px, transparent 3px),
       radial-gradient(circle at 72% 26%, rgba(255,255,255,.5) 0 2px, transparent 3px),
       radial-gradient(circle at 82% 44%, rgba(255,255,255,.55) 0 2px, transparent 3px),
       radial-gradient(circle at 62% 22%, rgba(174,222,255,.35), transparent 8%),
       radial-gradient(circle at 74% 27%, rgba(174,222,255,.26), transparent 8%),
       radial-gradient(circle at 84% 45%, rgba(174,222,255,.24), transparent 9%);
-    opacity:.9;
+    opacity:.92;
     pointer-events:none;
+    mix-blend-mode:screen;
+    animation:stadiumBeamOn 2.15s cubic-bezier(.18,.9,.18,1) both,stadiumBeamHold 5.8s ease-in-out 2.15s infinite;
   }
   .hero-content{position:relative;z-index:2;max-width:760px}
   .hero-content::after{
@@ -464,7 +470,30 @@
     padding:62px 0;
     border-bottom:none;
   }
-  .cta-band::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,8,11,.98),rgba(3,8,11,.7),rgba(3,8,11,.28)),url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat;filter:brightness(.72)}
+  .cta-band::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(90deg,rgba(3,8,11,.98),rgba(3,8,11,.7),rgba(3,8,11,.28)),
+      url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat;
+    filter:brightness(.58) saturate(.9);
+    animation:ctaFieldPower 6.2s ease-in-out infinite;
+  }
+  .cta-band::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(circle at 77% 44%,rgba(255,255,255,.92) 0 1.2%,rgba(200,229,255,.46) 3%,transparent 8%),
+      linear-gradient(105deg,transparent 50%,rgba(220,240,255,.2) 62%,rgba(220,240,255,.08) 71%,transparent 84%),
+      radial-gradient(ellipse at 80% 78%,rgba(153,221,56,.34),rgba(153,221,56,.14) 28%,transparent 58%),
+      linear-gradient(0deg,rgba(101,177,34,.24),transparent 42%);
+    mix-blend-mode:screen;
+    opacity:.18;
+    animation:ctaReflectorPulse 6.2s ease-in-out infinite;
+    pointer-events:none;
+  }
   .cta-band .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center}
   .cta-band p{color:rgba(255,255,255,.78);font-size:18px;font-weight:800;margin-top:12px;max-width:620px}
   .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -608,10 +637,49 @@
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
   .reveal.visible{opacity:1;transform:none}
   @keyframes heroDrift{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.1) translate3d(-18px,8px,0)}}
+  @keyframes heroStadiumOn{
+    0%{filter:saturate(.55) brightness(.23);transform:scale(1.04)}
+    28%{filter:saturate(.72) brightness(.34)}
+    36%{filter:saturate(1.15) brightness(1.38)}
+    43%{filter:saturate(.8) brightness(.48)}
+    55%{filter:saturate(1.05) brightness(1.08)}
+    100%{filter:saturate(.9) brightness(.72);transform:scale(1.04)}
+  }
+  @keyframes stadiumBeamOn{
+    0%,26%{opacity:0}
+    35%{opacity:1}
+    42%{opacity:.28}
+    56%{opacity:1}
+    100%{opacity:.92}
+  }
+  @keyframes stadiumBeamHold{
+    0%,100%{opacity:.72;filter:brightness(.92)}
+    50%{opacity:1;filter:brightness(1.15)}
+  }
+  @keyframes ctaFieldPower{
+    0%,18%{filter:brightness(.42) saturate(.76)}
+    25%{filter:brightness(1.06) saturate(1.1)}
+    31%{filter:brightness(.5) saturate(.82)}
+    40%,72%{filter:brightness(.9) saturate(1.05)}
+    82%,100%{filter:brightness(.5) saturate(.82)}
+  }
+  @keyframes ctaReflectorPulse{
+    0%,18%{opacity:.04}
+    25%{opacity:.9}
+    31%{opacity:.14}
+    40%,72%{opacity:.72}
+    82%,100%{opacity:.12}
+  }
   @keyframes slowSpin{to{transform:rotate(360deg)}}
   @keyframes counterSpin{to{transform:rotate(-360deg)}}
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @keyframes zoomIn{from{opacity:.2;transform:scale(.92)}to{opacity:1;transform:scale(1.03)}}
+  @media(prefers-reduced-motion:reduce){
+    .hero::before,.hero::after,.cta-band::before,.cta-band::after{animation:none}
+    .hero::before{filter:saturate(.9) brightness(.72)}
+    .cta-band::before{filter:brightness(.72) saturate(.96)}
+    .cta-band::after{opacity:.45}
+  }
   @media(max-width:980px){
     .nav-links{display:none}
     .kit-grid,.split,.cta-band .wrap{grid-template-columns:1fr}
