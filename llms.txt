@@ -20,6 +20,10 @@
 - [Construcción de cancha de futbol 5](https://canchadefutbol7.mx/construccion-cancha-futbol-5/) — Landing por tipo de cancha. Medidas: Cancha compacta desde 40 x 20 m, adaptable al espacio disponible y al uso esperado.
 - [Construcción de cancha de futbol rápido](https://canchadefutbol7.mx/construccion-cancha-futbol-rapido/) — Landing por tipo de cancha. Medidas: Medida de referencia 53 x 33 m. Puede incluir redondel de madera, postes, redes, porterías y accesorios deportivos.
 - [Construcción de cancha de futbol 11 y soccer](https://canchadefutbol7.mx/construccion-cancha-futbol-11/) — Landing por tipo de cancha. Medidas: Área jugable mínima 60 x 90 m y máxima 90 x 120 m. Con 1.5 m de contracancha por lado, el terreno total va de 63 x 93 m a 93 x 123 m.
+- [Pasto sintético monofilamento para canchas](https://canchadefutbol7.mx/pasto-sintetico-monofilamento-para-canchas/) — Landing de producto para monofilamento. Mejor apariencia, recuperación de fibra y sensación profesional para futbol 7, soccer, clubes y proyectos donde la imagen de la cancha importa tanto como el rendimiento.
+- [Pasto sintético híbrido para canchas](https://canchadefutbol7.mx/pasto-sintetico-hibrido-para-canchas/) — Landing de producto para híbrido. Equilibrio entre resistencia, apariencia y desempeño para canchas con uso diario, escuelas, municipios, clubes y complejos deportivos.
+- [Pasto sintético fibrilado para canchas](https://canchadefutbol7.mx/pasto-sintetico-fibrilado-para-canchas/) — Landing de producto para fibrilado. Alta resistencia al desgaste para futbol 5, futbol rápido, escuelas y canchas que reciben uso constante durante la semana.
+- [Tipos de pasto sintético para canchas de futbol](https://canchadefutbol7.mx/tipos-de-pasto-sintetico-para-canchas-de-futbol/) — Landing de producto para tipos. Comparación clara entre monofilamento, fibrilado e híbrido para elegir el sistema correcto según cancha, intensidad de uso, apariencia y presupuesto.
 - [Pasto sintético precio](https://canchadefutbol7.mx/pasto-sintetico-precio/) — Precios 2026 desde $250/m² (deportivo básico) hasta $650/m² (Premium Pro). 4 tipos comparados, factores que afectan precio, comparativa con pasto natural/concreto/tartán. Schema Product + AggregateOffer.
 - [Medidas de la cancha de fútbol 7](https://canchadefutbol7.mx/medidas-cancha-futbol-7/) — Medidas oficiales 2026: mínima 50×30 m, máxima 60×40 m. Contracancha 1.5 m por lado → terreno total 53×33 a 63×43 m. Portería 2×6 m, área 13×9 m, penal 9 m, círculo radio 7 m. Plano SVG, cómo trazar paso a paso, variantes oficial/recreativa. Schema Dataset + TechArticle + HowTo + FAQPage.
 - [Construcción en Monterrey](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/) — Operaciones zona metropolitana MTY (9 municipios), teléfono local +52 81 1629 6384. Clientes: Grupo Grainger, LEGO, Kia.
@@ -104,6 +108,11 @@ Cada pillar tiene JSON-LD `@graph` consolidado para AI parsing:
 - **`/construccion-cancha-futbol-5/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de cancha de futbol 5 con medidas y contracancha cuando aplica.
 - **`/construccion-cancha-futbol-rapido/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de cancha de futbol rápido con medidas y contracancha cuando aplica.
 - **`/construccion-cancha-futbol-11/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de cancha de futbol 11 y soccer con medidas y contracancha cuando aplica.
+
+- **`/pasto-sintetico-monofilamento-para-canchas/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para pasto sintético monofilamento para canchas.
+- **`/pasto-sintetico-hibrido-para-canchas/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para pasto sintético híbrido para canchas.
+- **`/pasto-sintetico-fibrilado-para-canchas/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para pasto sintético fibrilado para canchas.
+- **`/tipos-de-pasto-sintetico-para-canchas-de-futbol/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para tipos de pasto sintético para canchas de futbol.
 
 ## Tipos de cancha de fútbol 7 que construye Sportmaster
 
