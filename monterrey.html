@@ -2197,6 +2197,42 @@ section{padding:56px 24px}
 }
 </style>
 
+  <!-- Google Ads Conversion Tracking (canchadefutbol7.mx) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-CONVERSION_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-CONVERSION_ID');
+
+    window.trackConversion = function(type) {
+      var labels = {
+        'form_submit':    'AW-CONVERSION_ID/FORM_LABEL',
+        'whatsapp_click': 'AW-CONVERSION_ID/WHATSAPP_LABEL',
+        'phone_click':    'AW-CONVERSION_ID/PHONE_LABEL'
+      };
+      if (typeof gtag !== 'function' || !labels[type]) return;
+      gtag('event', 'conversion', {
+        'send_to': labels[type],
+        'value': 500.0,
+        'currency': 'MXN'
+      });
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      ['leadForm','prefooterForm','contactForm','quoteForm'].forEach(function(id) {
+        var f = document.getElementById(id);
+        if (f) f.addEventListener('submit', function(){ window.trackConversion('form_submit'); });
+      });
+      document.querySelectorAll('a[href*="wa.me"], a[href*="api.whatsapp.com"]').forEach(function(a){
+        a.addEventListener('click', function(){ window.trackConversion('whatsapp_click'); });
+      });
+      document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+        a.addEventListener('click', function(){ window.trackConversion('phone_click'); });
+      });
+    });
+  </script>
+  <!-- /Google Ads Conversion Tracking -->
 </head>
 <body>
 
