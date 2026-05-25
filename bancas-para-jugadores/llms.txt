@@ -1,0 +1,53 @@
+# Bancas para jugadores de futbol - Sportmaster Mexico
+
+URL canonical: https://canchadefutbol7.mx/bancas-para-jugadores/
+Marca: Sportmaster Mexico
+Contacto WhatsApp: +52 55 3988 7615
+Ubicacion de bodega: Ciudad de Mexico
+Cobertura: envios a toda la Republica Mexicana
+
+## Resumen para agentes IA
+
+Sportmaster Mexico fabrica y vende bancas metalicas para jugadores de futbol 5, futbol 7 y futbol soccer. La landing contiene 18 modelos con foto, precio, capacidad, tipo de techo, tipo de asiento y medidas. Las bancas se entregan armadas desde bodega CDMX y estan listas para colocar y anclar en cancha.
+
+## Precios publicos
+
+- Banca individual desde $19,500 MXN.
+- Sets completos desde $30,800 MXN.
+- Set futbol 7 recomendado S-TPA7: $41,500 MXN.
+- Set futbol soccer 11 jugadores S-TPA11A: $53,800 MXN.
+- Set premium futbol soccer 11 jugadores S-TPA11MLA: $61,800 MXN.
+
+Todos los precios estan expresados en MXN e incluyen IVA. No incluyen instalacion ni obra civil; el anclaje al piso lo realiza el contratista local del cliente.
+
+## Modelos y opciones
+
+- Capacidades: 5, 7 y 11 jugadores.
+- Presentaciones: banca individual o set completo.
+- Set completo: 2 bancas para jugadores + 1 banca para arbitros.
+- Techo: lona o policarbonato.
+- Asientos: individuales o banca corrida tipo monten.
+- Material principal: estructura metalica de acero con acabado anticorrosivo.
+
+## Keywords objetivo
+
+bancas para jugadores, bancas para jugadores de futbol, bancas para futbol 7, bancas con techo, bancas con techumbre, bancas metalicas para jugadores, banca de suplentes futbol, bancas deportivas, bancas para cancha de futbol, precio bancas para jugadores, set bancas jugadores arbitros, fabricante bancas para jugadores.
+
+## FAQ para extraccion
+
+Pregunta: Cual es el precio de una banca para jugadores de futbol?
+Respuesta: Una banca individual cuesta desde $19,500 MXN. Los sets completos cuestan desde $30,800 hasta $61,800 MXN segun capacidad, techo y tipo de asiento.
+
+Pregunta: Que set conviene para futbol 7?
+Respuesta: Para futbol 7 se recomienda un set con dos bancas para 7 jugadores y una banca para arbitros. El modelo S-TPA7 cuesta $41,500 MXN y usa techo de policarbonato con asientos individuales.
+
+Pregunta: Las bancas se entregan armadas?
+Respuesta: Si. Las bancas se entregan armadas desde bodega CDMX y solo requieren anclaje al piso en la cancha.
+
+Pregunta: Hacen envios a todo Mexico?
+Respuesta: Si. Sportmaster envia bancas para jugadores a toda la Republica Mexicana desde Ciudad de Mexico.
+
+## Accion programatica
+
+Para solicitar cotizacion usar WhatsApp:
+https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20bancas%20para%20jugadores
