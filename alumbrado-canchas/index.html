@@ -331,10 +331,10 @@
     position:absolute;
     inset:0;
     background:
-      linear-gradient(180deg,rgba(0,0,0,.04) 0%,rgba(0,0,0,.2) 42%,rgba(0,0,0,.72) 100%),
-      linear-gradient(90deg,rgba(3,8,11,.25),rgba(3,8,11,.02) 46%,rgba(3,8,11,.44)),
+      linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.18) 42%,rgba(0,0,0,.68) 100%),
+      linear-gradient(90deg,rgba(3,8,11,.16),rgba(3,8,11,.02) 50%,rgba(3,8,11,.28)),
       url('assets/lamparas-led-cancha-futbol-7-nocturna.webp') center/cover no-repeat;
-    filter:brightness(1.04) saturate(1.16) contrast(1.04);
+    filter:brightness(1.08) saturate(1.14) contrast(1.08);
     transform:scale(1.015);
     z-index:-3;
   }
@@ -343,13 +343,14 @@
     position:absolute;
     inset:0;
     background:
-      radial-gradient(ellipse at 8% 13%,rgba(255,255,255,.98) 0 3%,rgba(188,229,255,.44) 9%,transparent 24%),
-      radial-gradient(ellipse at 57% 43%,rgba(255,255,255,.8) 0 2%,rgba(188,229,255,.28) 8%,transparent 19%),
-      radial-gradient(ellipse at 78% 78%,rgba(153,221,56,.44),rgba(153,221,56,.16) 21%,transparent 54%),
-      linear-gradient(100deg,transparent 8%,rgba(255,255,255,.2) 16%,transparent 30%),
-      linear-gradient(18deg,transparent 44%,rgba(153,221,56,.16) 56%,transparent 78%);
+      radial-gradient(circle at 7.5% 10%,rgba(255,255,255,.96) 0 1.6%,rgba(196,224,255,.5) 3.4%,transparent 8.5%),
+      radial-gradient(circle at 57% 41%,rgba(255,255,255,.78) 0 1.2%,rgba(196,224,255,.34) 3.8%,transparent 8%),
+      linear-gradient(104deg,transparent 4%,rgba(210,235,255,.12) 11%,rgba(210,235,255,.22) 16%,rgba(210,235,255,.08) 24%,transparent 34%),
+      linear-gradient(118deg,transparent 44%,rgba(210,235,255,.16) 51%,rgba(210,235,255,.08) 58%,transparent 70%),
+      radial-gradient(ellipse at 82% 83%,rgba(153,221,56,.28),rgba(153,221,56,.12) 22%,transparent 58%),
+      linear-gradient(0deg,rgba(92,158,37,.24),transparent 38%);
     mix-blend-mode:screen;
-    opacity:.92;
+    opacity:.82;
     z-index:-2;
     pointer-events:none;
   }
@@ -524,7 +525,7 @@
     position:absolute;
     left:18px;
     bottom:18px;
-    max-width:min(620px,calc(100% - 120px));
+    max-width:min(620px,calc(100% - 250px));
     color:#fff;
     background:rgba(3,8,11,.62);
     border:1px solid rgba(255,255,255,.14);
@@ -536,22 +537,53 @@
     backdrop-filter:blur(14px);
   }
   .lightbox-close{
+    position:fixed;
+    top:22px;
+    right:22px;
+    z-index:6;
+    min-width:56px;
+    width:56px;
+    height:56px;
+    padding:0;
+    border:1px solid rgba(153,221,56,.45);
+    background:var(--lime);
+    color:#061006;
+    cursor:pointer;
+    font-size:12px;
+    line-height:1;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    font-weight:900;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    transition:.2s ease;
+    backdrop-filter:blur(14px);
+    box-shadow:0 18px 48px rgba(0,0,0,.38);
+  }
+  .lightbox-close .x{font-size:24px;line-height:1}
+  .lightbox-close span:not(.x){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .lightbox-close:hover{background:#fff;color:#061006;transform:translateY(-2px)}
+  .lightbox-exit{
     position:absolute;
-    top:16px;
-    right:16px;
-    width:44px;
-    height:44px;
-    border:1px solid rgba(255,255,255,.22);
-    background:rgba(3,8,11,.66);
+    right:18px;
+    bottom:18px;
+    z-index:6;
+    min-height:46px;
+    padding:0 18px;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(3,8,11,.72);
     color:#fff;
     cursor:pointer;
-    font-size:28px;
-    line-height:1;
-    display:grid;
-    place-items:center;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.08em;
+    text-transform:uppercase;
     transition:.2s ease;
+    backdrop-filter:blur(14px);
   }
-  .lightbox-close:hover{background:var(--lime);color:#061006}
+  .lightbox-exit:hover{background:var(--lime);color:#061006}
   .lightbox-nav{
     position:absolute;
     top:50%;
@@ -611,7 +643,9 @@
     .footer .wrap{display:grid}
     .lightbox{padding:14px}
     .lightbox-panel{width:100%;height:82vh}
-    .lightbox-title{left:12px;right:12px;bottom:12px;max-width:none}
+    .lightbox-close{top:12px;right:12px;min-width:48px;width:48px;height:48px}
+    .lightbox-title{left:12px;right:12px;bottom:70px;max-width:none}
+    .lightbox-exit{left:12px;right:12px;bottom:12px;width:auto}
     .lightbox-nav{width:46px;height:46px}
     .lightbox-prev{left:8px}
     .lightbox-next{right:8px}
@@ -890,7 +924,10 @@
 </a>
 <div class="lightbox" id="photoLightbox" aria-modal="true" role="dialog" aria-label="Vista ampliada de imagen">
   <div class="lightbox-panel">
-    <button class="lightbox-close" type="button" aria-label="Cerrar vista ampliada">×</button>
+    <button class="lightbox-close" type="button" aria-label="Cerrar vista ampliada y regresar a la pagina">
+      <span class="x" aria-hidden="true">×</span>
+      <span>Cerrar</span>
+    </button>
     <button class="lightbox-nav lightbox-prev" type="button" aria-label="Imagen anterior">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
@@ -899,6 +936,7 @@
     </button>
     <img src="" alt="">
     <div class="lightbox-title"></div>
+    <button class="lightbox-exit" type="button">Cerrar y seguir viendo</button>
   </div>
 </div>
 <script>
@@ -929,10 +967,12 @@
   const lightboxImage = lightbox.querySelector('img');
   const lightboxTitle = lightbox.querySelector('.lightbox-title');
   const lightboxClose = lightbox.querySelector('.lightbox-close');
+  const lightboxExit = lightbox.querySelector('.lightbox-exit');
   const lightboxPrev = lightbox.querySelector('.lightbox-prev');
   const lightboxNext = lightbox.querySelector('.lightbox-next');
   const zoomItems = Array.from(document.querySelectorAll('[data-zoom-src]'));
   let currentZoomIndex = 0;
+  let lastZoomTrigger = null;
 
   function renderLightbox(index) {
     currentZoomIndex = (index + zoomItems.length) % zoomItems.length;
@@ -943,17 +983,21 @@
     lightboxTitle.textContent = title;
   }
 
-  function openLightbox(index) {
+  function openLightbox(index, trigger) {
+    lastZoomTrigger = trigger || zoomItems[index] || null;
     renderLightbox(index);
     lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    lightboxNext.focus();
+    lightboxClose.focus();
   }
 
   function closeLightbox() {
     lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     lightboxImage.src = '';
+    if (lastZoomTrigger) lastZoomTrigger.focus({ preventScroll: true });
   }
 
   function showPreviousImage() {
@@ -968,26 +1012,40 @@
     item.setAttribute('tabindex', '0');
     item.setAttribute('role', 'button');
     item.setAttribute('aria-label', `Abrir imagen ampliada: ${item.dataset.zoomTitle || 'alumbrado deportivo'}`);
-    item.addEventListener('click', () => openLightbox(index));
+    item.addEventListener('click', () => openLightbox(index, item));
     item.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        openLightbox(index);
+        openLightbox(index, item);
       }
     });
   });
 
   lightboxClose.addEventListener('click', closeLightbox);
+  lightboxExit.addEventListener('click', closeLightbox);
   lightboxPrev.addEventListener('click', showPreviousImage);
   lightboxNext.addEventListener('click', showNextImage);
   lightbox.addEventListener('click', (event) => {
     if (event.target === lightbox) closeLightbox();
   });
+  lightbox.setAttribute('aria-hidden', 'true');
   window.addEventListener('keydown', (event) => {
     if (!lightbox.classList.contains('open')) return;
     if (event.key === 'Escape') closeLightbox();
     if (event.key === 'ArrowLeft') showPreviousImage();
     if (event.key === 'ArrowRight') showNextImage();
+    if (event.key === 'Tab') {
+      const controls = [lightboxClose, lightboxPrev, lightboxNext, lightboxExit];
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
   });
 </script>
 </body>
