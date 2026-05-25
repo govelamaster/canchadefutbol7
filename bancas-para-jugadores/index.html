@@ -37,7 +37,7 @@
 
 <!-- Schema: Organization -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","@id":"https://canchadefutbol7.mx/bancas-para-jugadores/#org","name":"Sportmaster México","url":"https://canchadefutbol7.mx/bancas-para-jugadores/","logo":"https://canchadefutbol7.mx/bancas-para-jugadores/icon.svg","telephone":"+525539887615","email":"info@sportmaster.com.mx","address":{"@type":"PostalAddress","addressLocality":"Ciudad de México","addressRegion":"CDMX","addressCountry":"MX"},"areaServed":"MX","sameAs":["https://www.facebook.com/pasto.sinteticosportmaster","https://www.instagram.com/pastosinteticosportmaster","https://www.youtube.com/@sportmastermexico"]}
+{"@context":"https://schema.org","@type":"Organization","@id":"https://canchadefutbol7.mx/bancas-para-jugadores/#org","name":"Sportmaster México","url":"https://canchadefutbol7.mx/bancas-para-jugadores/","logo":"https://canchadefutbol7.mx/bancas-para-jugadores/images/logo-sportmaster.png","telephone":"+525539887615","email":"info@sportmaster.com.mx","address":{"@type":"PostalAddress","addressLocality":"Ciudad de México","addressRegion":"CDMX","addressCountry":"MX"},"areaServed":"MX","sameAs":["https://www.facebook.com/pasto.sinteticosportmaster","https://www.instagram.com/pastosinteticosportmaster","https://www.youtube.com/@sportmastermexico"]}
 </script>
 
 <!-- Schema: WebSite + Speakable -->
@@ -90,30 +90,29 @@
 <style>
 :root{
   /* Brand */
-  --green:#00803F;
-  --green-dark:#005528;
-  --green-bright:#00B854;
-  --green-soft:#E8F5EE;
-  --green-tint:#F4FAF6;
-  /* Premium accent — amber/gold */
-  --amber:#F59E0B;
-  --amber-dark:#B45309;
-  --amber-soft:#FEF3C7;
-  --amber-bg:#FFFBEB;
+  --green:#0B7F3A;
+  --green-dark:#075A2A;
+  --green-bright:#10A64A;
+  --green-soft:#E8F6EE;
+  --green-tint:#F3FBF6;
+  --brand-blue:#0E4F8A;
+  --brand-blue-dark:#08345E;
+  --accent:#0B7F3A;
+  --accent-soft:#E8F6EE;
   /* Neutrals */
   --ink:#0A1F14;
   --ink-soft:#3F5849;
   --muted:#6F8377;
   --line:#E3E9E5;
   --line-warm:#EDE9E1;
-  --cream:#FAF7F2;
+  --cream:#F7FAF8;
   --bg:#FCFCFB;
   --white:#fff;
   /* System */
   --shadow-sm:0 2px 8px rgba(10,31,20,.06);
   --shadow-md:0 8px 28px rgba(10,31,20,.10);
   --shadow-lg:0 24px 60px rgba(10,31,20,.14);
-  --shadow-amber:0 14px 40px rgba(245,158,11,.30);
+  --shadow-brand:0 14px 40px rgba(11,127,58,.24);
   --radius:16px;
   --radius-lg:22px;
   --ease:cubic-bezier(.2,.8,.2,1);
@@ -144,12 +143,13 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
   border-bottom:1px solid rgba(10,31,20,.06);
 }
 .nav-inner{max-width:1320px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.02em}
-.brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--green) 0%,var(--green-bright) 100%);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(0,128,63,.30)}
-.brand b{font-weight:800}.brand .sub{color:var(--amber);font-weight:700}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:17px;letter-spacing:-.02em}
+.brand-logo{width:156px;height:auto;display:block}
+.brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--green) 0%,var(--green-bright) 100%);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(11,127,58,.30)}
+.brand b{font-weight:800}.brand .sub{color:var(--green);font-weight:800}
 .nav-links{display:none;gap:30px;font-size:14px;font-weight:500;color:var(--ink-soft)}
 .nav-links a{transition:color .2s}.nav-links a:hover{color:var(--green)}
-.nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-weight:700;font-size:13.5px;transition:transform .15s var(--ease),background .2s}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;padding:11px 18px;border-radius:999px;font-weight:800;font-size:13.5px;transition:transform .15s var(--ease),background .2s}
 .nav-cta:hover{background:var(--green-dark);transform:translateY(-1px)}
 .nav-cta svg{width:15px;height:15px}
 @media (min-width:980px){.nav-links{display:flex}}
@@ -158,28 +158,28 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 .hero{
   position:relative;padding:36px 22px 56px;
   background:
-    radial-gradient(1100px 600px at 92% -10%,rgba(0,184,84,.10),transparent 55%),
-    radial-gradient(900px 500px at -10% 110%,rgba(245,158,11,.10),transparent 55%),
+    radial-gradient(1100px 600px at 92% -10%,rgba(11,127,58,.12),transparent 55%),
+    radial-gradient(900px 500px at -10% 110%,rgba(14,79,138,.08),transparent 55%),
     linear-gradient(180deg,var(--cream) 0%,#fff 100%);
 }
 .hero-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;box-shadow:var(--shadow-sm)}
-.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(245,158,11,.20);animation:pulse 1.8s infinite}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(11,127,58,.16);animation:pulse 1.8s infinite}
 @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
-.hero h1{font-size:clamp(34px,6.2vw,68px);line-height:1.04;margin:18px 0;letter-spacing:-.035em}
+.hero h1{font-size:clamp(40px,6vw,74px);line-height:.98;margin:18px 0;letter-spacing:-.04em}
 .hero h1 .acc{
   background:linear-gradient(120deg,var(--green) 0%,var(--green-bright) 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
 }
-.hero h1 small{display:block;font-size:.55em;font-weight:700;color:var(--ink-soft);letter-spacing:-.01em;margin-top:8px;font-family:'Inter',sans-serif}
-.hero .lede{font-size:clamp(15.5px,1.8vw,18px);color:var(--ink-soft);margin-bottom:24px;max-width:540px;line-height:1.55}
+.hero h1 small{display:block;font-size:.46em;font-weight:800;color:var(--ink-soft);letter-spacing:-.015em;margin-top:12px;font-family:'Inter',sans-serif;line-height:1.12}
+.hero .lede{font-size:clamp(16px,1.8vw,19px);color:var(--ink-soft);margin-bottom:24px;max-width:560px;line-height:1.55}
 .hero .lede b{color:var(--ink);font-weight:700}
 .hero-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;font-weight:700;font-size:14.5px;transition:transform .15s var(--ease),background .2s,box-shadow .25s;white-space:nowrap}
 .btn-primary{background:var(--ink);color:#fff;box-shadow:0 10px 22px rgba(10,31,20,.20)}
 .btn-primary:hover{background:var(--green);transform:translateY(-2px);box-shadow:0 14px 28px rgba(0,128,63,.32)}
-.btn-amber{background:var(--amber);color:#3D2A00;box-shadow:var(--shadow-amber)}
-.btn-amber:hover{background:#FBBF24;transform:translateY(-2px);box-shadow:0 18px 40px rgba(245,158,11,.40)}
+.btn-amber{background:var(--green);color:#fff;box-shadow:var(--shadow-brand)}
+.btn-amber:hover{background:var(--green-dark);transform:translateY(-2px);box-shadow:0 18px 40px rgba(11,127,58,.32)}
 .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
 .btn-ghost:hover{border-color:var(--green);color:var(--green)}
 .btn-green{background:var(--green);color:#fff;box-shadow:0 10px 22px rgba(0,128,63,.30)}
@@ -192,52 +192,32 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 @media (min-width:560px){.hero-meta .sep{display:block}}
 
 /* Hero bento (varias bancas a la vista) */
-.bento{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  grid-template-rows:repeat(6,1fr);
-  gap:10px;aspect-ratio:1/1;max-width:600px;margin:0 auto;
-  position:relative;
-}
-.bento-tile{
-  position:relative;overflow:hidden;border-radius:18px;
-  background:#fff;border:1px solid var(--line);
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
-}
-.bento-tile:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);z-index:2}
-.bento-tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
-.bento-tile:hover img{transform:scale(1.06)}
-.bento-tile .tag{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.95);color:var(--ink);padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;backdrop-filter:blur(4px)}
-.bento-tile .tag.green{background:var(--green);color:#fff}
-.bento-tile .tag.amber{background:var(--amber);color:#3D2A00}
-.bento-1{grid-column:1/5;grid-row:1/4}
-.bento-2{grid-column:5/7;grid-row:1/3}
-.bento-3{grid-column:5/7;grid-row:3/5}
-.bento-4{grid-column:1/4;grid-row:4/7}
-.bento-5{grid-column:4/7;grid-row:5/7}
-.bento .count-bubble{
-  position:absolute;right:-12px;top:-12px;z-index:3;
-  background:var(--amber);color:#3D2A00;
-  border-radius:999px;padding:10px 16px;
-  font-weight:900;font-size:14px;letter-spacing:-.01em;
-  box-shadow:var(--shadow-amber);
-  display:flex;align-items:center;gap:6px;
-  animation:float 4s ease-in-out infinite;
-}
-.bento .count-bubble strong{font-size:22px;line-height:1}
+.hero-product{background:#fff;border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:var(--shadow-lg);max-width:620px;margin:0 auto}
+.hero-product-img{background:linear-gradient(180deg,#f8fbf9,#fff);padding:12px}
+.hero-product-img img{width:100%;aspect-ratio:16/8.8;object-fit:contain;border-radius:20px}
+.hero-product-body{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;padding:22px 24px;border-top:1px solid var(--line)}
+.hero-product-kicker{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:var(--green);margin-bottom:4px}
+.hero-product-title{font-size:24px;font-weight:900;letter-spacing:-.03em;line-height:1.05}
+.hero-product-price{font-size:28px;font-weight:900;color:var(--ink);white-space:nowrap;text-align:right}
+.hero-product-price small{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
 @media (min-width:980px){
   .hero{padding:48px 22px 80px;max-height:780px}
   .hero-inner{grid-template-columns:1.05fr .95fr;gap:60px}
-  .bento{margin:0}
+  .hero-product{margin:0}
+}
+@media (max-width:640px){
+  .brand-logo{width:132px}
+  .hero-product-body{grid-template-columns:1fr}
+  .hero-product-price{text-align:left}
 }
 
 /* ─── TRUST STRIP ───────────────────────────────────── */
-.trust-strip{background:var(--ink);color:#fff;padding:14px 0;overflow:hidden;border-top:3px solid var(--amber)}
-.trust-track{display:flex;gap:48px;white-space:nowrap;animation:scrollX 40s linear infinite;font-size:13px;font-weight:600;letter-spacing:.02em}
-.trust-track span{display:inline-flex;align-items:center;gap:10px;color:#D7E6DD}
-.trust-track svg{color:var(--amber);width:14px;height:14px}
+.trust-strip{background:var(--ink);color:#fff;padding:13px 22px;border-top:2px solid var(--green)}
+.trust-track{max-width:1320px;margin:0 auto;display:flex;justify-content:center;gap:34px;white-space:normal;animation:none;font-size:13px;font-weight:700;letter-spacing:.01em;flex-wrap:wrap}
+.trust-track span{display:inline-flex;align-items:center;gap:9px;color:#D7E6DD}
+.trust-track svg{color:var(--green-bright);width:14px;height:14px}
 @keyframes scrollX{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ─── SECTION BASE ──────────────────────────────────── */
@@ -246,7 +226,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 .s-head{margin-bottom:36px}
 .s-head.center{text-align:center}
 .s-num{
-  display:inline-block;color:var(--amber);font-weight:900;
+  display:inline-block;color:var(--green);font-weight:900;
   font-size:12.5px;letter-spacing:.18em;margin-bottom:10px;text-transform:uppercase;
 }
 .s-title{font-size:clamp(28px,4.2vw,46px);font-weight:800;line-height:1.1;letter-spacing:-.03em;color:var(--ink)}
@@ -266,7 +246,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 }
 .tab.active{background:var(--ink);color:#fff;box-shadow:0 8px 20px rgba(10,31,20,.22)}
 .tab .n{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
-.tab.active .n{color:var(--amber);opacity:1}
+.tab.active .n{color:var(--green);opacity:1}
 .tab .l{font-size:18px;font-weight:900;letter-spacing:-.02em;line-height:1}
 .tab small{font-size:11px;font-weight:600;opacity:.7;letter-spacing:.02em}
 @media (min-width:760px){.tabs-bar{grid-template-columns:repeat(3,1fr);gap:10px}.tab .l{font-size:22px}}
@@ -285,12 +265,13 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 .pc-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:linear-gradient(135deg,#F4FAF6 0%,#fff 100%)}
 .pc-img img{width:100%;height:100%;object-fit:cover;transition:transform .45s var(--ease)}
 .pc:hover .pc-img img{transform:scale(1.08)}
-.pc-badge{position:absolute;top:10px;right:10px;background:var(--amber);color:#3D2A00;padding:4px 10px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.pc-badge{position:absolute;top:12px;right:12px;background:var(--green);color:#fff;padding:5px 11px;border-radius:999px;font-size:10.5px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 .pc-badge.green{background:var(--green);color:#fff}
 .pc-cap{position:absolute;top:10px;left:10px;background:rgba(10,31,20,.85);color:#fff;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;backdrop-filter:blur(4px)}
 .pc-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
 .pc-id{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.10em;text-transform:uppercase}
 .pc-h{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+.pc-copy{font-size:13px;color:var(--ink-soft);line-height:1.45;min-height:38px}
 .pc-specs{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .pc-specs span{font-size:10.5px;color:var(--ink-soft);background:var(--green-tint);padding:3px 8px;border-radius:6px;font-weight:600}
 .pc-price{margin-top:auto;display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px dashed var(--line)}
@@ -302,6 +283,60 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 }
 .pc:hover .pc-price .arrow{background:var(--green);color:#fff;transform:translateX(4px)}
 .pc-price .arrow svg{width:14px;height:14px}
+
+/* ─── VISUAL SHOWROOM ──────────────────────────────── */
+.hero-models{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.visual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.price-showcase{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.hero-models .pc,.visual-grid .pc,.price-showcase .pc{border-radius:22px;box-shadow:0 10px 34px rgba(10,31,20,.06)}
+.hero-models .pc-img,.visual-grid .pc-img,.price-showcase .pc-img{aspect-ratio:16/10;background:#fff;padding:10px}
+.hero-models .pc-img img,.visual-grid .pc-img img,.price-showcase .pc-img img{object-fit:contain;border-radius:16px;background:var(--green-tint)}
+.hero-models .pc-body,.visual-grid .pc-body,.price-showcase .pc-body{padding:18px 20px 20px;gap:9px}
+.hero-models .pc-h,.visual-grid .pc-h{font-size:20px;line-height:1.15}
+.hero-models .pc-price .amt,.visual-grid .pc-price .amt{font-size:25px}
+.visual-grid .pc:nth-child(4n+1){grid-column:span 2}
+.visual-grid .pc:nth-child(4n+1) .pc-img{aspect-ratio:18/9}
+.price-showcase .pc-h{font-size:17px}
+.price-showcase .pc-price .amt{font-size:22px}
+@media (max-width:980px){
+  .hero-models,.visual-grid,.price-showcase{grid-template-columns:repeat(2,1fr)}
+  .visual-grid .pc:nth-child(4n+1){grid-column:span 1}
+  .visual-grid .pc:nth-child(4n+1) .pc-img{aspect-ratio:16/10}
+}
+
+/* ─── DECISION TABLE ───────────────────────────────── */
+.decision-table{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.decision-head,.decision-row{display:grid;grid-template-columns:180px minmax(260px,1.6fr) 120px 130px 150px 160px;gap:18px;align-items:center}
+.decision-head{background:var(--green-tint);padding:16px 22px;color:var(--ink-soft);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.decision-row{padding:18px 22px;border-top:1px solid var(--line);transition:background .18s var(--ease),transform .18s var(--ease)}
+.decision-row:hover{background:#fbfdfb}
+.decision-img{width:170px;aspect-ratio:16/10;border-radius:16px;background:var(--green-tint);border:1px solid var(--line);overflow:hidden;padding:6px;cursor:zoom-in}
+.decision-img img{width:100%;height:100%;object-fit:contain;border-radius:12px}
+.decision-model strong{display:block;font-size:18px;letter-spacing:-.02em;line-height:1.15}
+.decision-model span{display:block;margin-top:5px;color:var(--muted);font-size:13px;font-weight:700}
+.decision-chip{display:inline-flex;width:max-content;align-items:center;justify-content:center;padding:7px 11px;border-radius:999px;background:var(--green-tint);color:var(--green-dark);font-size:12.5px;font-weight:900}
+.decision-price strong{display:block;font-size:24px;letter-spacing:-.03em;text-align:right}
+.decision-price small{display:block;text-align:right;color:var(--muted);font-size:11px;font-weight:700;margin-top:3px}
+.decision-cta{display:flex;justify-content:flex-end;margin-top:9px}
+.decision-cta a{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:999px;background:var(--green);color:#fff;font-size:12.5px;font-weight:900}
+@media (max-width:1100px){
+  .decision-head{display:none}
+  .decision-row{grid-template-columns:150px 1fr 1fr;gap:14px}
+  .decision-img{width:150px;grid-row:span 3}
+  .decision-price{grid-column:2 / 4;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:12px}
+  .decision-price strong,.decision-price small{text-align:left}
+  .decision-cta{margin-top:0}
+}
+@media (max-width:640px){
+  .decision-row{grid-template-columns:1fr;padding:16px}
+  .decision-img{width:100%;grid-row:auto}
+  .decision-model strong{font-size:20px}
+  .decision-price{grid-column:auto}
+}
+@media (max-width:640px){
+  .hero-models,.visual-grid,.price-showcase{grid-template-columns:1fr}
+  .hero-models .pc-img,.visual-grid .pc-img,.price-showcase .pc-img{aspect-ratio:16/10}
+}
 
 /* ─── 02 TOGGLES ────────────────────────────────────── */
 .toggles-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
@@ -328,7 +363,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 }
 .pill:hover{border-color:var(--green);color:var(--green)}
 .pill.active{background:var(--ink);border-color:var(--ink);color:#fff}
-.pill .count{font-size:11px;font-weight:700;background:var(--amber);color:#3D2A00;padding:1px 7px;border-radius:999px;margin-left:4px}
+.pill .count{font-size:11px;font-weight:700;background:var(--green);color:#fff;padding:1px 7px;border-radius:999px;margin-left:4px}
 .pill.active .count{background:#fff;color:var(--ink)}
 
 .catalog-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
@@ -350,9 +385,9 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 }
 .set-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
 .set-card.featured{background:linear-gradient(180deg,var(--ink) 0%,#1a3526 100%);color:#fff}
-.set-card.featured .set-id{color:var(--amber)}
+.set-card.featured .set-id{color:#A6E5BE}
 .set-card.featured .set-name,.set-card.featured .set-meta strong{color:#fff}
-.set-card.featured .set-price{color:var(--amber)}
+.set-card.featured .set-price{color:#fff}
 .set-card.featured .set-row-info{color:#A6E5BE}
 .set-img{aspect-ratio:5/3;border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--line)}
 .set-card.featured .set-img{border-color:rgba(255,255,255,.10)}
@@ -362,7 +397,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 .set-row-info{display:flex;gap:14px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap}
 .set-row-info span{display:inline-flex;align-items:center;gap:4px}
 .set-row-info svg{width:14px;height:14px;color:var(--green)}
-.set-card.featured .set-row-info svg{color:var(--amber)}
+.set-card.featured .set-row-info svg{color:#A6E5BE}
 .set-price{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
 .set-price small{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-top:2px}
 .set-card.featured .set-price small{color:#A6B5AC}
@@ -397,7 +432,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 .tl-step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;position:relative}
 .tl-step .tl-num{
   font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:36px;font-weight:900;color:var(--amber);
+  font-size:36px;font-weight:900;color:var(--green);
   line-height:1;letter-spacing:-.04em;margin-bottom:10px;
 }
 .tl-step h3{font-size:16px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
@@ -406,7 +441,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 /* ─── REVIEWS ───────────────────────────────────────── */
 .reviews{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .rv{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px}
-.rv .stars{color:var(--amber);letter-spacing:1px;font-size:16px}
+.rv .stars{color:var(--green);letter-spacing:1px;font-size:16px}
 .rv p{font-size:14px;color:var(--ink-soft);line-height:1.6}
 .rv .who{display:flex;align-items:center;gap:10px;margin-top:auto}
 .rv .avatar{width:38px;height:38px;border-radius:50%;background:var(--green-tint);color:var(--green);display:grid;place-items:center;font-weight:800;font-size:13px}
@@ -416,7 +451,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 /* ─── ANSWER BLOCKS ────────────────────────────────── */
 .answer-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .answer-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow-sm)}
-.answer-card .k{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.answer-card .k{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
 .answer-card h3{font-size:18px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px}
 .answer-card p{font-size:14px;color:var(--ink-soft);line-height:1.6}
 .answer-card b{color:var(--ink)}
@@ -429,7 +464,7 @@ h1,h2,h3{font-family:'Plus Jakarta Sans','Inter',sans-serif;letter-spacing:-.025
 .faq-item[open]{border-color:#CFE5D8}
 .faq-item summary{list-style:none;padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;font-weight:700;font-size:14.5px;color:var(--ink);line-height:1.4}
 .faq-item summary::-webkit-details-marker{display:none}
-.faq-item summary::after{content:"+";font-size:22px;color:var(--amber);font-weight:400;transition:transform .25s;flex-shrink:0;line-height:0}
+.faq-item summary::after{content:"+";font-size:22px;color:var(--green);font-weight:400;transition:transform .25s;flex-shrink:0;line-height:0}
 .faq-item[open] summary::after{transform:rotate(45deg)}
 .faq-item .answer{padding:0 20px 18px;font-size:14px;color:var(--ink-soft);line-height:1.6}
 .faq-item .answer b{color:var(--ink)}
@@ -458,16 +493,16 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
 .f p{font-size:13px;line-height:1.6;color:#A6B5AC}
 .f h4{color:#fff;font-size:12px;letter-spacing:.10em;text-transform:uppercase;margin-bottom:12px;font-weight:800}
 .f ul{list-style:none;display:flex;flex-direction:column;gap:7px;font-size:13.5px}
-.f ul a:hover{color:var(--amber)}
+.f ul a:hover{color:#A6E5BE}
 .f-bottom{max-width:1320px;margin:32px auto 0;padding-top:22px;border-top:1px solid #1F3127;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:12px;color:#7A8E83}
 
 /* ─── STICKY CTA ────────────────────────────────────── */
 .sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(10,31,20,.96);backdrop-filter:blur(10px);padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.10);transform:translateY(100%);transition:transform .35s var(--ease)}
 .sticky-cta.visible{transform:none}
 .sticky-cta .copy{color:#fff;font-size:13px;font-weight:700;line-height:1.3}
-.sticky-cta .copy small{display:block;color:var(--amber);font-size:11px;font-weight:600;margin-top:2px}
-.sticky-cta .btn{padding:10px 16px;font-size:13px;background:var(--amber);color:#3D2A00}
-.sticky-cta .btn:hover{background:#FBBF24}
+.sticky-cta .copy small{display:block;color:#A6E5BE;font-size:11px;font-weight:600;margin-top:2px}
+.sticky-cta .btn{padding:10px 16px;font-size:13px;background:var(--green);color:#fff}
+.sticky-cta .btn:hover{background:var(--green-dark)}
 
 /* ─── WhatsApp float ────────────────────────────────── */
 .wa-float{position:fixed;right:14px;bottom:74px;z-index:45;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px rgba(37,211,102,.45);transition:transform .2s}
@@ -485,7 +520,7 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
 .modal-img{aspect-ratio:5/3;background:var(--cream);overflow:hidden;border-radius:22px 22px 0 0}
 .modal-img img{width:100%;height:100%;object-fit:cover}
 .modal-body{padding:26px}
-.modal-id{font-size:11px;font-weight:900;color:var(--amber);letter-spacing:.10em;text-transform:uppercase;margin-bottom:6px}
+.modal-id{font-size:11px;font-weight:900;color:var(--green);letter-spacing:.10em;text-transform:uppercase;margin-bottom:6px}
 .modal-h{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-bottom:12px}
 .modal-desc{font-size:14.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:18px}
 .modal-specs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
@@ -563,13 +598,12 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
 <header class="nav">
   <div class="nav-inner">
     <a href="#" class="brand">
-      <span class="brand-mark">S</span>
-      <span><b>Sportmaster</b> <span class="sub">· Bancas</span></span>
+      <img class="brand-logo" src="images/logo-sportmaster.png" alt="Sportmaster México">
     </a>
     <nav class="nav-links" aria-label="Principal">
-      <a href="#capacidad">Capacidad</a>
+      <a href="#modelos">Modelos</a>
       <a href="#personaliza">Personaliza</a>
-      <a href="#catalogo">18 modelos</a>
+      <a href="#galeria">Galería</a>
       <a href="#precios">Precios</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -584,34 +618,38 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
 <section class="hero">
   <div class="hero-inner">
     <div>
-      <span class="eyebrow"><span class="dot"></span>18 modelos en bodega CDMX</span>
-      <h1>Bancas para jugadores que <span class="acc">se ven como estadio.</span><small>Lona o policarbonato. 5, 7 u 11 jugadores. Individual o set completo.</small></h1>
-      <p class="lede">Catálogo <b>visual e interactivo</b> con los 18 modelos, precios reales y entrega armada desde nuestra bodega de Ciudad de México.</p>
+      <span class="eyebrow"><span class="dot"></span>Equipamiento Sportmaster para canchas</span>
+      <h1>Bancas para jugadores <span class="acc">Sportmaster.</span><small>Fútbol 5, fútbol 7 y soccer. Sets o piezas individuales.</small></h1>
+      <p class="lede">Elige rápido el modelo correcto: foto grande, medidas, capacidad, formato y precio. Bancas metálicas con techumbre, entregadas armadas desde CDMX.</p>
       <div class="hero-ctas">
-        <a class="btn btn-amber" href="#catalogo">
+        <a class="btn btn-amber" href="#modelos">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h12v2H3z"/></svg>
-          Ver los 18 modelos
+          Ver modelos y precios
         </a>
-        <a class="btn btn-ghost" href="https://wa.me/525539887615?text=Hola%2C%20quiero%20que%20me%20asesoren%20para%20elegir%20banca" target="_blank" rel="noopener">Asesoría WhatsApp →</a>
+        <a class="btn btn-ghost" href="https://wa.me/525539887615?text=Hola%2C%20quiero%20que%20me%20asesoren%20para%20elegir%20banca" target="_blank" rel="noopener">Ayúdame a elegir →</a>
       </div>
       <div class="hero-meta">
-        <div class="stat"><strong>18</strong><span>Modelos</span></div>
+        <div class="stat"><strong>18</strong><span>Modelos claros</span></div>
         <div class="sep"></div>
         <div class="stat"><strong>$19,500</strong><span>Desde</span></div>
         <div class="sep"></div>
-        <div class="stat"><strong>+15 años</strong><span>Fabricando</span></div>
+        <div class="stat"><strong>+15 años</strong><span>Experiencia</span></div>
         <div class="sep"></div>
         <div class="stat"><strong>Bodega CDMX</strong><span>Envíos toda MX</span></div>
       </div>
     </div>
     <div>
-      <div class="bento">
-        <div class="count-bubble"><strong>18</strong> modelos<br>en stock</div>
-        <div class="bento-tile bento-1"><img src="images/modelo-S-TPA11A.webp" alt="Set bancas metálicas fútbol soccer 11 jugadores con techo policarbonato" loading="eager"><span class="tag amber">Más vendida</span></div>
-        <div class="bento-tile bento-2"><img src="images/modelo-S-TPA7.webp" alt="Set bancas metálicas fútbol 7 con techumbre" loading="eager"><span class="tag green">Fútbol 7</span></div>
-        <div class="bento-tile bento-3"><img src="images/modelo-I-TP11MLA.webp" alt="Banca metálica individual 11 jugadores" loading="eager"></div>
-        <div class="bento-tile bento-4"><img src="images/modelo-S-TL5A.webp" alt="Set bancas metálicas 5 jugadores con techo lona" loading="eager"><span class="tag">Set 5j</span></div>
-        <div class="bento-tile bento-5"><img src="images/modelo-I-TL5A.webp" alt="Banca metálica individual 5 jugadores lona" loading="eager"><span class="tag">Desde $19,500</span></div>
+      <div class="hero-product">
+        <div class="hero-product-img">
+          <img src="images/modelo-S-TPA11A.webp" alt="Set de bancas Sportmaster para jugadores de fútbol soccer con techo de policarbonato" loading="eager" fetchpriority="high">
+        </div>
+        <div class="hero-product-body">
+          <div>
+            <div class="hero-product-kicker">Set completo destacado</div>
+            <div class="hero-product-title">Set completo soccer · 11 jugadores</div>
+          </div>
+          <div class="hero-product-price">$53,800<small>MXN · IVA incluido</small></div>
+        </div>
       </div>
     </div>
   </div>
@@ -625,40 +663,25 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
     <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Acero anticorrosivo</span>
     <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Entrega armada</span>
     <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Envíos a todo México</span>
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>18 modelos en stock</span>
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Bodega CDMX</span>
-    <!-- dup -->
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6Z"/></svg>+15 años fabricando</span>
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>ISO · DIN · ASTM</span>
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Acero anticorrosivo</span>
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Entrega armada</span>
-    <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19l12-12-1.4-1.4Z"/></svg>Envíos a todo México</span>
   </div>
 </div>
 
-<!-- 01 — TABS POR CAPACIDAD -->
-<section class="section fade-in" id="capacidad">
+<!-- 01 — MODELOS DESTACADOS -->
+<section class="section fade-in" id="modelos">
   <div class="s-head center">
-    <span class="s-num">01 — Elige por capacidad</span>
-    <h2 class="s-title">¿Cuántos jugadores caben<br>en tu cancha?</h2>
-    <p class="s-sub">Toca una opción y verás los modelos disponibles para esa capacidad.</p>
+    <span class="s-num">01 — Modelos más pedidos</span>
+    <h2 class="s-title">Modelos que elevan<br><span class="acc">la imagen de tu cancha.</span></h2>
+    <p class="s-sub">Las opciones más solicitadas para colegios, clubes, unidades deportivas y canchas de renta.</p>
   </div>
-  <div class="tabs-wrap">
-    <div class="tabs-bar" role="tablist">
-      <button class="tab active" role="tab" data-cap="5" aria-selected="true"><span class="n">Fútbol 5</span><span class="l">5 jugadores</span><small>6 modelos</small></button>
-      <button class="tab" role="tab" data-cap="7" aria-selected="false"><span class="n">Fútbol 7</span><span class="l">7 jugadores</span><small>6 modelos</small></button>
-      <button class="tab" role="tab" data-cap="11" aria-selected="false"><span class="n">Soccer</span><span class="l">11 jugadores</span><small>6 modelos</small></button>
-    </div>
-    <div class="tab-panel" id="tabPanel"></div>
-  </div>
+  <div class="hero-models" id="heroModels"></div>
 </section>
 
 <!-- 02 — PERSONALIZA -->
 <section class="section fade-in" id="personaliza" style="padding-top:0">
   <div class="s-head center">
     <span class="s-num">02 — Personaliza</span>
-    <h2 class="s-title"><span class="acc">2 elecciones</span> y tu banca queda lista</h2>
-    <p class="s-sub">Tipo de techo + tipo de asiento. Toca y compara al instante.</p>
+    <h2 class="s-title"><span class="acc">2 decisiones</span> para cerrar tu modelo</h2>
+    <p class="s-sub">Elige techumbre y asiento según presupuesto, uso diario y nivel de presentación que quieres en la cancha.</p>
   </div>
   <div class="toggles-grid">
     <!-- Techumbre -->
@@ -702,55 +725,34 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
   </div>
 </section>
 
-<!-- 03 — CATÁLOGO 18 -->
-<section class="section fade-in" id="catalogo" style="padding-top:0">
+<!-- 03 — GALERÍA 18 -->
+<section class="section fade-in" id="galeria" style="padding-top:0">
   <div class="s-head center">
-    <span class="s-num">03 — Catálogo completo</span>
-    <h2 class="s-title">Los <span class="acc">18 modelos</span> de un vistazo</h2>
-    <p class="s-sub">Filtra, compara y toca cualquier banca para ver foto grande, medidas y precio.</p>
+    <span class="s-num">03 — Galería visual</span>
+    <h2 class="s-title">Todos los modelos<br><span class="acc">a la vista.</span></h2>
+    <p class="s-sub">Cards amplias para ver bien la banca antes de cotizar. Toca cualquier modelo para revisar medidas y detalles.</p>
   </div>
-  <div class="catalog">
-    <div class="filter-pills" id="filterPills">
-      <button class="pill active" data-filter="all">Ver todas <span class="count">18</span></button>
-      <button class="pill" data-filter="cap-5">Fútbol 5 <span class="count">6</span></button>
-      <button class="pill" data-filter="cap-7">Fútbol 7 <span class="count">6</span></button>
-      <button class="pill" data-filter="cap-11">Soccer 11 <span class="count">6</span></button>
-      <button class="pill" data-filter="pres-individual">Individuales <span class="count">9</span></button>
-      <button class="pill" data-filter="pres-set">Sets <span class="count">9</span></button>
-      <button class="pill" data-filter="roof-policarbonato">Policarbonato <span class="count">16</span></button>
-      <button class="pill" data-filter="roof-lona">Lona <span class="count">2</span></button>
-    </div>
-    <div class="catalog-grid" id="catalogGrid"></div>
-  </div>
+  <div class="visual-grid" id="visualGrid"></div>
 </section>
 
 <!-- 04 — SETS DESTACADOS -->
 <section class="section fade-in" id="sets" style="padding-top:0">
   <div class="s-head center">
     <span class="s-num">04 — Sets completos</span>
-    <h2 class="s-title">Tipo estadio,<br><span class="acc">en un solo paquete.</span></h2>
-    <p class="s-sub">Cada set = 2 bancas para jugadores + 1 banca para árbitros. Todo listo para anclar.</p>
+    <h2 class="s-title">Una cancha más completa,<br><span class="acc">desde la zona técnica.</span></h2>
+    <p class="s-sub">Cada set incluye 2 bancas para jugadores y 1 banca para árbitros. Llegan armadas, listas para anclar.</p>
   </div>
   <div class="sets-row" id="setsRow"></div>
 </section>
 
-<!-- 05 — TABLA PRECIOS -->
+<!-- 05 — TABLA DE DECISIÓN -->
 <section class="section fade-in" id="precios" style="padding-top:0">
   <div class="s-head center">
-    <span class="s-num">05 — Precios reales</span>
-    <h2 class="s-title">Tabla pública<br>desde <span class="acc">$19,500</span></h2>
-    <p class="s-sub">Sin letras chiquitas. IVA incluido. La instalación la realiza tu contratista local.</p>
+    <span class="s-num">05 — Comparativo simple</span>
+    <h2 class="s-title">Foto, medidas y precio.<br><span class="acc">Sin vueltas.</span></h2>
+    <p class="s-sub">Una vista clara para decidir: cuántos jugadores, si es set o individual, tipo de techo, medidas y precio.</p>
   </div>
-  <div class="price-table">
-    <div class="pt-head">
-      <span></span>
-      <span>Modelo</span>
-      <span>Capacidad</span>
-      <span>Techo</span>
-      <span>Precio MXN</span>
-    </div>
-    <div id="priceTable"></div>
-  </div>
+  <div class="decision-table" id="decisionTable"></div>
 </section>
 
 <!-- 06 — PROCESO -->
@@ -859,10 +861,10 @@ footer{background:var(--ink);color:#CDD8D1;padding:48px 22px 28px;margin-top:56p
       <p>Bancas metálicas para jugadores de fútbol, gradas, alumbrado, porterías y pasto sintético. +15 años fabricando equipamiento deportivo en México.</p>
     </div>
     <div><h4>Bancas</h4><ul>
-      <li><a href="#capacidad">Por capacidad</a></li>
+      <li><a href="#modelos">Modelos destacados</a></li>
       <li><a href="#personaliza">Personalizar</a></li>
-      <li><a href="#catalogo">18 modelos</a></li>
-      <li><a href="#precios">Tabla precios</a></li>
+      <li><a href="#galeria">Galería 18 modelos</a></li>
+      <li><a href="#precios">Precios visuales</a></li>
     </ul></div>
     <div><h4>Empresa</h4><ul>
       <li><a href="https://sportmaster.mx/" target="_blank" rel="noopener">Sportmaster.com.mx</a></li>
@@ -940,21 +942,6 @@ const fmt = n => '$' + n.toLocaleString('es-MX');
 const WA = '525539887615';
 const waLink = (id, title) => `https://wa.me/${WA}?text=${encodeURIComponent('Hola, quiero cotizar el modelo '+id+' ('+title+')')}`;
 
-// ─── 01 TABS ───────────────────────────────────────
-function renderTabPanel(cap){
-  const panel = document.getElementById('tabPanel');
-  const items = PRODUCTS.filter(p=>p.capacity===cap);
-  panel.innerHTML = items.map(p=>productCardHTML(p)).join('');
-  bindCardClicks(panel);
-}
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-selected','false')});
-    t.classList.add('active');t.setAttribute('aria-selected','true');
-    renderTabPanel(parseInt(t.dataset.cap));
-  });
-});
-
 // ─── 02 TOGGLES ────────────────────────────────────
 const ROOF_DATA = {
   lona:{img:'images/modelo-I-TL5A.webp',list:['Costo más bajo','Ligera, fácil de cambiar','Impermeable con UV','2 modelos disponibles']},
@@ -979,7 +966,7 @@ document.querySelectorAll('.toggle').forEach(t=>{
   });
 });
 
-// ─── 03 CATÁLOGO ───────────────────────────────────
+// ─── VISUAL CARDS ──────────────────────────────────
 function productCardHTML(p){
   const badgeClass = p.badge && p.badge.toLowerCase().includes('premium') ? '' : (p.badge && p.badge.toLowerCase().includes('económic') ? '' : 'green');
   return `
@@ -992,6 +979,7 @@ function productCardHTML(p){
     <div class="pc-body">
       <div class="pc-id">${p.id}</div>
       <div class="pc-h">${p.title.replace('Modelo ','').replace('Set ','Set · ')}</div>
+      <p class="pc-copy">${p.presentation==='set'?'Set completo para una zona técnica ordenada y lista para operar.':'Banca individual para complementar o renovar una cancha existente.'}</p>
       <div class="pc-specs">
         <span>${p.roof}</span>
         <span>${p.seat==='individual'?'Asientos ind.':'Banca corrida'}</span>
@@ -1003,23 +991,49 @@ function productCardHTML(p){
     </div>
   </article>`;
 }
-function renderCatalog(filter='all'){
-  const grid = document.getElementById('catalogGrid');
-  let filtered = PRODUCTS;
-  if(filter.startsWith('cap-')) filtered = PRODUCTS.filter(p=>p.capacity===parseInt(filter.split('-')[1]));
-  if(filter.startsWith('pres-')) filtered = PRODUCTS.filter(p=>p.presentation===filter.split('-')[1]);
-  if(filter.startsWith('roof-')) filtered = PRODUCTS.filter(p=>p.roof===filter.split('-')[1]);
-  if(!filtered.length){grid.innerHTML='<div class="catalog-empty">No hay modelos con ese filtro</div>';return;}
-  grid.innerHTML = filtered.map(productCardHTML).join('');
-  bindCardClicks(grid);
+function renderVisualSections(){
+  const hero = document.getElementById('heroModels');
+  if (hero) {
+    hero.innerHTML = ['S-TL5A','S-TPA7','S-TPA11A'].map(id=>productCardHTML(PRODUCTS.find(p=>p.id===id))).join('');
+    bindCardClicks(hero);
+  }
+  const visual = document.getElementById('visualGrid');
+  if (visual) {
+    const order = ['S-TPA11A','S-TPA7','S-TL5A','S-TPA7ML','I-TP7A','I-TP11MLA','S-TPML5A','I-TL5A','S-TPA11MLA','I-TP5A','S-TPA7MT','I-TP11A','S-TPML5MN','I-TP7AML','S-TPA11MLMT','I-TP5M','I-TP7AMLM','I-TP11MLM'];
+    visual.innerHTML = order.map(id=>productCardHTML(PRODUCTS.find(p=>p.id===id))).join('');
+    bindCardClicks(visual);
+  }
 }
-document.querySelectorAll('#filterPills .pill').forEach(pill=>{
-  pill.addEventListener('click',()=>{
-    document.querySelectorAll('#filterPills .pill').forEach(p=>p.classList.remove('active'));
-    pill.classList.add('active');
-    renderCatalog(pill.dataset.filter);
+
+function renderDecisionTable(){
+  const table = document.getElementById('decisionTable');
+  if (!table) return;
+  const sorted = [...PRODUCTS].sort((a,b)=>a.price-b.price);
+  table.innerHTML = `
+    <div class="decision-head">
+      <span>Foto</span><span>Modelo y medidas</span><span>Jugadores</span><span>Formato</span><span>Techo</span><span>Precio</span>
+    </div>
+    ${sorted.map(p=>`
+      <article class="decision-row" data-id="${p.id}">
+        <div class="decision-img"><img src="${p.image}" alt="${p.title}" loading="lazy"></div>
+        <div class="decision-model"><strong>${p.title}</strong><span>${p.dimensions}</span></div>
+        <div><span class="decision-chip">${p.capacity} jugadores</span></div>
+        <div><span class="decision-chip">${p.presentation==='set'?'Set completo':'Individual'}</span></div>
+        <div><span class="decision-chip">${p.roof}</span></div>
+        <div class="decision-price">
+          <div><strong>${fmt(p.price)}</strong><small>MXN · IVA incluido</small></div>
+          <div class="decision-cta"><a href="${waLink(p.id,p.title)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Cotizar</a></div>
+        </div>
+      </article>
+    `).join('')}
+  `;
+  table.querySelectorAll('.decision-row').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const p = PRODUCTS.find(x=>x.id===row.dataset.id);
+      openModal(p);
+    });
   });
-});
+}
 
 function bindCardClicks(container){
   container.querySelectorAll('.pc').forEach(card=>{
@@ -1046,26 +1060,6 @@ function renderSets(){
       </div>
       <div class="set-price">${fmt(p.price)}<small>MXN · IVA incluido</small></div>
     </article>
-  `).join('');
-}
-
-// ─── 05 TABLA PRECIOS ──────────────────────────────
-function renderPriceTable(){
-  const tbody = document.getElementById('priceTable');
-  tbody.innerHTML = PRODUCTS.sort((a,b)=>a.price-b.price).map(p=>`
-    <div class="pt-row">
-      <div class="pt-thumb"><img src="${p.image}" alt="${p.id}" loading="lazy"></div>
-      <div class="pt-name">${p.title}<small>${p.dimensions}</small></div>
-      <div class="pt-tag">${p.capacity} jug · ${p.presentation==='set'?'Set':'Indiv.'}</div>
-      <div class="pt-tag">${p.roof}</div>
-      <div class="pt-price-cta">
-        <div class="pt-price">${fmt(p.price)}</div>
-        <a class="pt-cta" href="${waLink(p.id,p.title)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.32A7.85 7.85 0 0 0 12.05 4 7.95 7.95 0 0 0 5.1 15.93L4 20l4.2-1.1A7.93 7.93 0 0 0 12.05 20a7.95 7.95 0 0 0 5.55-13.68Z"/></svg>
-          Cotizar
-        </a>
-      </div>
-    </div>
   `).join('');
 }
 
@@ -1157,10 +1151,9 @@ function enviarWhatsApp(e){
 }
 
 // ─── Init ─────────────────────────────────────────
-renderTabPanel(5);
-renderCatalog('all');
+renderVisualSections();
 renderSets();
-renderPriceTable();
+renderDecisionTable();
 renderFAQ();
 </script>
 
