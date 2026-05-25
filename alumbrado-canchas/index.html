@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alumbrado para Canchas de Futbol | Sportmaster México</title>
-<meta name="description" content="Sistema profesional de alumbrado LED para canchas de futbol 7, rapido y deportivas. Kit recomendado, instalacion profesional y cotizacion por WhatsApp.">
+<title>Alumbrado para Canchas Deportivas | Sportmaster México</title>
+<meta name="description" content="Alumbrado LED profesional para canchas de futbol 7, soccer, futbol rapido y todo tipo de cancha deportiva. Diseño luminico, suministro e instalacion en México.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://canchadefutbol7.mx/alumbrado-canchas/">
 <meta name="theme-color" content="#8fd735">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://canchadefutbol7.mx/alumbrado-canchas/">
 <meta property="og:site_name" content="Sportmaster México">
-<meta property="og:title" content="Alumbrado LED para Canchas de Futbol">
-<meta property="og:description" content="Ilumina tu cancha y haz que el juego siga. Sistema LED para canchas de futbol 7, clubes, colegios y complejos deportivos.">
+<meta property="og:title" content="Alumbrado LED para Canchas Deportivas">
+<meta property="og:description" content="Ilumina tu cancha y haz que el juego siga. Alumbrado LED para futbol 7, soccer, futbol rapido, clubes, colegios y complejos deportivos.">
 <meta property="og:image" content="https://canchadefutbol7.mx/alumbrado-canchas/assets/cancha-hero.webp">
 <meta property="og:locale" content="es_MX">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Alumbrado LED para Canchas de Futbol">
-<meta name="twitter:description" content="Kit profesional de alumbrado LED para canchas deportivas. Cotiza por WhatsApp.">
+<meta name="twitter:title" content="Alumbrado LED para Canchas Deportivas">
+<meta name="twitter:description" content="Diseño, suministro e instalacion de alumbrado LED para canchas deportivas. Cotiza por WhatsApp.">
 <meta name="twitter:image" content="https://canchadefutbol7.mx/alumbrado-canchas/assets/cancha-hero.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
         "@type": "Country",
         "name": "México"
       },
-      "description": "Sistema profesional de alumbrado LED para canchas de futbol 7, futbol rapido, clubes, colegios, parques deportivos y canchas de renta.",
+      "description": "Sistema profesional de alumbrado LED para canchas de futbol 7, futbol soccer, futbol rapido, clubes, colegios, parques deportivos, canchas multiusos y canchas de renta.",
       "offers": {
         "@type": "Offer",
         "url": "https://canchadefutbol7.mx/alumbrado-canchas/",
@@ -110,6 +110,7 @@
     --steel:#96a49a;
     --max:1160px;
     --shadow:0 26px 80px rgba(0,0,0,.18);
+    --shadow-strong:0 34px 90px rgba(4,10,8,.22);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth;overflow-x:hidden}
@@ -154,7 +155,7 @@
   .btn{padding:17px 22px;font-size:13px;border:1px solid transparent}
   .btn-primary{background:var(--lime);color:#061006;box-shadow:0 16px 38px rgba(153,221,56,.24)}
   .btn-dark{background:#050b0f;color:#fff;border-color:rgba(153,221,56,.36)}
-  .btn:hover,.nav-cta:hover{transform:translateY(-2px);filter:saturate(1.08)}
+  .btn:hover,.nav-cta:hover{transform:translateY(-3px);filter:saturate(1.08);box-shadow:0 22px 46px rgba(153,221,56,.24)}
   .icon{width:18px;height:18px;display:inline-block;flex:0 0 18px}
   .hero{
     min-height:680px;
@@ -175,6 +176,8 @@
       linear-gradient(180deg,rgba(2,7,10,.15) 0%,rgba(2,7,10,.78) 100%),
       url('assets/cancha-hero.webp') center/cover no-repeat;
     filter:saturate(.9) brightness(.72);
+    transform:scale(1.04);
+    animation:heroDrift 18s ease-in-out infinite alternate;
   }
   .hero::after{
     content:"";
@@ -190,7 +193,17 @@
     opacity:.9;
     pointer-events:none;
   }
-  .hero-content{position:relative;z-index:2;max-width:680px}
+  .hero-content{position:relative;z-index:2;max-width:760px}
+  .hero-content::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:10%;
+    bottom:-28px;
+    height:1px;
+    background:linear-gradient(90deg,var(--lime),transparent);
+    box-shadow:0 0 28px rgba(153,221,56,.55);
+  }
   .eyebrow{
     display:inline-flex;
     align-items:center;
@@ -212,7 +225,30 @@
     max-width:640px;
   }
   h1 span,h2 span{color:var(--lime)}
-  .hero p{font-size:18px;color:rgba(255,255,255,.84);max-width:560px;margin-top:22px;font-weight:700}
+  .hero p{font-size:18px;color:rgba(255,255,255,.84);max-width:650px;margin-top:22px;font-weight:700}
+  .hero-orbit{
+    position:absolute;
+    z-index:2;
+    right:clamp(24px,7vw,110px);
+    bottom:74px;
+    width:260px;
+    min-height:260px;
+    border:1px solid rgba(153,221,56,.24);
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#fff;
+    background:radial-gradient(circle,rgba(153,221,56,.16),rgba(3,8,11,.08) 55%,transparent 70%);
+    box-shadow:inset 0 0 38px rgba(153,221,56,.12),0 0 70px rgba(153,221,56,.12);
+    animation:slowSpin 22s linear infinite;
+  }
+  .hero-orbit::before,.hero-orbit::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.14)}
+  .hero-orbit::before{inset:34px}.hero-orbit::after{inset:72px;border-color:rgba(153,221,56,.2)}
+  .orbit-core{position:relative;z-index:1;text-align:center;animation:counterSpin 22s linear infinite}
+  .orbit-core b{display:block;font-family:'Archivo';font-size:54px;line-height:.9;color:var(--lime);letter-spacing:-.06em}
+  .orbit-core span{display:block;margin-top:8px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.76)}
+  .orbit-dot{position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 28px #fff}
+  .od1{top:18px;left:50%}.od2{right:22px;top:56%}.od3{left:28px;bottom:46px}
   .hero-specs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:650px;margin-top:30px}
   .spec{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.86);font-size:12px;font-weight:800}
   .spec .icon{color:var(--lime)}
@@ -221,6 +257,15 @@
   .trustbar .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding-top:20px;padding-bottom:20px}
   .trust{display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:900;color:rgba(255,255,255,.78)}
   .trust .icon{color:var(--lime)}
+  .marquee{
+    background:#020607;
+    color:#fff;
+    overflow:hidden;
+    border-bottom:1px solid rgba(153,221,56,.16);
+  }
+  .marquee-track{display:flex;width:max-content;animation:marquee 34s linear infinite}
+  .marquee span{padding:15px 22px;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.78);white-space:nowrap}
+  .marquee em{font-style:normal;color:var(--lime)}
   section{padding:74px 0;border-bottom:1px solid var(--line)}
   .section-head{max-width:760px;margin-bottom:34px}
   .num{display:block;color:var(--lime-2);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.16em;margin-bottom:12px}
@@ -229,6 +274,8 @@
   .kit-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:30px;align-items:stretch}
   .kit-card,.panel-card{background:#fff;border:1px solid var(--line);box-shadow:0 18px 52px rgba(12,20,14,.06)}
   .kit-card{padding:32px}
+  .kit-card,.panel-card,.ideal-card,.benefit,details{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}
+  .kit-card:hover,.panel-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-strong);border-color:rgba(153,221,56,.42)}
   .kit-card h3{font-size:27px;line-height:1;text-transform:uppercase;margin-bottom:16px}
   .check-list{display:grid;gap:10px;list-style:none;margin-top:22px}
   .check-list li{display:flex;gap:10px;align-items:flex-start;color:#465349;font-weight:800;font-size:14px}
@@ -297,17 +344,62 @@
   .pole{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 6px rgba(153,221,56,.28),0 0 24px #fff}
   .p1{left:-18px;top:18%}.p2{left:-18px;bottom:18%}.p3{right:-18px;top:18%}.p4{right:-18px;bottom:18%}
   .config-list{list-style:none;display:grid;gap:10px;margin-top:20px}
+  .sport-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .sport-card{
+    position:relative;
+    overflow:hidden;
+    min-height:260px;
+    padding:22px;
+    color:#fff;
+    background:#071016;
+    border:1px solid rgba(153,221,56,.18);
+    box-shadow:0 18px 54px rgba(4,10,8,.12);
+    isolation:isolate;
+  }
+  .sport-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.86)),url('assets/cancha-hero.webp') center/cover no-repeat;
+    z-index:-2;
+    transition:transform .5s ease,filter .5s ease;
+  }
+  .sport-card:nth-child(even)::before{background-image:linear-gradient(180deg,rgba(3,8,11,.05),rgba(3,8,11,.86)),url('assets/cancha-2.webp')}
+  .sport-card::after{
+    content:"";
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:20px;
+    height:90px;
+    background:radial-gradient(ellipse at center,rgba(255,255,255,.78),rgba(153,221,56,.18) 36%,transparent 68%);
+    opacity:.8;
+    transform:translateY(-10px);
+    transition:.35s ease;
+    z-index:-1;
+  }
+  .sport-card:hover{transform:translateY(-8px);box-shadow:0 30px 78px rgba(4,10,8,.24);border-color:rgba(153,221,56,.55)}
+  .sport-card:hover::before{transform:scale(1.08);filter:saturate(1.18)}
+  .sport-card:hover::after{opacity:1;transform:translateY(0) scale(1.08)}
+  .sport-card small{display:inline-flex;color:var(--lime);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:11px}
+  .sport-card b{display:block;margin-top:120px;font-family:'Archivo';font-size:25px;line-height:1;text-transform:uppercase;letter-spacing:-.03em}
+  .sport-card p{margin-top:10px;color:rgba(255,255,255,.72);font-size:13px;font-weight:800}
   .ideal-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-  .ideal-card{background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(12,20,14,.05);overflow:hidden}
+  .ideal-card{background:#fff;border:1px solid var(--line);box-shadow:0 10px 28px rgba(12,20,14,.05);overflow:hidden;position:relative}
   .ideal-card .thumb{height:116px;background:#111;position:relative;overflow:hidden}
   .ideal-card:nth-child(odd) .thumb{background:linear-gradient(180deg,rgba(5,10,12,.28),rgba(5,10,12,.85)),url('assets/cancha-hero.webp') center/cover no-repeat}
   .ideal-card:nth-child(even) .thumb{background:linear-gradient(180deg,rgba(5,10,12,.2),rgba(5,10,12,.82)),url('assets/cancha-2.webp') center/cover no-repeat}
   .ideal-card .thumb::after{content:"";position:absolute;left:18%;right:18%;top:10px;height:62px;background:radial-gradient(ellipse at top,rgba(255,255,255,.82),transparent 66%);opacity:.95}
   .ideal-card b{display:flex;align-items:center;justify-content:center;min-height:54px;padding:10px;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.03em}
+  .ideal-card:hover{transform:translateY(-7px);box-shadow:0 22px 50px rgba(12,20,14,.14);border-color:rgba(153,221,56,.58)}
+  .ideal-card:hover .thumb::after{opacity:1;transform:translateY(8px) scale(1.15)}
   .benefits{background:#071016;color:#fff}
   .benefits h2{max-width:720px}
   .benefit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:34px}
-  .benefit{border:1px solid rgba(153,221,56,.16);background:rgba(255,255,255,.04);padding:24px 18px;min-height:150px}
+  .benefit{border:1px solid rgba(153,221,56,.16);background:rgba(255,255,255,.04);padding:24px 18px;min-height:150px;position:relative;overflow:hidden}
+  .benefit::after{content:"";position:absolute;inset:auto 16px 0;height:3px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:.3s ease;box-shadow:0 0 20px var(--lime)}
+  .benefit:hover{transform:translateY(-7px);border-color:rgba(153,221,56,.55);background:rgba(255,255,255,.07)}
+  .benefit:hover::after{transform:scaleX(1)}
   .benefit .icon{color:var(--lime);width:26px;height:26px;margin-bottom:18px}
   .benefit b{display:block;font-family:'Archivo',sans-serif;text-transform:uppercase;line-height:1.05;margin-bottom:8px}
   .benefit span{color:rgba(255,255,255,.7);font-size:13px;font-weight:700}
@@ -324,6 +416,7 @@
   .cta-band p{color:rgba(255,255,255,.78);font-size:18px;font-weight:800;margin-top:12px;max-width:620px}
   .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   details{background:#fff;border:1px solid var(--line);padding:22px}
+  details:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(12,20,14,.09);border-color:rgba(153,221,56,.45)}
   summary{cursor:pointer;list-style:none;font-weight:900;font-family:'Archivo';text-transform:uppercase;letter-spacing:-.02em}
   summary::-webkit-details-marker{display:none}
   details p{margin-top:12px;color:#59665d;font-weight:700}
@@ -347,10 +440,17 @@
     font-weight:900;
   }
   .wa-float svg{width:28px;height:28px}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal.visible{opacity:1;transform:none}
+  @keyframes heroDrift{from{transform:scale(1.04) translate3d(0,0,0)}to{transform:scale(1.1) translate3d(-18px,8px,0)}}
+  @keyframes slowSpin{to{transform:rotate(360deg)}}
+  @keyframes counterSpin{to{transform:rotate(-360deg)}}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(max-width:980px){
     .nav-links{display:none}
     .kit-grid,.split,.cta-band .wrap{grid-template-columns:1fr}
-    .hero-specs,.trustbar .wrap,.benefit-grid{grid-template-columns:repeat(2,1fr)}
+    .hero-orbit{display:none}
+    .hero-specs,.trustbar .wrap,.benefit-grid,.sport-grid{grid-template-columns:repeat(2,1fr)}
     .ideal-grid,.faq-grid{grid-template-columns:repeat(3,1fr)}
     .kit-gallery{grid-template-columns:1fr 1fr}
     .fixture{grid-column:1/-1}
@@ -363,7 +463,7 @@
     .hero{min-height:720px;padding-top:104px}
     h1{font-size:47px}
     .hero p,.section-sub{font-size:16px}
-    .hero-specs,.trustbar .wrap,.benefit-grid,.ideal-grid,.faq-grid{grid-template-columns:1fr}
+    .hero-specs,.trustbar .wrap,.benefit-grid,.ideal-grid,.faq-grid,.sport-grid{grid-template-columns:1fr}
     .hero-actions .btn,.cta-band .btn{width:100%}
     section{padding:54px 0}
     .kit-card,.config,.night-panel{padding:26px}
@@ -395,11 +495,17 @@
 </nav>
 
 <header class="hero" id="inicio">
+  <div class="hero-orbit" aria-hidden="true">
+    <span class="orbit-dot od1"></span>
+    <span class="orbit-dot od2"></span>
+    <span class="orbit-dot od3"></span>
+    <div class="orbit-core"><b>LED</b><span>Proyecto llave en mano</span></div>
+  </div>
   <div class="wrap">
     <div class="hero-content">
-      <span class="eyebrow">Alumbrado profesional para canchas</span>
+      <span class="eyebrow">Alumbrado profesional para canchas deportivas</span>
       <h1>Ilumina <span>tu cancha.</span><br>Haz que el juego siga.</h1>
-      <p>Sistema profesional de alumbrado LED para canchas de futbol 7 de 53 x 33 m, clubes deportivos, colegios, parques y canchas de renta.</p>
+      <p>Diseñamos, suministramos e instalamos alumbrado LED para canchas de futbol 7, futbol soccer, futbol rapido, canchas multiusos, clubes, colegios, parques y centros deportivos.</p>
       <div class="hero-specs" aria-label="Caracteristicas del sistema">
         <div class="spec"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M6 21h12M12 21V3M8 7h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>4 postes de 7 metros</div>
         <div class="spec"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="m4 14 9-9 7 7-9 9H4v-7Z" stroke="currentColor" stroke-width="2"/><path d="M13 5v8H5" stroke="currentColor" stroke-width="2"/></svg>8 reflectores LED</div>
@@ -423,17 +529,38 @@
   </div>
 </div>
 
+<div class="marquee" aria-label="Tipos de cancha">
+  <div class="marquee-track">
+    <span><em>Futbol 7</em> / 53 x 33 m</span>
+    <span>Futbol soccer</span>
+    <span>Futbol rapido</span>
+    <span>Canchas multiusos</span>
+    <span>Clubes deportivos</span>
+    <span>Parques y municipios</span>
+    <span>Colegios y universidades</span>
+    <span>Canchas de renta</span>
+    <span><em>Futbol 7</em> / 53 x 33 m</span>
+    <span>Futbol soccer</span>
+    <span>Futbol rapido</span>
+    <span>Canchas multiusos</span>
+    <span>Clubes deportivos</span>
+    <span>Parques y municipios</span>
+    <span>Colegios y universidades</span>
+    <span>Canchas de renta</span>
+  </div>
+</div>
+
 <main>
-  <section id="kit">
+  <section id="kit" class="reveal">
     <div class="wrap">
       <div class="kit-grid">
         <article class="kit-card">
           <span class="num">01 / Kit recomendado</span>
-          <h3>Kit de alumbrado profesional para futbol 7</h3>
-          <p class="section-sub">Todo lo que necesitas para iluminar tu cancha con calidad profesional.</p>
+          <h3>Sistema de alumbrado profesional para tu tipo de cancha</h3>
+          <p class="section-sub">Configuramos postes, reflectores, cableado y orientacion luminica segun medidas, deporte, uso nocturno y nivel de visibilidad requerido.</p>
           <ul class="check-list">
-            <li><span class="mark">✓</span>4 postes metalicos de 7 metros</li>
-            <li><span class="mark">✓</span>8 reflectores LED de alta potencia</li>
+            <li><span class="mark">✓</span>Postes metalicos segun proyecto</li>
+            <li><span class="mark">✓</span>Reflectores LED de alta potencia</li>
             <li><span class="mark">✓</span>Cableado y conexiones</li>
             <li><span class="mark">✓</span>Bases y herrajes</li>
             <li><span class="mark">✓</span>Instalacion profesional</li>
@@ -452,7 +579,7 @@
     </div>
   </section>
 
-  <section id="configuracion" aria-label="Configuracion recomendada">
+  <section id="configuracion" class="reveal" aria-label="Configuracion recomendada">
     <div class="wrap">
       <div class="split panel-card">
         <div class="night-panel">
@@ -484,11 +611,34 @@
     </div>
   </section>
 
-  <section aria-label="Ideal para">
+  <section class="reveal" aria-label="Ideal para">
     <div class="wrap">
       <div class="section-head">
         <span class="num">04 / Aplicaciones</span>
-        <h2>Ideal para proyectos <span>de alto uso.</span></h2>
+        <h2>Alumbrado para <span>cada tipo de cancha.</span></h2>
+        <p class="section-sub">Una cancha no se ilumina igual si es de renta nocturna, entrenamiento escolar, soccer competitivo o futbol rapido. Ajustamos potencia, altura, distribucion y angulo para que el juego se vea profesional.</p>
+      </div>
+      <div class="sport-grid">
+        <article class="sport-card">
+          <small>01 / Futbol 7</small>
+          <b>Canchas 53 x 33 m</b>
+          <p>Configuracion eficiente para renta, clubes y fraccionamientos con operacion nocturna.</p>
+        </article>
+        <article class="sport-card">
+          <small>02 / Soccer</small>
+          <b>Campos grandes</b>
+          <p>Mayor cobertura, altura y potencia para entrenamientos y partidos en campo completo.</p>
+        </article>
+        <article class="sport-card">
+          <small>03 / Futbol rapido</small>
+          <b>Juego intenso</b>
+          <p>Luz uniforme para rebotes, bardas, porteria y velocidad de juego en espacios cerrados.</p>
+        </article>
+        <article class="sport-card">
+          <small>04 / Multiusos</small>
+          <b>Todo tipo de cancha</b>
+          <p>Soluciones para basquetbol, voleibol, tenis, padel, parques y complejos deportivos.</p>
+        </article>
       </div>
       <div class="ideal-grid">
         <article class="ideal-card"><div class="thumb"></div><b>Clubes deportivos</b></article>
@@ -501,11 +651,11 @@
     </div>
   </section>
 
-  <section class="benefits" id="beneficios">
+  <section class="benefits reveal" id="beneficios">
     <div class="wrap">
       <span class="num">05 / Ventajas</span>
       <h2>Tu cancha no termina <span>cuando baja el sol.</span></h2>
-      <p class="section-sub" style="color:rgba(255,255,255,.72)">Convierte tu cancha en un espacio listo para operar de noche con iluminacion profesional LED.</p>
+      <p class="section-sub" style="color:rgba(255,255,255,.72)">Convierte cualquier cancha deportiva en un activo que opera de noche: mas horarios, mejor experiencia, mayor seguridad visual y una imagen de club premium.</p>
       <div class="benefit-grid">
         <article class="benefit">
           <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -531,7 +681,7 @@
     </div>
   </section>
 
-  <section id="faq">
+  <section id="faq" class="reveal">
     <div class="wrap">
       <div class="section-head">
         <span class="num">06 / Preguntas frecuentes</span>
@@ -539,8 +689,8 @@
       </div>
       <div class="faq-grid">
         <details open>
-          <summary>¿El kit sirve para cualquier cancha?</summary>
-          <p>La configuracion de 4 postes y 8 reflectores es una base recomendada para canchas de 53 x 33 m. Para otros tamaños se ajusta la cantidad de postes, altura y potencia.</p>
+          <summary>¿Sirve para futbol 7, soccer y futbol rapido?</summary>
+          <p>Si. Diseñamos la configuracion segun medidas, deporte, altura disponible, cantidad de postes, potencia LED y nivel de uso nocturno.</p>
         </details>
         <details>
           <summary>¿Incluye instalacion?</summary>
@@ -580,5 +730,29 @@
 <a class="wa-float" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20alumbrado%20para%20mi%20cancha" target="_blank" rel="noopener" aria-label="Cotizar por WhatsApp">
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12.2A8 8 0 0 1 8.5 19.4L4 20.6l1.2-4.3A8 8 0 1 1 20 12.2Z" stroke="currentColor" stroke-width="2"/><path d="M9 8.8c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c-.1.2-.2.3 0 .6.3.6 1.3 1.8 2.7 2.3.3.1.5.1.7-.1l.6-.8c.2-.2.4-.2.7-.1l1.6.8c.4.2.4.4.4.6 0 .4-.3 1.3-1 1.7-.6.4-1.7.4-3.1-.2-2.7-1.1-4.5-3.6-4.6-3.8-.2-.3-1.1-1.5-1.1-2.8 0-1.3.6-1.9.8-2.2Z" fill="currentColor"/></svg>
 </a>
+<script>
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.16 });
+
+  document.querySelectorAll('.reveal').forEach((node) => revealObserver.observe(node));
+
+  document.querySelectorAll('.sport-card, .ideal-card, .benefit, .kit-card').forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+      const y = ((event.clientY - rect.top) / rect.height - 0.5) * -10;
+      card.style.transform = `translateY(-8px) rotateX(${y}deg) rotateY(${x}deg)`;
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.transform = '';
+    });
+  });
+</script>
 </body>
 </html>
