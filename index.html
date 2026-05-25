@@ -2308,25 +2308,30 @@ section{padding:56px 24px}
 }
 </style>
 
-  <!-- Google Ads Conversion Tracking (canchadefutbol7.mx) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-CONVERSION_ID"></script>
+  <!-- Google Ads Conversion Tracking (canchadefutbol7.mx)
+       Recovery 2026-05-24 post-hack: AW + 3 labels DEDICADOS canchadefutbol7.
+       Cuenta AW-859315777 (Olga Govela).
+       Labels específicos del proyecto canchadefutbol7 — reportes 100% limpios:
+       FQW9CIyr_bIcEMG84JkD   → Futbol7 — Form Submit
+       5CIzCL_t_rIcEMG84JkD   → Futbol7 — WhatsApp Click
+       lczYCL2V6LIcEMG84JkD   → Futbol7 — Tel Click
+  -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-859315777"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'AW-CONVERSION_ID');
+    gtag('config', 'AW-859315777', { 'conversion_linker': true });
 
     window.trackConversion = function(type) {
       var labels = {
-        'form_submit':    'AW-CONVERSION_ID/FORM_LABEL',
-        'whatsapp_click': 'AW-CONVERSION_ID/WHATSAPP_LABEL',
-        'phone_click':    'AW-CONVERSION_ID/PHONE_LABEL'
+        'form_submit':    'AW-859315777/FQW9CIyr_bIcEMG84JkD',
+        'whatsapp_click': 'AW-859315777/5CIzCL_t_rIcEMG84JkD',
+        'phone_click':    'AW-859315777/lczYCL2V6LIcEMG84JkD'
       };
       if (typeof gtag !== 'function' || !labels[type]) return;
       gtag('event', 'conversion', {
-        'send_to': labels[type],
-        'value': 500.0,
-        'currency': 'MXN'
+        'send_to': labels[type]
       });
     };
 
