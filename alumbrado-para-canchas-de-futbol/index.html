@@ -121,7 +121,7 @@
           "name": "¿Cuánto cuesta iluminar una cancha de fútbol 7?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "El costo depende de medidas, número de postes, altura, cantidad de reflectores, ubicación y nivel de iluminación requerido. Para una cotización precisa se revisan medidas, fotos del área y uso esperado de la cancha."
+            "text": "El costo depende de medidas, numero de postes, altura, cantidad de reflectores, obra civil, ubicacion y nivel de iluminacion requerido. Para una cotizacion precisa se revisan medidas y condiciones del terreno."
           }
         },
         {
@@ -679,30 +679,49 @@
     overflow:hidden;
     border:1px solid rgba(255,255,255,.18);
     background:#020607;
-    display:grid;
-    grid-template-columns:1fr 1fr;
   }
   .before-after::before,.before-after::after{
     content:"";
-    min-height:270px;
+    position:absolute;
+    inset:0;
     background-size:cover;
     background-position:center;
   }
   .before-after::before{
-    background-image:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,.55)),url('assets/iluminacion-campos-deportivos-aerea.webp');
-    filter:brightness(.34) saturate(.75);
+    background-image:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,.58)),url('assets/luminarias-para-canchas-deportivas-futbol-7.webp');
+    filter:brightness(.26) saturate(.64);
   }
   .before-after::after{
-    background-image:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.18)),url('assets/luminarias-para-canchas-deportivas-futbol-7.webp');
+    background-image:
+      radial-gradient(ellipse at 72% 72%,rgba(153,221,56,.22),transparent 44%),
+      linear-gradient(180deg,rgba(3,8,11,.04),rgba(3,8,11,.12)),
+      url('assets/luminarias-para-canchas-deportivas-futbol-7.webp');
+    clip-path:inset(0 100% 0 0);
+    filter:brightness(1.08) saturate(1.16) contrast(1.06);
+    box-shadow:inset 0 0 120px rgba(153,221,56,.18);
+  }
+  .before-after .light-sweep{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    width:120px;
+    z-index:2;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+    opacity:0;
+    transform:translateX(-140px);
+    pointer-events:none;
   }
   .compare-handle{
     position:absolute;
-    left:50%;
+    left:0;
     top:0;
     bottom:0;
     width:2px;
+    z-index:4;
     background:rgba(255,255,255,.75);
     box-shadow:0 0 28px rgba(255,255,255,.45);
+    transform:translateX(0);
   }
   .compare-handle span{
     position:absolute;
@@ -731,6 +750,9 @@
     letter-spacing:.08em;
   }
   .label-before{left:14px}.label-after{right:14px;background:var(--lime);color:#061006}
+  .benefits.visible .before-after::after{animation:revealFieldLight 4.4s cubic-bezier(.18,.9,.18,1) .25s both}
+  .benefits.visible .compare-handle{animation:slideCompareHandle 4.4s cubic-bezier(.18,.9,.18,1) .25s both}
+  .benefits.visible .before-after .light-sweep{animation:lightSweep 4.4s cubic-bezier(.18,.9,.18,1) .25s both}
   .compare-copy h3{
     font-family:'Archivo';
     font-size:clamp(30px,4vw,50px);
@@ -956,15 +978,34 @@
     40%,72%{opacity:.72}
     82%,100%{opacity:.12}
   }
+  @keyframes revealFieldLight{
+    0%{clip-path:inset(0 100% 0 0);filter:brightness(.55) saturate(.86)}
+    16%{clip-path:inset(0 78% 0 0);filter:brightness(.68) saturate(.92)}
+    34%{clip-path:inset(0 52% 0 0);filter:brightness(1.22) saturate(1.14)}
+    48%{clip-path:inset(0 38% 0 0);filter:brightness(.92) saturate(1.02)}
+    70%{clip-path:inset(0 12% 0 0);filter:brightness(1.16) saturate(1.18)}
+    100%{clip-path:inset(0 0 0 0);filter:brightness(1.08) saturate(1.16) contrast(1.06)}
+  }
+  @keyframes slideCompareHandle{
+    0%{left:0;transform:translateX(0)}
+    100%{left:100%;transform:translateX(-1px)}
+  }
+  @keyframes lightSweep{
+    0%,10%{opacity:0;transform:translateX(-140px)}
+    28%{opacity:.85}
+    100%{opacity:0;transform:translateX(calc(100vw + 140px))}
+  }
   @keyframes slowSpin{to{transform:rotate(360deg)}}
   @keyframes counterSpin{to{transform:rotate(-360deg)}}
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @keyframes zoomIn{from{opacity:.2;transform:scale(.92)}to{opacity:1;transform:scale(1.03)}}
   @media(prefers-reduced-motion:reduce){
-    .hero::before,.hero::after,.cta-band::before,.cta-band::after{animation:none}
+    .hero::before,.hero::after,.cta-band::before,.cta-band::after,.benefits.visible .before-after::after,.benefits.visible .compare-handle,.benefits.visible .before-after .light-sweep{animation:none}
     .hero::before{filter:saturate(.9) brightness(.72)}
     .cta-band::before{filter:brightness(.72) saturate(.96)}
     .cta-band::after{opacity:.45}
+    .before-after::after{clip-path:inset(0 0 0 0)}
+    .compare-handle{left:50%}
   }
   @media(max-width:980px){
     .nav-links{display:none}
@@ -1027,7 +1068,7 @@
       <a href="#beneficios">Beneficios</a>
       <a href="#faq">FAQ</a>
     </div>
-    <a class="nav-cta wa-link" href="https://wa.me/525539887615" target="_blank" rel="noopener" data-wa-intent="Quiero cotizar alumbrado para canchas de fútbol. Me interesa lo siguiente:">
+    <a class="nav-cta" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20alumbrado%20para%20mi%20cancha" target="_blank" rel="noopener">
       Cotizar ahora
       <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12.2A8 8 0 0 1 8.5 19.4L4 20.6l1.2-4.3A8 8 0 1 1 20 12.2Z" stroke="currentColor" stroke-width="2"/><path d="M9 8.8c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c-.1.2-.2.3 0 .6.3.6 1.3 1.8 2.7 2.3.3.1.5.1.7-.1l.6-.8c.2-.2.4-.2.7-.1l1.6.8c.4.2.4.4.4.6 0 .4-.3 1.3-1 1.7-.6.4-1.7.4-3.1-.2-2.7-1.1-4.5-3.6-4.6-3.8-.2-.3-1.1-1.5-1.1-2.8 0-1.3.6-1.9.8-2.2Z" fill="currentColor"/></svg>
     </a>
@@ -1053,8 +1094,8 @@
         <div class="spec"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Mayor ahorro de energia</div>
       </div>
       <div class="hero-actions">
-        <a class="btn btn-primary wa-link" href="https://wa.me/525539887615" target="_blank" rel="noopener" data-wa-intent="Quiero cotizar alumbrado para canchas de fútbol. Me interesa lo siguiente:">Cotizar alumbrado <span aria-hidden="true">-></span></a>
-        <a class="btn btn-dark wa-link" href="https://wa.me/525539887615" target="_blank" rel="noopener" data-wa-intent="Quiero asesoría por WhatsApp para alumbrado de cancha. Me interesa lo siguiente:">Escribenos por WhatsApp</a>
+        <a class="btn btn-primary" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20alumbrado%20para%20mi%20cancha" target="_blank" rel="noopener">Cotizar alumbrado <span aria-hidden="true">-></span></a>
+        <a class="btn btn-dark" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20asesoria%20por%20WhatsApp%20para%20alumbrado%20de%20cancha" target="_blank" rel="noopener">Escribenos por WhatsApp</a>
       </div>
     </div>
   </div>
@@ -1107,7 +1148,7 @@
             <li><span class="mark">✓</span>Orientacion de iluminacion optimizada</li>
           </ul>
           <div class="hero-actions">
-            <a class="btn btn-primary wa-link" href="https://wa.me/525539887615" target="_blank" rel="noopener" data-wa-intent="Quiero cotizar el kit de alumbrado para fútbol 7. Me interesa lo siguiente:">Quiero cotizar mi cancha</a>
+            <a class="btn btn-primary" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20el%20kit%20de%20alumbrado%20para%20futbol%207" target="_blank" rel="noopener">Quiero cotizar mi cancha</a>
           </div>
         </article>
         <div class="carousel-shell">
@@ -1280,6 +1321,7 @@
         <div class="before-after" aria-label="Comparacion antes y despues de iluminar una cancha">
           <span class="compare-label label-before">Antes</span>
           <span class="compare-label label-after">Despues</span>
+          <span class="light-sweep" aria-hidden="true"></span>
           <div class="compare-handle"><span>‹ ›</span></div>
         </div>
         <div class="compare-copy">
@@ -1329,7 +1371,7 @@
         </details>
         <details>
           <summary>¿Pueden iluminar una cancha ya existente?</summary>
-          <p>Si. Se revisan medidas, accesos, punto electrico, estructura existente y condiciones del área para definir la mejor solucion.</p>
+          <p>Si. Se revisan medidas, accesos, punto electrico, estructura existente y condiciones de obra para definir la mejor solucion.</p>
         </details>
         <details>
           <summary>¿Que necesito para cotizar?</summary>
@@ -1354,7 +1396,7 @@
         <h2>Iluminemos tu cancha <span>esta semana.</span></h2>
         <p>Envia medidas, ciudad y fotos del proyecto. Te ayudamos a definir el sistema de alumbrado correcto.</p>
       </div>
-      <a class="btn btn-primary wa-link" href="https://wa.me/525539887615" target="_blank" rel="noopener" data-wa-intent="Quiero cotizar alumbrado para cancha. Mis medidas son:">Hablar por WhatsApp</a>
+      <a class="btn btn-primary" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20alumbrado%20para%20cancha.%20Mis%20medidas%20son%3A" target="_blank" rel="noopener">Hablar por WhatsApp</a>
     </div>
   </section>
 </main>
@@ -1366,7 +1408,7 @@
   </div>
 </footer>
 
-<a class="wa-float wa-link" href="https://wa.me/525539887615" target="_blank" rel="noopener" aria-label="Cotizar por WhatsApp" data-wa-intent="Quiero cotizar alumbrado para canchas de fútbol. Me interesa lo siguiente:">
+<a class="wa-float" href="https://wa.me/525539887615?text=Hola%20Sportmaster%2C%20quiero%20cotizar%20alumbrado%20para%20mi%20cancha" target="_blank" rel="noopener" aria-label="Cotizar por WhatsApp">
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12.2A8 8 0 0 1 8.5 19.4L4 20.6l1.2-4.3A8 8 0 1 1 20 12.2Z" stroke="currentColor" stroke-width="2"/><path d="M9 8.8c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c-.1.2-.2.3 0 .6.3.6 1.3 1.8 2.7 2.3.3.1.5.1.7-.1l.6-.8c.2-.2.4-.2.7-.1l1.6.8c.4.2.4.4.4.6 0 .4-.3 1.3-1 1.7-.6.4-1.7.4-3.1-.2-2.7-1.1-4.5-3.6-4.6-3.8-.2-.3-1.1-1.5-1.1-2.8 0-1.3.6-1.9.8-2.2Z" fill="currentColor"/></svg>
 </a>
 <div class="lightbox" id="photoLightbox" aria-modal="true" role="dialog" aria-label="Vista ampliada de imagen">
@@ -1387,17 +1429,6 @@
   </div>
 </div>
 <script>
-  const canonicalUrl = 'https://canchadefutbol7.mx/alumbrado-para-canchas-de-futbol/';
-  const whatsappPhone = '525539887615';
-  document.querySelectorAll('.wa-link').forEach((link) => {
-    const intent = link.dataset.waIntent || 'Quiero cotizar alumbrado para canchas de fútbol. Me interesa lo siguiente:';
-    const message = `Hola Sportmaster 👋
-Vengo de su página:
-${canonicalUrl}
-${intent}`;
-    link.href = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`;
-  });
-
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
