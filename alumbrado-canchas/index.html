@@ -32,6 +32,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/luminarias-para-canchas-deportivas-futbol-7.webp" fetchpriority="high">
+<link rel="alternate" type="text/markdown" href="/alumbrado-canchas/llms.txt" title="Contexto LLM de alumbrado deportivo Sportmaster">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -569,6 +570,176 @@
     letter-spacing:.04em;
   }
   .intent-chips span:nth-child(3n+1){border-color:rgba(153,221,56,.65);background:var(--lime-soft)}
+  .growth-lab{
+    background:#061014;
+    color:#fff;
+    border-bottom:1px solid rgba(153,221,56,.18);
+  }
+  .growth-lab .num{color:var(--lime)}
+  .growth-head{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:24px;
+    align-items:end;
+    margin-bottom:24px;
+  }
+  .growth-head h2{max-width:760px}
+  .growth-head p{
+    max-width:360px;
+    color:rgba(255,255,255,.68);
+    font-weight:800;
+  }
+  .metric-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid rgba(255,255,255,.14);
+    border-bottom:1px solid rgba(255,255,255,.14);
+    margin-bottom:26px;
+  }
+  .metric-card{
+    min-height:142px;
+    padding:24px 20px;
+    border-right:1px solid rgba(255,255,255,.14);
+    position:relative;
+    overflow:hidden;
+  }
+  .metric-card:last-child{border-right:none}
+  .metric-card::after{
+    content:"";
+    position:absolute;
+    inset:auto 18px 0;
+    height:2px;
+    background:var(--lime);
+    transform:scaleX(.35);
+    transform-origin:left;
+    opacity:.8;
+    box-shadow:0 0 22px rgba(153,221,56,.8);
+  }
+  .metric-card .icon{color:var(--lime);width:30px;height:30px;margin-bottom:12px}
+  .metric-card b{
+    display:block;
+    font-family:'Archivo';
+    text-transform:uppercase;
+    line-height:1.02;
+    letter-spacing:-.02em;
+  }
+  .metric-card strong{
+    display:block;
+    color:var(--lime);
+    font-family:'Archivo';
+    font-size:clamp(28px,4vw,46px);
+    line-height:.9;
+    margin:10px 0 8px;
+  }
+  .metric-card span{display:block;color:rgba(255,255,255,.64);font-size:12px;font-weight:800}
+  .case-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:26px;
+  }
+  .case-card{
+    min-height:214px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.16);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    isolation:isolate;
+    cursor:zoom-in;
+  }
+  .case-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.88)),url('assets/luminarias-para-canchas-deportivas-futbol-7.webp') center/cover no-repeat;
+    z-index:-2;
+    transition:.42s ease;
+  }
+  .case-card:nth-child(2)::before{background-image:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.88)),url('assets/iluminacion-campos-deportivos-aerea.webp')}
+  .case-card:nth-child(3)::before{background-image:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.88)),url('assets/lamparas-para-canchas-de-futbol-reflectores-led.webp')}
+  .case-card:nth-child(4)::before{background-image:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.88)),url('assets/iluminacion-instalaciones-deportivas-cancha-futbol.webp')}
+  .case-card:hover::before{transform:scale(1.08);filter:saturate(1.12)}
+  .case-card small{color:var(--lime);font-weight:900;text-transform:uppercase;letter-spacing:.12em}
+  .case-card b{font-family:'Archivo';font-size:24px;text-transform:uppercase;line-height:1;margin-top:8px}
+  .case-card p{color:rgba(255,255,255,.72);font-size:13px;font-weight:800;margin-top:8px}
+  .compare-grid{
+    display:grid;
+    grid-template-columns:1.32fr .68fr;
+    gap:30px;
+    align-items:center;
+    padding-top:24px;
+    border-top:1px solid rgba(255,255,255,.14);
+  }
+  .before-after{
+    min-height:270px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.18);
+    background:#020607;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  .before-after::before,.before-after::after{
+    content:"";
+    min-height:270px;
+    background-size:cover;
+    background-position:center;
+  }
+  .before-after::before{
+    background-image:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,.55)),url('assets/iluminacion-campos-deportivos-aerea.webp');
+    filter:brightness(.34) saturate(.75);
+  }
+  .before-after::after{
+    background-image:linear-gradient(180deg,rgba(3,8,11,.08),rgba(3,8,11,.18)),url('assets/luminarias-para-canchas-deportivas-futbol-7.webp');
+  }
+  .compare-handle{
+    position:absolute;
+    left:50%;
+    top:0;
+    bottom:0;
+    width:2px;
+    background:rgba(255,255,255,.75);
+    box-shadow:0 0 28px rgba(255,255,255,.45);
+  }
+  .compare-handle span{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:48px;
+    height:48px;
+    transform:translate(-50%,-50%);
+    border:2px solid rgba(255,255,255,.8);
+    background:rgba(3,8,11,.8);
+    display:grid;
+    place-items:center;
+    color:#fff;
+    font-weight:900;
+    backdrop-filter:blur(10px);
+  }
+  .compare-label{
+    position:absolute;
+    top:14px;
+    padding:8px 10px;
+    background:rgba(3,8,11,.82);
+    border:1px solid rgba(255,255,255,.16);
+    font-size:11px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .label-before{left:14px}.label-after{right:14px;background:var(--lime);color:#061006}
+  .compare-copy h3{
+    font-family:'Archivo';
+    font-size:clamp(30px,4vw,50px);
+    line-height:.95;
+    text-transform:uppercase;
+    letter-spacing:-.035em;
+  }
+  .compare-copy h3 span{color:var(--lime)}
+  .compare-copy p{margin-top:14px;color:rgba(255,255,255,.68);font-weight:800}
   .benefit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:34px}
   .benefit{border:1px solid rgba(153,221,56,.16);background:rgba(255,255,255,.04);padding:24px 18px;min-height:150px;position:relative;overflow:hidden}
   .benefit::after{content:"";position:absolute;inset:auto 16px 0;height:3px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:.3s ease;box-shadow:0 0 20px var(--lime)}
@@ -800,6 +971,9 @@
     .kit-grid,.split,.cta-band .wrap{grid-template-columns:1fr}
     .hero-orbit{display:none}
     .hero-specs,.trustbar .wrap,.benefit-grid{grid-template-columns:repeat(2,1fr)}
+    .growth-head,.compare-grid{grid-template-columns:1fr}
+    .metric-grid,.case-grid{grid-template-columns:repeat(2,1fr)}
+    .metric-card:nth-child(2){border-right:none}
     .intent-grid{grid-template-columns:1fr}
     .faq-grid{grid-template-columns:repeat(3,1fr)}
     .kit-gallery figure{flex-basis:48%}
@@ -815,7 +989,11 @@
     .hero{min-height:720px;padding-top:104px}
     h1{font-size:47px}
     .hero p,.section-sub{font-size:16px}
-    .hero-specs,.trustbar .wrap,.benefit-grid,.faq-grid{grid-template-columns:1fr}
+    .hero-specs,.trustbar .wrap,.benefit-grid,.faq-grid,.metric-grid,.case-grid{grid-template-columns:1fr}
+    .metric-card{border-right:none;border-bottom:1px solid rgba(255,255,255,.14)}
+    .metric-card:last-child{border-bottom:none}
+    .before-after{min-height:230px}
+    .before-after::before,.before-after::after{min-height:230px}
     .hero-actions .btn,.cta-band .btn{width:100%}
     section{padding:54px 0}
     .kit-card,.config,.night-panel{padding:26px}
@@ -1059,6 +1237,56 @@
       <span class="num">06 / Ventajas</span>
       <h2>Tu cancha no termina <span>cuando baja el sol.</span></h2>
       <p class="section-sub" style="color:rgba(255,255,255,.72)">Convierte cualquier cancha deportiva en un activo que opera de noche: mas horarios, mejor experiencia, mayor seguridad visual y una imagen de club premium.</p>
+      <div class="metric-grid" aria-label="Beneficios comerciales del alumbrado deportivo">
+        <article class="metric-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 9h16M7 9V5h10v4M6 9v10M18 9v10M10 13h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <b>Menor deslumbramiento</b>
+          <span>Opticas orientadas para mejorar la visibilidad del jugador.</span>
+        </article>
+        <article class="metric-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 1 0 10 10M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <b>Operacion nocturna</b>
+          <strong>+42%</strong>
+          <span>mas horas potenciales para renta, clases y torneos.</span>
+        </article>
+        <article class="metric-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <b>Mayor rentabilidad</b>
+          <strong>50,000 h</strong>
+          <span>vida util LED industrial segun equipo seleccionado.</span>
+        </article>
+        <article class="metric-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <b>Ahorro energetico</b>
+          <strong>hasta 60%</strong>
+          <span>frente a sistemas tradicionales como halogeno.</span>
+        </article>
+      </div>
+      <div class="case-grid" aria-label="Casos de uso de alumbrado para canchas deportivas">
+        <article class="case-card" data-zoom-src="assets/luminarias-para-canchas-deportivas-futbol-7.webp" data-zoom-title="Alumbrado para futbol 7">
+          <small>Caso de uso</small><b>Futbol 7</b><p>Mas horas de renta por dia y mejor experiencia para ligas nocturnas.</p>
+        </article>
+        <article class="case-card" data-zoom-src="assets/iluminacion-campos-deportivos-aerea.webp" data-zoom-title="Iluminacion para campos de soccer">
+          <small>Caso de uso</small><b>Soccer</b><p>Cobertura uniforme para campo completo, entrenamiento y torneos.</p>
+        </article>
+        <article class="case-card" data-zoom-src="assets/lamparas-para-canchas-de-futbol-reflectores-led.webp" data-zoom-title="Reflectores LED para canchas multiusos">
+          <small>Caso de uso</small><b>Multiusos</b><p>Soluciones para tenis, basquetbol, voleibol, gimnasios y parques.</p>
+        </article>
+        <article class="case-card" data-zoom-src="assets/iluminacion-instalaciones-deportivas-cancha-futbol.webp" data-zoom-title="Alumbrado para colegios y parques">
+          <small>Caso de uso</small><b>Colegios</b><p>Mas seguridad visual para actividades vespertinas y operacion escolar.</p>
+        </article>
+      </div>
+      <div class="compare-grid">
+        <div class="before-after" aria-label="Comparacion antes y despues de iluminar una cancha">
+          <span class="compare-label label-before">Antes</span>
+          <span class="compare-label label-after">Despues</span>
+          <div class="compare-handle"><span>‹ ›</span></div>
+        </div>
+        <div class="compare-copy">
+          <h3>La diferencia no es solo ver. <span>Es cobrar mas horas.</span></h3>
+          <p>Una cancha iluminada aumenta la disponibilidad del proyecto, mejora la percepcion de seguridad y permite vender horarios despues del trabajo o la escuela.</p>
+        </div>
+      </div>
       <div class="benefit-grid">
         <article class="benefit">
           <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
