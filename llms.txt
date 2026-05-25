@@ -22,6 +22,12 @@
 - [Construcción en Monterrey](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/) — Operaciones zona metropolitana MTY (9 municipios), teléfono local +52 81 1629 6384. Clientes: Grupo Grainger, LEGO, Kia.
 - [Construcción de canchas de futbol en Monterrey](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-monterrey/) — Landing local para construcción de canchas de futbol con pasto sintético en Monterrey y zona metropolitana. Orientada a búsquedas como "pasto sintético Monterrey", "pasto sintético para canchas Monterrey", "cancha de futbol 7 Monterrey" y "construcción cancha futbol 7 Monterrey".
 - [Construcción de canchas de futbol en Guadalajara](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-guadalajara/) — Landing local para construcción de canchas de futbol con pasto sintético en Guadalajara, Zapopan, Tlaquepaque, Tonalá y zona metropolitana. Orientada a búsquedas como "pasto sintético Guadalajara", "pasto sintético para canchas Guadalajara", "cancha de futbol 7 Guadalajara" y "construcción cancha futbol 7 Guadalajara".
+- [Construcción de canchas de futbol en CDMX](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-cdmx/) — Landing local para construcción de canchas de futbol con pasto sintético en CDMX y zona metropolitana. Orientada a búsquedas como "pasto sintético CDMX", "pasto sintético para canchas CDMX", "cancha de futbol 7 CDMX" y "construcción cancha futbol 7 CDMX".
+- [Construcción de canchas de futbol en Querétaro](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-queretaro/) — Landing local para construcción de canchas de futbol con pasto sintético en Querétaro y zona metropolitana. Orientada a búsquedas como "pasto sintético Querétaro", "pasto sintético para canchas Querétaro", "cancha de futbol 7 Querétaro" y "construcción cancha futbol 7 Querétaro".
+- [Construcción de canchas de futbol en Puebla](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-puebla/) — Landing local para construcción de canchas de futbol con pasto sintético en Puebla y zona metropolitana. Orientada a búsquedas como "pasto sintético Puebla", "pasto sintético para canchas Puebla", "cancha de futbol 7 Puebla" y "construcción cancha futbol 7 Puebla".
+- [Construcción de canchas de futbol en Tijuana](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-tijuana/) — Landing local para construcción de canchas de futbol con pasto sintético en Tijuana y zona metropolitana. Orientada a búsquedas como "pasto sintético Tijuana", "pasto sintético para canchas Tijuana", "cancha de futbol 7 Tijuana" y "construcción cancha futbol 7 Tijuana".
+- [Construcción de canchas de futbol en Mérida](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-merida/) — Landing local para construcción de canchas de futbol con pasto sintético en Mérida y zona metropolitana. Orientada a búsquedas como "pasto sintético Mérida", "pasto sintético para canchas Mérida", "cancha de futbol 7 Mérida" y "construcción cancha futbol 7 Mérida".
+- [Construcción de canchas de futbol en Cancún](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-cancun/) — Landing local para construcción de canchas de futbol con pasto sintético en Cancún y zona metropolitana. Orientada a búsquedas como "pasto sintético Cancún", "pasto sintético para canchas Cancún", "cancha de futbol 7 Cancún" y "construcción cancha futbol 7 Cancún".
 - [Monterrey HUB](https://canchadefutbol7.mx/monterrey/) — Puente a 5 servicios deportivos en MTY.
 - [robots.txt](https://canchadefutbol7.mx/robots.txt) · [sitemap.xml](https://canchadefutbol7.mx/sitemap.xml)
 
@@ -84,6 +90,13 @@ Cada pillar tiene JSON-LD `@graph` consolidado para AI parsing:
 - **`/construccion-de-canchas-de-futbol-en-monterrey/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Monterrey.
 - **`/construccion-de-canchas-de-futbol-en-guadalajara/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Guadalajara.
 
+
+- **`/construccion-de-canchas-de-futbol-en-cdmx/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en CDMX.
+- **`/construccion-de-canchas-de-futbol-en-queretaro/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Querétaro.
+- **`/construccion-de-canchas-de-futbol-en-puebla/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Puebla.
+- **`/construccion-de-canchas-de-futbol-en-tijuana/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Tijuana.
+- **`/construccion-de-canchas-de-futbol-en-merida/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Mérida.
+- **`/construccion-de-canchas-de-futbol-en-cancun/`:** Organization + LocalBusiness + Service + FAQPage + BreadcrumbList para construcción de canchas de futbol con pasto sintético en Cancún.
 
 ## Tipos de cancha de fútbol 7 que construye Sportmaster
 
