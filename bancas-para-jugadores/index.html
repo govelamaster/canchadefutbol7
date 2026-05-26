@@ -57,10 +57,90 @@
 
 <!-- Schema: LocalBusiness + Service -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[
-{"@type":"LocalBusiness","@id":"https://canchadefutbol7.mx/#localbusiness","name":"Sportmaster México","url":"https://canchadefutbol7.mx/","telephone":"+525539887615","priceRange":"$$$","address":{"@type":"PostalAddress","addressLocality":"Ciudad de México","addressRegion":"CDMX","addressCountry":"MX"},"areaServed":[{"@type":"Country","name":"México"}],"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"139"}},
-{"@type":"Service","@id":"https://canchadefutbol7.mx/bancas-para-jugadores/#service","name":"Bancas para jugadores de fútbol con techumbre","serviceType":"Fabricación y venta de bancas metálicas para jugadores","provider":{"@id":"https://canchadefutbol7.mx/#localbusiness"},"areaServed":{"@type":"Country","name":"México"},"description":"Bancas metálicas para jugadores de fútbol 5, fútbol 7 y fútbol soccer, con techo de lona o policarbonato, asientos individuales o banca corrida, disponibles en módulos individuales o sets completos con banca de árbitros.","offers":{"@type":"AggregateOffer","priceCurrency":"MXN","lowPrice":"19500","highPrice":"61800","availability":"https://schema.org/InStock","url":"https://canchadefutbol7.mx/bancas-para-jugadores/"}}
-]}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://canchadefutbol7.mx/#localbusiness",
+      "name": "Sportmaster México",
+      "url": "https://canchadefutbol7.mx/",
+      "telephone": "+525539887615",
+      "priceRange": "$$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Ciudad de México",
+        "addressRegion": "CDMX",
+        "addressCountry": "MX"
+      },
+      "areaServed": [
+        {
+          "@type": "Country",
+          "name": "México"
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "139"
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://canchadefutbol7.mx/bancas-para-jugadores/#service",
+      "name": "Bancas para jugadores de fútbol con techumbre",
+      "serviceType": "Fabricación y venta de bancas metálicas para jugadores",
+      "provider": {
+        "@id": "https://canchadefutbol7.mx/#localbusiness"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "México"
+      },
+      "description": "Bancas metálicas para jugadores de fútbol 5, fútbol 7 y fútbol soccer, con techo de lona o policarbonato, asientos individuales o banca corrida, disponibles en módulos individuales o sets completos con banca de árbitros.",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "MXN",
+        "lowPrice": "19500",
+        "highPrice": "61800",
+        "availability": "https://schema.org/InStock",
+        "url": "https://canchadefutbol7.mx/bancas-para-jugadores/",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "MX",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": "MXN"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "MX"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 15,
+              "maxValue": 60,
+              "unitCode": "DAY"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
 </script>
 
 <!-- Schema: FAQPage -->

@@ -91,7 +91,39 @@
         "@type": "Offer",
         "url": "https://canchadefutbol7.mx/alumbrado-para-canchas-de-futbol/",
         "priceCurrency": "MXN",
-        "availability": "https://schema.org/InStock"
+        "availability": "https://schema.org/InStock",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "MX",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": "MXN"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "MX"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 15,
+              "maxValue": 60,
+              "unitCode": "DAY"
+            }
+          }
+        }
       }
     },
     {
@@ -139,8 +171,7 @@
             "@type": "Answer",
             "text": "Para una cancha recreativa de 53 x 33 m se recomienda comunmente una configuracion de 4 postes de 7 metros con 2 reflectores LED por poste, sujeta a validacion del proyecto."
           }
-        }
-        ,
+        },
         {
           "@type": "Question",
           "name": "¿Qué lámparas para canchas de fútbol se recomiendan?",

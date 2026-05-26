@@ -88,46 +88,145 @@
         "bestRating": "5"
       },
       "areaServed": [
-        {"@type": "City", "name": "Monterrey"},
-        {"@type": "City", "name": "San Pedro Garza García"},
-        {"@type": "City", "name": "San Nicolás de los Garza"},
-        {"@type": "City", "name": "Apodaca"},
-        {"@type": "City", "name": "Guadalupe"},
-        {"@type": "City", "name": "Escobedo"},
-        {"@type": "City", "name": "Santa Catarina"},
-        {"@type": "City", "name": "García"},
-        {"@type": "City", "name": "Santiago"}
+        {
+          "@type": "City",
+          "name": "Monterrey"
+        },
+        {
+          "@type": "City",
+          "name": "San Pedro Garza García"
+        },
+        {
+          "@type": "City",
+          "name": "San Nicolás de los Garza"
+        },
+        {
+          "@type": "City",
+          "name": "Apodaca"
+        },
+        {
+          "@type": "City",
+          "name": "Guadalupe"
+        },
+        {
+          "@type": "City",
+          "name": "Escobedo"
+        },
+        {
+          "@type": "City",
+          "name": "Santa Catarina"
+        },
+        {
+          "@type": "City",
+          "name": "García"
+        },
+        {
+          "@type": "City",
+          "name": "Santiago"
+        }
       ]
     },
     {
       "@type": "Service",
       "name": "Construcción de canchas y obras deportivas en Monterrey",
       "serviceType": "Sports Facility Construction",
-      "provider": {"@id": "https://www.sportmaster.com.mx/#organization"},
-      "areaServed": {"@type": "City", "name": "Monterrey"},
+      "provider": {
+        "@id": "https://www.sportmaster.com.mx/#organization"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Monterrey"
+      },
       "description": "Construcción llave en mano de canchas de fútbol 7, fútbol americano, pasto sintético deportivo, gradas y alumbrado en Monterrey, San Pedro, San Nicolás, Apodaca, Guadalupe, Escobedo, Santa Catarina, García y Santiago.",
       "offers": {
         "@type": "Offer",
         "priceCurrency": "MXN",
-        "availability": "https://schema.org/InStock"
+        "availability": "https://schema.org/InStock",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "MX",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": "MXN"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "MX"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 15,
+              "maxValue": 60,
+              "unitCode": "DAY"
+            }
+          }
+        }
       }
     },
     {
       "@type": "ItemList",
       "name": "Servicios de construcción deportiva en Monterrey",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Construcción de canchas de fútbol 7 en Monterrey", "url": "https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/"},
-        {"@type": "ListItem", "position": 2, "name": "Pasto sintético deportivo en Monterrey", "url": "https://canchadefutbol7.mx/pasto-sintetico-deportivo-en-monterrey/"},
-        {"@type": "ListItem", "position": 3, "name": "Gradas deportivas en Monterrey", "url": "https://canchadefutbol7.mx/gradas-deportivas-en-monterrey/"},
-        {"@type": "ListItem", "position": 4, "name": "Alumbrado deportivo en Monterrey", "url": "https://canchadefutbol7.mx/alumbrado-deportivo-en-monterrey/"},
-        {"@type": "ListItem", "position": 5, "name": "Canchas de fútbol americano en Monterrey", "url": "https://canchadefutbol7.mx/canchas-de-futbol-americano-en-monterrey/"}
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Construcción de canchas de fútbol 7 en Monterrey",
+          "url": "https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Pasto sintético deportivo en Monterrey",
+          "url": "https://canchadefutbol7.mx/pasto-sintetico-deportivo-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Gradas deportivas en Monterrey",
+          "url": "https://canchadefutbol7.mx/gradas-deportivas-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Alumbrado deportivo en Monterrey",
+          "url": "https://canchadefutbol7.mx/alumbrado-deportivo-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Canchas de fútbol americano en Monterrey",
+          "url": "https://canchadefutbol7.mx/canchas-de-futbol-americano-en-monterrey/"
+        }
       ]
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://canchadefutbol7.mx/"},
-        {"@type": "ListItem", "position": 2, "name": "Monterrey", "item": "https://canchadefutbol7.mx/monterrey/"}
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://canchadefutbol7.mx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Monterrey",
+          "item": "https://canchadefutbol7.mx/monterrey/"
+        }
       ]
     },
     {
@@ -253,15 +352,54 @@
   "name": "Cancha de Futbol 5",
   "description": "Cancha de futbol 5 lista para jugar de 800 m² con pasto fibrilado 30 mm · 850 g. Ideal para futbol rápido y futbol 5 escolar. Incluye pasto sintético importado, instalación profesional, líneas blancas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "264800",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -273,15 +411,54 @@
   "name": "Cancha de Futbol 7",
   "description": "Cancha de futbol 7 de uso intensivo de 1,750 m² con pasto fibrilado o monofilamento 40 mm · 850 g. Ideal para colegios, fraccionamientos y renta. Incluye pasto sintético importado, instalación profesional, líneas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "428750",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -293,15 +470,54 @@
   "name": "Cancha de Futbol 11",
   "description": "Cancha de futbol 11 profesional de 7,000 m² con pasto fibrilado, monofilamento o híbrido de 45 mm. Cancha soccer profesional con precio entre $250 y $650 por m². Incluye pasto sintético importado, instalación profesional, líneas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "1700000",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -313,15 +529,54 @@
   "name": "Cancha de Futbol Rápido",
   "description": "Cancha de futbol rápido compacta de 1,400 m² con pasto fibrilado 30 mm · 850 g. Ideal para canchas comerciales de renta. Incluye pasto sintético importado, instalación profesional, líneas y rellenos. El redondel perimetral se cotiza por separado.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "329240",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -333,15 +588,54 @@
   "name": "Cancha de Tochito",
   "description": "Cancha de tochito de 1,350 m² con pasto fibrilado 40 mm · 850 g y líneas oficiales con yardas marcadas. Incluye pasto sintético importado, instalación profesional y trazo oficial del deporte.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "410000",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -353,15 +647,54 @@
   "name": "Cancha de Futbol Americano",
   "description": "Cancha de futbol americano tipo estadio de 5,000+ m² con pasto fibrilado 45-50 mm · 850 g. Para uso con tachones reglamentarios. Incluye pasto sintético importado, instalación profesional, líneas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "1300000",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
