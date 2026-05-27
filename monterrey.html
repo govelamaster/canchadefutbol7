@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="./assets/cancha-futbol-7-monterrey-hero.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="/assets/cancha-futbol-7-monterrey-hero.webp" type="image/webp" fetchpriority="high">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap"></noscript>
 <title>Construcción de canchas deportivas en Monterrey | Sportmaster</title>
@@ -88,46 +88,145 @@
         "bestRating": "5"
       },
       "areaServed": [
-        {"@type": "City", "name": "Monterrey"},
-        {"@type": "City", "name": "San Pedro Garza García"},
-        {"@type": "City", "name": "San Nicolás de los Garza"},
-        {"@type": "City", "name": "Apodaca"},
-        {"@type": "City", "name": "Guadalupe"},
-        {"@type": "City", "name": "Escobedo"},
-        {"@type": "City", "name": "Santa Catarina"},
-        {"@type": "City", "name": "García"},
-        {"@type": "City", "name": "Santiago"}
+        {
+          "@type": "City",
+          "name": "Monterrey"
+        },
+        {
+          "@type": "City",
+          "name": "San Pedro Garza García"
+        },
+        {
+          "@type": "City",
+          "name": "San Nicolás de los Garza"
+        },
+        {
+          "@type": "City",
+          "name": "Apodaca"
+        },
+        {
+          "@type": "City",
+          "name": "Guadalupe"
+        },
+        {
+          "@type": "City",
+          "name": "Escobedo"
+        },
+        {
+          "@type": "City",
+          "name": "Santa Catarina"
+        },
+        {
+          "@type": "City",
+          "name": "García"
+        },
+        {
+          "@type": "City",
+          "name": "Santiago"
+        }
       ]
     },
     {
       "@type": "Service",
       "name": "Construcción de canchas y obras deportivas en Monterrey",
       "serviceType": "Sports Facility Construction",
-      "provider": {"@id": "https://www.sportmaster.com.mx/#organization"},
-      "areaServed": {"@type": "City", "name": "Monterrey"},
+      "provider": {
+        "@id": "https://www.sportmaster.com.mx/#organization"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Monterrey"
+      },
       "description": "Construcción llave en mano de canchas de fútbol 7, fútbol americano, pasto sintético deportivo, gradas y alumbrado en Monterrey, San Pedro, San Nicolás, Apodaca, Guadalupe, Escobedo, Santa Catarina, García y Santiago.",
       "offers": {
         "@type": "Offer",
         "priceCurrency": "MXN",
-        "availability": "https://schema.org/InStock"
+        "availability": "https://schema.org/InStock",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "MX",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": "MXN"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "MX"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 15,
+              "maxValue": 60,
+              "unitCode": "DAY"
+            }
+          }
+        }
       }
     },
     {
       "@type": "ItemList",
       "name": "Servicios de construcción deportiva en Monterrey",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Construcción de canchas de fútbol 7 en Monterrey", "url": "https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/"},
-        {"@type": "ListItem", "position": 2, "name": "Pasto sintético deportivo en Monterrey", "url": "https://canchadefutbol7.mx/pasto-sintetico-deportivo-en-monterrey/"},
-        {"@type": "ListItem", "position": 3, "name": "Gradas deportivas en Monterrey", "url": "https://canchadefutbol7.mx/gradas-deportivas-en-monterrey/"},
-        {"@type": "ListItem", "position": 4, "name": "Alumbrado deportivo en Monterrey", "url": "https://canchadefutbol7.mx/alumbrado-deportivo-en-monterrey/"},
-        {"@type": "ListItem", "position": 5, "name": "Canchas de fútbol americano en Monterrey", "url": "https://canchadefutbol7.mx/canchas-de-futbol-americano-en-monterrey/"}
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Construcción de canchas de fútbol 7 en Monterrey",
+          "url": "https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Pasto sintético deportivo en Monterrey",
+          "url": "https://canchadefutbol7.mx/pasto-sintetico-deportivo-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Gradas deportivas en Monterrey",
+          "url": "https://canchadefutbol7.mx/gradas-deportivas-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Alumbrado deportivo en Monterrey",
+          "url": "https://canchadefutbol7.mx/alumbrado-deportivo-en-monterrey/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Canchas de fútbol americano en Monterrey",
+          "url": "https://canchadefutbol7.mx/canchas-de-futbol-americano-en-monterrey/"
+        }
       ]
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://canchadefutbol7.mx/"},
-        {"@type": "ListItem", "position": 2, "name": "Monterrey", "item": "https://canchadefutbol7.mx/monterrey/"}
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://canchadefutbol7.mx/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Monterrey",
+          "item": "https://canchadefutbol7.mx/monterrey/"
+        }
       ]
     },
     {
@@ -253,15 +352,54 @@
   "name": "Cancha de Futbol 5",
   "description": "Cancha de futbol 5 lista para jugar de 800 m² con pasto fibrilado 30 mm · 850 g. Ideal para futbol rápido y futbol 5 escolar. Incluye pasto sintético importado, instalación profesional, líneas blancas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "264800",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -273,15 +411,54 @@
   "name": "Cancha de Futbol 7",
   "description": "Cancha de futbol 7 de uso intensivo de 1,750 m² con pasto fibrilado o monofilamento 40 mm · 850 g. Ideal para colegios, fraccionamientos y renta. Incluye pasto sintético importado, instalación profesional, líneas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "428750",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -293,15 +470,54 @@
   "name": "Cancha de Futbol 11",
   "description": "Cancha de futbol 11 profesional de 7,000 m² con pasto fibrilado, monofilamento o híbrido de 45 mm. Cancha soccer profesional con precio entre $250 y $650 por m². Incluye pasto sintético importado, instalación profesional, líneas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "1700000",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -313,15 +529,54 @@
   "name": "Cancha de Futbol Rápido",
   "description": "Cancha de futbol rápido compacta de 1,400 m² con pasto fibrilado 30 mm · 850 g. Ideal para canchas comerciales de renta. Incluye pasto sintético importado, instalación profesional, líneas y rellenos. El redondel perimetral se cotiza por separado.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "329240",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -333,15 +588,54 @@
   "name": "Cancha de Tochito",
   "description": "Cancha de tochito de 1,350 m² con pasto fibrilado 40 mm · 850 g y líneas oficiales con yardas marcadas. Incluye pasto sintético importado, instalación profesional y trazo oficial del deporte.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "410000",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -353,15 +647,54 @@
   "name": "Cancha de Futbol Americano",
   "description": "Cancha de futbol americano tipo estadio de 5,000+ m² con pasto fibrilado 45-50 mm · 850 g. Para uso con tachones reglamentarios. Incluye pasto sintético importado, instalación profesional, líneas y rellenos.",
   "category": "Cancha deportiva con pasto sintético",
-  "brand": {"@type": "Brand", "name": "Sportmaster"},
+  "brand": {
+    "@type": "Brand",
+    "name": "Sportmaster"
+  },
   "offers": {
     "@type": "Offer",
     "priceCurrency": "MXN",
     "price": "1300000",
     "url": "https://canchadefutbol7.mx/",
     "availability": "https://schema.org/InStock",
-    "seller": {"@type": "Organization", "name": "Sportmaster México"}
-  }
+    "seller": {
+      "@type": "Organization",
+      "name": "Sportmaster México"
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "MX",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "MXN"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "MX"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 15,
+          "maxValue": 60,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "image": "https://canchadefutbol7.mx/assets/hero-cancha-f7.webp"
 }
 </script>
 
@@ -2239,7 +2572,7 @@ section{padding:56px 24px}
 <!-- NAVBAR -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#" class="nav-logo"><picture><source type="image/webp" srcset="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.webp"><img loading="lazy" decoding="async" src="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.png"alt="Sportmaster México - Pasto Sintético y Canchas Deportivas"></picture></a>
+    <a href="#" class="nav-logo"><picture><source type="image/webp" srcset="/assets/sportmaster-m-xico-pasto-sin-f7aaa128.webp"><img loading="lazy" decoding="async" src="/assets/sportmaster-m-xico-pasto-sin-f7aaa128.png"alt="Sportmaster México - Pasto Sintético y Canchas Deportivas"></picture></a>
     <a href="https://wa.me/528116296384?text=%C2%A1Hola%20Sportmaster!%20Quiero%20cotizar%20una%20cancha." target="_blank" rel="noopener" class="nav-cta">Cotiza tu cancha →</a>
   </div>
 </nav>
@@ -2294,8 +2627,8 @@ section{padding:56px 24px}
     </div>
     <div class="hero-visual">
       <picture>
-        <source type="image/webp" srcset="./assets/cancha-futbol-7-monterrey-hero.webp">
-        <img src="./assets/cancha-futbol-7-monterrey-hero.jpg" alt="Construcción de cancha de fútbol 7 con pasto sintético en Monterrey — Sportmaster" width="1600" height="900" fetchpriority="high" decoding="async">
+        <source type="image/webp" srcset="/assets/cancha-futbol-7-monterrey-hero.webp">
+        <img src="/assets/cancha-futbol-7-monterrey-hero.jpg" alt="Construcción de cancha de fútbol 7 con pasto sintético en Monterrey — Sportmaster" width="1600" height="900" fetchpriority="high" decoding="async">
       </picture>
       <div class="float-card float-card-1">
         <div class="float-icon green">
@@ -2341,7 +2674,7 @@ section{padding:56px 24px}
       <span class="trust-strip__sep">●</span>
       <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Toda la República Mexicana</span>
       <span class="trust-strip__sep">●</span>
-      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Garantía 9 años pasto</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Garantía 9 años vs rayos UV</span>
       <span class="trust-strip__sep">●</span>
       <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Facturación formal</span>
       <span class="trust-strip__sep">●</span>
@@ -2358,7 +2691,7 @@ section{padding:56px 24px}
       <span class="trust-strip__sep">●</span>
       <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Toda la República Mexicana</span>
       <span class="trust-strip__sep">●</span>
-      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Garantía 9 años pasto</span>
+      <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Garantía 9 años vs rayos UV</span>
       <span class="trust-strip__sep">●</span>
       <span class="trust-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Facturación formal</span>
       <span class="trust-strip__sep">●</span>
@@ -2629,10 +2962,10 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/monofilamento.webp">
-            <img class="tt-bg" src="./assets/monofilamento.jpeg" alt="Pasto sintético monofilamento — fibra recta de alto rendimiento" loading="lazy" decoding="async">
+            <source type="image/webp" srcset="/assets/monofilamento.webp">
+            <img class="tt-bg" src="/assets/monofilamento.jpeg" alt="Pasto sintético monofilamento — fibra recta de alto rendimiento" loading="lazy" decoding="async">
           </picture>
-          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/monofilamento.webp"><img src="./assets/monofilamento.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
+          <span class="tt-zoom"><picture><source type="image/webp" srcset="/assets/monofilamento.webp"><img src="/assets/monofilamento.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para fútbol 7 y 11</span>
         </div>
         <div class="tt-body">
@@ -2668,10 +3001,10 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/fibrilado.webp">
-            <img class="tt-bg" src="./assets/fibrilado.jpeg" alt="Pasto sintético fibrilado — fibra cortada en tiras entrelazadas" loading="lazy" decoding="async">
+            <source type="image/webp" srcset="/assets/fibrilado.webp?v=20260525-fibrilado-final">
+            <img class="tt-bg" src="/assets/fibrilado.jpeg?v=20260525-fibrilado-final" alt="Pasto sintético fibrilado — fibra cortada en tiras entrelazadas" loading="lazy" decoding="async">
           </picture>
-          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/fibrilado.webp"><img src="./assets/fibrilado.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
+          <span class="tt-zoom"><picture><source type="image/webp" srcset="/assets/fibrilado.webp?v=20260525-fibrilado-final"><img src="/assets/fibrilado.jpeg?v=20260525-fibrilado-final" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para fútbol 5 y renta</span>
         </div>
         <div class="tt-body">
@@ -2709,10 +3042,10 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/hibrido.webp">
-            <img class="tt-bg" src="./assets/hibrido.jpeg" alt="Pasto sintético híbrido — combina monofilamento y fibrilado" loading="lazy" decoding="async">
+            <source type="image/webp" srcset="/assets/hibrido.webp">
+            <img class="tt-bg" src="/assets/hibrido.jpeg" alt="Pasto sintético híbrido — combina monofilamento y fibrilado" loading="lazy" decoding="async">
           </picture>
-          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/hibrido.webp"><img src="./assets/hibrido.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
+          <span class="tt-zoom"><picture><source type="image/webp" srcset="/assets/hibrido.webp"><img src="/assets/hibrido.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para uso intensivo</span>
         </div>
         <div class="tt-body">
@@ -2796,7 +3129,7 @@ section{padding:56px 24px}
     </div>
     <div class="canchas-grid">
       <article class="cancha-card reveal">
-        <picture><source type="image/webp" srcset="./assets/cuanto-cuesta-cancha-futbol-7-monterrey.webp"><img src="./assets/cuanto-cuesta-cancha-futbol-7-monterrey.jpg"alt="Cuánto cuesta construir una cancha de fútbol 7 en Monterrey con pasto sintético" loading="lazy"></picture>
+        <picture><source type="image/webp" srcset="/assets/cuanto-cuesta-cancha-futbol-7-monterrey.webp"><img src="/assets/cuanto-cuesta-cancha-futbol-7-monterrey.jpg"alt="Cuánto cuesta construir una cancha de fútbol 7 en Monterrey con pasto sintético" loading="lazy"></picture>
         <div class="cancha-overlay">
           <span class="cancha-tag">Más solicitado</span>
           <h3 class="cancha-title">Cancha de Futbol 7</h3>
@@ -2804,7 +3137,7 @@ section{padding:56px 24px}
         </div>
       </article>
       <article class="cancha-card reveal">
-        <picture><source type="image/webp" srcset="./assets/cancha-soccer-futbol-11-monterrey.webp"><img src="./assets/cancha-soccer-futbol-11-monterrey.jpg"alt="Construcción de canchas de fútbol 11 soccer con pasto sintético en Monterrey" loading="lazy"></picture>
+        <picture><source type="image/webp" srcset="/assets/cancha-soccer-futbol-11-monterrey.webp"><img src="/assets/cancha-soccer-futbol-11-monterrey.jpg"alt="Construcción de canchas de fútbol 11 soccer con pasto sintético en Monterrey" loading="lazy"></picture>
         <div class="cancha-overlay">
           <span class="cancha-tag">Profesional</span>
           <h3 class="cancha-title">Cancha de Soccer / Futbol 11</h3>
@@ -2812,7 +3145,7 @@ section{padding:56px 24px}
         </div>
       </article>
       <article class="cancha-card reveal">
-        <picture><source type="image/webp" srcset="./assets/cancha-futbol-5-monterrey.webp"><img src="./assets/cancha-futbol-5-monterrey.jpg"alt="Construcción de canchas de fútbol 5 con pasto sintético en Monterrey" loading="lazy"></picture>
+        <picture><source type="image/webp" srcset="/assets/cancha-futbol-5-monterrey.webp"><img src="/assets/cancha-futbol-5-monterrey.jpg"alt="Construcción de canchas de fútbol 5 con pasto sintético en Monterrey" loading="lazy"></picture>
         <div class="cancha-overlay">
           <span class="cancha-tag">Comercial</span>
           <h3 class="cancha-title">Cancha de Futbol 5 / Rápido</h3>
@@ -2820,7 +3153,7 @@ section{padding:56px 24px}
         </div>
       </article>
       <article class="cancha-card reveal">
-        <picture><source type="image/webp" srcset="./assets/cancha-padel-monterrey.webp"><img src="./assets/cancha-padel-monterrey.jpg"alt="Construcción de canchas de pádel con pasto sintético en Monterrey" loading="lazy"></picture>
+        <picture><source type="image/webp" srcset="/assets/cancha-padel-monterrey.webp"><img src="/assets/cancha-padel-monterrey.jpg"alt="Construcción de canchas de pádel con pasto sintético en Monterrey" loading="lazy"></picture>
         <div class="cancha-overlay">
           <span class="cancha-tag">Rentable</span>
           <h3 class="cancha-title">Cancha de Padel</h3>
@@ -2828,7 +3161,7 @@ section{padding:56px 24px}
         </div>
       </article>
       <article class="cancha-card reveal">
-        <picture><source type="image/webp" srcset="./assets/campo-beisbol-monterrey.webp"><img src="./assets/campo-beisbol-monterrey.jpg"alt="Campo de béisbol con pasto sintético construido en Monterrey" loading="lazy"></picture>
+        <picture><source type="image/webp" srcset="/assets/campo-beisbol-monterrey.webp"><img src="/assets/campo-beisbol-monterrey.jpg"alt="Campo de béisbol con pasto sintético construido en Monterrey" loading="lazy"></picture>
         <div class="cancha-overlay">
           <span class="cancha-tag">Premium</span>
           <h3 class="cancha-title">Beisbol</h3>
@@ -2836,7 +3169,7 @@ section{padding:56px 24px}
         </div>
       </article>
       <article class="cancha-card reveal">
-        <picture><source type="image/webp" srcset="./assets/cancha-tochito-flag-football-monterrey.webp"><img src="./assets/cancha-tochito-flag-football-monterrey.jpg"alt="Cancha de tochito / flag football con pasto sintético en Monterrey" loading="lazy"></picture>
+        <picture><source type="image/webp" srcset="/assets/cancha-tochito-flag-football-monterrey.webp"><img src="/assets/cancha-tochito-flag-football-monterrey.jpg"alt="Cancha de tochito / flag football con pasto sintético en Monterrey" loading="lazy"></picture>
         <div class="cancha-overlay">
           <span class="cancha-tag">Escolar</span>
           <h3 class="cancha-title">Tochito / Flag / Americano</h3>
@@ -2887,7 +3220,7 @@ section{padding:56px 24px}
           <span><strong>Cancha lista para jugar</strong> el día de la entrega</span>
         </li>
       </ul>
-      <div class="includes-note">✓ Garantía 9 años en pasto sintético + 2 años en instalación</div>
+      <div class="includes-note">✓ Garantía 9 años contra decoloración por rayos UV del pasto sintético + 2 años en instalación</div>
     </div>
     
     <div class="includes-card no-card">
@@ -2958,28 +3291,28 @@ section{padding:56px 24px}
   <div class="ps-stage">
     <div class="ps-viewport">
       <div class="ps-track" data-ps-track>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-01.jpg" alt="Cancha de fútbol 7 con pasto sintético construida en Monterrey — proyecto 01" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-01.jpg" alt="Cancha de fútbol 7 con pasto sintético construida en Monterrey — proyecto 01" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">01 / 08</span><span class="ps-slide-meta">Cancha de futbol 7 · Pasto sintético importado</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-02.jpg" alt="Cancha de soccer construida por Sportmaster en Monterrey — proyecto 02" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-02.jpg" alt="Cancha de soccer construida por Sportmaster en Monterrey — proyecto 02" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">02 / 08</span><span class="ps-slide-meta">Cancha de soccer · Instalación llave en mano</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-03.jpg" alt="Cancha empresarial con pasto sintético en Monterrey — proyecto 03" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-03.jpg" alt="Cancha empresarial con pasto sintético en Monterrey — proyecto 03" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">03 / 08</span><span class="ps-slide-meta">Cancha empresarial · Uso intensivo</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-04.jpg" alt="Cancha de fraccionamiento con pasto sintético en Monterrey — proyecto 04" loading="lazy">
-          <div class="ps-slide-caption"><span class="ps-slide-num">04 / 08</span><span class="ps-slide-meta">Cancha residencial · Garantía 9 años</span></div>
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-04.jpg" alt="Cancha de fraccionamiento con pasto sintético en Monterrey — proyecto 04" loading="lazy">
+          <div class="ps-slide-caption"><span class="ps-slide-num">04 / 08</span><span class="ps-slide-meta">Cancha residencial · Garantía 9 años vs rayos UV</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-05.jpg" alt="Cancha escolar construida por Sportmaster en Monterrey — proyecto 05" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-05.jpg" alt="Cancha escolar construida por Sportmaster en Monterrey — proyecto 05" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">05 / 08</span><span class="ps-slide-meta">Cancha escolar · Llave en mano</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-06.jpg" alt="Cancha municipal con pasto sintético en Monterrey — proyecto 06" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-06.jpg" alt="Cancha municipal con pasto sintético en Monterrey — proyecto 06" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">06 / 08</span><span class="ps-slide-meta">Cancha municipal · Pasto monofilamento</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-07.jpg" alt="Gradas deportivas instaladas por Sportmaster en Monterrey — proyecto 07" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-07.jpg" alt="Gradas deportivas instaladas por Sportmaster en Monterrey — proyecto 07" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">07 / 08</span><span class="ps-slide-meta">Gradas deportivas · Llave en mano con techumbre</span></div>
         </div>
-        <div class="ps-slide"><img src="./assets/proyectos/cancha-futbol-7-monterrey-08.jpg" alt="Cancha de pasto sintético azul franjeado en Monterrey — proyecto 08" loading="lazy">
+        <div class="ps-slide"><img src="/assets/proyectos/cancha-futbol-7-monterrey-08.jpg" alt="Cancha de pasto sintético azul franjeado en Monterrey — proyecto 08" loading="lazy">
           <div class="ps-slide-caption"><span class="ps-slide-num">08 / 08</span><span class="ps-slide-meta">Cancha azul franjeada · Acabado premium</span></div>
         </div>
       </div>
@@ -2998,14 +3331,14 @@ section{padding:56px 24px}
   </div>
 
   <div class="ps-thumbs" data-ps-thumbs>
-    <button class="ps-thumb is-active" type="button" data-ps-go="0" aria-label="Ver proyecto 1"><img src="./assets/proyectos/cancha-futbol-7-monterrey-01.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="1" aria-label="Ver proyecto 2"><img src="./assets/proyectos/cancha-futbol-7-monterrey-02.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="2" aria-label="Ver proyecto 3"><img src="./assets/proyectos/cancha-futbol-7-monterrey-03.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="3" aria-label="Ver proyecto 4"><img src="./assets/proyectos/cancha-futbol-7-monterrey-04.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="4" aria-label="Ver proyecto 5"><img src="./assets/proyectos/cancha-futbol-7-monterrey-05.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="5" aria-label="Ver proyecto 6"><img src="./assets/proyectos/cancha-futbol-7-monterrey-06.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="6" aria-label="Ver proyecto 7"><img src="./assets/proyectos/cancha-futbol-7-monterrey-07.jpg" alt="" loading="lazy"></button>
-    <button class="ps-thumb" type="button" data-ps-go="7" aria-label="Ver proyecto 8"><img src="./assets/proyectos/cancha-futbol-7-monterrey-08.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb is-active" type="button" data-ps-go="0" aria-label="Ver proyecto 1"><img src="/assets/proyectos/cancha-futbol-7-monterrey-01.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="1" aria-label="Ver proyecto 2"><img src="/assets/proyectos/cancha-futbol-7-monterrey-02.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="2" aria-label="Ver proyecto 3"><img src="/assets/proyectos/cancha-futbol-7-monterrey-03.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="3" aria-label="Ver proyecto 4"><img src="/assets/proyectos/cancha-futbol-7-monterrey-04.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="4" aria-label="Ver proyecto 5"><img src="/assets/proyectos/cancha-futbol-7-monterrey-05.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="5" aria-label="Ver proyecto 6"><img src="/assets/proyectos/cancha-futbol-7-monterrey-06.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="6" aria-label="Ver proyecto 7"><img src="/assets/proyectos/cancha-futbol-7-monterrey-07.jpg" alt="" loading="lazy"></button>
+    <button class="ps-thumb" type="button" data-ps-go="7" aria-label="Ver proyecto 8"><img src="/assets/proyectos/cancha-futbol-7-monterrey-08.jpg" alt="" loading="lazy"></button>
   </div>
 </section>
 
@@ -3466,7 +3799,7 @@ section{padding:56px 24px}
           <span class="shield-num">9</span>
         </div>
         <h3 class="card-title">9 años garantía</h3>
-        <p class="card-desc">Pasto sintético importado certificado contra decoloración por rayos UV y desgaste prematuro.</p>
+        <p class="card-desc">Pasto sintético importado certificado contra decoloración por rayos UV.</p>
         <span class="card-check" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
@@ -3797,7 +4130,7 @@ section{padding:56px 24px}
         <p class="smb-text">Uso intensivo sin desgaste.<br>Tu activo trabaja cada día produciendo ingresos predecibles.</p>
       </article>
 
-      <!-- Card 5 — Garantía 9 años -->
+      <!-- Card 5 — Garantía 9 años vs rayos UV -->
       <article class="smb-card">
         <div class="smb-icon" aria-hidden="true">
           <svg viewBox="0 0 64 64" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -4413,7 +4746,7 @@ section{padding:56px 24px}
     <div class="eq-track" data-eq-track>
       <article class="eq-card">
         <div class="eq-img">
-          <img src="./assets/gradas-monterrey.jpg" alt="Gradas metálicas para canchas en Monterrey con techo curvo de policarbonato" loading="lazy" onerror="this.style.display='none'">
+          <img src="/assets/gradas-monterrey.jpg" alt="Gradas metálicas para canchas en Monterrey con techo curvo de policarbonato" loading="lazy" onerror="this.style.display='none'">
           <span class="eq-num">01</span>
         </div>
         <div class="eq-body">
@@ -4430,7 +4763,7 @@ section{padding:56px 24px}
 
       <article class="eq-card">
         <div class="eq-img">
-          <img src="./assets/bancas-jugadores-monterrey.jpg" alt="Bancas de jugadores techadas para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
+          <img src="/assets/bancas-jugadores-monterrey.jpg" alt="Bancas de jugadores techadas para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
           <span class="eq-num">02</span>
         </div>
         <div class="eq-body">
@@ -4447,7 +4780,7 @@ section{padding:56px 24px}
 
       <article class="eq-card">
         <div class="eq-img">
-          <img src="./assets/porterias-monterrey.jpg" alt="Porterías oficiales de aluminio reforzado para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
+          <img src="/assets/porterias-monterrey.jpg" alt="Porterías oficiales de aluminio reforzado para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
           <span class="eq-num">03</span>
         </div>
         <div class="eq-body">
@@ -4464,7 +4797,7 @@ section{padding:56px 24px}
 
       <article class="eq-card">
         <div class="eq-img">
-          <img src="./assets/malla-ciclonica-monterrey.jpg" alt="Malla ciclónica perimetral galvanizada para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
+          <img src="/assets/malla-ciclonica-monterrey.jpg" alt="Malla ciclónica perimetral galvanizada para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
           <span class="eq-num">04</span>
         </div>
         <div class="eq-body">
@@ -4481,7 +4814,7 @@ section{padding:56px 24px}
 
       <article class="eq-card">
         <div class="eq-img">
-          <img src="./assets/alumbrado-led-monterrey.jpg" alt="Alumbrado LED deportivo profesional para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
+          <img src="/assets/alumbrado-led-monterrey.jpg" alt="Alumbrado LED deportivo profesional para canchas en Monterrey" loading="lazy" onerror="this.style.display='none'">
           <span class="eq-num">05</span>
         </div>
         <div class="eq-body">
@@ -4498,7 +4831,7 @@ section{padding:56px 24px}
 
       <article class="eq-card">
         <div class="eq-img">
-          <img src="./assets/marcador-digital-monterrey.jpg" alt="Marcadores digitales deportivos" loading="lazy" onerror="this.style.display='none'">
+          <img src="/assets/marcador-digital-monterrey.jpg" alt="Marcadores digitales deportivos" loading="lazy" onerror="this.style.display='none'">
           <span class="eq-num">06</span>
         </div>
         <div class="eq-body">
@@ -4768,7 +5101,7 @@ section{padding:56px 24px}
     min-height: 520px;
     background:
       linear-gradient(90deg, rgba(255,255,255,.86) 0%, rgba(255,255,255,.52) 18%, rgba(255,255,255,0) 42%),
-      url("./assets/malla-ciclonica-monterrey.jpg") center / cover no-repeat;
+      url("/assets/malla-ciclonica-monterrey.jpg") center / cover no-repeat;
   }
 
   .sm-banner__image::before {
@@ -4862,19 +5195,19 @@ section{padding:56px 24px}
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
       <article style="background:#fff;border-radius:16px;padding:32px 24px;box-shadow:0 4px 20px rgba(0,0,0,.06);text-align:center;">
-        <div style="height:64px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;"><img src="./assets/logos-mty/grainger.svg" alt="Logo Grupo Grainger — cliente Sportmaster en Monterrey" style="max-height:50px;max-width:200px;width:auto;height:auto;"></div>
+        <div style="height:64px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;"><img src="/assets/logos-mty/grainger.svg" alt="Logo Grupo Grainger — cliente Sportmaster en Monterrey" style="max-height:50px;max-width:200px;width:auto;height:auto;"></div>
         <h3 style="font-size:22px;font-weight:800;margin:0 0 8px;">Grupo Grainger</h3>
         <p style="color:#666;margin:0 0 12px;font-size:14px;">Cliente corporativo · Monterrey</p>
         <p style="color:#444;font-size:15px;line-height:1.6;">[Placeholder — descripción del proyecto, m², año]</p>
       </article>
       <article style="background:#fff;border-radius:16px;padding:32px 24px;box-shadow:0 4px 20px rgba(0,0,0,.06);text-align:center;">
-        <div style="height:64px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;"><img src="./assets/logos-mty/lego.svg" alt="Logo LEGO — cliente Sportmaster en Monterrey" style="max-height:60px;max-width:60px;width:auto;height:auto;"></div>
+        <div style="height:64px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;"><img src="/assets/logos-mty/lego.svg" alt="Logo LEGO — cliente Sportmaster en Monterrey" style="max-height:60px;max-width:60px;width:auto;height:auto;"></div>
         <h3 style="font-size:22px;font-weight:800;margin:0 0 8px;">LEGO</h3>
         <p style="color:#666;margin:0 0 12px;font-size:14px;">Cliente corporativo · Monterrey</p>
         <p style="color:#444;font-size:15px;line-height:1.6;">[Placeholder — descripción del proyecto, m², año]</p>
       </article>
       <article style="background:#fff;border-radius:16px;padding:32px 24px;box-shadow:0 4px 20px rgba(0,0,0,.06);text-align:center;">
-        <div style="height:64px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;"><img src="./assets/logos-mty/kia.svg" alt="Logo Kia — cliente Sportmaster en Monterrey" style="max-height:50px;max-width:160px;width:auto;height:auto;"></div>
+        <div style="height:64px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;"><img src="/assets/logos-mty/kia.svg" alt="Logo Kia — cliente Sportmaster en Monterrey" style="max-height:50px;max-width:160px;width:auto;height:auto;"></div>
         <h3 style="font-size:22px;font-weight:800;margin:0 0 8px;">Kia</h3>
         <p style="color:#666;margin:0 0 12px;font-size:14px;">Cliente corporativo · Monterrey</p>
         <p style="color:#444;font-size:15px;line-height:1.6;">[Placeholder — descripción del proyecto, m², año]</p>
@@ -5479,7 +5812,7 @@ section{padding:56px 24px}
           <div class="benefit-check">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <span>Garantía 9 años pasto + 2 años instalación</span>
+          <span>Garantía 9 años vs rayos UV + 2 años instalación</span>
         </div>
       </div>
     </div>
@@ -5557,7 +5890,7 @@ section{padding:56px 24px}
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-col">
-      <div class="footer-logo-box"><picture><source type="image/webp" srcset="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.webp"><img loading="lazy" decoding="async" src="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.png"alt="Sportmaster México - Pasto Sintético"></picture></div>
+      <div class="footer-logo-box"><picture><source type="image/webp" srcset="/assets/sportmaster-m-xico-pasto-sin-f7aaa128.webp"><img loading="lazy" decoding="async" src="/assets/sportmaster-m-xico-pasto-sin-f7aaa128.png"alt="Sportmaster México - Pasto Sintético"></picture></div>
       <p>Expertos en soluciones deportivas. Construimos canchas con pasto sintético importado en todo México desde hace más de 15 años.</p>
     </div>
     <div class="footer-col">
@@ -5587,7 +5920,7 @@ section{padding:56px 24px}
   </div>
   <div class="footer-bottom">
     <div>© 2026 Sportmaster México. Todos los derechos reservados.</div>
-    <div>Pasto sintético importado de alto rendimiento · Garantía 9 años</div>
+    <div>Pasto sintético importado de alto rendimiento · Garantía 9 años vs rayos UV</div>
   </div>
 </footer>
 
@@ -5846,7 +6179,7 @@ llms.txt
 ## Sobre nosotros
 Sportmaster es la empresa líder en construcción e instalación de canchas con pasto sintético en México.
 Sede: Ciudad de México (CDMX).
-Garantía: 9 años en pasto sintético + 2 años en instalación.
+Garantía: 9 años contra decoloración por rayos UV del pasto sintético + 2 años en instalación.
 Experiencia: +3,500 canchas instaladas en toda la República Mexicana.
 Reconocimiento: 4.9★ en Google con 139+ reseñas verificadas.
 

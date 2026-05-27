@@ -86,7 +86,39 @@
         "@type": "Offer",
         "url": "https://canchadefutbol7.mx/construccion-cancha-futbol-7/",
         "priceCurrency": "MXN",
-        "availability": "https://schema.org/InStock"
+        "availability": "https://schema.org/InStock",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "MX",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+        },
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": "0",
+            "currency": "MXN"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "MX"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 15,
+              "maxValue": 60,
+              "unitCode": "DAY"
+            }
+          }
+        }
       }
     },
     {
@@ -605,6 +637,10 @@
     .sticky .wrap{align-items:flex-start}.sticky .btn{padding:12px 14px;font-size:13px}
     .wa-float{right:16px;bottom:84px;width:56px;height:56px;font-size:22px}
   }
+  .return-to-fibrilado{position:fixed;left:18px;top:92px;z-index:90;pointer-events:none}
+  .return-to-fibrilado a{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;padding:12px 15px;border-radius:999px;background:rgba(255,255,255,.94);border:1px solid rgba(19,157,69,.26);box-shadow:0 16px 42px rgba(8,18,12,.12);color:var(--green);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+  .return-to-fibrilado a:hover{background:var(--green);color:#fff;transform:translateY(-1px)}
+  @media(max-width:640px){.return-to-fibrilado{left:12px;right:12px;top:78px}.return-to-fibrilado a{width:100%;justify-content:center;font-size:12px;padding:11px 13px}}
 </style>
 </head>
 <body>
@@ -623,6 +659,7 @@
       <a class="nav-cta" href="#cotizar" data-wa-intent="Quiero cotizar una cancha de futbol 7.">Cotizar →</a>
     </div>
   </header>
+  <div class="return-to-fibrilado"><a href="/pasto-sintetico-fibrilado-para-canchas/">← Volver a pasto fibrilado</a></div>
 
   <main>
     <section class="hero">
@@ -637,7 +674,7 @@
           </div>
           <div class="hero-stats" aria-label="Datos de confianza">
             <div class="stat"><b>+3,500</b><span>canchas instaladas</span></div>
-            <div class="stat"><b>9 años</b><span>garantía en pasto</span></div>
+            <div class="stat"><b>9 años</b><span>garantía vs rayos UV</span></div>
             <div class="stat"><b>50 x 30 m a 60 x 40 m</b><span>medida clave</span></div>
           </div>
         </div>
@@ -701,7 +738,7 @@
         </div>
         <div class="cards types">
           <article class="card visual-card">
-            <div class="card-img"><img src="assets/pasto-sintetico-fibrilado-para-canchas.webp" alt="pasto sintético fibrilado para canchas de futbol de alto tráfico" decoding="async"></div>
+            <div class="card-img"><img src="assets/pasto-sintetico-fibrilado-para-canchas.webp?v=20260525-fibrilado-final" alt="pasto sintético fibrilado para canchas de futbol de alto tráfico" decoding="async"></div>
             <div class="card-body">
               <small>Uso intensivo</small>
               <h3>Pasto fibrilado</h3>
@@ -868,7 +905,7 @@
           <div>
             <span class="num" style="color:#76f0a2;">09 — Garantía</span>
             <h2>Construcción profesional con respaldo por escrito.</h2>
-            <p>Garantía de 9 años en pasto sintético contra decoloración UV y desgaste prematuro, más 2 años en instalación según alcance contratado.</p>
+            <p>Garantía de 9 años contra decoloración por rayos UV del pasto sintético, más 2 años en instalación según alcance contratado.</p>
           </div>
           <a class="btn btn-primary" href="#cotizar" data-wa-intent="Quiero cotizar una cancha de futbol 7.">Cotizar cancha con garantía</a>
         </div>

@@ -16,3 +16,10 @@
 
 # PDF cache-bust: viejo -> nuevo (v2)
 /la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026.pdf  /la-escuela-es-nuestra/guia-la-escuela-es-nuestra-2026-v2.pdf  301
+
+# URL SEO principal para alumbrado deportivo
+/alumbrado-canchas/  /alumbrado-para-canchas-de-futbol/  301
+
+# URL fantasma (CF Pages servía la home con imágenes rotas) → precio real
+/precios-pasto-sintetico-para-canchas/  /pasto-sintetico-para-cancha-de-futbol-precio-m2/  301
+/precios-pasto-sintetico-para-canchas   /pasto-sintetico-para-cancha-de-futbol-precio-m2/  301
