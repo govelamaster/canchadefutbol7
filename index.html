@@ -4,11 +4,9 @@
 <script src="https://analytics.ahrefs.com/analytics.js" data-key="5DPbwXqgStVtWG6pXg49hA" async></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="./assets/hero-cancha-f7-v2-1280.webp" type="image/webp" fetchpriority="high" imagesrcset="./assets/hero-cancha-f7-v2-640.webp 640w, ./assets/hero-cancha-f7-v2-800.webp 800w, ./assets/hero-cancha-f7-v2-1280.webp 1280w" imagesizes="(max-width: 968px) 100vw, 50vw">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap"></noscript>
+  <link rel="preload" as="image" href="./assets/hero-cancha-f7-v2-640-perf.webp" type="image/webp" fetchpriority="high" media="(max-width: 767px)">
+  <link rel="preload" as="image" href="./assets/hero-cancha-f7-v2-800-perf.webp" type="image/webp" fetchpriority="high" media="(min-width: 768px) and (max-width: 968px)">
+  <link rel="preload" as="image" href="./assets/hero-cancha-f7-v2-1280-perf.webp" type="image/webp" fetchpriority="high" media="(min-width: 969px)">
 <title>Cuanto cuesta cancha futbol 7 | Precio 2026 | Sportmaster</title>
 <meta name="description" content="Conoce cuanto cuesta cancha futbol 7 con pasto sintético. Cotización en menos de 1 hora. Garantía 9 años vs rayos UV. +3,500 canchas instaladas en México.">
 <meta name="keywords" content="cancha de futbol 7, construccion cancha futbol 7, precio cancha futbol 7, cuanto cuesta cancha futbol 7, medidas cancha futbol 7, pasto sintetico futbol 7, cancha fut 7, construir cancha futbol 7, cancha futbol 7 mexico, presupuesto cancha futbol 7">
@@ -775,7 +773,7 @@
 }
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
   font-weight:600;
   color:var(--black);
   background:var(--white);
@@ -1042,8 +1040,13 @@ a{color:inherit;text-decoration:none}
 }
 
 @media(max-width:500px){
-  .hero-headline{font-size:38px}
-  .hero-sub{font-size:16px}
+  .nav-inner{padding:10px 16px;gap:12px}
+  .nav-logo img{height:52px}
+  .nav-cta{padding:11px 14px;font-size:12px;white-space:nowrap}
+  .hero{padding-left:24px;padding-right:24px;overflow:hidden}
+  .hero-text{min-width:0}
+  .hero-headline{font-size:clamp(32px,9.2vw,36px);line-height:1.02;letter-spacing:-0.025em}
+  .hero-sub{font-size:16px;max-width:100%;overflow-wrap:break-word}
   .float-card{padding:10px 12px;gap:8px}
   .float-icon{width:32px;height:32px}
   .float-num{font-size:14px}
@@ -2596,12 +2599,31 @@ section{padding:56px 24px}
        5CIzCL_t_rIcEMG84JkD   → Futbol7 — WhatsApp Click
        lczYCL2V6LIcEMG84JkD   → Futbol7 — Tel Click
   -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-859315777"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-859315777', { 'conversion_linker': true });
+
+    (function(){
+      var loaded = false;
+      function loadGoogleAds(){
+        if(loaded) return;
+        loaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-859315777';
+        document.head.appendChild(s);
+      }
+
+      window.loadGoogleAds = loadGoogleAds;
+      gtag('js', new Date());
+      gtag('config', 'AW-859315777', { 'conversion_linker': true });
+
+      var schedule = window.requestIdleCallback || function(cb){ return setTimeout(cb, 2200); };
+      window.addEventListener('load', function(){ schedule(loadGoogleAds, {timeout: 3000}); }, {once:true});
+      ['pointerdown','keydown','touchstart','scroll'].forEach(function(evt){
+        window.addEventListener(evt, loadGoogleAds, {once:true, passive:true});
+      });
+    })();
 
     window.trackConversion = function(type) {
       var labels = {
@@ -2609,7 +2631,8 @@ section{padding:56px 24px}
         'whatsapp_click': 'AW-859315777/5CIzCL_t_rIcEMG84JkD',
         'phone_click':    'AW-859315777/lczYCL2V6LIcEMG84JkD'
       };
-      if (typeof gtag !== 'function' || !labels[type]) return;
+      if (!labels[type]) return;
+      if (window.loadGoogleAds) window.loadGoogleAds();
       gtag('event', 'conversion', {
         'send_to': labels[type]
       });
@@ -2683,7 +2706,9 @@ section{padding:56px 24px}
     </div>
     <div class="hero-visual">
       <picture>
-        <source type="image/webp" srcset="./assets/hero-cancha-f7-v2-640.webp 640w, ./assets/hero-cancha-f7-v2-800.webp 800w, ./assets/hero-cancha-f7-v2-1280.webp 1280w" sizes="(max-width: 968px) 100vw, 50vw">
+        <source media="(max-width: 767px)" type="image/webp" srcset="./assets/hero-cancha-f7-v2-640-perf.webp">
+        <source media="(max-width: 968px)" type="image/webp" srcset="./assets/hero-cancha-f7-v2-800-perf.webp">
+        <source type="image/webp" srcset="./assets/hero-cancha-f7-v2-1280-perf.webp 1280w, ./assets/hero-cancha-f7-v2-800-perf.webp 800w" sizes="50vw">
         <img src="./assets/hero-cancha-f7-v2-1280.jpg" srcset="./assets/hero-cancha-f7-v2-640.jpg 640w, ./assets/hero-cancha-f7-v2-800.jpg 800w, ./assets/hero-cancha-f7-v2-1280.jpg 1280w" sizes="(max-width: 968px) 100vw, 50vw" alt="Cancha de futbol 7 con pasto sintético instalada por Sportmaster en CDMX" width="1280" height="720" fetchpriority="high" decoding="async">
       </picture>
       <div class="float-card float-card-1">
@@ -2927,10 +2952,10 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/monofilamento-v2-480.webp 480w, ./assets/monofilamento.webp 700w" sizes="(max-width: 768px) 100vw, 50vw">
+            <source type="image/webp" srcset="./assets/monofilamento-480-perf.webp 480w" sizes="(max-width: 768px) 100vw, 50vw">
             <img class="tt-bg" src="./assets/monofilamento.jpeg" srcset="./assets/monofilamento.jpeg 700w" sizes="(max-width: 768px) 100vw, 50vw" alt="Pasto sintético monofilamento — fibra recta de alto rendimiento" loading="lazy" decoding="async">
           </picture>
-          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/monofilamento.webp"><img src="./assets/monofilamento.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
+          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/monofilamento-480-perf.webp"><img src="./assets/monofilamento.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para fútbol 7 y 11</span>
         </div>
         <div class="tt-body">
@@ -2966,10 +2991,10 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/fibrilado-v2-480.webp 480w, ./assets/fibrilado.webp?v=20260525-fibrilado-final 700w" sizes="(max-width: 768px) 100vw, 50vw">
+            <source type="image/webp" srcset="./assets/fibrilado-480-perf.webp 480w" sizes="(max-width: 768px) 100vw, 50vw">
             <img class="tt-bg" src="./assets/fibrilado.jpeg?v=20260525-fibrilado-final" srcset="./assets/fibrilado-v2-480.jpeg 480w, ./assets/fibrilado.jpeg?v=20260525-fibrilado-final 700w" sizes="(max-width: 768px) 100vw, 50vw" alt="Pasto sintético fibrilado — fibra cortada en tiras entrelazadas" loading="lazy" decoding="async">
           </picture>
-          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/fibrilado.webp?v=20260525-fibrilado-final"><img src="./assets/fibrilado.jpeg?v=20260525-fibrilado-final" alt="" loading="lazy" decoding="async"></picture></span>
+          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/fibrilado-480-perf.webp"><img src="./assets/fibrilado.jpeg?v=20260525-fibrilado-final" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para fútbol 5 y renta</span>
         </div>
         <div class="tt-body">
@@ -3007,10 +3032,10 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/hibrido-v2-480.webp 480w, ./assets/hibrido.webp 700w" sizes="(max-width: 768px) 100vw, 50vw">
+            <source type="image/webp" srcset="./assets/hibrido-480-perf.webp 480w" sizes="(max-width: 768px) 100vw, 50vw">
             <img class="tt-bg" src="./assets/hibrido.jpeg" srcset="./assets/hibrido-v2-480.jpeg 480w, ./assets/hibrido.jpeg 700w" sizes="(max-width: 768px) 100vw, 50vw" alt="Pasto sintético híbrido — combina monofilamento y fibrilado" loading="lazy" decoding="async">
           </picture>
-          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/hibrido.webp"><img src="./assets/hibrido.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
+          <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/hibrido-480-perf.webp"><img src="./assets/hibrido.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para uso intensivo</span>
         </div>
         <div class="tt-body">
@@ -6338,7 +6363,7 @@ Constructores de parques, colegios y escuelas, fraccionamientos residenciales, e
   z-index:990;
   padding:14px 20px;
   border-top:3px solid #139D45;
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter','Helvetica Neue',Arial,sans-serif;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
 }
 .sticky-cta-bar.visible{transform:translateY(0)}
 .sticky-cta-content{
