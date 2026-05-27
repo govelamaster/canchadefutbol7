@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="./assets/hero-cancha-f7-v2-1280.webp" type="image/webp" fetchpriority="high" imagesrcset="./assets/hero-cancha-f7-v2-640.webp 640w, ./assets/hero-cancha-f7-v2-800.webp 800w, ./assets/hero-cancha-f7-v2-1280.webp 1280w" imagesizes="(max-width: 968px) 100vw, 50vw">
+  <link rel="preload" as="image" href="./assets/hero-cancha-f7-v2-1280.webp" type="image/webp" fetchpriority="high" imagesrcset="./assets/hero-cancha-f7-v2-640.webp 640w, ./assets/hero-cancha-f7-v2-1280.webp 1280w" imagesizes="(max-width: 968px) 100vw, 50vw">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@600;700;800;900&display=swap"></noscript>
 <title>Cuanto cuesta cancha futbol 7 | Precio 2026 | Sportmaster</title>
@@ -2635,7 +2635,7 @@ section{padding:56px 24px}
 <!-- NAVBAR -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo" aria-label="Sportmaster México - Inicio"><picture><source type="image/webp" srcset="./assets/sportmaster-m-xico-pasto-sin-f7aaa128-240.webp"><img loading="lazy" decoding="async" src="./assets/sportmaster-m-xico-pasto-sin-f7aaa128-240.png"alt="Sportmaster México - Pasto Sintético y Canchas Deportivas" width="200" height="100"></picture></a>
+    <a href="/" class="nav-logo" aria-label="Sportmaster México - Inicio"><picture><source type="image/webp" srcset="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.webp"><img loading="lazy" decoding="async" src="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.png"alt="Sportmaster México - Pasto Sintético y Canchas Deportivas" width="200" height="100"></picture></a>
     <a href="https://wa.me/525539887615?text=%C2%A1Hola%20Sportmaster!%20Quiero%20cotizar%20una%20cancha." target="_blank" rel="noopener" class="nav-cta">Cotiza tu cancha →</a>
   </div>
 </nav>
@@ -2683,8 +2683,8 @@ section{padding:56px 24px}
     </div>
     <div class="hero-visual">
       <picture>
-        <source type="image/webp" srcset="./assets/hero-cancha-f7-v2-640.webp 640w, ./assets/hero-cancha-f7-v2-800.webp 800w, ./assets/hero-cancha-f7-v2-1280.webp 1280w" sizes="(max-width: 968px) 100vw, 50vw">
-        <img src="./assets/hero-cancha-f7-v2-1280.jpg" srcset="./assets/hero-cancha-f7-v2-640.jpg 640w, ./assets/hero-cancha-f7-v2-800.jpg 800w, ./assets/hero-cancha-f7-v2-1280.jpg 1280w" sizes="(max-width: 968px) 100vw, 50vw" alt="Cancha de futbol 7 con pasto sintético instalada por Sportmaster en CDMX" width="1280" height="720" fetchpriority="high" decoding="async">
+        <source type="image/webp" srcset="./assets/hero-cancha-f7-v2-640.webp 640w, ./assets/hero-cancha-f7-v2-1280.webp 1280w" sizes="(max-width: 968px) 100vw, 50vw">
+        <img src="./assets/hero-cancha-f7-v2-1280.jpg" srcset="./assets/hero-cancha-f7-v2-640.jpg 640w, ./assets/hero-cancha-f7-v2-1280.jpg 1280w" sizes="(max-width: 968px) 100vw, 50vw" alt="Cancha de futbol 7 con pasto sintético instalada por Sportmaster en CDMX" width="1280" height="720" fetchpriority="high" decoding="async">
       </picture>
       <div class="float-card float-card-1">
         <div class="float-icon green">
@@ -2927,8 +2927,8 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/monofilamento-v2-480.webp 480w, ./assets/monofilamento.webp 700w" sizes="(max-width: 768px) 100vw, 50vw">
-            <img class="tt-bg" src="./assets/monofilamento.jpeg" srcset="./assets/monofilamento.jpeg 700w" sizes="(max-width: 768px) 100vw, 50vw" alt="Pasto sintético monofilamento — fibra recta de alto rendimiento" loading="lazy" decoding="async">
+            <source type="image/webp" srcset="./assets/monofilamento.webp">
+            <img class="tt-bg" src="./assets/monofilamento.jpeg" alt="Pasto sintético monofilamento — fibra recta de alto rendimiento" loading="lazy" decoding="async">
           </picture>
           <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/monofilamento.webp"><img src="./assets/monofilamento.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para fútbol 7 y 11</span>
@@ -3007,8 +3007,8 @@ section{padding:56px 24px}
       <article class="tt-card">
         <div class="tt-img">
           <picture>
-            <source type="image/webp" srcset="./assets/hibrido-v2-480.webp 480w, ./assets/hibrido.webp 700w" sizes="(max-width: 768px) 100vw, 50vw">
-            <img class="tt-bg" src="./assets/hibrido.jpeg" srcset="./assets/hibrido-v2-480.jpeg 480w, ./assets/hibrido.jpeg 700w" sizes="(max-width: 768px) 100vw, 50vw" alt="Pasto sintético híbrido — combina monofilamento y fibrilado" loading="lazy" decoding="async">
+            <source type="image/webp" srcset="./assets/hibrido.webp">
+            <img class="tt-bg" src="./assets/hibrido.jpeg" alt="Pasto sintético híbrido — combina monofilamento y fibrilado" loading="lazy" decoding="async">
           </picture>
           <span class="tt-zoom"><picture><source type="image/webp" srcset="./assets/hibrido.webp"><img src="./assets/hibrido.jpeg" alt="" loading="lazy" decoding="async"></picture></span>
           <span class="tt-badge">Óptimo para uso intensivo</span>
@@ -5932,7 +5932,7 @@ Para conocer más, lee nuestra <a href="/construccion-cancha-futbol-7/" style="c
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-col">
-      <div class="footer-logo-box"><picture><source type="image/webp" srcset="./assets/sportmaster-m-xico-pasto-sin-f7aaa128-240.webp"><img loading="lazy" decoding="async" src="./assets/sportmaster-m-xico-pasto-sin-f7aaa128-240.png"alt="Sportmaster México - Pasto Sintético" width="200" height="100"></picture></div>
+      <div class="footer-logo-box"><picture><source type="image/webp" srcset="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.webp"><img loading="lazy" decoding="async" src="./assets/sportmaster-m-xico-pasto-sin-f7aaa128.png"alt="Sportmaster México - Pasto Sintético" width="200" height="100"></picture></div>
       <p>Expertos en soluciones deportivas. Construimos canchas con pasto sintético importado en todo México desde hace más de 15 años.</p>
     </div>
     <div class="footer-col">
