@@ -14,3 +14,6 @@ image.png
 # Node (por si llega un build setup en el futuro)
 node_modules/
 .wrangler/
+
+# Backups locales de assets antes de re-encode
+*.backup-*

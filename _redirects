@@ -19,3 +19,7 @@
 
 # URL SEO principal para alumbrado deportivo
 /alumbrado-canchas/  /alumbrado-para-canchas-de-futbol/  301
+
+# URL fantasma (CF Pages servía la home con imágenes rotas) → precio real
+/precios-pasto-sintetico-para-canchas/  /pasto-sintetico-para-cancha-de-futbol-precio-m2/  301
+/precios-pasto-sintetico-para-canchas   /pasto-sintetico-para-cancha-de-futbol-precio-m2/  301
