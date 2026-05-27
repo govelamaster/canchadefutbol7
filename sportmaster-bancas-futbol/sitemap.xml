@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://bancasfutbol.dev/</loc>
+    <lastmod>2026-05-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://bancasfutbol.dev/images/modelo-I-TP11MLA-banca-metalica-11-jugadores.webp</image:loc>
+      <image:caption>Banca metálica para 11 jugadores de fútbol con techumbre policarbonato modelo I-TP11MLA Sportmaster</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bancasfutbol.dev/images/modelo-S-TPA7-banca-metalica-futbol-7.webp</image:loc>
+      <image:caption>Set de bancas para cancha de fútbol 7 con techumbre policarbonato S-TPA7 Sportmaster</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bancasfutbol.dev/images/modelo-I-TL5A-banca-metalica-5-jugadores.webp</image:loc>
+      <image:caption>Banca metálica para 5 jugadores fútbol modelo I-TL5A con techo de lona Sportmaster</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bancasfutbol.dev/images/modelo-S-TL5A-banca-metalica-set-5-jugadores.webp</image:loc>
+      <image:caption>Set completo bancas metálicas para jugadores y árbitros S-TL5A Sportmaster</image:caption>
+    </image:image>
+  </url>
+</urlset>
