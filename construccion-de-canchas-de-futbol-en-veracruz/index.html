@@ -603,6 +603,10 @@
   .related-link small{display:block;color:var(--green);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.13em;margin-bottom:10px}
   .related-link b{display:block;font-size:18px;line-height:1.15;letter-spacing:-.02em}
   .related-link span{display:block;color:#65716a;font-size:13px;font-weight:650;margin-top:8px}
+  .cities-links{display:flex;flex-wrap:wrap;gap:10px}
+  .city-chip{display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:100px;padding:11px 18px;text-decoration:none;color:var(--ink);font-weight:800;font-size:14px;transition:.2s ease}
+  .city-chip:hover{border-color:rgba(19,157,69,.4);transform:translateY(-2px);box-shadow:0 10px 26px rgba(8,18,12,.07)}
+  .city-chip::after{content:"\2192";color:var(--green);font-weight:900;margin-left:7px}
   .wa-float{
     position:fixed;right:22px;bottom:24px;z-index:60;width:62px;height:62px;border-radius:50%;
     display:grid;place-items:center;background:linear-gradient(135deg,var(--whatsapp),var(--green-bright));color:#fff;
@@ -1005,6 +1009,27 @@
       </div>
     </section>
   </main>
+
+    <section class="reveal">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="num">13 — Cobertura</span>
+          <h2>También construimos en <span class="accent">otras ciudades.</span></h2>
+          <p class="section-sub">Llevamos canchas de futbol con pasto sintético deportivo a las principales ciudades de México.</p>
+        </div>
+        <div class="cities-links">
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-oaxaca/">Oaxaca</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-cdmx/">CDMX</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-guadalajara/">Guadalajara</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-monterrey/">Monterrey</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-puebla/">Puebla</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-queretaro/">Querétaro</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-leon/">León</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-toluca/">Toluca</a>
+          <a class="city-chip" href="/construccion-de-canchas-de-futbol-en-merida/">Mérida</a>
+        </div>
+      </div>
+    </section>
 
   <footer class="footer">
     <div class="wrap">
