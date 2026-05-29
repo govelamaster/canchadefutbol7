@@ -467,7 +467,32 @@ section{padding:76px 0}.section-head{max-width:780px;margin-bottom:34px}.num{dis
   </div>
 </footer>
 
-<a class="wa-float wa-link" href="https://wa.me/525539887615" data-wa-intent="Quiero cotizar malla ciclónica para canchas de fútbol. Me interesa lo siguiente:" target="_blank" rel="noopener" aria-label="Cotizar por WhatsApp">WA</a>
+<!-- ===== STICKY CTA BAR ===== -->
+<style>
+.sticky-cta-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;box-shadow:0 -6px 24px rgba(0,0,0,.12);transform:translateY(110%);transition:transform .4s cubic-bezier(.22,1,.36,1);z-index:990;padding:14px 20px;border-top:3px solid #139D45;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif}
+.sticky-cta-bar.visible{transform:translateY(0)}
+.sticky-cta-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.sticky-cta-text strong{display:block;font-size:16px;color:#1a1a1a;font-weight:800;line-height:1.3;letter-spacing:-.01em}
+.sticky-cta-text span{font-size:13px;color:#5a6b78;font-weight:500}
+.sticky-cta-actions{display:flex;gap:10px;align-items:center}
+.sticky-cta-btn{background:#128C7E;color:#fff;padding:13px 26px;border-radius:50px;text-decoration:none;font-weight:800;font-size:15px;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;letter-spacing:-.01em;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
+.sticky-cta-btn:hover{background:#0f7a35;transform:translateY(-1px);box-shadow:0 6px 14px rgba(19,157,69,.35)}
+@media (max-width:768px){.sticky-cta-bar{padding:10px 14px}.sticky-cta-text{display:none}.sticky-cta-content{gap:10px}.sticky-cta-btn{flex:1;text-align:center;padding:13px 16px;font-size:14px;justify-content:center}}
+</style>
+<div class="sticky-cta-bar" id="stickyCta">
+  <div class="sticky-cta-content">
+    <div class="sticky-cta-text">
+      <strong>¿Listo para tu cancha de fútbol 7?</strong>
+      <span>Cotización por WhatsApp en menos de 1 hora</span>
+    </div>
+    <div class="sticky-cta-actions">
+      <a href="https://wa.me/525539887615?text=%C2%A1Hola%20Sportmaster!%20Quiero%20cotizar%20una%20cancha%20de%20f%C3%BAtbol%207." target="_blank" rel="noopener" class="sticky-cta-btn">Cotizar mi cancha</a>
+    </div>
+  </div>
+</div>
+<script>
+(function(){var bar=document.getElementById('stickyCta');if(!bar)return;var back=document.querySelector('.back-home');var threshold=600,lastVisible=null,ticking=false;function apply(v){bar.classList.toggle('visible',v);if(back)back.style.bottom=v?'95px':'';}function check(){if(ticking)return;ticking=true;requestAnimationFrame(function(){var v=window.scrollY>threshold;if(v!==lastVisible){lastVisible=v;apply(v);}ticking=false;});}window.addEventListener('scroll',check,{passive:true});check();})();
+</script>
 
 <script>
 const canonicalUrl = 'https://canchadefutbol7.mx/malla-ciclonica-para-canchas-de-futbol/';
