@@ -1068,7 +1068,6 @@
     </div>
   </footer>
 
-  <a class="wa-float" href="#cotizar" data-wa-intent="Quiero cotizar una cancha de futbol 7." aria-label="Cotizar por WhatsApp">W</a>
   <div class="sticky" id="stickyBar">
     <div class="wrap">
       <div><b>Construcción de cancha de futbol 7</b><span>Cotización por WhatsApp en menos de 1 hora</span></div>
@@ -1085,7 +1084,6 @@
   document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
   const sticky = document.getElementById('stickyBar');
-  const whatsappFloat = document.querySelector('.wa-float');
   const canonicalUrl = document.querySelector('link[rel="canonical"]')?.href || window.location.href.split('?')[0];
 
   function buildWhatsAppUrl(intent){
@@ -1106,7 +1104,6 @@
   window.addEventListener('scroll', ()=>{
     const showCtas = window.scrollY > 650;
     sticky.classList.toggle('show', showCtas);
-    whatsappFloat.classList.toggle('show', showCtas);
   });
 
   document.getElementById('quoteForm').addEventListener('submit', (event)=>{
