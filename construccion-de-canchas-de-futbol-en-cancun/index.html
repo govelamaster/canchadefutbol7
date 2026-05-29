@@ -464,8 +464,10 @@
   .dark p{color:rgba(255,255,255,.72);font-size:18px;font-weight:650;margin-top:12px;max-width:680px}
   .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   details{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px 22px}
-  summary{cursor:pointer;font-weight:900;letter-spacing:-.01em;list-style:none}
+  summary{cursor:pointer;font-weight:900;letter-spacing:-.01em;list-style:none;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
   summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--green);font-size:1.55em;line-height:.85;flex-shrink:0;transition:transform .25s ease}
+  details[open] summary::after{transform:rotate(45deg)}
   details p{margin-top:12px;color:#5b6761;font-weight:650}
   .form-card{background:#fff;border-radius:30px;padding:28px;border:1px solid rgba(255,255,255,.14);min-width:330px}
   .form-card label{display:block;color:#111614;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;margin:14px 0 7px}
