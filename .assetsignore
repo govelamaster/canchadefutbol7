@@ -1,3 +1,7 @@
 _*.py
 *.backup-*
 .backup-*
+*.bak
+*.bak-*
+audit/
+PENDIENTES-TRACKING-GROWTH.md
