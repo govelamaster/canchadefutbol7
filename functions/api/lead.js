@@ -22,26 +22,56 @@ export async function onRequestPost(context) {
   }
 
   try {
-    await env.DB.prepare(`
-      INSERT INTO leads
-        (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, ip, user_agent)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(
-      payload.session_id || '',
-      payload.estado || '',
-      payload.nombre || '',
-      payload.whatsapp || '',
-      payload.ciudad || '',
-      payload.m2 || '',
-      payload.timeline || '',
-      payload.comentarios || '',
-      payload.fuente || '',
-      payload.url || '',
-      payload.gclid || '',
-      payload.campania || '',
-      request.headers.get('cf-connecting-ip') || '',
-      request.headers.get('user-agent') || ''
-    ).run();
+    const sid = (payload.session_id || '').trim();
+    let changed = 0;
+
+    // Si ya existe una fila con este session_id (ej. guardado "parcial"),
+    // la actualizamos en vez de crear una duplicada.
+    if (sid) {
+      const upd = await env.DB.prepare(`
+        UPDATE leads SET
+          estado = ?, nombre = ?, whatsapp = ?, ciudad = ?, m2 = ?,
+          timeline = ?, comentarios = ?, fuente = ?, url = ?, gclid = ?, campania = ?
+        WHERE session_id = ?
+      `).bind(
+        payload.estado || '',
+        payload.nombre || '',
+        payload.whatsapp || '',
+        payload.ciudad || '',
+        payload.m2 || '',
+        payload.timeline || '',
+        payload.comentarios || '',
+        payload.fuente || '',
+        payload.url || '',
+        payload.gclid || '',
+        payload.campania || '',
+        sid
+      ).run();
+      changed = (upd.meta && upd.meta.changes) || 0;
+    }
+
+    if (!changed) {
+      await env.DB.prepare(`
+        INSERT INTO leads
+          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, ip, user_agent)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        sid,
+        payload.estado || '',
+        payload.nombre || '',
+        payload.whatsapp || '',
+        payload.ciudad || '',
+        payload.m2 || '',
+        payload.timeline || '',
+        payload.comentarios || '',
+        payload.fuente || '',
+        payload.url || '',
+        payload.gclid || '',
+        payload.campania || '',
+        request.headers.get('cf-connecting-ip') || '',
+        request.headers.get('user-agent') || ''
+      ).run();
+    }
 
     return new Response(JSON.stringify({ ok: true }), {
       headers: corsHeaders('application/json')

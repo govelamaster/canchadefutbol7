@@ -6562,19 +6562,23 @@ const Cot = (function(){
     }catch(e){ return { url: location.href, gclid:'', campania:'directo' }; }
   }
 
+  // session_id estable para toda la conversación (parcial → completo = misma fila)
+  let SID = null;
+  function sid(){ if(!SID) SID = "bot-" + Date.now() + "-" + Math.floor(Math.random()*1e6); return SID; }
+
   // Guarda el lead en el MISMO panel que usa tu formulario (Cloudflare D1).
-  // Se dispara al terminar la conversación, aunque no toquen el botón de WhatsApp.
-  function saveLead(d){
+  // estado "parcial" = apenas tenemos contacto · "completo" = terminó.
+  // Se llama 2 veces con el mismo session_id → el endpoint ACTUALIZA, no duplica.
+  function saveLead(d, estado){
     try{
-      const sid = "bot-" + Date.now() + "-" + Math.floor(Math.random()*1e6);
       const a = atribucion();
       fetch(CONFIG.leadApi, {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         keepalive:true,
         body: JSON.stringify({
-          session_id: sid,
-          estado: "completo",
+          session_id: sid(),
+          estado: estado || "completo",
           fuente: "Chatbot",
           nombre: d.nombre || "",
           whatsapp: (d.whatsapp && d.whatsapp !== "No lo dejó") ? d.whatsapp : "No lo dejó",
@@ -6712,11 +6716,13 @@ const Cot = (function(){
       typing(()=>{ addMsg(step.otherBot, 'bot'); render({ key:step.key, type:"text", ph:step.otherPh }); });
       return;
     }
+    // Apenas tenemos el WhatsApp, guardamos PARCIAL (por si abandona después)
+    if(step.key === 'whatsapp') saveLead(data, 'parcial');
     i++; ask();
   }
 
   function finish(){
-    saveLead(data);
+    saveLead(data, 'completo');
     const nombre = (data.nombre||'').split(' ')[0] || '';
     typing(()=>{
       addMsg(`¡Listo, ${nombre}! 🙌 Ya tengo todo para tu cotización. Toca el botón verde 👇 y un asesor te la manda por WhatsApp hoy mismo.`, 'bot');
