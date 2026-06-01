@@ -24,8 +24,8 @@ export async function onRequestPost(context) {
   try {
     await env.DB.prepare(`
       INSERT INTO leads
-        (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, ip, user_agent)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, ip, user_agent)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       payload.session_id || '',
       payload.estado || '',
@@ -36,6 +36,9 @@ export async function onRequestPost(context) {
       payload.timeline || '',
       payload.comentarios || '',
       payload.fuente || '',
+      payload.url || '',
+      payload.gclid || '',
+      payload.campania || '',
       request.headers.get('cf-connecting-ip') || '',
       request.headers.get('user-agent') || ''
     ).run();

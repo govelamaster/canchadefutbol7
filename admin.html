@@ -955,6 +955,11 @@ html,body{
       <select class="vendedor-filter" id="vendedorFilter">
         <option value="all">👥 Todos los vendedores</option>
       </select>
+      <div class="filters" id="rangeFilters">
+        <button class="filter-pill active" data-range="today">📅 Hoy</button>
+        <button class="filter-pill" data-range="7d">7 días</button>
+        <button class="filter-pill" data-range="all">Acumulado</button>
+      </div>
       <div class="filters">
         <button class="filter-pill active" data-filter="all">Todos</button>
       </div>
@@ -976,6 +981,7 @@ html,body{
             <th>📅 Próxima acción</th>
             <th>🕐 Último contacto</th>
             <th>Coment. cliente</th>
+            <th>🌐 Origen</th>
             <th>Notas internas</th>
             <th></th>
           </tr>
@@ -1162,6 +1168,7 @@ const PRECIO_M2_MXN = 1500; // para pipeline value estimado
 
 let allLeads = [];
 let currentFilter = 'all';
+let currentRange = 'today';   // por defecto la tabla muestra SOLO los leads de hoy
 let currentSearch = '';
 let currentVendedor = 'all';
 let currentTab = 'leads';
@@ -1473,6 +1480,14 @@ document.querySelectorAll('.filter-pill[data-filter]').forEach(btn => {
     renderTable();
   });
 });
+document.querySelectorAll('.filter-pill[data-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentRange = btn.dataset.range;
+    renderTable();
+  });
+});
 document.getElementById('searchInput').addEventListener('input', (e) => {
   currentSearch = e.target.value.toLowerCase().trim();
   renderTable();
@@ -1672,6 +1687,14 @@ function askRazonPerdida(lead){
 
 function renderTable(){
   let rows = allLeads;
+  // Filtro por rango de fecha (Hoy por defecto, para no saturar)
+  if (currentRange === 'today'){
+    const t = new Date().toISOString().slice(0,10);
+    rows = rows.filter(l => (l.fecha || '').slice(0,10) === t);
+  } else if (currentRange === '7d'){
+    const c = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
+    rows = rows.filter(l => (l.fecha || '').slice(0,10) >= c);
+  }
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
   if (currentVendedor !== 'all') rows = rows.filter(l => (l.vendedor || '') === currentVendedor);
   if (currentSearch){
@@ -1739,9 +1762,20 @@ function renderLeadRow(l, vip){
     <td>${proximaAccionCell(l)}</td>
     <td>${contactoCell(l)}</td>
     <td class="cliente-coment">${escapeHtml(l.comentarios || '—')}</td>
+    <td class="origen-cell">${origenCell(l)}</td>
     <td>${notasTextarea(l)}${tocado}</td>
     <td>${waNum ? waBtn(waLink) : ''}</td>
   </tr>`;
+}
+
+/* Origen del lead: campaña + URL + gclid/CID (métrica de marketing) */
+function origenCell(l){
+  if (!l.url && !l.campania && !l.gclid) return '<span class="small-meta">—</span>';
+  const camp = l.campania ? `<div style="font-weight:700;color:#3f922a;font-size:12px">${escapeHtml(l.campania)}</div>` : '';
+  const urlShort = (l.url || '').replace(/^https?:\/\//,'');
+  const urlEl = l.url ? `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="small-meta" style="display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(l.url)}">${escapeHtml(urlShort)}</a>` : '';
+  const gclidEl = l.gclid ? `<div class="small-meta" title="Google Ads click ID">🔑 ${escapeHtml(l.gclid.slice(0,22))}${l.gclid.length>22?'…':''}</div>` : '';
+  return camp + urlEl + gclidEl;
 }
 
 /* =========================================================

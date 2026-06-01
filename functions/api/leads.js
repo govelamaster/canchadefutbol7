@@ -20,6 +20,7 @@ export async function onRequestGet(context) {
   try {
     const result = await env.DB.prepare(`
       SELECT id, fecha, session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente,
+             url, gclid, campania,
              vendedor, tipo_cliente, status_proyecto, notas_internas, tocado_por, tocado_fecha
       FROM leads
       ORDER BY fecha DESC
