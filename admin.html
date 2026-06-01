@@ -250,6 +250,31 @@ html,body{
 }
 .src-empty{ color:#9ca3af; font-size:13px; text-align:center; padding:14px 4px; }
 
+/* Widget "De qué URL llegaron más leads" — limpio, sin barras */
+.url-list{ display:flex; flex-direction:column; }
+.url-row{
+  display:flex; align-items:center; gap:11px;
+  padding:9px 10px; border-radius:8px; transition:background .12s ease;
+}
+.url-row:hover{ background:#f6f8f6; }
+.url-row + .url-row{ border-top:1px solid rgba(15,23,42,.05); }
+.url-rank{
+  flex:none; width:21px; height:21px; border-radius:6px;
+  display:grid; place-items:center; font-size:11px; font-weight:800;
+  color:#6b7280; background:rgba(15,23,42,.05);
+}
+.url-row:nth-child(1) .url-rank{ background:rgba(63,146,42,.15); color:#3f922a; }
+.url-path{
+  flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size:12px; font-family:'SF Mono',Menlo,monospace; font-weight:600; color:#0b0f14;
+}
+.url-path .host{ color:#9ca3af; font-weight:500; }
+.url-count{
+  flex:none; min-width:30px; text-align:center;
+  font-size:12.5px; font-weight:800; color:#3f922a;
+  background:rgba(63,146,42,.10); border-radius:999px; padding:3px 10px;
+}
+
 .src-table{ width:100%; font-size:13px; border-collapse:separate; border-spacing:0; }
 .src-table thead th{
   text-align:left; padding:8px 12px;
@@ -365,8 +390,19 @@ html,body{
 }
 .ciudad-cell{
   font-size:12.5px; font-weight:600; color:#374151;
-  white-space:nowrap;
+  white-space:normal; overflow-wrap:break-word;
+  max-width:130px; line-height:1.3;
 }
+/* Botón eliminar lead (basurero antes del nombre) */
+.nombre-wrap{ display:flex; align-items:flex-start; gap:7px; }
+.del-btn{
+  flex:none; width:26px; height:26px; margin-top:2px;
+  display:grid; place-items:center; cursor:pointer;
+  background:#fff; border:1px solid #e5e7eb; border-radius:7px;
+  color:#9ca3af; transition:.15s;
+}
+.del-btn svg{ width:14px; height:14px; }
+.del-btn:hover{ background:#fef2f2; border-color:#fca5a5; color:#dc2626; }
 /* Próxima acción */
 .accion-wrap{
   display:flex; flex-direction:column; gap:3px; min-width:170px;
@@ -867,9 +903,10 @@ html,body{
     </div>
     <h1>Panel de Leads</h1>
     <p>Cotizador de canchas de fútbol 7</p>
+    <input type="text" id="usr" placeholder="Usuario" autocomplete="username" autocapitalize="none" />
     <input type="password" id="pwd" placeholder="Contraseña" autocomplete="current-password" required />
     <button type="submit">Entrar</button>
-    <div class="login-error" id="loginError">Contraseña incorrecta</div>
+    <div class="login-error" id="loginError">Usuario o contraseña incorrectos</div>
   </form>
 </div>
 
@@ -893,6 +930,7 @@ html,body{
       <button id="refreshBtn" title="Refrescar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refrescar</button>
       <button id="urlBuilderBtn" title="Generar URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>URL</button>
       <button id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
+      <button id="usersBtn" style="display:none" title="Gestionar usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Usuarios</button>
       <button id="logoutBtn" class="logout">Salir</button>
     </div>
   </header>
@@ -1134,6 +1172,29 @@ html,body{
   </div>
 </div>
 
+<!-- ============ MODAL: USUARIOS (solo admin) ============ -->
+<div class="modal-overlay" id="usersModal">
+  <div class="modal" style="max-width:540px">
+    <h3>👥 Usuarios del panel</h3>
+    <p>Agrega o quita personas. Cada quien entra con su <b>usuario + contraseña</b>.</p>
+    <div id="usersList" style="margin:14px 0; display:flex; flex-direction:column; gap:8px; max-height:280px; overflow:auto;"></div>
+    <div style="border-top:1px solid #eee; padding-top:14px;">
+      <label style="font-size:13px;font-weight:700;color:#0b0f14">Agregar usuario</label>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+        <input type="text" id="newUserName" placeholder="Nombre / usuario" autocapitalize="none" style="flex:1 1 140px; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px;">
+        <input type="text" id="newUserPwd" placeholder="Contraseña" style="flex:1 1 140px; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px;">
+        <select id="newUserRole" style="padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:14px;">
+          <option value="vendedor">Vendedor</option>
+          <option value="admin">Admin (ve todo)</option>
+        </select>
+        <button id="addUserBtn" style="background:#3f922a; color:#fff; border:none; border-radius:10px; padding:10px 18px; font-weight:700; cursor:pointer;">➕ Agregar</button>
+      </div>
+      <div id="usersMsg" style="font-size:13px; margin-top:8px; min-height:16px;"></div>
+    </div>
+    <button onclick="document.getElementById('usersModal').classList.remove('show')" style="margin-top:14px; background:#f1f5f9; color:#0b0f14; border:none; border-radius:10px; padding:10px 18px; font-weight:700; cursor:pointer;">Cerrar</button>
+  </div>
+</div>
+
 <!-- ============ MODAL: RAZÓN DE PÉRDIDA ============ -->
 <div class="modal-overlay" id="razonModal">
   <div class="modal">
@@ -1166,8 +1227,11 @@ html,body{
 ========================================================= */
 const STORAGE_KEY  = 'sm_admin_pwd';
 const STORAGE_USER = 'sm_admin_user';
+const STORAGE_ROLE = 'sm_admin_role';
+let CURRENT_ROLE = localStorage.getItem(STORAGE_ROLE) || 'vendedor';
 const API_LEADS    = '/api/leads';
 const API_UPDATE   = '/api/lead-update';
+const API_DELETE   = '/api/lead-delete';
 
 const VENDEDORES = [
   'Jorge Dantes','Blanca López','Susana','Carolina','Paola Ramos',
@@ -1213,6 +1277,7 @@ const loginView   = document.getElementById('loginView');
 const dashView    = document.getElementById('dashView');
 const loginForm   = document.getElementById('loginForm');
 const pwdInput    = document.getElementById('pwd');
+const usrInput    = document.getElementById('usr');
 const loginErr    = document.getElementById('loginError');
 const asistChip   = document.getElementById('asistenteChip');
 const asistAvatar = document.getElementById('asistenteAvatar');
@@ -1236,21 +1301,13 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   asistChip.addEventListener('click', () => asistModal.classList.add('show'));
 
-  // Auto-login
+  // Auto-login (usuario + contraseña guardados)
   const params = new URLSearchParams(location.search);
   const urlPwd = params.get('p');
-  const urlUser = params.get('u');
   const saved  = localStorage.getItem(STORAGE_KEY);
   const pwd    = urlPwd || saved;
-  if (pwd) tryLogin(pwd, /*silent*/ true);
-
-  // Asistente persisted (URL > localStorage)
-  if (urlUser && ASISTENTES.includes(urlUser)) {
-    setAsistente(urlUser);
-  } else {
-    const savedUser = localStorage.getItem(STORAGE_USER);
-    if (savedUser && ASISTENTES.includes(savedUser)) setAsistente(savedUser);
-  }
+  const usr    = params.get('u') || localStorage.getItem(STORAGE_USER) || '';
+  if (pwd) tryLogin(usr, pwd, /*silent*/ true);
 });
 
 function setAsistente(name){
@@ -1262,27 +1319,88 @@ function currentUser(){ return localStorage.getItem(STORAGE_USER) || 'anónimo';
 
 loginForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  tryLogin(pwdInput.value, false);
+  tryLogin((usrInput && usrInput.value || '').trim(), pwdInput.value, false);
 });
 
-async function tryLogin(pwd, silent){
+async function tryLogin(user, pwd, silent){
   try {
-    const r = await fetch(`${API_LEADS}?p=${encodeURIComponent(pwd)}`);
-    if (!r.ok) {
-      if (!silent) { loginErr.classList.add('show'); localStorage.removeItem(STORAGE_KEY); }
+    // 1) Validar usuario + contraseña
+    const lr = await fetch('/api/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username: user, password: pwd })
+    });
+    const li = await lr.json().catch(()=>({}));
+    if (!lr.ok || !li.ok) {
+      if (!silent) { loginErr.classList.add('show'); loginErr.textContent = li.error || 'Usuario o contraseña incorrectos'; localStorage.removeItem(STORAGE_KEY); }
       return;
     }
+    // 2) Cargar leads con la contraseña
+    const r = await fetch(`${API_LEADS}?p=${encodeURIComponent(pwd)}`);
+    if (!r.ok) { if (!silent) { loginErr.classList.add('show'); } return; }
     const data = await r.json();
+    // 3) Guardar sesión
+    const nombre = li.nombre || user || 'Usuario';
     localStorage.setItem(STORAGE_KEY, pwd);
+    localStorage.setItem(STORAGE_USER, nombre);
+    localStorage.setItem(STORAGE_ROLE, li.role || 'vendedor');
+    CURRENT_ROLE = li.role || 'vendedor';
+    setAsistente(nombre);
+    applyRoleUI();
     enterDash(data);
-    // Si no hay asistente seleccionado, pídelo
-    if (!localStorage.getItem(STORAGE_USER)) {
-      setTimeout(() => asistModal.classList.add('show'), 300);
-    }
   } catch (err) {
     if (!silent) { loginErr.classList.add('show'); loginErr.textContent = 'Error: ' + err.message; }
   }
 }
+
+function applyRoleUI(){
+  const ub = document.getElementById('usersBtn');
+  if (ub) ub.style.display = (CURRENT_ROLE === 'admin') ? '' : 'none';
+}
+
+/* ===== Gestión de usuarios (solo admin) ===== */
+(function(){
+  const btn = document.getElementById('usersBtn');
+  const modal = document.getElementById('usersModal');
+  const addBtn = document.getElementById('addUserBtn');
+  if (btn) btn.addEventListener('click', () => { modal.classList.add('show'); loadUsers(); });
+  if (addBtn) addBtn.addEventListener('click', addUser);
+
+  window.loadUsers = async function(){
+    const pwd = localStorage.getItem(STORAGE_KEY) || '';
+    const list = document.getElementById('usersList');
+    list.innerHTML = '<div style="color:#6b7280">Cargando…</div>';
+    try {
+      const r = await fetch(`/api/users?p=${encodeURIComponent(pwd)}`);
+      const d = await r.json();
+      if (!d.ok) { list.innerHTML = '<div style="color:#dc2626">No autorizado</div>'; return; }
+      if (!d.users.length) { list.innerHTML = '<div style="color:#6b7280">Aún no hay usuarios. Tú entras con tu llave de jefa.</div>'; return; }
+      list.innerHTML = d.users.map(u => `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border:1px solid #eee;border-radius:10px;">
+        <div><b>${escapeHtml(u.username)}</b> <span style="font-size:12px;color:${u.role==='admin'?'#3f922a':'#6b7280'}">· ${u.role==='admin'?'admin (ve todo)':'vendedor'}</span></div>
+        <button onclick="delUser(${u.id})" data-n="${escapeHtml(u.username)}" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer;">🗑️ Quitar</button>
+      </div>`).join('');
+    } catch(e){ list.innerHTML = '<div style="color:#dc2626">Error</div>'; }
+  };
+
+  window.delUser = async function(id){
+    if (!confirm('¿Quitar este usuario? Ya no podrá entrar.')) return;
+    const pwd = localStorage.getItem(STORAGE_KEY) || '';
+    await fetch('/api/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ p: pwd, action:'delete', id }) });
+    loadUsers();
+  };
+
+  async function addUser(){
+    const pwd = localStorage.getItem(STORAGE_KEY) || '';
+    const username = document.getElementById('newUserName').value.trim();
+    const password = document.getElementById('newUserPwd').value;
+    const role = document.getElementById('newUserRole').value;
+    const msg = document.getElementById('usersMsg');
+    if (!username || !password) { msg.style.color='#dc2626'; msg.textContent='Pon usuario y contraseña.'; return; }
+    const r = await fetch('/api/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ p: pwd, action:'add', username, password, role }) });
+    const d = await r.json().catch(()=>({}));
+    if (d.ok) { msg.style.color='#3f922a'; msg.textContent='✓ Usuario agregado'; document.getElementById('newUserName').value=''; document.getElementById('newUserPwd').value=''; loadUsers(); }
+    else { msg.style.color='#dc2626'; msg.textContent = d.error || 'Error'; }
+  }
+})();
 
 function enterDash(data){
   loginView.style.display = 'none';
@@ -1520,10 +1638,19 @@ function renderUrlBreakdown(){
     byUrl[key] = (byUrl[key] || 0) + 1;
   });
   const arr = Object.entries(byUrl).sort((a,b) => b[1] - a[1]).slice(0, 12);
-  const max = arr[0][1];
-  body.innerHTML = '<div class="src-list">' + arr.map(([u,n]) => {
-    const pct = Math.round(n / max * 100);
-    return `<div class="src-row"><div class="name"><code>${escapeHtml(u)}</code><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div></div><div class="count">${n}</div></div>`;
+  body.innerHTML = '<div class="url-list">' + arr.map(([u,n],i) => {
+    // Separa host / path. Para nuestro dominio mostramos solo el path (el dominio se repite = ruido).
+    const m = u.match(/^([^\/]+)(\/.*)?$/);
+    const host = m ? m[1] : u;
+    const path = m && m[2] ? m[2] : '';
+    const isOwn = host.replace(/^www\./,'') === 'canchadefutbol7.mx';
+    let label;
+    if (isOwn) {
+      label = `<span class="host">/</span>${escapeHtml(path.replace(/^\//,'')) || '<span class="host">(home)</span>'}`;
+    } else {
+      label = `<span class="host">${escapeHtml(host)}</span>${escapeHtml(path)}`;
+    }
+    return `<div class="url-row"><span class="url-rank">${i+1}</span><code class="url-path" title="${escapeAttr(u)}">${label}</code><span class="url-count">${n}</span></div>`;
   }).join('') + '</div>';
 }
 
@@ -1991,8 +2118,15 @@ function nombreCell(l){
     ? `<div class="form-name-chip" title="Nombre con el que se registró en el formulario">Form: ${escapeHtml(formName || '—')}</div>`
     : '';
   return `
-    <input type="text" class="cell-input nombre-input" data-field="nombre_real" value="${escapeAttr(displayValue)}" placeholder="${escapeAttr(formName || 'Nombre')}" />
-    ${formChip}
+    <div class="nombre-wrap">
+      <button type="button" class="del-btn" title="Eliminar lead" onclick="deleteLead(${l.id}, this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg>
+      </button>
+      <div style="flex:1; min-width:0;">
+        <input type="text" class="cell-input nombre-input" data-field="nombre_real" value="${escapeAttr(displayValue)}" placeholder="${escapeAttr(formName || 'Nombre')}" />
+        ${formChip}
+      </div>
+    </div>
   `;
 }
 function waBtn(href){
@@ -2143,6 +2277,28 @@ async function saveField(id, field, value, el){
   } catch (err) {
     dot.remove();
     alert('No se pudo guardar: ' + err.message);
+  }
+}
+
+async function deleteLead(id, btn){
+  const nid = Number(id);
+  const lead = allLeads.find(l => Number(l.id) === nid);
+  const nombre = lead ? (lead.nombre_real || lead.nombre || 'este lead') : 'este lead';
+  if (!confirm(`¿Eliminar a "${nombre}"?\n\nEsta acción NO se puede deshacer.`)) return;
+  if (btn) btn.disabled = true;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData();
+  fd.append('p', pwd);
+  fd.append('id', nid);
+  try {
+    const r = await fetch(API_DELETE, {method:'POST', body: fd});
+    const data = await r.json();
+    if (!r.ok || !data.ok) throw new Error(data.error || 'Error');
+    allLeads = allLeads.filter(l => Number(l.id) !== nid);
+    refreshAll();
+  } catch (err) {
+    if (btn) btn.disabled = false;
+    alert('No se pudo eliminar: ' + err.message);
   }
 }
 
