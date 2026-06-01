@@ -189,6 +189,10 @@ html,body{
 }
 .stat-card.green .num{ color:#3f922a; }
 .stat-card.yellow .num{ color:#d97706; }
+.stat-card.sinasignar-alert{ background:#fef2f2; border-color:#fecaca; }
+.stat-card.sinasignar-alert .num{ color:#dc2626; }
+.stat-card.sinasignar-on{ box-shadow:0 0 0 3px rgba(220,38,38,.28); border-color:#dc2626; }
+.stat-card[onclick]:hover{ transform:translateY(-2px); transition:transform .15s ease; }
 
 /* Section card (corte hoy / por fuente) */
 .section{ max-width:100%; margin:0 auto 14px; padding:0 22px; }
@@ -950,6 +954,16 @@ html,body{
       </div>
     </div>
 
+    <div class="section">
+      <div class="section-card">
+        <div class="section-head">
+          <h2><span class="emoji">🌐</span> De qué URL llegaron más leads</h2>
+          <span class="meta" id="urlMeta">—</span>
+        </div>
+        <div class="section-body" id="urlBreakdown"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+
     <div class="toolbar">
       <input type="text" class="search" id="searchInput" placeholder="🔍 Buscar nombre, ciudad, WhatsApp, notas…" />
       <select class="vendedor-filter" id="vendedorFilter">
@@ -1169,7 +1183,25 @@ const PRECIO_M2_MXN = 1500; // para pipeline value estimado
 let allLeads = [];
 let currentFilter = 'all';
 let currentRange = 'today';   // por defecto la tabla muestra SOLO los leads de hoy
+let currentUnassigned = false; // ver solo leads sin vendedor asignado
 let currentSearch = '';
+
+// Lead sin asignar = sin vendedor y aún activo (no Ganado/Perdido)
+function esSinAsignar(l){
+  return !(l.vendedor || '').trim() && !['Ganado','Perdido'].includes(l.status_proyecto || '');
+}
+function filtrarSinAsignar(){
+  currentUnassigned = !currentUnassigned;
+  // al ver sin-asignar mostramos TODO el periodo acumulado para no esconder backlog
+  if (currentUnassigned){
+    currentRange = 'all';
+    document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
+    renderUrlBreakdown();
+  }
+  renderStats();
+  renderTable();
+  document.querySelector('.toolbar')?.scrollIntoView({behavior:'smooth', block:'center'});
+}
 let currentVendedor = 'all';
 let currentTab = 'leads';
 let currentPeriod = 'month-current';
@@ -1297,6 +1329,7 @@ function refreshAll(){
   renderStats();
   renderTodayBreakdown();
   renderSourceBreakdown();
+  renderUrlBreakdown();
   renderEsperando();
   renderHoyTeToca();
   renderTable();
@@ -1389,7 +1422,11 @@ function renderStats(){
   const today = new Date().toISOString().slice(0,10);
   const hoy = allLeads.filter(l => (l.fecha || '').startsWith(today)).length;
   const ganados = allLeads.filter(l => l.status_proyecto === 'Ganado').length;
+  const sinAsignar = allLeads.filter(esSinAsignar).length;
+  const cardSA = `<div class="stat-card ${sinAsignar > 0 ? 'sinasignar-alert' : ''} ${currentUnassigned ? 'sinasignar-on' : ''}" onclick="filtrarSinAsignar()" style="cursor:pointer" title="Clic para ver/asignar">
+      <div class="label">🔴 Sin asignar${currentUnassigned ? ' (viendo)' : ''}</div><div class="num">${sinAsignar}</div></div>`;
   document.getElementById('stats').innerHTML = `
+    ${cardSA}
     <div class="stat-card"><div class="label">Total Leads</div><div class="num">${total}</div></div>
     <div class="stat-card green"><div class="label">Ganados</div><div class="num">${ganados}</div></div>
     <div class="stat-card yellow"><div class="label">Parciales</div><div class="num">${parciales}</div></div>
@@ -1461,6 +1498,35 @@ function renderSourceBreakdown(){
   </table>`;
 }
 
+/* Ranking: de qué URL llegaron más leads (respeta Hoy / 7d / Acumulado) */
+function renderUrlBreakdown(){
+  const body = document.getElementById('urlBreakdown');
+  const meta = document.getElementById('urlMeta');
+  if (!body) return;
+  let rows = allLeads;
+  if (currentRange === 'today'){
+    const t = new Date().toISOString().slice(0,10);
+    rows = rows.filter(l => (l.fecha || '').slice(0,10) === t);
+  } else if (currentRange === '7d'){
+    const c = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
+    rows = rows.filter(l => (l.fecha || '').slice(0,10) >= c);
+  }
+  meta.textContent = currentRange === 'today' ? 'Hoy' : (currentRange === '7d' ? 'Últimos 7 días' : 'Acumulado');
+  if (rows.length === 0){ body.innerHTML = `<div class="src-empty">Sin leads en este periodo.</div>`; return; }
+  const byUrl = {};
+  rows.forEach(l => {
+    let key = (l.url || '').replace(/^https?:\/\//,'').split('?')[0].replace(/\/$/,'') || (l.fuente || 'directo');
+    if (!key) key = 'directo';
+    byUrl[key] = (byUrl[key] || 0) + 1;
+  });
+  const arr = Object.entries(byUrl).sort((a,b) => b[1] - a[1]).slice(0, 12);
+  const max = arr[0][1];
+  body.innerHTML = '<div class="src-list">' + arr.map(([u,n]) => {
+    const pct = Math.round(n / max * 100);
+    return `<div class="src-row"><div class="name"><code>${escapeHtml(u)}</code><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div></div><div class="count">${n}</div></div>`;
+  }).join('') + '</div>';
+}
+
 /* =========================================================
    MAIN LEADS TABLE
 ========================================================= */
@@ -1486,6 +1552,7 @@ document.querySelectorAll('.filter-pill[data-range]').forEach(btn => {
     btn.classList.add('active');
     currentRange = btn.dataset.range;
     renderTable();
+    renderUrlBreakdown();
   });
 });
 document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1695,6 +1762,7 @@ function renderTable(){
     const c = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
     rows = rows.filter(l => (l.fecha || '').slice(0,10) >= c);
   }
+  if (currentUnassigned) rows = rows.filter(esSinAsignar);
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
   if (currentVendedor !== 'all') rows = rows.filter(l => (l.vendedor || '') === currentVendedor);
   if (currentSearch){
