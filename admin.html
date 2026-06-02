@@ -387,6 +387,8 @@ html,body{
 }
 .cell-select:hover, .cell-textarea:hover, .cell-input:hover{ border-color:rgba(15,23,42,.12); background:#fafbfb; }
 .cell-select:focus, .cell-textarea:focus, .cell-input:focus{ border-color:#3f922a; background:#fff; box-shadow:0 0 0 3px rgba(63,146,42,.10); }
+/* El nombre del vendedor debe caber completo (ej. "Blanca López") */
+.cell-select[data-field="vendedor"]{ min-width:120px; }
 .cell-textarea{
   resize:vertical; min-height:32px; max-height:160px;
   cursor:text; font-size:12px; font-weight:500;
@@ -1931,8 +1933,8 @@ function renderLeadRow(l, vip){
     ? `https://wa.me/52${waNum.startsWith('52') ? waNum.slice(2) : waNum}?text=${encodeURIComponent(buildReplyMsg(l))}`
     : '#';
   const badge = l.estado === 'completo'
-    ? '<span class="badge completo"><span class="dot"></span>Comp</span>'
-    : '<span class="badge parcial"><span class="dot"></span>Parc</span>';
+    ? ''
+    : '<span class="badge parcial"><span class="dot"></span>Incompleto</span>';
   const tocado = l.tocado_por
     ? `<div class="small-meta">por ${escapeHtml(l.tocado_por)} · ${formatFecha(l.tocado_fecha)}</div>`
     : '';
