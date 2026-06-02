@@ -274,6 +274,13 @@ html,body{
   font-size:12.5px; font-weight:800; color:#3f922a;
   background:rgba(63,146,42,.10); border-radius:999px; padding:3px 10px;
 }
+/* Timeline urgente: "Lo antes posible" en rojo */
+.tl-urgent{
+  display:inline-block; margin-top:3px;
+  background:#fef2f2; color:#dc2626; border:1px solid #fecaca;
+  font-size:11px; font-weight:800; padding:2px 8px; border-radius:6px;
+  letter-spacing:.01em;
+}
 
 .src-table{ width:100%; font-size:13px; border-collapse:separate; border-spacing:0; }
 .src-table thead th{
@@ -1030,11 +1037,8 @@ html,body{
             <th>Vendedor</th>
             <th>Tipo</th>
             <th>Status proyecto</th>
-            <th>📅 Próxima acción</th>
-            <th>🕐 Último contacto</th>
             <th>Coment. cliente</th>
             <th>🌐 Origen</th>
-            <th>Notas internas</th>
             <th></th>
           </tr>
         </thead>
@@ -1080,9 +1084,6 @@ html,body{
             <th>Vendedor</th>
             <th>Tipo</th>
             <th>Status</th>
-            <th>📅 Próxima acción</th>
-            <th>🕐 Último contacto</th>
-            <th>Notas internas</th>
             <th></th>
           </tr>
         </thead>
@@ -1580,10 +1581,9 @@ function renderTodayBreakdown(){
       <div><strong style="color:#3f922a; font-size:18px;">${completos}</strong> <span style="color:#6b7280">completos</span></div>
       <div><strong style="color:#d97706; font-size:18px;">${parciales}</strong> <span style="color:#6b7280">parciales</span></div>
     </div>
-    <div class="src-list">
-      ${sources.map(([name, data]) => {
-        const pct = Math.round((data.total / maxCount) * 100);
-        return `<div class="src-row"><div class="name"><code>${escapeHtml(name)}</code><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div></div><div class="count">${data.total}<small>${data.completos > 0 ? ` · ${data.completos} comp.` : ''}</small></div></div>`;
+    <div class="url-list">
+      ${sources.map(([name, data], i) => {
+        return `<div class="url-row"><span class="url-rank">${i+1}</span><code class="url-path">${escapeHtml(name)}</code><span class="url-count">${data.total}${data.completos > 0 ? `<small style="font-weight:600;opacity:.6"> · ${data.completos}c</small>` : ''}</span></div>`;
       }).join('')}
     </div>`;
 }
@@ -1936,9 +1936,6 @@ function renderLeadRow(l, vip){
       <td>${selectVendedor(l)}</td>
       <td>${selectTipo(l)}</td>
       <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-      <td>${proximaAccionCell(l)}</td>
-      <td>${contactoCell(l)}</td>
-      <td>${notasTextarea(l)}${tocado}</td>
       <td>${waNum ? waBtn(waLink) : ''}</td>
     </tr>`;
   }
@@ -1950,15 +1947,12 @@ function renderLeadRow(l, vip){
     <td>${nombreCell(l)}</td>
     <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
     <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
-    <td><strong>${escapeHtml(l.m2 || '—')}</strong>${l.timeline ? ` <span class="small-meta">${escapeHtml(l.timeline)}</span>` : ''}</td>
+    <td><strong>${escapeHtml(l.m2 || '—')}</strong>${l.timeline ? ` <span class="${/lo antes posible/i.test(l.timeline) ? 'tl-urgent' : 'small-meta'}">${escapeHtml(l.timeline)}</span>` : ''}</td>
     <td>${selectVendedor(l)}</td>
     <td>${selectTipo(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-    <td>${proximaAccionCell(l)}</td>
-    <td>${contactoCell(l)}</td>
     <td class="cliente-coment">${escapeHtml(l.comentarios || '—')}</td>
     <td class="origen-cell">${origenCell(l)}</td>
-    <td>${notasTextarea(l)}${tocado}</td>
     <td>${waNum ? waBtn(waLink) : ''}</td>
   </tr>`;
 }
