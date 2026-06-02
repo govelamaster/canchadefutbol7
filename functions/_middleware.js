@@ -20,6 +20,10 @@ export async function onRequest({ request, next }) {
   const ct = res.headers.get("content-type") || "";
   if (!ct.includes("text/html")) return res;
 
+  // NO inyectar el chatbot en el panel interno /admin: ahí los botones "Responder"
+  // son links de WhatsApp y el chatbot los interceptaba (no se podía responder a clientes).
+  if (p === "/admin" || p === "/admin.html" || p.startsWith("/admin/")) return res;
+
   // Inserta <script src="/chatbot.js" defer> justo antes de </body>.
   // chatbot.js se auto-protege: si la página ya trae el bot inline (la home), no duplica.
   return new HTMLRewriter()
