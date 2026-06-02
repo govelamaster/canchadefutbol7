@@ -2342,15 +2342,24 @@ async function deleteLead(id, btn){
 /* =========================================================
    VIP TAB
 ========================================================= */
+// Calcula el área en m² aunque venga como "60x50", "30 × 50 m", "1,925", etc.
+function m2Area(raw){
+  if(!raw) return 0;
+  const s = String(raw).toLowerCase().replace(/m2|m²|mts|metros/g,'').replace(/,/g,'').trim();
+  const m = s.match(/(\d+(?:\.\d+)?)\s*[x×*]\s*(\d+(?:\.\d+)?)/);
+  if(m) return Math.round(parseFloat(m[1]) * parseFloat(m[2]));
+  const n = parseFloat(s.replace(/[^\d.]/g,''));
+  return isNaN(n) ? 0 : Math.round(n);
+}
 function vipLeads(){
-  return allLeads.filter(l => parseInt(l.m2, 10) >= 3000);
+  return allLeads.filter(l => m2Area(l.m2) >= 3000);
 }
 function renderVip(){
   const leads = vipLeads();
   const body  = document.getElementById('vipBody');
   const empty = document.getElementById('vipEmpty');
   // Stats
-  const totalM2 = leads.reduce((s, l) => s + (parseInt(l.m2, 10) || 0), 0);
+  const totalM2 = leads.reduce((s, l) => s + m2Area(l.m2), 0);
   const ganados = leads.filter(l => l.status_proyecto === 'Ganado').length;
   document.getElementById('vipCount').textContent = leads.length;
   document.getElementById('vipM2').textContent = totalM2.toLocaleString('es-MX');
@@ -2403,10 +2412,10 @@ function renderLeaderboard(){
     stats[v].asignados++;
     if (l.status_proyecto === 'Ganado') {
       stats[v].cierres++;
-      stats[v].m2 += parseInt(l.m2, 10) || 0;
+      stats[v].m2 += m2Area(l.m2);
     }
     if (['Contactado','Cotizado','Negociación'].includes(l.status_proyecto)) {
-      stats[v].pipeline += (parseInt(l.m2, 10) || 0) * PRECIO_M2_MXN;
+      stats[v].pipeline += m2Area(l.m2) * PRECIO_M2_MXN;
     }
   });
   const rows = Object.entries(stats)
