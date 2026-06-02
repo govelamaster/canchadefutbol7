@@ -34,7 +34,7 @@ async function authorized(env, pwd) {
 const VENDOR_EMAILS = {
   "Jorge Dantes": "jorgedantes@gmail.com",
   "Blanca López": "blancaelopezm@gmail.com",
-  "Susana": "",
+  "Susana": "susanalopezlara@hotmail.com",
   "Carolina": "",
   "Paola Ramos": "karypao29@gmail.com",
   "Quijano": "",
