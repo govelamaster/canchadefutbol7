@@ -42,7 +42,7 @@ const VENDOR_EMAILS = {
   "Estefanía": "Ehq.artesvisuales@gmail.com",
   "Maribel": "",
   "Yolanda": "",
-  "Gaby": "",
+  "Gaby": "laet.glm95@gmail.com",
   "Gloria": "",
   "Melissa": ""
 };
