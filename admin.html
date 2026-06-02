@@ -1037,7 +1037,6 @@ html,body{
             <th>WhatsApp</th>
             <th>M² · Timeline</th>
             <th>Vendedor</th>
-            <th>Tipo</th>
             <th>Status proyecto</th>
             <th>Coment. cliente</th>
             <th>🌐 Origen</th>
@@ -1084,7 +1083,6 @@ html,body{
             <th>Ciudad</th>
             <th>M²</th>
             <th>Vendedor</th>
-            <th>Tipo</th>
             <th>Status</th>
             <th></th>
           </tr>
@@ -1948,7 +1946,6 @@ function renderLeadRow(l, vip){
       <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
       <td style="font-weight:800;">${escapeHtml(l.m2 || '—')}</td>
       <td>${selectVendedor(l)}</td>
-      <td>${selectTipo(l)}</td>
       <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
       <td>${waNum ? waBtn(waLink) : ''}</td>
     </tr>`;
@@ -1963,7 +1960,6 @@ function renderLeadRow(l, vip){
     <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
     <td><strong>${escapeHtml(l.m2 || '—')}</strong>${l.timeline ? ` <span class="${/lo antes posible/i.test(l.timeline) ? 'tl-urgent' : 'small-meta'}">${escapeHtml(l.timeline)}</span>` : ''}</td>
     <td>${selectVendedor(l)}</td>
-    <td>${selectTipo(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
     <td class="cliente-coment">${escapeHtml(l.comentarios || '—')}</td>
     <td class="origen-cell">${origenCell(l)}</td>
