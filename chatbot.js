@@ -16,6 +16,8 @@
   /* --- inyecta CSS --- */
   var __style = document.createElement('style');
   __style.textContent = `
+  /* El chatbot REEMPLAZA al sticky CTA del template: evita la doble barra fija abajo (afecta ~120 páginas) */
+  #stickyBar{display:none!important}
   #cot-launcher,#cot-panel{--brand:#139D45;--brand-dark:#0a7a2e;--bot-text:#0f172a;--user-bg:#139D45;
     font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;}
   #cot-launcher *,#cot-panel *{box-sizing:border-box}
