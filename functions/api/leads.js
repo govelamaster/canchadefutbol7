@@ -4,13 +4,29 @@
  */
 
 const ADMIN_PASSWORD = "Cancha2026!";
+const SECRET = "sm-f7-2026-7Kx9Lm2Qp-secret";
+
+async function sha256hex(s) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+// Autorizado si es la clave maestra O la contraseña de un usuario registrado.
+async function authorized(env, pwd) {
+  if (!pwd) return false;
+  if (pwd === ADMIN_PASSWORD) return true;
+  try {
+    const h = await sha256hex(SECRET + ":" + pwd);
+    const row = await env.DB.prepare("SELECT 1 FROM users WHERE password_hash = ? LIMIT 1").bind(h).first();
+    return !!row;
+  } catch (e) { return false; }
+}
 
 export async function onRequestGet(context) {
   const { request, env } = context;
   const url = new URL(request.url);
   const auth = url.searchParams.get('p') || request.headers.get('x-admin-password');
 
-  if (auth !== ADMIN_PASSWORD) {
+  if (!(await authorized(env, auth))) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { 'content-type': 'application/json' }
