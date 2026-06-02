@@ -1246,6 +1246,18 @@ const STATUS_PROYECTO = ['Sin atender','Contactado','Cotizado','Negociación','G
 const PRECIO_M2_MXN = 1500; // para pipeline value estimado
 
 let allLeads = [];
+
+// La base D1 guarda fechas en UTC. "Hoy" / "7 días" deben calcularse en hora de
+// MÉXICO o se desfasan de noche (bug 2026-06-01: de 18:00 a 24:00 MX ya es día
+// siguiente en UTC y "Hoy" salía vacío). Estos helpers convierten a fecha local MX.
+const TZ_MX = 'America/Mexico_City';
+function hoyMx(){ return new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
+function hace6diasMx(){ return new Date(Date.now() - 6*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
+function ymdMx(fecha){
+  if (!fecha) return '';
+  const d = new Date(String(fecha).replace(' ', 'T') + 'Z');
+  return isNaN(d) ? String(fecha).slice(0,10) : d.toLocaleDateString('en-CA', { timeZone: TZ_MX });
+}
 let currentFilter = 'all';
 let currentRange = 'today';   // por defecto la tabla muestra SOLO los leads de hoy
 let currentUnassigned = false; // ver solo leads sin vendedor asignado
@@ -1465,8 +1477,8 @@ function renderVendorTray(){
   const tray = document.getElementById('vendorTray');
   const meta = document.getElementById('vendorTrayMeta');
   if (!tray) return;
-  const today = new Date().toISOString().slice(0,10);
-  const todayLeads = allLeads.filter(l => (l.fecha || '').slice(0,10) === today);
+  const today = hoyMx();
+  const todayLeads = allLeads.filter(l => ymdMx(l.fecha) === today);
   const counts = {};
   VENDEDORES.forEach(v => counts[v] = 0);
   let sinAsignar = 0;
@@ -1538,8 +1550,8 @@ function renderStats(){
   const total = allLeads.length;
   const completos = allLeads.filter(l => l.estado === 'completo').length;
   const parciales = allLeads.filter(l => l.estado === 'parcial').length;
-  const today = new Date().toISOString().slice(0,10);
-  const hoy = allLeads.filter(l => (l.fecha || '').startsWith(today)).length;
+  const today = hoyMx();
+  const hoy = allLeads.filter(l => ymdMx(l.fecha) === today).length;
   const ganados = allLeads.filter(l => l.status_proyecto === 'Ganado').length;
   const sinAsignar = allLeads.filter(esSinAsignar).length;
   const cardSA = `<div class="stat-card ${sinAsignar > 0 ? 'sinasignar-alert' : ''} ${currentUnassigned ? 'sinasignar-on' : ''}" onclick="filtrarSinAsignar()" style="cursor:pointer" title="Clic para ver/asignar">
@@ -1554,8 +1566,8 @@ function renderStats(){
 }
 
 function renderTodayBreakdown(){
-  const today = new Date().toISOString().slice(0,10);
-  const todayLeads = allLeads.filter(l => (l.fecha || '').startsWith(today));
+  const today = hoyMx();
+  const todayLeads = allLeads.filter(l => ymdMx(l.fecha) === today);
   const meta = document.getElementById('todayMeta');
   const body = document.getElementById('todayBreakdown');
   const fechaFmt = new Date().toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
@@ -1623,11 +1635,11 @@ function renderUrlBreakdown(){
   if (!body) return;
   let rows = allLeads;
   if (currentRange === 'today'){
-    const t = new Date().toISOString().slice(0,10);
-    rows = rows.filter(l => (l.fecha || '').slice(0,10) === t);
+    const t = hoyMx();
+    rows = rows.filter(l => ymdMx(l.fecha) === t);
   } else if (currentRange === '7d'){
-    const c = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
-    rows = rows.filter(l => (l.fecha || '').slice(0,10) >= c);
+    const c = hace6diasMx();
+    rows = rows.filter(l => ymdMx(l.fecha) >= c);
   }
   meta.textContent = currentRange === 'today' ? 'Hoy' : (currentRange === '7d' ? 'Últimos 7 días' : 'Acumulado');
   if (rows.length === 0){ body.innerHTML = `<div class="src-empty">Sin leads en este periodo.</div>`; return; }
@@ -1803,7 +1815,7 @@ function renderHoyTeToca(){
 function renderHoyItem(l){
   const overdue = isOverdue(l);
   const fecha = (l.proxima_fecha || '').slice(0,10);
-  const today = new Date().toISOString().slice(0,10);
+  const today = hoyMx();
   let dayLabel;
   if (overdue) {
     const diff = Math.round((new Date(today) - new Date(fecha)) / 86400000);
@@ -1883,11 +1895,11 @@ function renderTable(){
   let rows = allLeads;
   // Filtro por rango de fecha (Hoy por defecto, para no saturar)
   if (currentRange === 'today'){
-    const t = new Date().toISOString().slice(0,10);
-    rows = rows.filter(l => (l.fecha || '').slice(0,10) === t);
+    const t = hoyMx();
+    rows = rows.filter(l => ymdMx(l.fecha) === t);
   } else if (currentRange === '7d'){
-    const c = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
-    rows = rows.filter(l => (l.fecha || '').slice(0,10) >= c);
+    const c = hace6diasMx();
+    rows = rows.filter(l => ymdMx(l.fecha) >= c);
   }
   if (currentUnassigned) rows = rows.filter(esSinAsignar);
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
@@ -2035,19 +2047,19 @@ function isOverdue(l){
   const fecha = (l.proxima_fecha || '').slice(0,10);
   if (!fecha) return false;
   if (['Ganado','Perdido'].includes(l.status_proyecto)) return false;
-  const today = new Date().toISOString().slice(0,10);
+  const today = hoyMx();
   return fecha < today;
 }
 function isDueToday(l){
   const fecha = (l.proxima_fecha || '').slice(0,10);
   if (!fecha) return false;
   if (['Ganado','Perdido'].includes(l.status_proyecto)) return false;
-  return fecha === new Date().toISOString().slice(0,10);
+  return fecha === hoyMx();
 }
 function diasFaltan(l){
   const fecha = (l.proxima_fecha || '').slice(0,10);
   if (!fecha) return null;
-  const today = new Date().toISOString().slice(0,10);
+  const today = hoyMx();
   return Math.round((new Date(fecha) - new Date(today)) / 86400000);
 }
 function proximaAccionCell(l){
@@ -2469,7 +2481,7 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const ts = new Date().toISOString().slice(0,10);
+  const ts = hoyMx();
   a.href = url; a.download = `leads-cotizador-${ts}.csv`;
   a.click();
   URL.revokeObjectURL(url);
