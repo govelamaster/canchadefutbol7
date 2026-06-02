@@ -44,7 +44,8 @@ const VENDOR_EMAILS = {
   "Yolanda": "lopezhdezyoli@gmail.com",
   "Gaby": "laet.glm95@gmail.com",
   "Gloria": "",
-  "Melissa": ""
+  "Melissa": "",
+  "Arellano": "aeae581020@gmail.com"
 };
 
 const ALLOWED_FIELDS = new Set([
