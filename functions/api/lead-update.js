@@ -43,7 +43,7 @@ const VENDOR_EMAILS = {
   "Maribel": "maribelcardona469@gmail.com",
   "Yolanda": "lopezhdezyoli@gmail.com",
   "Gaby": "laet.glm95@gmail.com",
-  "Gloria": "",
+  "Gloria": "Glorialeiva024@gmail.com",
   "Melissa": "",
   "Arellano": "aeae581020@gmail.com"
 };
