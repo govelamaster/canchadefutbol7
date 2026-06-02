@@ -38,7 +38,7 @@ const VENDOR_EMAILS = {
   "Carolina": "",
   "Paola Ramos": "",
   "Quijano": "",
-  "Jorge Padilla": "",
+  "Jorge Padilla": "jorgepadillamoreno1966@gmail.com",
   "Estefanía": "Ehq.artesvisuales@gmail.com",
   "Maribel": "",
   "Yolanda": "",

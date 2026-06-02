@@ -276,11 +276,22 @@ html,body{
 }
 /* Timeline urgente: "Lo antes posible" en rojo */
 .tl-urgent{
-  display:inline-block; margin-top:3px;
+  display:inline-block;
   background:#fef2f2; color:#dc2626; border:1px solid #fecaca;
   font-size:11px; font-weight:800; padding:2px 8px; border-radius:6px;
   letter-spacing:.01em;
 }
+/* ===== Fila "Lead" consolidada (estilo CRM moderno) ===== */
+.lead-cell{ padding:10px 12px; min-width:240px; vertical-align:top; }
+.lead-cell .nombre-input{ font-size:14px; font-weight:700; }
+.lead-flags{ margin:5px 0 0 33px; display:flex; gap:6px; flex-wrap:wrap; }
+.lead-sub{ margin:5px 0 0 33px; font-size:12.5px; color:#475569; line-height:1.35; }
+.lead-sub strong{ color:#0b0f14; font-weight:700; }
+.lead-wa{ color:#475569; text-decoration:none; }
+.lead-wa:hover{ color:#3f922a; text-decoration:underline; }
+.lead-foot{ margin:3px 0 0 33px; font-size:11px; color:#9ca3af; font-style:italic; }
+tr.row-urgent{ background:rgba(220,38,38,.025); }
+tr.row-urgent td.lead-cell{ box-shadow:inset 3px 0 0 #dc2626; }
 
 .src-table{ width:100%; font-size:13px; border-collapse:separate; border-spacing:0; }
 .src-table thead th{
@@ -1030,15 +1041,9 @@ html,body{
       <table class="lead-table">
         <thead>
           <tr>
-            <th>Fecha</th>
-            <th>Form</th>
-            <th>Nombre</th>
-            <th>Ciudad</th>
-            <th>WhatsApp</th>
-            <th>M² · Timeline</th>
+            <th>Lead</th>
             <th>Vendedor</th>
-            <th>Status proyecto</th>
-            <th>Coment. cliente</th>
+            <th>Status</th>
             <th>🌐 Origen</th>
             <th></th>
           </tr>
@@ -1920,6 +1925,15 @@ function renderTable(){
     return;
   }
   empty.style.display = 'none';
+  // Orden CRM: urgentes ("lo antes posible") arriba, luego sin asignar, luego más recientes.
+  rows = rows.slice().sort((a, b) => {
+    const ua = /lo antes posible/i.test(a.timeline || '') ? 1 : 0;
+    const ub = /lo antes posible/i.test(b.timeline || '') ? 1 : 0;
+    if (ua !== ub) return ub - ua;
+    const sa = esSinAsignar(a) ? 1 : 0, sb = esSinAsignar(b) ? 1 : 0;
+    if (sa !== sb) return sb - sa;
+    return String(b.fecha || '').localeCompare(String(a.fecha || ''));
+  });
   body.innerHTML = rows.map(l => renderLeadRow(l, /*vip*/ false)).join('');
   bindRowEvents(body);
 }
@@ -1951,17 +1965,22 @@ function renderLeadRow(l, vip){
     </tr>`;
   }
 
+  const urgente = /lo antes posible/i.test(l.timeline || '');
   const rowClass = isOverdue(l) ? 'row-overdue' : (esperaRespuesta(l) ? 'row-espera' : '');
-  return `<tr data-lead-id="${l.id}" class="${rowClass}">
-    <td class="fecha-cell">${escapeHtml(fecha)}</td>
-    <td>${badge}</td>
-    <td>${nombreCell(l)}</td>
-    <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
-    <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
-    <td><strong>${escapeHtml(l.m2 || '—')}</strong>${l.timeline ? ` <span class="${/lo antes posible/i.test(l.timeline) ? 'tl-urgent' : 'small-meta'}">${escapeHtml(l.timeline)}</span>` : ''}</td>
+  const ciudad = escapeHtml(l.ciudad || '—');
+  const m2 = escapeHtml(l.m2 || '?');
+  const comentShort = (l.comentarios || '').replace(/^\s*Tipo:\s*/i, '').trim();
+  const subWa = waNum ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="lead-wa">${escapeHtml(l.whatsapp)}</a>` : '';
+  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}`;
+  return `<tr data-lead-id="${l.id}" class="${rowClass}${urgente ? ' row-urgent' : ''}">
+    <td class="lead-cell">
+      ${nombreCell(l)}
+      ${flags ? `<div class="lead-flags">${flags}</div>` : ''}
+      <div class="lead-sub">${ciudad} · <strong>${m2} m²</strong>${subWa}${!urgente && l.timeline ? ` · ${escapeHtml(l.timeline)}` : ''}</div>
+      <div class="lead-foot">${escapeHtml(fecha)}${comentShort ? ` · ${escapeHtml(comentShort)}` : ''}</div>
+    </td>
     <td>${selectVendedor(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-    <td class="cliente-coment">${escapeHtml(l.comentarios || '—')}</td>
     <td class="origen-cell">${origenCell(l)}</td>
     <td>${waNum ? waBtn(waLink) : ''}</td>
   </tr>`;
