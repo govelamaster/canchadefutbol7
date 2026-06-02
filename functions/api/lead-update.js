@@ -32,7 +32,7 @@ async function authorized(env, pwd) {
 // Correo de cada vendedor para avisarle al asignarle un lead.
 // ⬇️ Olga: pon aquí el correo de cada quien (deja "" a los que no tengan).
 const VENDOR_EMAILS = {
-  "Jorge Dantes": "",
+  "Jorge Dantes": "jorgedantes@gmail.com",
   "Blanca López": "blancaelopezm@gmail.com",
   "Susana": "",
   "Carolina": "",
