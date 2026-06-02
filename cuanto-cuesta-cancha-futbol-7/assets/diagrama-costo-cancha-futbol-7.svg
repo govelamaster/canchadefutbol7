@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Diagrama de cuánto cuesta una cancha de futbol 7: medidas 50 por 30 metros, 1500 m2, pasto sintetico instalado de 250 a 350 MXN por m2, sin incluir base de obra civil">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#139d45"/>
+      <stop offset="1" stop-color="#0a7a2e"/>
+    </linearGradient>
+    <style>
+      .t{font-family:'Inter',Arial,sans-serif;}
+      .h{font-weight:900;fill:#0b1410;}
+      .lab{font-weight:900;fill:#fff;}
+      .mut{font-weight:700;fill:#5f6964;}
+      .kpi{font-weight:900;fill:#0a7a2e;}
+      .ln{stroke:#fff;stroke-width:3;fill:none;opacity:.92;}
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="#f5f7f5"/>
+  <text class="t h" x="56" y="70" font-size="34">¿Cuánto cuesta una cancha de futbol 7?</text>
+  <text class="t mut" x="56" y="104" font-size="19">Costo del pasto sintético deportivo instalado · México 2026</text>
+
+  <!-- Pitch -->
+  <g transform="translate(56,150)">
+    <rect width="640" height="384" rx="14" fill="url(#g)"/>
+    <rect x="14" y="14" width="612" height="356" rx="8" class="ln"/>
+    <line x1="320" y1="14" x2="320" y2="370" class="ln"/>
+    <circle cx="320" cy="192" r="54" class="ln"/>
+    <circle cx="320" cy="192" r="5" fill="#fff"/>
+    <rect x="14" y="116" width="74" height="152" class="ln"/>
+    <rect x="552" y="116" width="74" height="152" class="ln"/>
+    <!-- width label 50 m -->
+    <line x1="14" y1="404" x2="626" y2="404" stroke="#0b1410" stroke-width="2"/>
+    <text class="t h" x="320" y="426" font-size="20" text-anchor="middle">50 m (largo)</text>
+    <!-- height label 30 m -->
+    <line x1="-26" y1="14" x2="-26" y2="370" stroke="#0b1410" stroke-width="2"/>
+    <text class="t h" x="-40" y="192" font-size="20" text-anchor="middle" transform="rotate(-90 -40 192)">30 m (ancho)</text>
+    <!-- area badge -->
+    <g transform="translate(214,160)">
+      <rect width="212" height="64" rx="14" fill="rgba(255,255,255,.92)"/>
+      <text class="t h" x="106" y="30" font-size="26" text-anchor="middle">≈ 1,500 m²</text>
+      <text class="t mut" x="106" y="52" font-size="14" text-anchor="middle">superficie de juego</text>
+    </g>
+  </g>
+
+  <!-- Cost panel -->
+  <g transform="translate(744,150)">
+    <rect width="400" height="384" rx="18" fill="#fff" stroke="#e4e9e5"/>
+    <text class="t mut" x="28" y="46" font-size="13" letter-spacing="2">DESGLOSE DEL COSTO</text>
+    <text class="t kpi" x="28" y="92" font-size="40">$250–$350</text>
+    <text class="t mut" x="28" y="118" font-size="15">MXN por m² · pasto instalado (aprox.)</text>
+
+    <line x1="28" y1="140" x2="372" y2="140" stroke="#e4e9e5" stroke-width="2"/>
+
+    <g font-size="16" class="t">
+      <text class="h" x="28" y="176">✓ Pasto sintético deportivo</text>
+      <text class="h" x="28" y="208">✓ Instalación profesional por m²</text>
+      <text class="h" x="28" y="240">✓ Líneas de juego</text>
+      <text class="h" x="28" y="272">✓ Arena sílica y caucho</text>
+    </g>
+
+    <rect x="28" y="296" width="344" height="60" rx="12" fill="#fff7e6" stroke="#ffd98a"/>
+    <text class="t" x="44" y="322" font-size="14" font-weight="900" fill="#5e4406">No incluye la base (obra civil)</text>
+    <text class="t" x="44" y="342" font-size="13" font-weight="700" fill="#7a5a12">La realiza el contratista local del cliente.</text>
+  </g>
+
+  <text class="t mut" x="56" y="630" font-size="15">Estimado: 1,500 m² × $250–$350 = $375,000 – $525,000 MXN aprox. · No incluye extras ni IVA · Cotización por proyecto.</text>
+  <text class="t mut" x="56" y="668" font-size="13" opacity=".8">Sportmaster México · canchadefutbol7.mx</text>
+</svg>
