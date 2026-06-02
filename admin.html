@@ -1541,20 +1541,25 @@ function updateLastSync(){
 /* =========================================================
    VENDEDORES — smart ordering
 ========================================================= */
-function vendedoresOrdered(){
+function vendedorCounts(){
   const counts = Object.fromEntries(VENDEDORES.map(v => [v, 0]));
   allLeads.forEach(l => {
     if (l.vendedor && counts[l.vendedor] !== undefined) counts[l.vendedor]++;
   });
+  return counts;
+}
+function vendedoresOrdered(){
+  const counts = vendedorCounts();
   return [...VENDEDORES].sort((a,b) => (counts[b] - counts[a]) || a.localeCompare(b,'es'));
 }
 
 function populateVendedorFilter(){
   const sel = document.getElementById('vendedorFilter');
   const current = sel.value;
+  const cnt = vendedorCounts();
   sel.innerHTML = `<option value="all">👥 Todos los vendedores</option>
     <option value="">⏳ Sin asignar</option>
-    ${vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('')}`;
+    ${vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}${cnt[v] ? ` · ${cnt[v]}` : ''}</option>`).join('')}`;
   sel.value = current || 'all';
 }
 document.getElementById('vendedorFilter').addEventListener('change', (e) => {
@@ -2131,8 +2136,9 @@ function razonPerdidaBadge(l){
 }
 
 function selectVendedor(l){
+  const cnt = vendedorCounts();
   const options = ['<option value="">Sin asignar</option>']
-    .concat(vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}" ${l.vendedor === v ? 'selected' : ''}>${escapeHtml(v)}</option>`));
+    .concat(vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}" ${l.vendedor === v ? 'selected' : ''}>${escapeHtml(v)}${cnt[v] ? ` · ${cnt[v]}` : ''}</option>`));
   return `<select class="cell-select" data-field="vendedor" data-val="${escapeAttr(l.vendedor)}" ${CURRENT_ROLE !== 'admin' ? 'disabled' : ''}>${options.join('')}</select>`;
 }
 function selectTipo(l){
