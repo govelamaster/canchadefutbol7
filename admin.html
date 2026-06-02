@@ -292,6 +292,11 @@ html,body{
 .lead-foot{ margin:3px 0 0 33px; font-size:11px; color:#9ca3af; font-style:italic; }
 tr.row-urgent{ background:rgba(220,38,38,.025); }
 tr.row-urgent td.lead-cell{ box-shadow:inset 3px 0 0 #dc2626; }
+/* Vista VENDEDOR: oculta controles de admin que no le sirven */
+body.rol-vendedor .vendedor-filter,
+body.rol-vendedor .vendor-tray-card,
+body.rol-vendedor .sinasignar-alert{ display:none; }
+body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 
 .src-table{ width:100%; font-size:13px; border-collapse:separate; border-spacing:0; }
 .src-table thead th{
@@ -1423,7 +1428,16 @@ function applyRoleUI(){
 function enterDash(data){
   loginView.style.display = 'none';
   dashView.classList.add('show');
-  allLeads = (data.leads || []).map(normalizeLead);
+  let leads = (data.leads || []).map(normalizeLead);
+  // Rol VENDEDOR: solo ve SUS leads asignados (su mini-dashboard). El admin/asistente ve todo.
+  if (CURRENT_ROLE === 'vendedor') {
+    const yo = (currentUser() || '').trim().toLowerCase();
+    leads = leads.filter(l => (l.vendedor || '').trim().toLowerCase() === yo);
+    document.body.classList.add('rol-vendedor');
+  } else {
+    document.body.classList.remove('rol-vendedor');
+  }
+  allLeads = leads;
   refreshAll();
 }
 
@@ -2119,7 +2133,7 @@ function razonPerdidaBadge(l){
 function selectVendedor(l){
   const options = ['<option value="">Sin asignar</option>']
     .concat(vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}" ${l.vendedor === v ? 'selected' : ''}>${escapeHtml(v)}</option>`));
-  return `<select class="cell-select" data-field="vendedor" data-val="${escapeAttr(l.vendedor)}">${options.join('')}</select>`;
+  return `<select class="cell-select" data-field="vendedor" data-val="${escapeAttr(l.vendedor)}" ${CURRENT_ROLE !== 'admin' ? 'disabled' : ''}>${options.join('')}</select>`;
 }
 function selectTipo(l){
   const options = ['<option value="">—</option>']
