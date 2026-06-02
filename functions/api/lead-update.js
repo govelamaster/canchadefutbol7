@@ -33,7 +33,7 @@ async function authorized(env, pwd) {
 // ⬇️ Olga: pon aquí el correo de cada quien (deja "" a los que no tengan).
 const VENDOR_EMAILS = {
   "Jorge Dantes": "",
-  "Blanca López": "",
+  "Blanca López": "blancaelopezm@gmail.com",
   "Susana": "",
   "Carolina": "",
   "Paola Ramos": "",
