@@ -1151,6 +1151,15 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
 
   <!-- ============ TAB: POR URL (acumulado histórico) ============ -->
   <div class="tab-content" data-tab-content="urls">
+    <div class="section" style="padding:0; margin-bottom:18px;">
+      <div class="section-card" style="border:1.5px solid #c7e8cf;">
+        <div class="section-head">
+          <h2><span class="emoji">🟢</span> Google Ads — leads por URL (hoy)</h2>
+          <span class="meta" id="gadsMeta">Solo clics de campaña (gclid)</span>
+        </div>
+        <div class="section-body" id="gadsUrls"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
     <div class="section" style="padding:0;">
       <div class="section-card">
         <div class="section-head">
@@ -1495,6 +1504,7 @@ function refreshAll(){
   renderSourceBreakdown();
   renderUrlBreakdown();
   renderUrlAcumulado();
+  renderGoogleAdsUrls();
   renderEsperando();
   renderHoyTeToca();
   renderTable();
@@ -1668,6 +1678,34 @@ function renderSourceBreakdown(){
 }
 
 /* Ranking: de qué URL llegaron más leads (respeta Hoy / 7d / Acumulado) */
+// Tab "Por URL": leads de GOOGLE ADS (con gclid) por URL, HOY (hora México).
+function renderGoogleAdsUrls(){
+  const body = document.getElementById('gadsUrls');
+  const meta = document.getElementById('gadsMeta');
+  if (!body) return;
+  const hoy = hoyMx();
+  const ads = allLeads.filter(l => (l.gclid || '').trim() && ymdMx(l.fecha) === hoy);
+  if (meta) meta.textContent = `Hoy ${hoy} · solo clics de campaña (gclid)`;
+  if (!ads.length){ body.innerHTML = '<div class="src-empty">Sin leads de Google Ads hoy.</div>'; return; }
+  const byUrl = {};
+  ads.forEach(l => {
+    let key = (l.url || '').replace(/^https?:\/\//,'').split('?')[0].replace(/\/$/,'') || 'directo';
+    byUrl[key] = (byUrl[key] || 0) + 1;
+  });
+  const arr = Object.entries(byUrl).sort((a,b) => b[1] - a[1]);
+  const total = arr.reduce((s,[,n]) => s + n, 0);
+  body.innerHTML = `<div class="url-list">` + arr.map(([u,n],i) => {
+    const m = u.match(/^([^\/]+)(\/.*)?$/);
+    const host = m ? m[1] : u;
+    const path = m && m[2] ? m[2] : '';
+    const isOwn = host.replace(/^www\./,'') === 'canchadefutbol7.mx';
+    const label = isOwn
+      ? `<span class="host">/</span>${escapeHtml(path.replace(/^\//,'')) || '<span class="host">(home)</span>'}`
+      : `<span class="host">${escapeHtml(host)}</span>${escapeHtml(path)}`;
+    return `<div class="url-row"><span class="url-rank">${i+1}</span><code class="url-path" title="${escapeAttr(u)}">${label}</code><span class="url-count">${n}</span></div>`;
+  }).join('') + `</div><div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:right">Hoy por Google Ads: <strong style="color:#3f922a">${total}</strong> leads</div>`;
+}
+
 // Tab "Por URL": total ACUMULADO de leads por URL (todas las fechas, se suma solo).
 function renderUrlAcumulado(){
   const body = document.getElementById('urlAcumulado');
