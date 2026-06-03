@@ -965,6 +965,7 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
     <button class="tab-btn active" data-tab="leads">📋 Leads <span class="count" id="tabCountLeads">0</span></button>
     <button class="tab-btn" data-tab="vip">👑 VIP <span class="count" id="tabCountVip">0</span></button>
     <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
+    <button class="tab-btn" data-tab="urls">🌐 Por URL</button>
   </nav>
 
   <!-- ============ TAB: LEADS ============ -->
@@ -1144,6 +1145,19 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
           <span class="meta" id="srcMeta">—</span>
         </div>
         <div class="section-body" id="srcBreakdown"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: POR URL (acumulado histórico) ============ -->
+  <div class="tab-content" data-tab-content="urls">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head">
+          <h2><span class="emoji">🌐</span> Leads acumulados por URL</h2>
+          <span class="meta">Histórico · todas las fechas · se suma solo</span>
+        </div>
+        <div class="section-body" id="urlAcumulado"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -1480,6 +1494,7 @@ function refreshAll(){
   renderTodayBreakdown();
   renderSourceBreakdown();
   renderUrlBreakdown();
+  renderUrlAcumulado();
   renderEsperando();
   renderHoyTeToca();
   renderTable();
@@ -1653,6 +1668,31 @@ function renderSourceBreakdown(){
 }
 
 /* Ranking: de qué URL llegaron más leads (respeta Hoy / 7d / Acumulado) */
+// Tab "Por URL": total ACUMULADO de leads por URL (todas las fechas, se suma solo).
+function renderUrlAcumulado(){
+  const body = document.getElementById('urlAcumulado');
+  if (!body) return;
+  if (!allLeads.length){ body.innerHTML = '<div class="src-empty">Sin leads todavía.</div>'; return; }
+  const byUrl = {};
+  allLeads.forEach(l => {
+    let key = (l.url || '').replace(/^https?:\/\//,'').split('?')[0].replace(/\/$/,'') || (l.fuente || 'directo');
+    if (!key) key = 'directo';
+    byUrl[key] = (byUrl[key] || 0) + 1;
+  });
+  const arr = Object.entries(byUrl).sort((a,b) => b[1] - a[1]);
+  const total = arr.reduce((s,[,n]) => s + n, 0);
+  body.innerHTML = `<div class="url-list">` + arr.map(([u,n],i) => {
+    const m = u.match(/^([^\/]+)(\/.*)?$/);
+    const host = m ? m[1] : u;
+    const path = m && m[2] ? m[2] : '';
+    const isOwn = host.replace(/^www\./,'') === 'canchadefutbol7.mx';
+    const label = isOwn
+      ? `<span class="host">/</span>${escapeHtml(path.replace(/^\//,'')) || '<span class="host">(home)</span>'}`
+      : `<span class="host">${escapeHtml(host)}</span>${escapeHtml(path)}`;
+    return `<div class="url-row"><span class="url-rank">${i+1}</span><code class="url-path" title="${escapeAttr(u)}">${label}</code><span class="url-count">${n}</span></div>`;
+  }).join('') + `</div><div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:right">Total: <strong style="color:#0b0f14">${total}</strong> leads · ${arr.length} URLs</div>`;
+}
+
 function renderUrlBreakdown(){
   const body = document.getElementById('urlBreakdown');
   const meta = document.getElementById('urlMeta');
