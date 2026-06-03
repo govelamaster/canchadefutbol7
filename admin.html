@@ -1735,14 +1735,7 @@ function renderGoogleAdsUrls(){
   const arr = Object.entries(byUrl).sort((a,b) => b[1] - a[1]);
   const total = arr.reduce((s,[,n]) => s + n, 0);
   body.innerHTML = `<div class="url-list">` + arr.map(([u,n],i) => {
-    const m = u.match(/^([^\/]+)(\/.*)?$/);
-    const host = m ? m[1] : u;
-    const path = m && m[2] ? m[2] : '';
-    const isOwn = host.replace(/^www\./,'') === 'canchadefutbol7.mx';
-    const label = isOwn
-      ? `<span class="host">/</span>${escapeHtml(path.replace(/^\//,'')) || '<span class="host">(home)</span>'}`
-      : `<span class="host">${escapeHtml(host)}</span>${escapeHtml(path)}`;
-    return `<div class="url-row"><span class="url-rank">${i+1}</span><code class="url-path" title="${escapeAttr(u)}">${label}</code><span class="url-count">${n}</span></div>`;
+    return `<div class="url-row"><span class="url-rank">${i+1}</span><code class="url-path" title="${escapeAttr(u)}">${escapeHtml(u)}</code><span class="url-count">${n}</span></div>`;
   }).join('') + `</div><div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:right">Hoy por Google Ads: <strong style="color:#3f922a">${total}</strong> leads</div>`;
 }
 
