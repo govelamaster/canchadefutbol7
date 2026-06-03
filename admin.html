@@ -966,6 +966,7 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
     <button class="tab-btn" data-tab="vip">👑 VIP <span class="count" id="tabCountVip">0</span></button>
     <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
     <button class="tab-btn" data-tab="urls">🌐 Por URL</button>
+    <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
   </nav>
 
   <!-- ============ TAB: LEADS ============ -->
@@ -1176,6 +1177,32 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
           <span class="meta">Histórico · todas las fechas · se suma solo</span>
         </div>
         <div class="section-body" id="urlAcumulado"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: GOOGLE ADS (conversiones offline) ============ -->
+  <div class="tab-content" data-tab-content="gads">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">🎯</span> Google Ads — Conversiones offline</h2>
+          <span class="meta">Sube estos gclid a Google Ads → optimiza hacia quien sí convierte</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; padding:4px 4px 16px; align-items:center;">
+          <select id="gadsCity" class="cell-select" style="min-width:150px;border:1px solid #e2e8f0;background:#fff"></select>
+          <select id="gadsUrlSel" class="cell-select" style="min-width:190px;border:1px solid #e2e8f0;background:#fff"></select>
+          <select id="gadsPeriod" class="cell-select" style="min-width:120px;border:1px solid #e2e8f0;background:#fff">
+            <option value="all">Acumulado</option>
+            <option value="today">Hoy</option>
+            <option value="7d">7 días</option>
+            <option value="30d">30 días</option>
+          </select>
+          <input id="gadsConvName" type="text" value="Lead" title="Nombre EXACTO de tu conversión en Google Ads" placeholder="Nombre conversión" style="width:150px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600" />
+          <button id="gadsDownloadGoogle" class="filter-pill" style="background:#3f922a;color:#fff;border:none;font-weight:700">⬇ CSV Google Ads</button>
+          <button id="gadsDownloadPlain" class="filter-pill">⬇ CSV completo</button>
+        </div>
+        <div class="section-body" id="gadsConvBody"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -1515,6 +1542,7 @@ function refreshAll(){
   renderUrlAcumulado();
   renderGoogleAdsUrls();
   renderCanales();
+  renderGadsConv();
   renderEsperando();
   renderHoyTeToca();
   renderTable();
@@ -1717,6 +1745,65 @@ function renderCanales(){
     `<div class="url-row"><span class="url-rank" style="background:none;font-size:14px">${icon(c)}</span><code class="url-path" style="font-family:inherit;font-weight:700">${escapeHtml(c)}</code><span class="url-count">${n}</span></div>`
   ).join('') + '</div>';
 }
+
+// ===== Tab "Google Ads" — conversiones offline (gclid) filtrables + CSV =====
+let gadsCity = 'all', gadsUrlF = 'all', gadsPeriod = 'all';
+function urlKeyOf(l){ return (l.url || '').replace(/^https?:\/\//,'').split('?')[0].replace(/\/$/,'') || 'directo'; }
+function gadsFiltered(){
+  let rows = allLeads.filter(l => (l.gclid || '').trim());
+  if (gadsPeriod === 'today'){ const h = hoyMx(); rows = rows.filter(l => ymdMx(l.fecha) === h); }
+  else if (gadsPeriod === '7d'){ const c = hace6diasMx(); rows = rows.filter(l => ymdMx(l.fecha) >= c); }
+  else if (gadsPeriod === '30d'){ const c = new Date(Date.now()-29*864e5).toLocaleDateString('en-CA',{timeZone:TZ_MX}); rows = rows.filter(l => ymdMx(l.fecha) >= c); }
+  if (gadsCity !== 'all') rows = rows.filter(l => (l.ciudad || '').trim() === gadsCity);
+  if (gadsUrlF !== 'all') rows = rows.filter(l => urlKeyOf(l) === gadsUrlF);
+  return rows;
+}
+function renderGadsConv(){
+  const body = document.getElementById('gadsConvBody');
+  if (!body) return;
+  const ads = allLeads.filter(l => (l.gclid || '').trim());
+  const citySel = document.getElementById('gadsCity'), urlSel = document.getElementById('gadsUrlSel'), perSel = document.getElementById('gadsPeriod');
+  const cities = [...new Set(ads.map(l => (l.ciudad || '').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+  const urls = [...new Set(ads.map(urlKeyOf))].sort();
+  if (citySel) citySel.innerHTML = '<option value="all">Todas las ciudades</option>' + cities.map(c => `<option value="${escapeAttr(c)}" ${gadsCity===c?'selected':''}>${escapeHtml(c)}</option>`).join('');
+  if (urlSel) urlSel.innerHTML = '<option value="all">Todas las URLs</option>' + urls.map(u => `<option value="${escapeAttr(u)}" ${gadsUrlF===u?'selected':''}>${escapeHtml(u)}</option>`).join('');
+  if (perSel) perSel.value = gadsPeriod;
+  const rows = gadsFiltered();
+  if (!rows.length){ body.innerHTML = '<div class="src-empty">Sin conversiones de Google Ads con estos filtros.</div>'; return; }
+  body.innerHTML = `<div style="overflow-x:auto"><table class="lb-table" style="font-size:12.5px"><thead><tr><th>Fecha</th><th>Ciudad</th><th>URL</th><th>Nombre</th><th>WhatsApp</th><th>gclid</th></tr></thead><tbody>` +
+    rows.map(l => `<tr><td>${escapeHtml(formatFecha(l.fecha))}</td><td>${escapeHtml(l.ciudad||'—')}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(l.url||'')}">${escapeHtml(urlKeyOf(l))}</td><td>${escapeHtml(l.nombre_real||l.nombre||'—')}</td><td>${escapeHtml(l.whatsapp||'—')}</td><td style="font-family:monospace;font-size:11px">${escapeHtml((l.gclid||'').slice(0,28))}${(l.gclid||'').length>28?'…':''}</td></tr>`).join('') +
+    `</tbody></table></div><div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:right"><strong style="color:#0b0f14">${rows.length}</strong> conversiones con estos filtros</div>`;
+}
+function gadsConvTime(fecha){ try{ return new Date(String(fecha).replace(' ','T')+'Z').toLocaleString('sv-SE',{timeZone:TZ_MX}); }catch(e){ return ''; } }
+function csvEsc(s){ s = String(s==null?'':s); return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+function bajarCSV(name, text){
+  const blob = new Blob(['﻿'+text], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+function descargarGadsGoogle(){
+  const rows = gadsFiltered().filter(l => (l.gclid||'').trim());
+  if (!rows.length){ alert('No hay conversiones con estos filtros.'); return; }
+  const conv = (document.getElementById('gadsConvName').value || 'Lead').trim();
+  const header = 'Parameters:TimeZone=America/Mexico_City\nGoogle Click ID,Conversion Name,Conversion Time,Conversion Value,Conversion Currency';
+  const lines = rows.map(l => [csvEsc(l.gclid.trim()), csvEsc(conv), csvEsc(gadsConvTime(l.fecha)), '', 'MXN'].join(','));
+  bajarCSV(`google-ads-conversiones-${hoyMx()}.csv`, header + '\n' + lines.join('\n'));
+}
+function descargarGadsPlain(){
+  const rows = gadsFiltered();
+  if (!rows.length){ alert('No hay conversiones con estos filtros.'); return; }
+  const header = ['Fecha','Ciudad','URL','Nombre','WhatsApp','Canal','gclid','Estado','Comentarios'].join(',');
+  const lines = rows.map(l => [csvEsc(formatFecha(l.fecha)), csvEsc(l.ciudad), csvEsc(l.url), csvEsc(l.nombre_real||l.nombre), csvEsc(l.whatsapp), csvEsc(canalLead(l)), csvEsc(l.gclid), csvEsc(l.estado), csvEsc(l.comentarios)].join(','));
+  bajarCSV(`leads-google-ads-${hoyMx()}.csv`, header + '\n' + lines.join('\n'));
+}
+(function wireGads(){
+  const on = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
+  on('gadsCity','change', e => { gadsCity = e.target.value; renderGadsConv(); });
+  on('gadsUrlSel','change', e => { gadsUrlF = e.target.value; renderGadsConv(); });
+  on('gadsPeriod','change', e => { gadsPeriod = e.target.value; renderGadsConv(); });
+  on('gadsDownloadGoogle','click', descargarGadsGoogle);
+  on('gadsDownloadPlain','click', descargarGadsPlain);
+})();
 
 // Tab "Por URL": leads de GOOGLE ADS (con gclid) por URL, HOY (hora México).
 function renderGoogleAdsUrls(){
