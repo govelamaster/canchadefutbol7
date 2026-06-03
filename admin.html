@@ -967,6 +967,7 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
     <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
     <button class="tab-btn" data-tab="urls">🌐 Por URL</button>
     <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
+    <button class="tab-btn" data-tab="fbads">📘 Facebook</button>
   </nav>
 
   <!-- ============ TAB: LEADS ============ -->
@@ -1198,11 +1199,38 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
             <option value="7d">7 días</option>
             <option value="30d">30 días</option>
           </select>
-          <input id="gadsConvName" type="text" value="Lead" title="Nombre EXACTO de tu conversión en Google Ads" placeholder="Nombre conversión" style="width:150px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600" />
+          <input id="gadsConvName" type="text" value="Lead" title="Nombre EXACTO de tu conversión en Google Ads" placeholder="Nombre conversión" style="width:140px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600" />
+          <input id="gadsConvValue" type="number" value="100000" title="Valor por lead en MXN" placeholder="Valor MXN" style="width:120px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600" />
           <button id="gadsDownloadGoogle" class="filter-pill" style="background:#3f922a;color:#fff;border:none;font-weight:700">⬇ CSV Google Ads</button>
           <button id="gadsDownloadPlain" class="filter-pill">⬇ CSV completo</button>
         </div>
         <div class="section-body" id="gadsConvBody"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: FACEBOOK / META (eventos offline) ============ -->
+  <div class="tab-content" data-tab-content="fbads">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">📘</span> Facebook / Meta — Eventos offline</h2>
+          <span class="meta">Meta empata por TELÉFONO (no por click id). Sube este CSV a Eventos Offline.</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; padding:4px 4px 16px; align-items:center;">
+          <select id="fbCity" class="cell-select" style="min-width:150px;border:1px solid #e2e8f0;background:#fff"></select>
+          <select id="fbUrlSel" class="cell-select" style="min-width:190px;border:1px solid #e2e8f0;background:#fff"></select>
+          <select id="fbPeriod" class="cell-select" style="min-width:120px;border:1px solid #e2e8f0;background:#fff">
+            <option value="all">Acumulado</option>
+            <option value="today">Hoy</option>
+            <option value="7d">7 días</option>
+            <option value="30d">30 días</option>
+          </select>
+          <input id="fbConvName" type="text" value="Lead" title="Nombre del evento en Meta" placeholder="Nombre evento" style="width:130px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600" />
+          <input id="fbConvValue" type="number" value="100000" title="Valor por lead en MXN" placeholder="Valor MXN" style="width:120px;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600" />
+          <button id="fbDownload" class="filter-pill" style="background:#1877f2;color:#fff;border:none;font-weight:700">⬇ CSV Facebook</button>
+        </div>
+        <div class="section-body" id="fbConvBody"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -1543,6 +1571,7 @@ function refreshAll(){
   renderGoogleAdsUrls();
   renderCanales();
   renderGadsConv();
+  renderFbConv();
   renderEsperando();
   renderHoyTeToca();
   renderTable();
@@ -1785,8 +1814,9 @@ function descargarGadsGoogle(){
   const rows = gadsFiltered().filter(l => (l.gclid||'').trim());
   if (!rows.length){ alert('No hay conversiones con estos filtros.'); return; }
   const conv = (document.getElementById('gadsConvName').value || 'Lead').trim();
+  const val = (document.getElementById('gadsConvValue').value || '').trim();
   const header = 'Parameters:TimeZone=America/Mexico_City\nGoogle Click ID,Conversion Name,Conversion Time,Conversion Value,Conversion Currency';
-  const lines = rows.map(l => [csvEsc(l.gclid.trim()), csvEsc(conv), csvEsc(gadsConvTime(l.fecha)), '', 'MXN'].join(','));
+  const lines = rows.map(l => [csvEsc(l.gclid.trim()), csvEsc(conv), csvEsc(gadsConvTime(l.fecha)), csvEsc(val), 'MXN'].join(','));
   bajarCSV(`google-ads-conversiones-${hoyMx()}.csv`, header + '\n' + lines.join('\n'));
 }
 function descargarGadsPlain(){
@@ -1803,6 +1833,59 @@ function descargarGadsPlain(){
   on('gadsPeriod','change', e => { gadsPeriod = e.target.value; renderGadsConv(); });
   on('gadsDownloadGoogle','click', descargarGadsGoogle);
   on('gadsDownloadPlain','click', descargarGadsPlain);
+})();
+
+// ===== Tab "Facebook" — eventos offline (empata por teléfono) =====
+let fbCity = 'all', fbUrlF = 'all', fbPeriod = 'all';
+function fbPhone(l){ const d = (l.whatsapp || '').replace(/\D/g,''); if (d.length < 10) return ''; return '+52' + d.slice(-10); }
+function fbFiltered(){
+  let rows = allLeads.filter(l => fbPhone(l));
+  if (fbPeriod === 'today'){ const h = hoyMx(); rows = rows.filter(l => ymdMx(l.fecha) === h); }
+  else if (fbPeriod === '7d'){ const c = hace6diasMx(); rows = rows.filter(l => ymdMx(l.fecha) >= c); }
+  else if (fbPeriod === '30d'){ const c = new Date(Date.now()-29*864e5).toLocaleDateString('en-CA',{timeZone:TZ_MX}); rows = rows.filter(l => ymdMx(l.fecha) >= c); }
+  if (fbCity !== 'all') rows = rows.filter(l => (l.ciudad || '').trim() === fbCity);
+  if (fbUrlF !== 'all') rows = rows.filter(l => urlKeyOf(l) === fbUrlF);
+  return rows;
+}
+function renderFbConv(){
+  const body = document.getElementById('fbConvBody');
+  if (!body) return;
+  const base = allLeads.filter(l => fbPhone(l));
+  const citySel = document.getElementById('fbCity'), urlSel = document.getElementById('fbUrlSel'), perSel = document.getElementById('fbPeriod');
+  const cities = [...new Set(base.map(l => (l.ciudad || '').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+  const urls = [...new Set(base.map(urlKeyOf))].sort();
+  if (citySel) citySel.innerHTML = '<option value="all">Todas las ciudades</option>' + cities.map(c => `<option value="${escapeAttr(c)}" ${fbCity===c?'selected':''}>${escapeHtml(c)}</option>`).join('');
+  if (urlSel) urlSel.innerHTML = '<option value="all">Todas las URLs</option>' + urls.map(u => `<option value="${escapeAttr(u)}" ${fbUrlF===u?'selected':''}>${escapeHtml(u)}</option>`).join('');
+  if (perSel) perSel.value = fbPeriod;
+  const rows = fbFiltered();
+  if (!rows.length){ body.innerHTML = '<div class="src-empty">Sin leads con teléfono con estos filtros.</div>'; return; }
+  body.innerHTML = `<div style="overflow-x:auto"><table class="lb-table" style="font-size:12.5px"><thead><tr><th>Fecha</th><th>Ciudad</th><th>Nombre</th><th>Teléfono (E.164)</th><th>Canal</th></tr></thead><tbody>` +
+    rows.map(l => `<tr><td>${escapeHtml(formatFecha(l.fecha))}</td><td>${escapeHtml(l.ciudad||'—')}</td><td>${escapeHtml(l.nombre_real||l.nombre||'—')}</td><td style="font-family:monospace">${escapeHtml(fbPhone(l))}</td><td>${escapeHtml(canalLead(l))}</td></tr>`).join('') +
+    `</tbody></table></div><div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:right"><strong style="color:#0b0f14">${rows.length}</strong> leads con teléfono</div>`;
+}
+function descargarFb(){
+  const rows = fbFiltered();
+  if (!rows.length){ alert('No hay leads con teléfono con estos filtros.'); return; }
+  const ev = (document.getElementById('fbConvName').value || 'Lead').trim();
+  const val = (document.getElementById('fbConvValue').value || '').trim();
+  const header = ['phone','fn','city','event_name','event_time','value','currency'].join(',');
+  const lines = rows.map(l => [
+    csvEsc(fbPhone(l)),
+    csvEsc((l.nombre_real||l.nombre||'').split(' ')[0]),
+    csvEsc(l.ciudad),
+    csvEsc(ev),
+    csvEsc(gadsConvTime(l.fecha)),
+    csvEsc(val),
+    'MXN'
+  ].join(','));
+  bajarCSV(`facebook-eventos-${hoyMx()}.csv`, header + '\n' + lines.join('\n'));
+}
+(function wireFb(){
+  const on = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
+  on('fbCity','change', e => { fbCity = e.target.value; renderFbConv(); });
+  on('fbUrlSel','change', e => { fbUrlF = e.target.value; renderFbConv(); });
+  on('fbPeriod','change', e => { fbPeriod = e.target.value; renderFbConv(); });
+  on('fbDownload','click', descargarFb);
 })();
 
 // Tab "Por URL": leads de GOOGLE ADS (con gclid) por URL, HOY (hora México).
