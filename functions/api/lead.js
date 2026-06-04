@@ -78,8 +78,14 @@ export async function onRequestPost(context) {
     // "completos" o de formulario para no spamear con los parciales del bot.
     const esParcial = (payload.estado || '').toLowerCase() === 'parcial';
     if (!esParcial && env.RESEND_API_KEY) {
+      // id del lead (para el botón "Asignar desde el correo")
+      let leadId = null;
+      try {
+        const row = await env.DB.prepare("SELECT id FROM leads WHERE session_id = ? ORDER BY id DESC LIMIT 1").bind(sid).first();
+        leadId = row ? row.id : null;
+      } catch (e) { leadId = null; }
       const emailCtx = context.waitUntil ? context : null;
-      const send = sendLeadEmail(env, payload, request);
+      const send = sendLeadEmail(env, payload, request, leadId);
       if (emailCtx) emailCtx.waitUntil(send); else await send;
     }
 
@@ -92,7 +98,14 @@ export async function onRequestPost(context) {
 }
 
 // Envía el lead por correo vía Resend. Silencioso ante errores.
-async function sendLeadEmail(env, d, request) {
+// Secreto para firmar el enlace "Asignar desde el correo" (mismo en assign.js).
+const ASSIGN_SECRET = "sm-assign-7Kx9-2026";
+async function sha256hex(s) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+
+async function sendLeadEmail(env, d, request, leadId) {
   try {
     const to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com';
     // El "from" debe ser de un dominio verificado en Resend (canchadefutbol7.mx).
@@ -104,6 +117,11 @@ async function sendLeadEmail(env, d, request) {
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,''])[1].trim();
     const subject = `Nuevo lead${d.fuente ? ' (' + d.fuente + ')' : ''}: ${d.nombre || 'sin nombre'}${d.ciudad ? ' — ' + d.ciudad : ''}`;
     const row = (k, v) => `<tr><td style="padding:4px 14px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${v}</td></tr>`;
+    let assignBtn = '';
+    if (leadId) {
+      const t = (await sha256hex(ASSIGN_SECRET + ':' + leadId)).slice(0, 24);
+      assignBtn = `<a href="https://canchadefutbol7.mx/api/assign?id=${leadId}&t=${t}" style="display:inline-block;margin:6px 0 4px;background:#3f922a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:13px 24px;border-radius:10px">🎯 Asignar a un vendedor</a>`;
+    }
     const html = `
       <div style="font-family:system-ui,-apple-system,sans-serif;color:#0f172a">
         <h2 style="margin:0 0 14px">Nuevo lead de canchadefutbol7.mx</h2>
@@ -117,6 +135,7 @@ async function sendLeadEmail(env, d, request) {
           ${row('Accesorios', esc(accesorios || '-'))}
           ${row('Fuente', `${esc(d.fuente)}${d.campania ? ' · ' + esc(d.campania) : ''}`)}
         </table>
+        ${assignBtn}
         <p style="font-size:12px;color:#64748b;margin-top:16px">Panel de leads: <a href="https://canchadefutbol7.mx/admin">canchadefutbol7.mx/admin</a></p>
       </div>`;
 

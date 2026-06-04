@@ -22,7 +22,7 @@ export async function onRequest({ request, next }) {
 
   // NO inyectar el chatbot en el panel interno /admin: ahí los botones "Responder"
   // son links de WhatsApp y el chatbot los interceptaba (no se podía responder a clientes).
-  if (p === "/admin" || p === "/admin.html" || p.startsWith("/admin/")) return res;
+  if (p === "/admin" || p === "/admin.html" || p.startsWith("/admin/") || p.startsWith("/api/")) return res;
 
   // Inserta <script src="/chatbot.js?v=..." defer> justo antes de </body>.
   // ⚠️ Los .js se cachean 1 año (immutable). chatbot.js es nombre fijo → versiona la URL
