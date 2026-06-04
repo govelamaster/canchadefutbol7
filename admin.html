@@ -294,8 +294,10 @@ tr.row-urgent{ background:rgba(220,38,38,.025); }
 tr.row-urgent td.lead-cell{ box-shadow:inset 3px 0 0 #dc2626; }
 /* Vista VENDEDOR: oculta controles de admin que no le sirven */
 body.rol-vendedor .vendedor-filter,
+body.rol-vendedor #mineBtn,
 body.rol-vendedor .vendor-tray-card,
 body.rol-vendedor .sinasignar-alert{ display:none; }
+#mineBtn.active{ background:#0b0f14; color:#fff; border-color:#0b0f14; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="equipo"],
@@ -1044,6 +1046,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <select class="vendedor-filter" id="vendedorFilter">
         <option value="all">👥 Todos los vendedores</option>
       </select>
+      <button class="filter-pill" id="mineBtn" style="white-space:nowrap" title="Ver solo los leads asignados a mí">🙋 Míos</button>
       <div class="filters" id="rangeFilters">
         <button class="filter-pill active" data-range="today">📅 Hoy</button>
         <button class="filter-pill" data-range="yesterday">Ayer</button>
@@ -1727,8 +1730,26 @@ function populateVendedorFilter(){
 }
 document.getElementById('vendedorFilter').addEventListener('change', (e) => {
   currentVendedor = e.target.value;
+  const mb = document.getElementById('mineBtn');
+  if (mb) mb.classList.toggle('active', currentVendedor === (currentUser()||'').trim());
   renderTable();
 });
+// "🙋 Míos": muestra (en un clic) solo los leads asignados a quien está logueado.
+// Útil para admins que TAMBIÉN venden (Melissa, Maribel): conservan poderes de admin
+// y ven su cartera al instante. Vuelve a "todos" si ya estaba activo.
+(function(){
+  const mb = document.getElementById('mineBtn');
+  if (!mb) return;
+  mb.addEventListener('click', () => {
+    const yo = (currentUser() || '').trim();
+    const activar = currentVendedor !== yo;
+    currentVendedor = activar ? yo : 'all';
+    mb.classList.toggle('active', activar);
+    const sel = document.getElementById('vendedorFilter');
+    if (sel) sel.value = [...sel.options].some(o => o.value === currentVendedor) ? currentVendedor : 'all';
+    renderTable();
+  });
+})();
 
 /* =========================================================
    STATS + CORTE HOY + POR FUENTE
