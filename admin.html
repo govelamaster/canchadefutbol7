@@ -1067,7 +1067,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
         <thead>
           <tr>
             <th>Lead</th>
-            <th>Vendedor</th>
+            <th id="thVendedor" style="cursor:pointer;user-select:none" title="Ordenar por nº de asignaciones (mayor/menor)">Vendedor <span style="color:#cbd5e1">↕</span></th>
             <th>Status</th>
             <th>🌐 Origen</th>
             <th></th>
@@ -1445,6 +1445,7 @@ function filtrarSinAsignar(){
   document.querySelector('.toolbar')?.scrollIntoView({behavior:'smooth', block:'center'});
 }
 let currentVendedor = 'all';
+let vendorSortDir = null; // null = orden normal · 'desc' = más asignaciones arriba · 'asc' = menos arriba
 let currentTab = 'leads';
 let currentPeriod = 'month-current';
 
@@ -2440,6 +2441,15 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
   currentSearch = e.target.value.toLowerCase().trim();
   renderTable();
 });
+// Clic en encabezado "Vendedor": cicla normal → mayor a menor (▼) → menor a mayor (▲) → normal
+(function(){
+  const th = document.getElementById('thVendedor');
+  if (!th) return;
+  th.addEventListener('click', () => {
+    vendorSortDir = vendorSortDir === null ? 'desc' : (vendorSortDir === 'desc' ? 'asc' : null);
+    renderTable();
+  });
+})();
 
 /* =========================================================
    ESPERANDO RESPUESTA — clientes que escribieron último
@@ -2672,11 +2682,26 @@ function renderTable(){
   empty.style.display = 'none';
   // Orden CRM: SIN ASIGNAR primero (lo nuevo que necesita atención, lo más reciente hasta arriba),
   // luego los YA ASIGNADOS (también más recientes primero).
-  rows = rows.slice().sort((a, b) => {
-    const sa = esSinAsignar(a) ? 1 : 0, sb = esSinAsignar(b) ? 1 : 0;
-    if (sa !== sb) return sb - sa;
-    return String(b.fecha || '').localeCompare(String(a.fecha || ''));
-  });
+  if (vendorSortDir){
+    // Ordenar por nº de asignaciones del vendedor (mayor↔menor). Cuenta sobre las filas visibles.
+    const cnt = {};
+    rows.forEach(l => { const v = (l.vendedor || '').trim() || ' '; cnt[v] = (cnt[v] || 0) + 1; });
+    rows = rows.slice().sort((a, b) => {
+      const va = (a.vendedor || '').trim() || ' ', vb = (b.vendedor || '').trim() || ' ';
+      const diff = vendorSortDir === 'asc' ? (cnt[va] - cnt[vb]) : (cnt[vb] - cnt[va]);
+      if (diff !== 0) return diff;
+      if (va !== vb) return va.localeCompare(vb, 'es');
+      return String(b.fecha || '').localeCompare(String(a.fecha || ''));
+    });
+  } else {
+    rows = rows.slice().sort((a, b) => {
+      const sa = esSinAsignar(a) ? 1 : 0, sb = esSinAsignar(b) ? 1 : 0;
+      if (sa !== sb) return sb - sa;
+      return String(b.fecha || '').localeCompare(String(a.fecha || ''));
+    });
+  }
+  const thV = document.getElementById('thVendedor');
+  if (thV) thV.innerHTML = 'Vendedor ' + (vendorSortDir === 'desc' ? '<span style="color:#3f922a">▼</span>' : vendorSortDir === 'asc' ? '<span style="color:#3f922a">▲</span>' : '<span style="color:#cbd5e1">↕</span>');
   body.innerHTML = rows.map(l => renderLeadRow(l, /*vip*/ false)).join('');
   bindRowEvents(body);
 }
