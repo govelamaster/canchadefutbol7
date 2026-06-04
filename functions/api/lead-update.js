@@ -125,6 +125,26 @@ export async function onRequestPost(context) {
   }
 }
 
+// Frases inspiradoras SOLO para proyectos grandes (>=3000 m²). Rotan al azar.
+const FRASES_VIP = [
+  "Los proyectos importantes no llegan todos los días. Trátalo como tal.",
+  "Un proyecto grande puede cambiar tu mes. Una visita puede cambiar el proyecto.",
+  "Los clientes que invierten fuerte buscan confianza, no solo precio.",
+  "Los proyectos más rentables suelen comenzar con una llamada atendida a tiempo.",
+  "Las grandes ventas se construyen antes de que llegue la cotización.",
+  "Cada proyecto grande merece atención inmediata.",
+  "El tamaño del proyecto exige el mismo nivel de compromiso.",
+  "Las oportunidades extraordinarias requieren acciones extraordinarias.",
+  "No todos los días aparece un proyecto capaz de transformar tus resultados.",
+  "Los clientes importantes perciben quién realmente quiere ganar el proyecto.",
+  "Una visita oportuna vale más que diez llamadas de seguimiento.",
+  "Los grandes proyectos rara vez se ganan por WhatsApp.",
+  "El cliente está evaluando proveedores. Asegúrate de que recuerde tu nombre.",
+  "Los proyectos de alto valor exigen vendedores de alto nivel.",
+  "Las mejores comisiones suelen esconderse detrás de las visitas o zooms que otros no hacen.",
+  "Los proyectos grandes no se persiguen. Se conquistan."
+];
+
 // Manda el correo al vendedor con los datos del cliente. Silencioso ante errores.
 async function notifyVendor(env, to, vendedor, l) {
   try {
@@ -151,6 +171,9 @@ async function notifyVendor(env, to, vendedor, l) {
     const com = String(l.comentarios || "");
     const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,""])[1].trim();
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,""])[1].trim();
+    // Proyecto grande (>=3000 m²): frase inspiradora rotativa
+    const m2num = parseInt(String(l.m2 || "").replace(/[^\d]/g, ""), 10) || 0;
+    const fraseVip = m2num >= 3000 ? FRASES_VIP[Math.floor(Math.random() * FRASES_VIP.length)] : "";
     const subject = `${urgente ? "🔴 URGENTE — " : ""}${nDia > 1 ? `Tu ${ordN} prospecto de hoy` : "Lead asignado"}: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
     const firstName = (nombre || 'el cliente').split(' ')[0];
     const waMsg = encodeURIComponent(`Hola ${firstName}, soy ${vendedor} de Sportmaster 👋 Vi que te interesa una cancha de fútbol. ¿Te ayudo con tu cotización?`);
@@ -176,6 +199,7 @@ async function notifyVendor(env, to, vendedor, l) {
               ${row('Accesorios', esc(accesorios || '-'))}
             </table>
             ${waLink ? `<a href="${waLink}" style="display:block;text-align:center;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:16px;border-radius:12px;margin-top:22px;box-shadow:0 8px 22px rgba(37,211,102,.34)">💬 Contactar a ${esc(firstName)} por WhatsApp</a>` : ''}
+            ${fraseVip ? `<p style="text-align:center;font-size:12.5px;color:#64748b;font-style:italic;line-height:1.5;margin:16px 14px 2px">“${esc(fraseVip)}”</p>` : ''}
             <p style="text-align:center;font-size:12px;color:#94a3b8;margin:14px 0 6px">o entra al panel: <a href="https://canchadefutbol7.mx/admin" style="color:#94a3b8">canchadefutbol7.mx/admin</a></p>
           </td></tr>
           <tr><td style="background:#0f172a;color:#cbd5e1;padding:16px 30px;font-size:12px;text-align:center">Sportmaster · Canchas de Fútbol 7 — ¡Mucho éxito! 🌟</td></tr>
