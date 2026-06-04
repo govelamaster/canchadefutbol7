@@ -1231,12 +1231,8 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <div class="section" style="padding:0;">
       <div class="section-card">
         <div class="section-head" style="flex-wrap:wrap; gap:8px;">
-          <h2><span class="emoji">👥</span> Equipo — contactos y accesos</h2>
-          <span class="meta">Correo/WhatsApp de cada vendedor (se guarda al salir del campo) + cuentas de login abajo</span>
-        </div>
-        <div style="display:flex; gap:8px; padding:4px 4px 14px;">
-          <input id="equipoNombre" type="text" maxlength="60" placeholder="Nombre de un vendedor nuevo…" style="flex:1; padding:11px 13px; border:1px solid #e2e8f0; border-radius:9px; font-size:14px" />
-          <button id="equipoAdd" class="filter-pill" style="background:#3f922a; color:#fff; border:none; font-weight:700; white-space:nowrap">+ Agregar</button>
+          <h2><span class="emoji">👥</span> Equipo — accesos y contactos</h2>
+          <span class="meta">Arriba: usuarios + contraseñas para entrar al panel. Abajo: correo/WhatsApp de cada vendedor.</span>
         </div>
         <div class="section-body" id="equipoBody"><div class="src-empty">Cargando…</div></div>
       </div>
@@ -2198,15 +2194,35 @@ async function loadEquipo(){
       fetch(`/api/vendedores?p=${encodeURIComponent(pwd)}`).then(r=>r.json()).catch(()=>({})),
       fetch(`/api/users?p=${encodeURIComponent(pwd)}`).then(r=>r.json()).catch(()=>({}))
     ]);
-    body.innerHTML = renderVendedoresTabla(rv.vendedores || []) + renderCuentasAcceso(ru.users || []);
+    body.innerHTML = renderCuentasAcceso(ru.users || []) + renderVendedoresTabla(rv.vendedores || []);
   } catch (e) { body.innerHTML = '<div class="src-empty">No se pudo cargar.</div>'; }
 }
 function renderVendedoresTabla(arr){
-  if (!arr.length) return '<div class="src-empty">Sin vendedores. Agrega uno arriba.</div>';
+  const head = `
+    <div style="margin-top:30px;padding-top:20px;border-top:2px solid #f1f5f9">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <h3 style="margin:0;font-size:15px;font-weight:800">👥 Contactos — correo y WhatsApp</h3>
+        <span style="font-size:12px;color:#94a3b8">a este correo le llega el aviso de cada vendedor (se guarda al salir del campo)</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 0 14px">
+        <input id="equipoNombre" type="text" maxlength="60" placeholder="Nombre de un vendedor nuevo…" onkeydown="if(event.key==='Enter')addVendedor()" style="flex:1 1 220px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+        <button onclick="addVendedor()" class="filter-pill" style="flex:0 0 auto;background:#3f922a;color:#fff;border:none;font-weight:700;white-space:nowrap">+ Agregar</button>
+      </div>`;
+  if (!arr.length) return head + '<div class="src-empty">Sin vendedores todavía.</div></div>';
   const inp = (v,id,f,ph)=>`<input value="${escapeAttr(v||'')}" data-id="${id}" data-f="${f}" placeholder="${ph}" onblur="saveEquipo(this)" style="width:100%;padding:7px 9px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px" />`;
-  return `<div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Vendedor</th><th>Correo</th><th>WhatsApp</th><th></th></tr></thead><tbody>` +
+  return head + `<div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Vendedor</th><th>Correo</th><th>WhatsApp</th><th></th></tr></thead><tbody>` +
     arr.map(v=>`<tr><td style="font-weight:700;white-space:nowrap">${escapeHtml(v.nombre)}</td><td style="min-width:210px">${inp(v.email,v.id,'email','correo@…')}</td><td style="min-width:140px">${inp(v.whatsapp,v.id,'whatsapp','10 dígitos')}</td><td><button onclick="deleteVendedor(${v.id})" title="Quitar del directorio" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626">🗑</button></td></tr>`).join('') +
-    `</tbody></table></div><div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${arr.length} vendedores</div>`;
+    `</tbody></table></div><div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${arr.length} vendedores</div></div>`;
+}
+// Genera una contraseña sencilla y memorable a partir del usuario elegido (o aleatoria).
+function sugerirPwd(){
+  const u = (document.getElementById('nuUser')?.value || '').trim();
+  const base = u.split(/\s+/)[0].replace(/[^a-zA-Z0-9]/g,'');
+  let pwd;
+  if (base) pwd = base.charAt(0).toUpperCase() + base.slice(1).toLowerCase() + '2026';
+  else pwd = 'Sm' + Math.floor(1000 + Math.random()*9000);
+  const el = document.getElementById('nuPwd');
+  if (el){ el.value = pwd; el.focus(); }
 }
 // Bloque de cuentas de login (usuario + rol + cambiar contraseña + alta/baja).
 // Las contraseñas NUNCA se muestran (se guardan encriptadas/hash); solo se pueden resetear.
@@ -2225,8 +2241,9 @@ function renderCuentasAcceso(users){
           <button onclick="deleteUserEquipo(${u.id},'${escapeAttr(u.username)}')" title="Eliminar acceso" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626">🗑</button>
         </td></tr>`).join('')
     : '<tr><td colspan="4" style="color:#94a3b8;padding:14px">Sin cuentas de acceso todavía.</td></tr>';
+  const dlOpts = (typeof VENDEDORES !== 'undefined' ? VENDEDORES : []).map(v=>`<option value="${escapeAttr(v)}"></option>`).join('');
   return `
-    <div style="margin-top:26px;padding-top:18px;border-top:2px solid #f1f5f9">
+    <div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
         <h3 style="margin:0;font-size:15px;font-weight:800">🔐 Cuentas de acceso al panel</h3>
         <span style="font-size:12px;color:#94a3b8">usuario + contraseña con que entra cada quien</span>
@@ -2234,15 +2251,18 @@ function renderCuentasAcceso(users){
       <p style="margin:6px 0 14px;font-size:12.5px;color:#64748b;background:#f8fafc;border:1px solid #eef2f6;border-radius:8px;padding:9px 12px">
         🔒 Por seguridad, las contraseñas se guardan <b>encriptadas</b> y no se pueden ver (igual que en todos los CRMs). Si alguien la olvida, usa <b>🔑 Contraseña</b> para asignarle una nueva y compártesela.
       </p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 0 14px">
-        <input id="nuUser" type="text" placeholder="Usuario nuevo" autocapitalize="none" style="flex:1 1 150px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
-        <input id="nuPwd" type="text" placeholder="Contraseña" style="flex:1 1 150px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+      <datalist id="vendedoresDatalist">${dlOpts}</datalist>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:0 0 6px">
+        <input id="nuUser" type="text" list="vendedoresDatalist" placeholder="Usuario — elige el vendedor ▾" autocapitalize="none" onkeydown="if(event.key==='Enter')addUserEquipo()" style="flex:1 1 180px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+        <input id="nuPwd" type="text" placeholder="Contraseña" onkeydown="if(event.key==='Enter')addUserEquipo()" style="flex:1 1 130px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+        <button onclick="sugerirPwd()" type="button" title="Generar una contraseña" style="flex:0 0 auto;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;cursor:pointer;font-size:15px">🎲</button>
         <select id="nuRole" class="cell-select" style="flex:0 0 130px;padding:10px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;background:#fff">
           <option value="vendedor">Vendedor</option>
           <option value="admin">Admin</option>
         </select>
-        <button onclick="addUserEquipo()" class="filter-pill" style="background:#0b0f14;color:#fff;border:none;font-weight:700;white-space:nowrap">+ Crear acceso</button>
+        <button onclick="addUserEquipo()" class="filter-pill" style="flex:0 0 auto;background:#0b0f14;color:#fff;border:none;font-weight:700;white-space:nowrap">+ Crear acceso</button>
       </div>
+      <p style="margin:2px 0 12px;font-size:11.5px;color:#94a3b8">💡 Escribe en "Usuario" y elige el nombre exacto de la lista (sin acentos). Pulsa 🎲 para una contraseña lista.</p>
       <div id="nuMsg" style="font-size:13px;min-height:16px;margin-bottom:10px"></div>
       <div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Usuario</th><th>Rol</th><th>Contraseña</th><th></th></tr></thead><tbody>${filas}</tbody></table></div>
       <div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${users.length} cuentas</div>
