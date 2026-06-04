@@ -100,14 +100,21 @@ export async function onRequestPost(context) {
       .bind(value, asistente, now, id)
       .run();
 
-    // Aviso al vendedor cuando se le asigna un lead (si tenemos su correo + Resend).
-    if (field === "vendedor" && value && env.RESEND_API_KEY && VENDOR_EMAILS[value]) {
-      const lead = await env.DB.prepare(
-        "SELECT nombre, nombre_real, whatsapp, ciudad, m2, timeline, comentarios FROM leads WHERE id = ?"
-      ).bind(id).first();
-      if (lead) {
-        const send = notifyVendor(env, VENDOR_EMAILS[value], value, lead);
-        if (context.waitUntil) context.waitUntil(send); else await send;
+    // Aviso al vendedor cuando se le asigna un lead. Correo = tabla "vendedores" (editable en panel) o fallback al mapa.
+    if (field === "vendedor" && value && env.RESEND_API_KEY) {
+      let to = "";
+      try {
+        const vr = await env.DB.prepare("SELECT email FROM vendedores WHERE nombre = ?").bind(value).first();
+        to = (vr && vr.email) ? String(vr.email).trim() : (VENDOR_EMAILS[value] || "");
+      } catch (e) { to = VENDOR_EMAILS[value] || ""; }
+      if (to) {
+        const lead = await env.DB.prepare(
+          "SELECT nombre, nombre_real, whatsapp, ciudad, m2, timeline, comentarios FROM leads WHERE id = ?"
+        ).bind(id).first();
+        if (lead) {
+          const send = notifyVendor(env, to, value, lead);
+          if (context.waitUntil) context.waitUntil(send); else await send;
+        }
       }
     }
 
