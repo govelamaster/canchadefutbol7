@@ -1858,6 +1858,47 @@ function gadsFiltered(){
   if (gadsUrlF !== 'all') rows = rows.filter(l => urlKeyOf(l) === gadsUrlF);
   return rows;
 }
+// Detecta el ESTADO (entidad) a partir del texto libre de "ciudad" que escribe el cliente.
+// Solo reconoce el nombre del estado si aparece explícito (no adivina por ciudad para no inventar).
+const MX_ESTADOS = [
+  ['Baja California Sur', /baja\s*california\s*sur/i],
+  ['Baja California', /baja\s*california/i],
+  ['Aguascalientes', /aguascalientes/i],
+  ['Campeche', /campeche/i],
+  ['Chiapas', /chiapas/i],
+  ['Chihuahua', /chihuahua/i],
+  ['Ciudad de México', /(ciudad de m[eé]xico|cdmx|distrito federal|\bd\.?\s*f\.?\b)/i],
+  ['Coahuila', /coahuila/i],
+  ['Colima', /colima/i],
+  ['Durango', /durango/i],
+  ['Guanajuato', /guanajuato/i],
+  ['Guerrero', /guerrero/i],
+  ['Hidalgo', /hidalgo/i],
+  ['Jalisco', /jalisco/i],
+  ['Estado de México', /(estado de m[eé]xico|edo\.?\s*m[eé]x|edomex|\bm[eé]x(?:ico)?\.?\b\s*$)/i],
+  ['Michoacán', /michoac[aá]n/i],
+  ['Morelos', /morelos/i],
+  ['Nayarit', /nayarit/i],
+  ['Nuevo León', /nuevo\s*le[oó]n/i],
+  ['Oaxaca', /oaxaca/i],
+  ['Puebla', /puebla/i],
+  ['Querétaro', /quer[eé]taro/i],
+  ['Quintana Roo', /quintana\s*roo/i],
+  ['San Luis Potosí', /san\s*luis\s*potos[ií]/i],
+  ['Sinaloa', /sinaloa/i],
+  ['Sonora', /sonora/i],
+  ['Tabasco', /tabasco/i],
+  ['Tamaulipas', /tamaulipas/i],
+  ['Tlaxcala', /tlaxcala/i],
+  ['Veracruz', /veracruz/i],
+  ['Yucatán', /yucat[aá]n/i],
+  ['Zacatecas', /zacatecas/i],
+];
+function estadoDe(ciudad){
+  const s = String(ciudad||'');
+  for (const [name, re] of MX_ESTADOS){ if (re.test(s)) return name; }
+  return '';
+}
 function renderGadsConv(){
   const body = document.getElementById('gadsConvBody');
   if (!body) return;
@@ -1870,8 +1911,14 @@ function renderGadsConv(){
   if (perSel) perSel.value = gadsPeriod;
   const rows = gadsFiltered();
   if (!rows.length){ body.innerHTML = '<div class="src-empty">Sin conversiones de Google Ads con estos filtros.</div>'; return; }
-  body.innerHTML = `<div style="overflow-x:auto"><table class="lb-table" style="font-size:12.5px"><thead><tr><th>Fecha</th><th>Ciudad</th><th>URL</th><th>Nombre</th><th>WhatsApp</th><th>gclid</th></tr></thead><tbody>` +
-    rows.map(l => `<tr><td>${escapeHtml(formatFecha(l.fecha))}</td><td>${escapeHtml(l.ciudad||'—')}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(l.url||'')}">${escapeHtml(urlKeyOf(l))}</td><td>${escapeHtml(l.nombre_real||l.nombre||'—')}</td><td>${escapeHtml(l.whatsapp||'—')}</td><td style="font-family:monospace;font-size:11px">${escapeHtml((l.gclid||'').slice(0,28))}${(l.gclid||'').length>28?'…':''}</td></tr>`).join('') +
+  // Resumen "de dónde caen más" por estado (entidad detectada)
+  const porEstado = {};
+  rows.forEach(l => { const e = estadoDe(l.ciudad) || 'Sin estado'; porEstado[e] = (porEstado[e]||0)+1; });
+  const topEstados = Object.entries(porEstado).sort((a,b)=>b[1]-a[1]);
+  const chips = topEstados.map(([e,n]) => `<span style="display:inline-block;background:${e==='Sin estado'?'#f1f5f9':'#eafaf1'};color:${e==='Sin estado'?'#64748b':'#1f7a3d'};border:1px solid ${e==='Sin estado'?'#e2e8f0':'#c7ecd5'};border-radius:999px;padding:4px 11px;font-size:12px;font-weight:700;margin:0 6px 6px 0">${escapeHtml(e)} · ${n}</span>`).join('');
+  body.innerHTML = `<div style="margin:0 0 14px;display:flex;flex-wrap:wrap;align-items:center"><span style="font-size:12px;font-weight:700;color:#64748b;margin:0 8px 6px 0;text-transform:uppercase;letter-spacing:.04em">De dónde caen más</span>${chips}</div>` +
+    `<div style="overflow-x:auto"><table class="lb-table" style="font-size:12.5px"><thead><tr><th>Fecha</th><th>Ciudad</th><th>Estado</th><th>URL</th><th>Nombre</th><th>WhatsApp</th><th>gclid</th></tr></thead><tbody>` +
+    rows.map(l => { const est = estadoDe(l.ciudad); return `<tr><td>${escapeHtml(formatFecha(l.fecha))}</td><td>${escapeHtml(l.ciudad||'—')}</td><td>${est?`<span style="background:#eafaf1;color:#1f7a3d;border-radius:6px;padding:2px 8px;font-weight:700;font-size:11.5px">${escapeHtml(est)}</span>`:'<span style="color:#cbd5e1">—</span>'}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(l.url||'')}">${escapeHtml(urlKeyOf(l))}</td><td>${escapeHtml(l.nombre_real||l.nombre||'—')}</td><td>${escapeHtml(l.whatsapp||'—')}</td><td style="font-family:monospace;font-size:11px">${escapeHtml((l.gclid||'').slice(0,28))}${(l.gclid||'').length>28?'…':''}</td></tr>`; }).join('') +
     `</tbody></table></div><div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:right"><strong style="color:#0b0f14">${rows.length}</strong> conversiones con estos filtros</div>`;
 }
 function gadsConvTime(fecha){ try{ return new Date(String(fecha).replace(' ','T')+'Z').toLocaleString('sv-SE',{timeZone:TZ_MX}); }catch(e){ return ''; } }
@@ -1893,8 +1940,8 @@ function descargarGadsGoogle(){
 function descargarGadsPlain(){
   const rows = gadsFiltered();
   if (!rows.length){ alert('No hay conversiones con estos filtros.'); return; }
-  const header = ['Fecha','Ciudad','URL','Nombre','WhatsApp','Canal','gclid','Estado','Comentarios'].join(',');
-  const lines = rows.map(l => [csvEsc(formatFecha(l.fecha)), csvEsc(l.ciudad), csvEsc(l.url), csvEsc(l.nombre_real||l.nombre), csvEsc(l.whatsapp), csvEsc(canalLead(l)), csvEsc(l.gclid), csvEsc(l.estado), csvEsc(l.comentarios)].join(','));
+  const header = ['Fecha','Ciudad','Entidad','URL','Nombre','WhatsApp','Canal','gclid','Estatus','Comentarios'].join(',');
+  const lines = rows.map(l => [csvEsc(formatFecha(l.fecha)), csvEsc(l.ciudad), csvEsc(estadoDe(l.ciudad)), csvEsc(l.url), csvEsc(l.nombre_real||l.nombre), csvEsc(l.whatsapp), csvEsc(canalLead(l)), csvEsc(l.gclid), csvEsc(l.estado), csvEsc(l.comentarios)].join(','));
   bajarCSV(`leads-google-ads-${hoyMx()}.csv`, header + '\n' + lines.join('\n'));
 }
 (function wireGads(){
