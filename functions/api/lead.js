@@ -99,22 +99,26 @@ async function sendLeadEmail(env, d, request) {
     const from = env.LEADS_FROM || 'Leads canchadefutbol7 <leads@canchadefutbol7.mx>';
     const esc = (s) => String(s || '-').replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
     const wa = (d.whatsapp || '').replace(/\D/g, '');
+    const com = String(d.comentarios || '');
+    const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,''])[1].trim();
+    const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,''])[1].trim();
     const subject = `Nuevo lead${d.fuente ? ' (' + d.fuente + ')' : ''}: ${d.nombre || 'sin nombre'}${d.ciudad ? ' — ' + d.ciudad : ''}`;
+    const row = (k, v) => `<tr><td style="padding:4px 14px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${v}</td></tr>`;
     const html = `
-      <h2 style="font-family:system-ui,sans-serif">Nuevo lead de canchadefutbol7.mx</h2>
-      <table style="font-family:system-ui,sans-serif;font-size:14px;border-collapse:collapse">
-        <tr><td><b>Nombre</b></td><td>${esc(d.nombre)}</td></tr>
-        <tr><td><b>WhatsApp</b></td><td>${esc(d.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir</a>` : ''}</td></tr>
-        <tr><td><b>Ciudad</b></td><td>${esc(d.ciudad)}</td></tr>
-        <tr><td><b>m²</b></td><td>${esc(d.m2)}</td></tr>
-        <tr><td><b>Inicio</b></td><td>${esc(d.timeline)}</td></tr>
-        <tr><td><b>Fuente</b></td><td>${esc(d.fuente)}</td></tr>
-        <tr><td><b>Comentarios</b></td><td>${esc(d.comentarios)}</td></tr>
-        <tr><td><b>Campaña</b></td><td>${esc(d.campania)}</td></tr>
-        <tr><td><b>gclid</b></td><td>${esc(d.gclid)}</td></tr>
-        <tr><td><b>URL</b></td><td>${esc(d.url)}</td></tr>
-      </table>
-      <p style="font-family:system-ui,sans-serif;font-size:12px;color:#64748b">Panel de leads: https://canchadefutbol7.mx/admin</p>`;
+      <div style="font-family:system-ui,-apple-system,sans-serif;color:#0f172a">
+        <h2 style="margin:0 0 14px">Nuevo lead de canchadefutbol7.mx</h2>
+        <table style="font-size:14px;border-collapse:collapse">
+          ${row('Nombre', esc(d.nombre))}
+          ${row('WhatsApp', `${esc(d.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir chat</a>` : ''}`)}
+          ${row('Ciudad', esc(d.ciudad))}
+          ${row('m²', esc(d.m2))}
+          ${row('Inicio', esc(d.timeline))}
+          ${row('Tipo de cancha', esc(tipo || '-'))}
+          ${row('Accesorios', esc(accesorios || '-'))}
+          ${row('Fuente', `${esc(d.fuente)}${d.campania ? ' · ' + esc(d.campania) : ''}`)}
+        </table>
+        <p style="font-size:12px;color:#64748b;margin-top:16px">Panel de leads: <a href="https://canchadefutbol7.mx/admin">canchadefutbol7.mx/admin</a></p>
+      </div>`;
 
     await fetch('https://api.resend.com/emails', {
       method: 'POST',

@@ -133,19 +133,27 @@ async function notifyVendor(env, to, vendedor, l) {
     const wa = String(l.whatsapp || "").replace(/\D/g, "");
     const urgente = /lo antes posible/i.test(l.timeline || "");
     const nombre = l.nombre_real || l.nombre || "Cliente";
+    const com = String(l.comentarios || "");
+    const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,""])[1].trim();
+    const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,""])[1].trim();
     const subject = `${urgente ? "🔴 URGENTE — " : ""}Lead asignado: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
+    const row = (k, v) => `<tr><td style="padding:4px 14px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${v}</td></tr>`;
     const html = `
-      <h2 style="font-family:system-ui,sans-serif">Te asignaron un lead${urgente ? " 🔴 URGENTE" : ""}</h2>
-      <p style="font-family:system-ui,sans-serif">Hola ${esc(vendedor)}, este cliente es tuyo — contáctalo cuanto antes:</p>
-      <table style="font-family:system-ui,sans-serif;font-size:14px;border-collapse:collapse">
-        <tr><td><b>Cliente</b></td><td>${esc(nombre)}</td></tr>
-        <tr><td><b>WhatsApp</b></td><td>${esc(l.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir chat</a>` : ""}</td></tr>
-        <tr><td><b>Ciudad</b></td><td>${esc(l.ciudad)}</td></tr>
-        <tr><td><b>m²</b></td><td>${esc(l.m2)}</td></tr>
-        <tr><td><b>Cuándo empieza</b></td><td>${esc(l.timeline)}</td></tr>
-        <tr><td><b>Notas del cliente</b></td><td>${esc(l.comentarios)}</td></tr>
-      </table>
-      <p style="font-family:system-ui,sans-serif;font-size:12px;color:#64748b">Panel: https://canchadefutbol7.mx/admin</p>`;
+      <div style="font-family:system-ui,-apple-system,sans-serif;color:#0f172a">
+        <p style="font-size:15px;margin:0 0 4px">Buen día <b>${esc(vendedor)}</b>,</p>
+        <p style="font-size:15px;margin:0 0 16px">Te comparto una <b>Asignación para Ti</b>… ¡Éxito! 🎯</p>
+        ${urgente ? '<p style="color:#dc2626;font-weight:700;margin:0 0 12px">🔴 URGENTE — el cliente quiere empezar lo antes posible.</p>' : ''}
+        <table style="font-size:14px;border-collapse:collapse">
+          ${row('Cliente', esc(nombre))}
+          ${row('WhatsApp', `${esc(l.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir chat</a>` : ""}`)}
+          ${row('Ciudad', esc(l.ciudad))}
+          ${row('m²', esc(l.m2))}
+          ${row('Inicio', esc(l.timeline))}
+          ${row('Tipo de cancha', esc(tipo || '-'))}
+          ${row('Accesorios', esc(accesorios || '-'))}
+        </table>
+        <p style="font-size:12px;color:#64748b;margin-top:16px">Panel: <a href="https://canchadefutbol7.mx/admin">canchadefutbol7.mx/admin</a></p>
+      </div>`;
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
