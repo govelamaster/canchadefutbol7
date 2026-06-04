@@ -133,10 +133,25 @@ async function notifyVendor(env, to, vendedor, l) {
     const wa = String(l.whatsapp || "").replace(/\D/g, "");
     const urgente = /lo antes posible/i.test(l.timeline || "");
     const nombre = l.nombre_real || l.nombre || "Cliente";
+    // Contador de prospectos de HOY para ESTE vendedor (incluye el actual)
+    let nDia = 1;
+    try {
+      const hoyD = new Date(Date.now()).toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
+      const rs = await env.DB.prepare("SELECT tocado_fecha FROM leads WHERE vendedor = ?").bind(vendedor).all();
+      const cnt = (rs.results || []).filter(r => {
+        const f = r.tocado_fecha; if (!f) return false;
+        return new Date(String(f).replace(' ', 'T') + 'Z').toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' }) === hoyD;
+      }).length;
+      if (cnt > 0) nDia = cnt;
+    } catch (e) { nDia = 1; }
+    const ordN = ({ 1: '1er', 2: '2do', 3: '3er', 4: '4to', 5: '5to', 6: '6to', 7: '7mo', 8: '8vo', 9: '9no', 10: '10mo' })[nDia] || (nDia + 'º');
+    const tituloHdr = nDia <= 1 ? '¡Un cliente es tuyo! 🎯' : `¡Tu ${ordN} prospecto de hoy! 🔥`;
+    const kickerHdr = nDia <= 1 ? 'Nueva asignación' : `Asignación #${nDia} de hoy`;
+    const saludoTxt = nDia <= 1 ? 'Te comparto una <b>asignación para ti</b>… ¡A cerrarla! 💪' : `Te pasamos el <b>${ordN} prospecto del día</b>… ¡vas con todo! 💪`;
     const com = String(l.comentarios || "");
     const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,""])[1].trim();
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,""])[1].trim();
-    const subject = `${urgente ? "🔴 URGENTE — " : ""}Lead asignado: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
+    const subject = `${urgente ? "🔴 URGENTE — " : ""}${nDia > 1 ? `Tu ${ordN} prospecto de hoy` : "Lead asignado"}: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
     const firstName = (nombre || 'el cliente').split(' ')[0];
     const waMsg = encodeURIComponent(`Hola ${firstName}, soy ${vendedor} de Sportmaster 👋 Vi que te interesa una cancha de fútbol. ¿Te ayudo con tu cotización?`);
     const waLink = wa ? `https://wa.me/52${wa.slice(-10)}?text=${waMsg}` : '';
@@ -145,12 +160,12 @@ async function notifyVendor(env, to, vendedor, l) {
       <div style="background:#eef2f6;padding:26px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
         <table align="center" width="500" style="max-width:500px;width:100%;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 12px 38px rgba(2,6,23,.14)">
           <tr><td style="background:linear-gradient(135deg,#139D45,#0a7a2e);padding:30px 30px;color:#ffffff">
-            <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;font-weight:700">Nueva asignación</div>
-            <div style="font-size:24px;font-weight:800;margin-top:6px;line-height:1.15">¡Un cliente es tuyo! 🎯</div>
+            <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;font-weight:700">${kickerHdr}</div>
+            <div style="font-size:24px;font-weight:800;margin-top:6px;line-height:1.15">${tituloHdr}</div>
           </td></tr>
           <tr><td style="padding:26px 30px 8px">
             <p style="font-size:16px;margin:0 0 4px;color:#0f172a">Buen día <b>${esc(vendedor)}</b>,</p>
-            <p style="font-size:15px;color:#475569;margin:0 0 18px">Te comparto una <b>asignación para ti</b>… ¡A cerrarla! 💪</p>
+            <p style="font-size:15px;color:#475569;margin:0 0 18px">${saludoTxt}</p>
             ${urgente ? '<div style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;font-weight:700;font-size:14px;margin-bottom:18px">🔴 URGENTE — quiere empezar lo antes posible</div>' : ''}
             <table width="100%" style="border-collapse:collapse;background:#f8fafc;border:1px solid #eef2f6;border-radius:12px;overflow:hidden">
               ${row('Cliente', esc(nombre))}
