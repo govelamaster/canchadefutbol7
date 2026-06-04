@@ -93,6 +93,16 @@ export async function onRequestPost(context) {
   const asistente = String(payload.asistente || "anónimo").slice(0, 40);
   const now = new Date().toISOString().replace("T", " ").slice(0, 19);
 
+  // Para reasignación: lee el vendedor actual ANTES de actualizar.
+  let oldVendedor = "", oldAnterior = "";
+  if (field === "vendedor") {
+    try {
+      const cur = await env.DB.prepare("SELECT vendedor, vendedor_anterior FROM leads WHERE id = ?").bind(id).first();
+      oldVendedor = (cur && cur.vendedor) || "";
+      oldAnterior = (cur && cur.vendedor_anterior) || "";
+    } catch (e) {}
+  }
+
   try {
     // SQL injection safe: field is whitelisted, value is parameterized
     const sql = `UPDATE leads SET ${field} = ?, tocado_por = ?, tocado_fecha = ? WHERE id = ?`;
@@ -100,20 +110,32 @@ export async function onRequestPost(context) {
       .bind(value, asistente, now, id)
       .run();
 
-    // Aviso al vendedor cuando se le asigna un lead. Correo = tabla "vendedores" (editable en panel) o fallback al mapa.
-    if (field === "vendedor" && value && env.RESEND_API_KEY) {
-      let to = "";
-      try {
-        const vr = await env.DB.prepare("SELECT email FROM vendedores WHERE nombre = ?").bind(value).first();
-        to = (vr && vr.email) ? String(vr.email).trim() : (VENDOR_EMAILS[value] || "");
-      } catch (e) { to = VENDOR_EMAILS[value] || ""; }
-      if (to) {
+    // Asignación / reasignación de vendedor.
+    if (field === "vendedor") {
+      const nuevo = value.trim();
+      if (!nuevo) {
+        // Mandado a "Sin asignar": recordamos quién lo tenía (para el reenvío al reasignar).
+        if (oldVendedor) { try { await env.DB.prepare("UPDATE leads SET vendedor_anterior = ? WHERE id = ?").bind(oldVendedor, id).run(); } catch (e) {} }
+      } else if (env.RESEND_API_KEY) {
         const lead = await env.DB.prepare(
           "SELECT nombre, nombre_real, whatsapp, ciudad, m2, timeline, comentarios FROM leads WHERE id = ?"
         ).bind(id).first();
-        if (lead) {
-          const send = notifyVendor(env, to, value, lead);
-          if (context.waitUntil) context.waitUntil(send); else await send;
+        // Vendedor anterior: el que lo tenía, o el guardado al desasignar (flujo Sin asignar → otro).
+        const prevVendor = (oldVendedor && oldVendedor !== nuevo) ? oldVendedor : ((oldAnterior && oldAnterior !== nuevo) ? oldAnterior : "");
+        try { await env.DB.prepare("UPDATE leads SET vendedor_anterior = '' WHERE id = ?").bind(id).run(); } catch (e) {}
+        // 1) Correo al NUEVO vendedor (asignación bonita).
+        const toNew = await emailDe(env, nuevo);
+        if (toNew && lead) {
+          const s = notifyVendor(env, toNew, nuevo, lead);
+          if (context.waitUntil) context.waitUntil(s); else await s;
+        }
+        // 2) Correo al vendedor ANTERIOR (reasignado por no cotizar a tiempo).
+        if (prevVendor && lead) {
+          const toPrev = await emailDe(env, prevVendor);
+          if (toPrev) {
+            const s2 = notifyReasignado(env, toPrev, prevVendor, nuevo, lead);
+            if (context.waitUntil) context.waitUntil(s2); else await s2;
+          }
         }
       }
     }
@@ -151,6 +173,44 @@ const FRASES_VIP = [
   "Las mejores comisiones suelen esconderse detrás de las visitas o zooms que otros no hacen.",
   "Los proyectos grandes no se persiguen. Se conquistan."
 ];
+
+// Correo de un vendedor: de la tabla "vendedores" (editable) o fallback al mapa.
+async function emailDe(env, nombre) {
+  try {
+    const vr = await env.DB.prepare("SELECT email FROM vendedores WHERE nombre = ?").bind(nombre).first();
+    if (vr && vr.email) return String(vr.email).trim();
+  } catch (e) {}
+  return VENDOR_EMAILS[nombre] || "";
+}
+
+// Avisa al vendedor ANTERIOR que su prospecto fue reasignado (no se cotizó a tiempo).
+async function notifyReasignado(env, to, vendedorAnterior, nuevoVendedor, l) {
+  try {
+    const from = env.LEADS_FROM || "Leads canchadefutbol7 <leads@canchadefutbol7.mx>";
+    const esc = (s) => String(s || "—").replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
+    const nombre = l.nombre_real || l.nombre || "Cliente";
+    const subject = `Prospecto reasignado: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
+    const html = `
+      <div style="background:#eef2f6;padding:26px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
+        <table align="center" width="500" style="max-width:500px;width:100%;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 12px 38px rgba(2,6,23,.12)">
+          <tr><td style="background:#475569;padding:26px 30px;color:#ffffff">
+            <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;font-weight:700">Reasignación</div>
+            <div style="font-size:22px;font-weight:800;margin-top:6px;line-height:1.15">Prospecto reasignado</div>
+          </td></tr>
+          <tr><td style="padding:26px 30px;color:#0f172a">
+            <p style="font-size:15px;margin:0 0 14px">Hola <b>${esc(vendedorAnterior)}</b>, el prospecto <b>${esc(nombre)}</b>${l.ciudad ? " (" + esc(l.ciudad) + ")" : ""} <b>fue reasignado</b> porque no se cotizó a tiempo.</p>
+            <p style="font-size:14px;color:#475569;margin:0">Ya no está en tu lista. Atiende tus prospectos a tiempo para no dejar ir la oportunidad. 💪</p>
+            <p style="font-size:12px;color:#94a3b8;margin-top:18px">Sportmaster · Canchas de Fútbol 7</p>
+          </td></tr>
+        </table>
+      </div>`;
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to, subject, html })
+    });
+  } catch (e) {}
+}
 
 // Manda el correo al vendedor con los datos del cliente. Silencioso ante errores.
 async function notifyVendor(env, to, vendedor, l) {

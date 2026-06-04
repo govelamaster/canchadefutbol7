@@ -2733,10 +2733,12 @@ async function saveField(id, field, value, el){
       lead.tocado_por = data.tocado_por;
       lead.tocado_fecha = data.tocado_fecha;
     }
-    // Refresh affected views (stats, lb, vip) without losing focus
+    // Refresh affected views (stats, lb, vip, listado por vendedor) without losing focus
     renderStats();
     renderLeaderboard();
     renderVip();
+    renderVendorTray();
+    renderHoyTeToca();
     document.getElementById('tabCountVip').textContent = vipLeads().length;
     populateVendedorFilter();
     // Visual: switch to saved checkmark briefly
