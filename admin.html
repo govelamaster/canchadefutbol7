@@ -297,6 +297,13 @@ body.rol-vendedor .vendedor-filter,
 body.rol-vendedor .vendor-tray-card,
 body.rol-vendedor .sinasignar-alert{ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
+/* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
+body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"],
+body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"]{ display:none !important; }
+body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
+/* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
+body.rol-admin .cell-select[data-field="status_proyecto"],
+body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; background:transparent; }
 
 .src-table{ width:100%; font-size:13px; border-collapse:separate; border-spacing:0; }
 .src-table thead th{
@@ -1452,8 +1459,10 @@ async function tryLogin(user, pwd, silent){
     const nombre = li.nombre || user || 'Usuario';
     localStorage.setItem(STORAGE_KEY, pwd);
     localStorage.setItem(STORAGE_USER, nombre);
-    localStorage.setItem(STORAGE_ROLE, li.role || 'vendedor');
-    CURRENT_ROLE = li.role || 'vendedor';
+    // La contraseña maestra = SUPER ADMIN (Olga). Usuarios de la tabla = admin | vendedor.
+    const rol = (pwd === 'Cancha2026!') ? 'super_admin' : (li.role || 'vendedor');
+    localStorage.setItem(STORAGE_ROLE, rol);
+    CURRENT_ROLE = rol;
     setAsistente(nombre);
     applyRoleUI();
     enterDash(data);
@@ -1463,8 +1472,11 @@ async function tryLogin(user, pwd, silent){
 }
 
 function applyRoleUI(){
+  document.body.classList.remove('rol-super','rol-admin','rol-vendedor');
+  const cls = CURRENT_ROLE === 'super_admin' ? 'rol-super' : (CURRENT_ROLE === 'admin' ? 'rol-admin' : 'rol-vendedor');
+  document.body.classList.add(cls);
   const ub = document.getElementById('usersBtn');
-  if (ub) ub.style.display = (CURRENT_ROLE === 'admin') ? '' : 'none';
+  if (ub) ub.style.display = (CURRENT_ROLE === 'super_admin') ? '' : 'none';
 }
 
 /* ===== Gestión de usuarios (solo admin) ===== */
@@ -1520,11 +1532,9 @@ function enterDash(data){
   if (CURRENT_ROLE === 'vendedor') {
     const yo = (currentUser() || '').trim().toLowerCase();
     leads = leads.filter(l => (l.vendedor || '').trim().toLowerCase() === yo);
-    document.body.classList.add('rol-vendedor');
-  } else {
-    document.body.classList.remove('rol-vendedor');
   }
   allLeads = leads;
+  applyRoleUI();
   refreshAll();
 }
 
@@ -2420,7 +2430,7 @@ function selectVendedor(l){
   const cnt = vendedorCounts();
   const options = ['<option value="">Sin asignar</option>']
     .concat(vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}" ${l.vendedor === v ? 'selected' : ''}>${escapeHtml(v)}${cnt[v] ? ` · ${cnt[v]}` : ''}</option>`));
-  return `<select class="cell-select" data-field="vendedor" data-val="${escapeAttr(l.vendedor)}" ${CURRENT_ROLE !== 'admin' ? 'disabled' : ''}>${options.join('')}</select>`;
+  return `<select class="cell-select" data-field="vendedor" data-val="${escapeAttr(l.vendedor)}" ${CURRENT_ROLE === 'vendedor' ? 'disabled' : ''}>${options.join('')}</select>`;
 }
 function selectTipo(l){
   const options = ['<option value="">—</option>']
@@ -2429,7 +2439,7 @@ function selectTipo(l){
 }
 function selectStatus(l){
   const options = STATUS_PROYECTO.map(s => `<option value="${s}" ${l.status_proyecto === s ? 'selected' : ''}>${s}</option>`);
-  return `<select class="cell-select" data-field="status_proyecto" data-val="${escapeAttr(l.status_proyecto)}">${options.join('')}</select>`;
+  return `<select class="cell-select" data-field="status_proyecto" data-val="${escapeAttr(l.status_proyecto)}" ${CURRENT_ROLE === 'admin' ? 'disabled' : ''}>${options.join('')}</select>`;
 }
 function notasTextarea(l){
   return `<textarea class="cell-textarea" data-field="notas_internas" placeholder="Notas internas…">${escapeHtml(l.notas_internas || '')}</textarea>`;
@@ -2447,7 +2457,7 @@ function nombreCell(l){
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg>
       </button>
       <div style="flex:1; min-width:0;">
-        <input type="text" class="cell-input nombre-input" data-field="nombre_real" value="${escapeAttr(displayValue)}" placeholder="${escapeAttr(formName || 'Nombre')}" />
+        <input type="text" class="cell-input nombre-input" data-field="nombre_real" value="${escapeAttr(displayValue)}" placeholder="${escapeAttr(formName || 'Nombre')}" ${CURRENT_ROLE === 'admin' ? 'readonly' : ''} />
         ${formChip}
       </div>
     </div>
