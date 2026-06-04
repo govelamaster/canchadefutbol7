@@ -137,22 +137,34 @@ async function notifyVendor(env, to, vendedor, l) {
     const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,""])[1].trim();
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,""])[1].trim();
     const subject = `${urgente ? "🔴 URGENTE — " : ""}Lead asignado: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
-    const row = (k, v) => `<tr><td style="padding:4px 14px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${v}</td></tr>`;
+    const firstName = (nombre || 'el cliente').split(' ')[0];
+    const waMsg = encodeURIComponent(`Hola ${firstName}, soy ${vendedor} de Sportmaster 👋 Vi que te interesa una cancha de fútbol. ¿Te ayudo con tu cotización?`);
+    const waLink = wa ? `https://wa.me/52${wa.slice(-10)}?text=${waMsg}` : '';
+    const row = (k, v) => `<tr><td style="padding:9px 18px;color:#64748b;font-size:13px;border-bottom:1px solid #eef2f6">${k}</td><td style="padding:9px 18px;font-weight:700;font-size:14px;color:#0f172a;border-bottom:1px solid #eef2f6;text-align:right">${v}</td></tr>`;
     const html = `
-      <div style="font-family:system-ui,-apple-system,sans-serif;color:#0f172a">
-        <p style="font-size:15px;margin:0 0 4px">Buen día <b>${esc(vendedor)}</b>,</p>
-        <p style="font-size:15px;margin:0 0 16px">Te comparto una <b>Asignación para Ti</b>… ¡Éxito! 🎯</p>
-        ${urgente ? '<p style="color:#dc2626;font-weight:700;margin:0 0 12px">🔴 URGENTE — el cliente quiere empezar lo antes posible.</p>' : ''}
-        <table style="font-size:14px;border-collapse:collapse">
-          ${row('Cliente', esc(nombre))}
-          ${row('WhatsApp', `${esc(l.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir chat</a>` : ""}`)}
-          ${row('Ciudad', esc(l.ciudad))}
-          ${row('m²', esc(l.m2))}
-          ${row('Inicio', esc(l.timeline))}
-          ${row('Tipo de cancha', esc(tipo || '-'))}
-          ${row('Accesorios', esc(accesorios || '-'))}
+      <div style="background:#eef2f6;padding:26px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
+        <table align="center" width="500" style="max-width:500px;width:100%;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 12px 38px rgba(2,6,23,.14)">
+          <tr><td style="background:linear-gradient(135deg,#139D45,#0a7a2e);padding:30px 30px;color:#ffffff">
+            <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;font-weight:700">Nueva asignación</div>
+            <div style="font-size:24px;font-weight:800;margin-top:6px;line-height:1.15">¡Un cliente es tuyo! 🎯</div>
+          </td></tr>
+          <tr><td style="padding:26px 30px 8px">
+            <p style="font-size:16px;margin:0 0 4px;color:#0f172a">Buen día <b>${esc(vendedor)}</b>,</p>
+            <p style="font-size:15px;color:#475569;margin:0 0 18px">Te comparto una <b>asignación para ti</b>… ¡A cerrarla! 💪</p>
+            ${urgente ? '<div style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;font-weight:700;font-size:14px;margin-bottom:18px">🔴 URGENTE — quiere empezar lo antes posible</div>' : ''}
+            <table width="100%" style="border-collapse:collapse;background:#f8fafc;border:1px solid #eef2f6;border-radius:12px;overflow:hidden">
+              ${row('Cliente', esc(nombre))}
+              ${row('Ciudad', esc(l.ciudad))}
+              ${row('m²', esc(l.m2))}
+              ${row('Inicio', esc(l.timeline))}
+              ${row('Tipo de cancha', esc(tipo || '-'))}
+              ${row('Accesorios', esc(accesorios || '-'))}
+            </table>
+            ${waLink ? `<a href="${waLink}" style="display:block;text-align:center;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:16px;border-radius:12px;margin-top:22px;box-shadow:0 8px 22px rgba(37,211,102,.34)">💬 Contactar a ${esc(firstName)} por WhatsApp</a>` : ''}
+            <p style="text-align:center;font-size:12px;color:#94a3b8;margin:14px 0 6px">o entra al panel: <a href="https://canchadefutbol7.mx/admin" style="color:#94a3b8">canchadefutbol7.mx/admin</a></p>
+          </td></tr>
+          <tr><td style="background:#0f172a;color:#cbd5e1;padding:16px 30px;font-size:12px;text-align:center">Sportmaster · Canchas de Fútbol 7 — ¡Mucho éxito! 🌟</td></tr>
         </table>
-        <p style="font-size:12px;color:#64748b;margin-top:16px">Panel: <a href="https://canchadefutbol7.mx/admin">canchadefutbol7.mx/admin</a></p>
       </div>`;
     await fetch("https://api.resend.com/emails", {
       method: "POST",
