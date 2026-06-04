@@ -1224,8 +1224,8 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <div class="section" style="padding:0;">
       <div class="section-card">
         <div class="section-head" style="flex-wrap:wrap; gap:8px;">
-          <h2><span class="emoji">👥</span> Equipo — correos y WhatsApp</h2>
-          <span class="meta">Cambia el correo/WhatsApp de cada vendedor (se guarda solo al salir del campo)</span>
+          <h2><span class="emoji">👥</span> Equipo — contactos y accesos</h2>
+          <span class="meta">Correo/WhatsApp de cada vendedor (se guarda al salir del campo) + cuentas de login abajo</span>
         </div>
         <div style="display:flex; gap:8px; padding:4px 4px 14px;">
           <input id="equipoNombre" type="text" maxlength="60" placeholder="Nombre de un vendedor nuevo…" style="flex:1; padding:11px 13px; border:1px solid #e2e8f0; border-radius:9px; font-size:14px" />
@@ -2049,21 +2049,109 @@ async function deleteFrase(id){
   if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') addFrase(); });
 })();
 
-// ===== Tab "Equipo" — directorio editable de vendedores (solo super admin) =====
+// ===== Tab "Equipo" — directorio editable + cuentas de acceso (solo super admin) =====
 async function loadEquipo(){
   const body = document.getElementById('equipoBody');
   if (!body || CURRENT_ROLE !== 'super_admin') return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
   try {
-    const pwd = localStorage.getItem(STORAGE_KEY);
-    const r = await fetch(`/api/vendedores?p=${encodeURIComponent(pwd)}`);
-    const d = await r.json();
-    const arr = d.vendedores || [];
-    if (!arr.length){ body.innerHTML = '<div class="src-empty">Sin vendedores. Agrega uno arriba.</div>'; return; }
-    const inp = (v,id,f,ph)=>`<input value="${escapeAttr(v||'')}" data-id="${id}" data-f="${f}" placeholder="${ph}" onblur="saveEquipo(this)" style="width:100%;padding:7px 9px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px" />`;
-    body.innerHTML = `<div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Vendedor</th><th>Correo</th><th>WhatsApp</th><th></th></tr></thead><tbody>` +
-      arr.map(v=>`<tr><td style="font-weight:700;white-space:nowrap">${escapeHtml(v.nombre)}</td><td style="min-width:210px">${inp(v.email,v.id,'email','correo@…')}</td><td style="min-width:140px">${inp(v.whatsapp,v.id,'whatsapp','10 dígitos')}</td><td><button onclick="deleteVendedor(${v.id})" title="Quitar" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626">🗑</button></td></tr>`).join('') +
-      `</tbody></table></div><div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${arr.length} vendedores</div>`;
+    const [rv, ru] = await Promise.all([
+      fetch(`/api/vendedores?p=${encodeURIComponent(pwd)}`).then(r=>r.json()).catch(()=>({})),
+      fetch(`/api/users?p=${encodeURIComponent(pwd)}`).then(r=>r.json()).catch(()=>({}))
+    ]);
+    body.innerHTML = renderVendedoresTabla(rv.vendedores || []) + renderCuentasAcceso(ru.users || []);
   } catch (e) { body.innerHTML = '<div class="src-empty">No se pudo cargar.</div>'; }
+}
+function renderVendedoresTabla(arr){
+  if (!arr.length) return '<div class="src-empty">Sin vendedores. Agrega uno arriba.</div>';
+  const inp = (v,id,f,ph)=>`<input value="${escapeAttr(v||'')}" data-id="${id}" data-f="${f}" placeholder="${ph}" onblur="saveEquipo(this)" style="width:100%;padding:7px 9px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px" />`;
+  return `<div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Vendedor</th><th>Correo</th><th>WhatsApp</th><th></th></tr></thead><tbody>` +
+    arr.map(v=>`<tr><td style="font-weight:700;white-space:nowrap">${escapeHtml(v.nombre)}</td><td style="min-width:210px">${inp(v.email,v.id,'email','correo@…')}</td><td style="min-width:140px">${inp(v.whatsapp,v.id,'whatsapp','10 dígitos')}</td><td><button onclick="deleteVendedor(${v.id})" title="Quitar del directorio" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626">🗑</button></td></tr>`).join('') +
+    `</tbody></table></div><div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${arr.length} vendedores</div>`;
+}
+// Bloque de cuentas de login (usuario + rol + cambiar contraseña + alta/baja).
+// Las contraseñas NUNCA se muestran (se guardan encriptadas/hash); solo se pueden resetear.
+function renderCuentasAcceso(users){
+  const roleBadge = r => r === 'admin'
+    ? '<span style="background:#eef2ff;color:#4338ca;border-radius:6px;padding:2px 9px;font-weight:700;font-size:11.5px">Admin</span>'
+    : '<span style="background:#ecfdf5;color:#047857;border-radius:6px;padding:2px 9px;font-weight:700;font-size:11.5px">Vendedor</span>';
+  const filas = users.length
+    ? users.map(u=>`<tr>
+        <td style="font-weight:700;white-space:nowrap"><span style="font-family:ui-monospace,monospace">${escapeHtml(u.username)}</span></td>
+        <td>${roleBadge(u.role)}</td>
+        <td style="color:#94a3b8;font-size:12px">•••••••• <span style="font-size:11px">(oculta)</span></td>
+        <td style="white-space:nowrap">
+          <button onclick="cambiarUserRol(${u.id},'${escapeAttr(u.username)}','${u.role}')" title="Cambiar rol" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;height:30px;padding:0 10px;cursor:pointer;font-weight:600;font-size:12px;margin-right:6px">⇄ Rol</button>
+          <button onclick="resetUserPwd(${u.id},'${escapeAttr(u.username)}','${u.role}')" title="Asignar nueva contraseña" style="background:#fff;border:1px solid #c7ecd5;color:#1f7a3d;border-radius:7px;height:30px;padding:0 10px;cursor:pointer;font-weight:700;font-size:12px;margin-right:6px">🔑 Contraseña</button>
+          <button onclick="deleteUserEquipo(${u.id},'${escapeAttr(u.username)}')" title="Eliminar acceso" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626">🗑</button>
+        </td></tr>`).join('')
+    : '<tr><td colspan="4" style="color:#94a3b8;padding:14px">Sin cuentas de acceso todavía.</td></tr>';
+  return `
+    <div style="margin-top:26px;padding-top:18px;border-top:2px solid #f1f5f9">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+        <h3 style="margin:0;font-size:15px;font-weight:800">🔐 Cuentas de acceso al panel</h3>
+        <span style="font-size:12px;color:#94a3b8">usuario + contraseña con que entra cada quien</span>
+      </div>
+      <p style="margin:6px 0 14px;font-size:12.5px;color:#64748b;background:#f8fafc;border:1px solid #eef2f6;border-radius:8px;padding:9px 12px">
+        🔒 Por seguridad, las contraseñas se guardan <b>encriptadas</b> y no se pueden ver (igual que en todos los CRMs). Si alguien la olvida, usa <b>🔑 Contraseña</b> para asignarle una nueva y compártesela.
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 0 14px">
+        <input id="nuUser" type="text" placeholder="Usuario nuevo" autocapitalize="none" style="flex:1 1 150px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+        <input id="nuPwd" type="text" placeholder="Contraseña" style="flex:1 1 150px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+        <select id="nuRole" class="cell-select" style="flex:0 0 130px;padding:10px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px;background:#fff">
+          <option value="vendedor">Vendedor</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button onclick="addUserEquipo()" class="filter-pill" style="background:#0b0f14;color:#fff;border:none;font-weight:700;white-space:nowrap">+ Crear acceso</button>
+      </div>
+      <div id="nuMsg" style="font-size:13px;min-height:16px;margin-bottom:10px"></div>
+      <div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Usuario</th><th>Rol</th><th>Contraseña</th><th></th></tr></thead><tbody>${filas}</tbody></table></div>
+      <div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${users.length} cuentas</div>
+    </div>`;
+}
+async function addUserEquipo(){
+  const u = (document.getElementById('nuUser').value||'').trim();
+  const p = (document.getElementById('nuPwd').value||'').trim();
+  const role = document.getElementById('nuRole').value;
+  const msg = document.getElementById('nuMsg');
+  if (!u || !p){ msg.style.color='#dc2626'; msg.textContent='Falta usuario o contraseña.'; return; }
+  if (p.length < 4){ msg.style.color='#dc2626'; msg.textContent='La contraseña debe tener al menos 4 caracteres.'; return; }
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  try {
+    const r = await fetch('/api/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ p: pwd, action:'add', username:u, password:p, role }) });
+    const d = await r.json();
+    if (d.ok){ msg.style.color='#1f7a3d'; msg.textContent='✓ Acceso creado: '+u; loadEquipo(); }
+    else { msg.style.color='#dc2626'; msg.textContent = d.error || 'No se pudo crear.'; }
+  } catch (e) { msg.style.color='#dc2626'; msg.textContent='Error: '+e.message; }
+}
+async function resetUserPwd(id, username, role){
+  const nueva = prompt('Nueva contraseña para "'+username+'":');
+  if (nueva == null) return;
+  const np = nueva.trim();
+  if (np.length < 4){ alert('La contraseña debe tener al menos 4 caracteres.'); return; }
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  try {
+    const r = await fetch('/api/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ p: pwd, id, username, password: np, role }) });
+    const d = await r.json();
+    if (d.ok) alert('✓ Contraseña actualizada para "'+username+'".\nCompártesela: '+np);
+    else alert(d.error || 'No se pudo actualizar.');
+  } catch (e) { alert('Error: '+e.message); }
+}
+async function cambiarUserRol(id, username, role){
+  const nuevo = role === 'admin' ? 'vendedor' : 'admin';
+  if (!confirm('¿Cambiar a "'+username+'" de '+ (role==='admin'?'Admin':'Vendedor') +' a '+ (nuevo==='admin'?'Admin':'Vendedor') +'?')) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  try {
+    const r = await fetch('/api/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ p: pwd, id, username, role: nuevo }) });
+    const d = await r.json();
+    if (d.ok) loadEquipo(); else alert(d.error || 'No se pudo cambiar.');
+  } catch (e) { alert('Error: '+e.message); }
+}
+async function deleteUserEquipo(id, username){
+  if (!confirm('¿Eliminar el acceso de "'+username+'"? Ya no podrá entrar al panel.')) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  try { await fetch('/api/users', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ p: pwd, action:'delete', id }) }); loadEquipo(); }
+  catch (e) { alert('Error: '+e.message); }
 }
 async function saveEquipo(el){
   const id = el.dataset.id, row = el.closest('tr');
