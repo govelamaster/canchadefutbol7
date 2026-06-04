@@ -1600,10 +1600,32 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   location.reload();
 });
 
-document.getElementById('refreshBtn').addEventListener('click', async () => {
+// Refresca SOLO los leads (sin re-login), reaplicando el filtro de rol.
+async function refrescarLeads(){
   const pwd = localStorage.getItem(STORAGE_KEY);
-  if (pwd) await tryLogin(pwd, true);
-});
+  if (!pwd || !dashView.classList.contains('show')) return;
+  try {
+    const r = await fetch(`${API_LEADS}?p=${encodeURIComponent(pwd)}`);
+    if (!r.ok) return;
+    const data = await r.json();
+    let leads = (data.leads || []).map(normalizeLead);
+    if (CURRENT_ROLE === 'vendedor') {
+      const yo = (currentUser() || '').trim().toLowerCase();
+      leads = leads.filter(l => (l.vendedor || '').trim().toLowerCase() === yo);
+    }
+    allLeads = leads;
+    refreshAll();
+  } catch (e) {}
+}
+document.getElementById('refreshBtn').addEventListener('click', refrescarLeads);
+
+// Auto-refresh cada 60s para ver leads nuevos — NO interrumpe si estás escribiendo/editando.
+setInterval(() => {
+  if (document.hidden) return;
+  const ae = document.activeElement;
+  if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return; // estás editando → no recargar
+  refrescarLeads();
+}, 60000);
 
 /* =========================================================
    REFRESH ALL VIEWS
@@ -2369,11 +2391,9 @@ function renderTable(){
     return;
   }
   empty.style.display = 'none';
-  // Orden CRM: urgentes ("lo antes posible") arriba, luego sin asignar, luego más recientes.
+  // Orden CRM: SIN ASIGNAR primero (lo nuevo que necesita atención, lo más reciente hasta arriba),
+  // luego los YA ASIGNADOS (también más recientes primero).
   rows = rows.slice().sort((a, b) => {
-    const ua = /lo antes posible/i.test(a.timeline || '') ? 1 : 0;
-    const ub = /lo antes posible/i.test(b.timeline || '') ? 1 : 0;
-    if (ua !== ub) return ub - ua;
     const sa = esSinAsignar(a) ? 1 : 0, sb = esSinAsignar(b) ? 1 : 0;
     if (sa !== sb) return sb - sa;
     return String(b.fecha || '').localeCompare(String(a.fecha || ''));
