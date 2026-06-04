@@ -7,8 +7,8 @@
 const ASSIGN_SECRET = "sm-assign-7Kx9-2026";
 const MASTER = "Cancha2026!";
 const VENDEDORES = [
-  "Jorge Dantes", "Blanca López", "Susana", "Carolina", "Paola Ramos", "Quijano",
-  "Jorge Padilla", "Estefanía", "Maribel", "Yolanda", "Gaby", "Gloria", "Melissa", "Arellano"
+  "Jorge Dantes", "Blanca Lopez", "Susana", "Carolina", "Paola Ramos", "Quijano",
+  "Jorge Padilla", "Estefania", "Maribel", "Yolanda", "Gaby", "Gloria", "Melissa", "Arellano"
 ];
 
 async function sha256hex(s) {
