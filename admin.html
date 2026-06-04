@@ -1003,21 +1003,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
   <!-- ============ TAB: LEADS ============ -->
   <div class="tab-content show" data-tab-content="leads">
 
-    <!-- ============ LEADS ASIGNADOS HOY POR VENDEDOR ============ -->
-    <div class="section">
-      <div class="section-card vendor-tray-card">
-        <div class="section-head">
-          <h2><span class="emoji">🆕</span> <span id="vendorTrayTitle">Leads asignados por vendedor · hoy</span></h2>
-          <span class="meta" id="vendorTrayMeta">—</span>
-        </div>
-        <div class="section-body">
-          <div class="vendor-tray" id="vendorTray"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="stats" id="stats"></div>
-
+    <!-- Alertas accionables PRIMERO (lo más urgente del día) -->
     <!-- ============ ESPERANDO MI RESPUESTA ============ -->
     <div class="section" id="esperandoSection" style="display:none;">
       <div class="section-card espera-card">
@@ -1039,6 +1025,8 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
         <div class="section-body" id="hoyTeTocaBody"></div>
       </div>
     </div>
+
+    <div class="stats" id="stats"></div>
 
     <div class="toolbar">
       <input type="text" class="search" id="searchInput" placeholder="🔍 Buscar nombre, ciudad, WhatsApp, notas…" />
@@ -1074,6 +1062,19 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <div class="empty" id="emptyState" style="display:none">
         <h3>Sin leads</h3>
         <p>Aparecerán aquí cuando lleguen.</p>
+      </div>
+    </div>
+
+    <!-- ============ LEADS ASIGNADOS POR VENDEDOR (reparto · análisis) ============ -->
+    <div class="section" style="margin-top:18px">
+      <div class="section-card vendor-tray-card">
+        <div class="section-head">
+          <h2><span class="emoji">🆕</span> <span id="vendorTrayTitle">Leads asignados por vendedor · hoy</span></h2>
+          <span class="meta" id="vendorTrayMeta">—</span>
+        </div>
+        <div class="section-body">
+          <div class="vendor-tray" id="vendorTray"></div>
+        </div>
       </div>
     </div>
 
