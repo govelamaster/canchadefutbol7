@@ -24,12 +24,15 @@ export async function onRequest({ request, next }) {
   // son links de WhatsApp y el chatbot los interceptaba (no se podía responder a clientes).
   if (p === "/admin" || p === "/admin.html" || p.startsWith("/admin/")) return res;
 
-  // Inserta <script src="/chatbot.js" defer> justo antes de </body>.
+  // Inserta <script src="/chatbot.js?v=..." defer> justo antes de </body>.
+  // ⚠️ Los .js se cachean 1 año (immutable). chatbot.js es nombre fijo → versiona la URL
+  // con CHATBOT_VER (cámbialo cada vez que edites chatbot.js) para romper la caché al instante.
   // chatbot.js se auto-protege: si la página ya trae el bot inline (la home), no duplica.
+  const CHATBOT_VER = "20260604b";
   return new HTMLRewriter()
     .on("body", {
       element(el) {
-        el.append('<script src="/chatbot.js" defer></script>', { html: true });
+        el.append(`<script src="/chatbot.js?v=${CHATBOT_VER}" defer></script>`, { html: true });
       },
     })
     .transform(res);
