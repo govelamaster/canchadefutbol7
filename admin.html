@@ -298,8 +298,8 @@ body.rol-vendedor .vendor-tray-card,
 body.rol-vendedor .sinasignar-alert{ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
-body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"],
-body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"]{ display:none !important; }
+body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="equipo"],
+body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="equipo"]{ display:none !important; }
 body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
 /* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
 body.rol-admin .cell-select[data-field="status_proyecto"],
@@ -976,6 +976,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
     <button class="tab-btn" data-tab="fbads">📘 Facebook</button>
     <button class="tab-btn" data-tab="frases">💬 Frases</button>
+    <button class="tab-btn" data-tab="equipo">👥 Equipo</button>
   </nav>
 
   <!-- ============ TAB: LEADS ============ -->
@@ -1214,6 +1215,23 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
           <button id="gadsDownloadPlain" class="filter-pill">⬇ CSV completo</button>
         </div>
         <div class="section-body" id="gadsConvBody"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: EQUIPO (directorio vendedores, solo super admin) ============ -->
+  <div class="tab-content" data-tab-content="equipo">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">👥</span> Equipo — correos y WhatsApp</h2>
+          <span class="meta">Cambia el correo/WhatsApp de cada vendedor (se guarda solo al salir del campo)</span>
+        </div>
+        <div style="display:flex; gap:8px; padding:4px 4px 14px;">
+          <input id="equipoNombre" type="text" maxlength="60" placeholder="Nombre de un vendedor nuevo…" style="flex:1; padding:11px 13px; border:1px solid #e2e8f0; border-radius:9px; font-size:14px" />
+          <button id="equipoAdd" class="filter-pill" style="background:#3f922a; color:#fff; border:none; font-weight:700; white-space:nowrap">+ Agregar</button>
+        </div>
+        <div class="section-body" id="equipoBody"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -1556,7 +1574,7 @@ function enterDash(data){
   allLeads = leads;
   applyRoleUI();
   refreshAll();
-  if (CURRENT_ROLE === 'super_admin') loadFrases();
+  if (CURRENT_ROLE === 'super_admin') { loadFrases(); loadEquipo(); }
 }
 
 function normalizeLead(l){
@@ -1960,6 +1978,52 @@ async function deleteFrase(id){
   if (b) b.addEventListener('click', addFrase);
   const inp = document.getElementById('fraseInput');
   if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') addFrase(); });
+})();
+
+// ===== Tab "Equipo" — directorio editable de vendedores (solo super admin) =====
+async function loadEquipo(){
+  const body = document.getElementById('equipoBody');
+  if (!body || CURRENT_ROLE !== 'super_admin') return;
+  try {
+    const pwd = localStorage.getItem(STORAGE_KEY);
+    const r = await fetch(`/api/vendedores?p=${encodeURIComponent(pwd)}`);
+    const d = await r.json();
+    const arr = d.vendedores || [];
+    if (!arr.length){ body.innerHTML = '<div class="src-empty">Sin vendedores. Agrega uno arriba.</div>'; return; }
+    const inp = (v,id,f,ph)=>`<input value="${escapeAttr(v||'')}" data-id="${id}" data-f="${f}" placeholder="${ph}" onblur="saveEquipo(this)" style="width:100%;padding:7px 9px;border:1px solid #e2e8f0;border-radius:7px;font-size:13px" />`;
+    body.innerHTML = `<div style="overflow-x:auto"><table class="lb-table" style="font-size:13px"><thead><tr><th>Vendedor</th><th>Correo</th><th>WhatsApp</th><th></th></tr></thead><tbody>` +
+      arr.map(v=>`<tr><td style="font-weight:700;white-space:nowrap">${escapeHtml(v.nombre)}</td><td style="min-width:210px">${inp(v.email,v.id,'email','correo@…')}</td><td style="min-width:140px">${inp(v.whatsapp,v.id,'whatsapp','10 dígitos')}</td><td><button onclick="deleteVendedor(${v.id})" title="Quitar" style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626">🗑</button></td></tr>`).join('') +
+      `</tbody></table></div><div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${arr.length} vendedores</div>`;
+  } catch (e) { body.innerHTML = '<div class="src-empty">No se pudo cargar.</div>'; }
+}
+async function saveEquipo(el){
+  const id = el.dataset.id, row = el.closest('tr');
+  const email = (row.querySelector('input[data-f="email"]').value || '').trim();
+  const whatsapp = (row.querySelector('input[data-f="whatsapp"]').value || '').trim();
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('id', id); fd.append('email', email); fd.append('whatsapp', whatsapp);
+  try { const r = await fetch('/api/vendedores', { method:'POST', body: fd }); const d = await r.json(); el.style.borderColor = d.ok ? '#3f922a' : '#dc2626'; setTimeout(()=>{ el.style.borderColor=''; }, 1300); }
+  catch (e) { el.style.borderColor = '#dc2626'; }
+}
+async function addVendedor(){
+  const inp = document.getElementById('equipoNombre'); const n = (inp.value || '').trim(); if (!n) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('action', 'add'); fd.append('nombre', n);
+  try { const r = await fetch('/api/vendedores', { method:'POST', body: fd }); const d = await r.json(); if (d.ok){ inp.value=''; loadEquipo(); } else alert(d.error || 'Error'); }
+  catch (e) { alert('Error: ' + e.message); }
+}
+async function deleteVendedor(id){
+  if (!confirm('¿Quitar este vendedor del directorio?')) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('action', 'delete'); fd.append('id', id);
+  try { await fetch('/api/vendedores', { method:'POST', body: fd }); loadEquipo(); }
+  catch (e) { alert('Error: ' + e.message); }
+}
+(function(){
+  const b = document.getElementById('equipoAdd');
+  if (b) b.addEventListener('click', addVendedor);
+  const inp = document.getElementById('equipoNombre');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') addVendedor(); });
 })();
 
 // Tab "Por URL": leads de GOOGLE ADS (con gclid) por URL, HOY (hora México).
