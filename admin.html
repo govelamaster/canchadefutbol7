@@ -298,6 +298,8 @@ body.rol-vendedor #mineBtn,
 body.rol-vendedor .vendor-tray-card,
 body.rol-vendedor .sinasignar-alert{ display:none; }
 #mineBtn.active{ background:#0b0f14; color:#fff; border-color:#0b0f14; }
+#unassignedPill.active{ background:#dc2626; color:#fff; border-color:#dc2626; }
+body.rol-vendedor #unassignedPill{ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="equipo"],
@@ -1055,6 +1057,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       </div>
       <div class="filters">
         <button class="filter-pill active" data-filter="all">Todos</button>
+        <button class="filter-pill" id="unassignedPill" onclick="filtrarSinAsignar()" title="Ver solo los leads sin vendedor">🔴 Sin asignar</button>
       </div>
     </div>
 
@@ -1420,6 +1423,8 @@ function filtrarSinAsignar(){
     document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
     renderUrlBreakdown();
   }
+  const up = document.getElementById('unassignedPill');
+  if (up) up.classList.toggle('active', currentUnassigned);
   renderStats();
   renderTable();
   document.querySelector('.toolbar')?.scrollIntoView({behavior:'smooth', block:'center'});
