@@ -2361,16 +2361,21 @@ function askRazonPerdida(lead){
 
 function renderTable(){
   let rows = allLeads;
-  // Filtro por rango de fecha (Hoy por defecto, para no saturar)
-  if (currentRange === 'today'){
-    const t = hoyMx();
-    rows = rows.filter(l => ymdMx(l.fecha) === t);
-  } else if (currentRange === 'yesterday'){
-    const y = ayerMx();
-    rows = rows.filter(l => ymdMx(l.fecha) === y);
-  } else if (currentRange === '7d'){
-    const c = hace6diasMx();
-    rows = rows.filter(l => ymdMx(l.fecha) >= c);
+  // Filtro por rango de fecha (Hoy por defecto, para no saturar).
+  // Si filtras por un vendedor específico, ignoramos la fecha y mostramos TODOS sus
+  // leads, para que cuadre con el contador "· N" del selector (si no, podías ver
+  // "Yolanda · 1" pero "Sin resultados" porque su lead era de otro día).
+  if (currentVendedor === 'all'){
+    if (currentRange === 'today'){
+      const t = hoyMx();
+      rows = rows.filter(l => ymdMx(l.fecha) === t);
+    } else if (currentRange === 'yesterday'){
+      const y = ayerMx();
+      rows = rows.filter(l => ymdMx(l.fecha) === y);
+    } else if (currentRange === '7d'){
+      const c = hace6diasMx();
+      rows = rows.filter(l => ymdMx(l.fecha) >= c);
+    }
   }
   if (currentUnassigned) rows = rows.filter(esSinAsignar);
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
