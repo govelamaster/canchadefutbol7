@@ -189,19 +189,26 @@ async function notifyReasignado(env, to, vendedorAnterior, nuevoVendedor, l) {
     const from = env.LEADS_FROM || "Leads canchadefutbol7 <leads@canchadefutbol7.mx>";
     const esc = (s) => String(s || "—").replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
     const nombre = l.nombre_real || l.nombre || "Cliente";
-    const subject = `Prospecto reasignado: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
+    const subject = `Un prospecto fue reasignado — vamos por el siguiente 🌱`;
     const html = `
       <div style="background:#eef2f6;padding:26px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif">
         <table align="center" width="500" style="max-width:500px;width:100%;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 12px 38px rgba(2,6,23,.12)">
-          <tr><td style="background:#475569;padding:26px 30px;color:#ffffff">
-            <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;font-weight:700">Reasignación</div>
-            <div style="font-size:22px;font-weight:800;margin-top:6px;line-height:1.15">Prospecto reasignado</div>
+          <tr><td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:30px 30px;color:#ffffff">
+            <div style="font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.9;font-weight:700">Reasignación</div>
+            <div style="font-size:23px;font-weight:800;margin-top:6px;line-height:1.15">Un prospecto fue reasignado</div>
           </td></tr>
-          <tr><td style="padding:26px 30px;color:#0f172a">
-            <p style="font-size:15px;margin:0 0 14px">Hola <b>${esc(vendedorAnterior)}</b>, el prospecto <b>${esc(nombre)}</b>${l.ciudad ? " (" + esc(l.ciudad) + ")" : ""} <b>fue reasignado</b> porque no se cotizó a tiempo.</p>
-            <p style="font-size:14px;color:#475569;margin:0">Ya no está en tu lista. Atiende tus prospectos a tiempo para no dejar ir la oportunidad. 💪</p>
-            <p style="font-size:12px;color:#94a3b8;margin-top:18px">Sportmaster · Canchas de Fútbol 7</p>
+          <tr><td style="padding:26px 30px 6px;color:#0f172a">
+            <p style="font-size:16px;margin:0 0 14px">Hola <b>${esc(vendedorAnterior)}</b> 👋</p>
+            <p style="font-size:15px;color:#475569;margin:0 0 14px;line-height:1.55">Sabemos que el día se llena y a veces no se alcanza a todo. Pero los prospectos <b>no pueden esperar</b>: cada cliente que llega merece ser atendido a tiempo.</p>
+            <p style="font-size:15px;color:#475569;margin:0 0 14px;line-height:1.55">Por eso <b>un compañero ya está atendiendo a ${esc(nombre)}</b>, para que no se enfríe la oportunidad.</p>
+            <p style="font-size:15px;color:#475569;margin:0 0 16px;line-height:1.55">En cuanto estés disponible <b>te seguiremos enviando nuevos prospectos</b>. ¡Vamos con todo por el siguiente! 💪</p>
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:13px 16px;margin:6px 0 16px">
+              <div style="font-size:11px;color:#92400e;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px">Prospecto reasignado</div>
+              <div style="font-size:14px;color:#0f172a;font-weight:700">${esc(nombre)}${l.ciudad ? " · " + esc(l.ciudad) : ""}</div>
+            </div>
+            <p style="font-size:15px;color:#0f172a;margin:0 0 6px">Que tengas un lindo día. 🌟</p>
           </td></tr>
+          <tr><td style="background:#0f172a;color:#cbd5e1;padding:18px 30px;font-size:12.5px;text-align:center;font-style:italic;line-height:1.4">"En Sportmaster vivimos de clientes satisfechos y bien atendidos."</td></tr>
         </table>
       </div>`;
     await fetch("https://api.resend.com/emails", {
