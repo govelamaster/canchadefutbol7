@@ -298,8 +298,8 @@ body.rol-vendedor .vendor-tray-card,
 body.rol-vendedor .sinasignar-alert{ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
-body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"],
-body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"]{ display:none !important; }
+body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"],
+body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"]{ display:none !important; }
 body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
 /* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
 body.rol-admin .cell-select[data-field="status_proyecto"],
@@ -975,6 +975,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <button class="tab-btn" data-tab="urls">🌐 Por URL</button>
     <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
     <button class="tab-btn" data-tab="fbads">📘 Facebook</button>
+    <button class="tab-btn" data-tab="frases">💬 Frases</button>
   </nav>
 
   <!-- ============ TAB: LEADS ============ -->
@@ -1044,6 +1045,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       </select>
       <div class="filters" id="rangeFilters">
         <button class="filter-pill active" data-range="today">📅 Hoy</button>
+        <button class="filter-pill" data-range="yesterday">Ayer</button>
         <button class="filter-pill" data-range="7d">7 días</button>
         <button class="filter-pill" data-range="all">Acumulado</button>
       </div>
@@ -1216,6 +1218,23 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     </div>
   </div>
 
+  <!-- ============ TAB: FRASES motivacionales (solo super admin) ============ -->
+  <div class="tab-content" data-tab-content="frases">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">💬</span> Frases motivacionales — proyectos ≥3000 m²</h2>
+          <span class="meta">Se muestran al azar en el correo del vendedor (proyectos grandes)</span>
+        </div>
+        <div style="display:flex; gap:8px; padding:4px 4px 16px;">
+          <input id="fraseInput" type="text" maxlength="300" placeholder="Escribe una frase nueva y dale Agregar…" style="flex:1; padding:11px 13px; border:1px solid #e2e8f0; border-radius:9px; font-size:14px" />
+          <button id="fraseAdd" class="filter-pill" style="background:#3f922a; color:#fff; border:none; font-weight:700; white-space:nowrap">+ Agregar</button>
+        </div>
+        <div class="section-body" id="frasesList"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ TAB: FACEBOOK / META (eventos offline) ============ -->
   <div class="tab-content" data-tab-content="fbads">
     <div class="section" style="padding:0;">
@@ -1357,6 +1376,7 @@ let allLeads = [];
 const TZ_MX = 'America/Mexico_City';
 function hoyMx(){ return new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
 function hace6diasMx(){ return new Date(Date.now() - 6*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
+function ayerMx(){ return new Date(Date.now() - 864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
 function ymdMx(fecha){
   if (!fecha) return '';
   const d = new Date(String(fecha).replace(' ', 'T') + 'Z');
@@ -1536,6 +1556,7 @@ function enterDash(data){
   allLeads = leads;
   applyRoleUI();
   refreshAll();
+  if (CURRENT_ROLE === 'super_admin') loadFrases();
 }
 
 function normalizeLead(l){
@@ -1898,6 +1919,49 @@ function descargarFb(){
   on('fbDownload','click', descargarFb);
 })();
 
+// ===== Tab "Frases" — gestión de frases motivacionales (solo super admin) =====
+async function loadFrases(){
+  const body = document.getElementById('frasesList');
+  if (!body || CURRENT_ROLE !== 'super_admin') return;
+  try {
+    const pwd = localStorage.getItem(STORAGE_KEY);
+    const r = await fetch(`/api/frases?p=${encodeURIComponent(pwd)}`);
+    const d = await r.json();
+    const arr = d.frases || [];
+    if (!arr.length){ body.innerHTML = '<div class="src-empty">Sin frases todavía. Agrega una arriba.</div>'; return; }
+    body.innerHTML = arr.map((f,i) => `<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-bottom:1px solid #eef2f6">
+      <span style="flex:none;color:#9ca3af;font-size:12px;font-weight:700;width:22px">${i+1}</span>
+      <span style="flex:1;font-size:13.5px;color:#0f172a;line-height:1.4">${escapeHtml(f.texto)}</span>
+      <button onclick="deleteFrase(${f.id})" title="Quitar frase" style="flex:none;background:#fff;border:1px solid #e5e7eb;border-radius:7px;width:30px;height:30px;cursor:pointer;color:#dc2626;font-size:14px">🗑</button>
+    </div>`).join('') + `<div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${arr.length} frases</div>`;
+  } catch (e) { body.innerHTML = '<div class="src-empty">No se pudieron cargar.</div>'; }
+}
+async function addFrase(){
+  const inp = document.getElementById('fraseInput');
+  const t = (inp.value || '').trim();
+  if (!t) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('texto', t);
+  try {
+    const r = await fetch('/api/frases', { method:'POST', body: fd });
+    const d = await r.json();
+    if (d.ok){ inp.value = ''; loadFrases(); } else alert(d.error || 'Error al agregar');
+  } catch (e) { alert('Error: ' + e.message); }
+}
+async function deleteFrase(id){
+  if (!confirm('¿Quitar esta frase? Ya no aparecerá en los correos.')) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('action','delete'); fd.append('id', id);
+  try { await fetch('/api/frases', { method:'POST', body: fd }); loadFrases(); }
+  catch (e) { alert('Error: ' + e.message); }
+}
+(function(){
+  const b = document.getElementById('fraseAdd');
+  if (b) b.addEventListener('click', addFrase);
+  const inp = document.getElementById('fraseInput');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') addFrase(); });
+})();
+
 // Tab "Por URL": leads de GOOGLE ADS (con gclid) por URL, HOY (hora México).
 function renderGoogleAdsUrls(){
   const body = document.getElementById('gadsUrls');
@@ -1952,11 +2016,14 @@ function renderUrlBreakdown(){
   if (currentRange === 'today'){
     const t = hoyMx();
     rows = rows.filter(l => ymdMx(l.fecha) === t);
+  } else if (currentRange === 'yesterday'){
+    const y = ayerMx();
+    rows = rows.filter(l => ymdMx(l.fecha) === y);
   } else if (currentRange === '7d'){
     const c = hace6diasMx();
     rows = rows.filter(l => ymdMx(l.fecha) >= c);
   }
-  meta.textContent = currentRange === 'today' ? 'Hoy' : (currentRange === '7d' ? 'Últimos 7 días' : 'Acumulado');
+  meta.textContent = currentRange === 'today' ? 'Hoy' : currentRange === 'yesterday' ? 'Ayer' : (currentRange === '7d' ? 'Últimos 7 días' : 'Acumulado');
   if (rows.length === 0){ body.innerHTML = `<div class="src-empty">Sin leads en este periodo.</div>`; return; }
   const byUrl = {};
   rows.forEach(l => {
@@ -2212,6 +2279,9 @@ function renderTable(){
   if (currentRange === 'today'){
     const t = hoyMx();
     rows = rows.filter(l => ymdMx(l.fecha) === t);
+  } else if (currentRange === 'yesterday'){
+    const y = ayerMx();
+    rows = rows.filter(l => ymdMx(l.fecha) === y);
   } else if (currentRange === '7d'){
     const c = hace6diasMx();
     rows = rows.filter(l => ymdMx(l.fecha) >= c);

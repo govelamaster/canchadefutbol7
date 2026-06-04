@@ -173,7 +173,25 @@ async function notifyVendor(env, to, vendedor, l) {
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,""])[1].trim();
     // Proyecto grande (>=3000 m²): frase inspiradora rotativa
     const m2num = parseInt(String(l.m2 || "").replace(/[^\d]/g, ""), 10) || 0;
-    const fraseVip = m2num >= 3000 ? FRASES_VIP[Math.floor(Math.random() * FRASES_VIP.length)] : "";
+    const esBig = m2num >= 3000;
+    // Frase inspiradora: se leen de la tabla "frases" (editable desde el panel). Fallback al array.
+    let fraseVip = "";
+    if (esBig) {
+      try {
+        const rs = await env.DB.prepare("SELECT texto FROM frases").all();
+        const pool = (rs.results || []).map(r => r.texto).filter(Boolean);
+        const arr = pool.length ? pool : FRASES_VIP;
+        fraseVip = arr[Math.floor(Math.random() * arr.length)];
+      } catch (e) { fraseVip = FRASES_VIP[Math.floor(Math.random() * FRASES_VIP.length)]; }
+    }
+    // Banner destacado según prioridad: alto valor + urgente > alto valor > urgente
+    const destacado = (esBig && urgente)
+      ? `<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #f59e0b;border-radius:12px;padding:14px 16px;margin-bottom:18px"><div style="font-weight:800;color:#92400e;font-size:15px">🏆⚡ Proyecto que cumple con TODO</div><div style="font-size:13px;color:#b45309;margin-top:3px">Alto valor <b>y</b> el cliente quiere empezar <b>ya</b>. Esta merece tu atención inmediata.</div></div>`
+      : esBig
+      ? `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin-bottom:18px"><div style="font-weight:800;color:#92400e;font-size:15px">🏆 Proyecto de alto valor</div><div style="font-size:13px;color:#b45309;margin-top:3px">Más de 3,000 m². Una oportunidad de las que cambian el mes.</div></div>`
+      : urgente
+      ? `<div style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;font-weight:700;font-size:14px;margin-bottom:18px">🔴 URGENTE — quiere empezar lo antes posible</div>`
+      : "";
     const subject = `${urgente ? "🔴 URGENTE — " : ""}${nDia > 1 ? `Tu ${ordN} prospecto de hoy` : "Lead asignado"}: ${nombre}${l.ciudad ? " (" + l.ciudad + ")" : ""}`;
     const firstName = (nombre || 'el cliente').split(' ')[0];
     const waMsg = encodeURIComponent(`Hola ${firstName}, soy ${vendedor} de Sportmaster 👋 Vi que te interesa una cancha de fútbol. ¿Te ayudo con tu cotización?`);
@@ -189,7 +207,7 @@ async function notifyVendor(env, to, vendedor, l) {
           <tr><td style="padding:26px 30px 8px">
             <p style="font-size:16px;margin:0 0 4px;color:#0f172a">Buen día <b>${esc(vendedor)}</b>,</p>
             <p style="font-size:15px;color:#475569;margin:0 0 18px">${saludoTxt}</p>
-            ${urgente ? '<div style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:10px;padding:11px 14px;font-weight:700;font-size:14px;margin-bottom:18px">🔴 URGENTE — quiere empezar lo antes posible</div>' : ''}
+            ${destacado}
             <table width="100%" style="border-collapse:collapse;background:#f8fafc;border:1px solid #eef2f6;border-radius:12px;overflow:hidden">
               ${row('Cliente', esc(nombre))}
               ${row('Ciudad', esc(l.ciudad))}
