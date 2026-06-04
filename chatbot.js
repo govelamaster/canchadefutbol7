@@ -242,7 +242,7 @@ const Cot = (function(){
       type:"chips", options:["Lo antes posible","Este año","Solo cotizando"] },
     { key:"whatsapp", bot:(d)=>`${(d.nombre||'').split(' ')[0]} ¿a qué WhatsApp te enviamos la cotización?`, type:"text", ph:"10 dígitos — o escríbeme por aquí", validate:"phone", optional:true, skip:"No lo dejó" },
     { key:"medidas", bot:"¿Conoces las medidas o m² del terreno? (si no, lo vemos juntos)", type:"text", ph:"Ej. 25 × 45 m — o escribe \"no sé\"", optional:true, skip:"No sé" },
-    { key:"accesorios", bot:"¿Quieres incluir accesorios en la cotización? Marca los que te interesen 👇",
+    { key:"accesorios", bot:(d)=> d.tipo==='Residencial' ? '¡Listo! 🌿 Tu proyecto de área verde está listo para cotizar.' : '¿Quieres incluir accesorios en la cotización? Marca los que te interesen 👇',
       type:"multi", options:["Porterías","Gradas","Alumbrado","Bancas jugadores"], done:"Continuar", none:"Solo la cancha" }
   ];
 
@@ -308,6 +308,14 @@ const Cot = (function(){
       });
       controls().appendChild(wrap); scrollQ();
     } else if(step.type === 'multi'){
+      if(data.tipo === 'Residencial'){
+        const box = document.createElement('div'); box.style.padding = '0 16px 14px';
+        const b = document.createElement('button');
+        b.className = 'cot-continue'; b.textContent = 'Cotizar mi área verde';
+        b.onclick = ()=> answer('Área verde residencial', step);
+        box.appendChild(b); controls().appendChild(box); scrollQ();
+        return;
+      }
       const sel = new Set();
       const box = document.createElement('div'); box.style.padding = '0 16px 14px';
       const wrap = document.createElement('div'); wrap.className = 'cot-chips';
