@@ -991,7 +991,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <div class="section">
       <div class="section-card vendor-tray-card">
         <div class="section-head">
-          <h2><span class="emoji">🆕</span> Leads asignados hoy por vendedor</h2>
+          <h2><span class="emoji">🆕</span> <span id="vendorTrayTitle">Leads asignados por vendedor · hoy</span></h2>
           <span class="meta" id="vendorTrayMeta">—</span>
         </div>
         <div class="section-body">
@@ -1439,6 +1439,7 @@ function filtrarSinAsignar(){
   }
   const up = document.getElementById('unassignedPill');
   if (up) up.classList.toggle('active', currentUnassigned);
+  renderVendorTray();
   renderStats();
   renderTable();
   document.querySelector('.toolbar')?.scrollIntoView({behavior:'smooth', block:'center'});
@@ -1678,12 +1679,20 @@ function refreshAll(){
 /* =========================================================
    VENDOR TRAY — leads asignados HOY por vendedor
 ========================================================= */
+// Devuelve {leads, label} según el rango de fecha seleccionado (Hoy/Ayer/7d/Acumulado).
+function leadsDelRango(){
+  if (currentRange === 'yesterday'){ const y = ayerMx(); return { leads: allLeads.filter(l => ymdMx(l.fecha) === y), label:'ayer' }; }
+  if (currentRange === '7d'){ const c = hace6diasMx(); return { leads: allLeads.filter(l => ymdMx(l.fecha) >= c), label:'en 7 días' }; }
+  if (currentRange === 'all'){ return { leads: allLeads.slice(), label:'acumulado' }; }
+  const t = hoyMx(); return { leads: allLeads.filter(l => ymdMx(l.fecha) === t), label:'hoy' };
+}
 function renderVendorTray(){
   const tray = document.getElementById('vendorTray');
   const meta = document.getElementById('vendorTrayMeta');
+  const titleEl = document.getElementById('vendorTrayTitle');
   if (!tray) return;
-  const today = hoyMx();
-  const todayLeads = allLeads.filter(l => ymdMx(l.fecha) === today);
+  const { leads: todayLeads, label } = leadsDelRango();
+  if (titleEl) titleEl.textContent = `Leads asignados por vendedor · ${label}`;
   const counts = {};
   VENDEDORES.forEach(v => counts[v] = 0);
   let sinAsignar = 0;
@@ -1694,8 +1703,8 @@ function renderVendorTray(){
   });
   const total = todayLeads.length;
   meta.textContent = total === 0
-    ? 'Aún no hay leads hoy'
-    : `${total} lead${total === 1 ? '' : 's'} hoy · ${sinAsignar} sin asignar`;
+    ? `Sin leads (${label})`
+    : `${total} lead${total === 1 ? '' : 's'} ${label} · ${sinAsignar} sin asignar`;
 
   // Active first (count desc), then idle alphabetical
   const active = VENDEDORES.filter(v => counts[v] > 0).sort((a,b) => counts[b] - counts[a] || a.localeCompare(b,'es'));
@@ -2422,6 +2431,7 @@ document.querySelectorAll('.filter-pill[data-range]').forEach(btn => {
     document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentRange = btn.dataset.range;
+    renderVendorTray();
     renderTable();
     renderUrlBreakdown();
   });
