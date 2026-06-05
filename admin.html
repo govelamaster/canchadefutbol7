@@ -3082,7 +3082,7 @@ function renderLeadRow(l, vip){
       <td style="font-weight:800;">${escapeHtml(l.m2 || '—')}</td>
       <td>${selectVendedor(l)}</td>
       <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-      <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink) : ''}</div></td>
+      <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
     </tr>`;
   }
 
@@ -3104,7 +3104,7 @@ function renderLeadRow(l, vip){
     <td>${selectVendedor(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
     <td class="origen-cell">${origenCell(l)}</td>
-    <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink) : ''}</div></td>
+    <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
   </tr>`;
 }
 
@@ -3275,8 +3275,24 @@ function nombreCell(l){
     </div>
   `;
 }
-function waBtn(href){
-  return `<a class="wa-btn" target="_blank" href="${href}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>Responder</a>`;
+function waBtn(href, id){
+  // Al presionar Responder marcamos auto "Contactando…" (1 clic, sin fricción)
+  const onClick = id ? `onclick="marcarContactando(${id})"` : '';
+  return `<a class="wa-btn" target="_blank" ${onClick} href="${href}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>Responder</a>`;
+}
+// Marca el lead como "Contactando…" sin recargar la tabla (UX silenciosa).
+// Si ya está en Cotización/Negociación/Ganado/Perdido, no toca para no retroceder.
+async function marcarContactando(id){
+  const l = allLeads.find(x => x.id === id);
+  if (!l) return;
+  const st = l.status_proyecto || 'Sin atender';
+  if (['Contactado','Cotizado','Negociación','Ganado','Perdido'].includes(st)) return;
+  l.status_proyecto = 'Contactado';
+  try { await saveField(id, 'status_proyecto', 'Contactado', null); } catch(e){}
+  // refrescar contadores + badges sin saltar
+  try { renderSpeedAlert(); renderStats(); } catch(e){}
+  const row = document.querySelector(`tr[data-lead-id="${id}"] .sla-badge`);
+  if (row) row.style.display = 'none';
 }
 
 function bindRowEvents(container){
