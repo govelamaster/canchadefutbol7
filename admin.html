@@ -313,6 +313,12 @@ body.rol-vendedor #unassignedPill{ display:none; }
 .tpl-item{ display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; background:#fff; border:none; border-bottom:1px solid #f1f5f9; cursor:pointer; }
 .tpl-item:last-child{ border-bottom:none; }
 .tpl-item:hover{ background:#f8fafc; }
+/* Speed-to-lead */
+.sla-badge{ display:inline-flex; align-items:center; gap:3px; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:800; white-space:nowrap; }
+.sla-pulse{ animation:slaPulse 1.6s ease-in-out infinite; }
+@keyframes slaPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(220,38,38,.35); } 50%{ box-shadow:0 0 0 5px rgba(220,38,38,0); } }
+.speed-alert{ display:flex; align-items:center; gap:8px; background:linear-gradient(90deg,#fef2f2,#fff5f5); border:1px solid #fecaca; color:#991b1b; border-radius:14px; padding:13px 16px; margin-bottom:16px; font-size:14px; }
+.speed-alert b{ color:#b91c1c; }
 /* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
 body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
@@ -1025,6 +1031,9 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <!-- Saludo personal (solo vendedores) -->
     <div id="vendorHello" style="display:none"></div>
 
+    <!-- ⏱ Speed-to-lead: prospectos frescos sin contactar -->
+    <div id="speedAlert" style="display:none"></div>
+
     <!-- Alertas accionables PRIMERO (lo más urgente del día) -->
     <!-- ============ ESPERANDO MI RESPUESTA ============ -->
     <div class="section" id="esperandoSection" style="display:none;">
@@ -1493,6 +1502,16 @@ const TZ_MX = 'America/Mexico_City';
 function hoyMx(){ return new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
 function hace6diasMx(){ return new Date(Date.now() - 6*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
 function ayerMx(){ return new Date(Date.now() - 864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX }); }
+/* ===== Speed-to-lead: tiempo sin contactar ===== */
+function minsDesde(fecha){ try { const t = Date.parse(String(fecha).replace(' ','T')+'Z'); return Math.max(0, Math.round((Date.now()-t)/60000)); } catch(e){ return 0; } }
+function fmtDur(m){ if (m < 60) return m + ' min'; const h = Math.floor(m/60); if (h < 24) return h + (m%60>=30?'.5':'') + ' h'; return Math.floor(h/24) + ' d'; }
+function slaPendiente(l){ return (l.status_proyecto || 'Sin atender') === 'Sin atender'; }
+function slaBadge(l){
+  if (!slaPendiente(l)) return '';
+  const m = minsDesde(l.fecha);
+  const c = m < 15 ? ['#dcfce7','#15803d','#bbf7d0'] : (m < 30 ? ['#fef3c7','#b45309','#fde68a'] : ['#fee2e2','#b91c1c','#fecaca']);
+  return `<span class="sla-badge${m>=30?' sla-pulse':''}" title="Tiempo sin contactar (velocidad = ventas)" style="background:${c[0]};color:${c[1]};border:1px solid ${c[2]}">⏱ ${fmtDur(m)} sin contactar</span>`;
+}
 function ymdMx(fecha){
   if (!fecha) return '';
   const d = new Date(String(fecha).replace(' ', 'T') + 'Z');
@@ -1765,9 +1784,21 @@ setInterval(() => {
 /* =========================================================
    REFRESH ALL VIEWS
 ========================================================= */
+// Banner ⏱: prospectos FRESCOS (≤24h) sin contactar que ya pasaron de 30 min.
+function renderSpeedAlert(){
+  const box = document.getElementById('speedAlert');
+  if (!box) return;
+  const frescos = allLeads.filter(l => slaPendiente(l) && minsDesde(l.fecha) <= 1440);
+  const vencidos = frescos.filter(l => minsDesde(l.fecha) >= 30).length;
+  if (!vencidos){ box.style.display = 'none'; return; }
+  const yo = CURRENT_ROLE === 'vendedor';
+  box.style.display = '';
+  box.innerHTML = `<div class="speed-alert">⏱ <span><b>${vencidos}</b> prospecto${vencidos===1?'':'s'} ${yo?'tuyo'+(vencidos===1?'':'s'):''} llevan <b>+30 min sin contactar</b>. Velocidad = ventas — contáctalos ya 🟢</span></div>`;
+}
 function refreshAll(){
   updateLastSync();
   renderVendorHello();
+  renderSpeedAlert();
   populateVendedorFilter();
   renderVendorTray();
   renderStats();
@@ -3059,7 +3090,7 @@ function renderLeadRow(l, vip){
   const m2 = escapeHtml(l.m2 || '?');
   const comentShort = (l.comentarios || '').replace(/^\s*Tipo:\s*/i, '').trim();
   const subWa = waNum ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="lead-wa">${escapeHtml(l.whatsapp)}</a>` : '';
-  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}`;
+  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}${slaBadge(l)}`;
   return `<tr data-lead-id="${l.id}" class="${rowClass}${urgente ? ' row-urgent' : ''}">
     <td class="lead-cell">
       ${nombreCell(l)}
