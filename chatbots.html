@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0f14">
+<title>Chatbots · Panel · Sportmaster F7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:#0b0f14;background:#f4f5f7;font-size:14px;line-height:1.5}
+  a{color:inherit}
+
+  /* ============ HEADER (idéntico a /admin) ============ */
+  .dash-header{background:#0b0f14;color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(180deg,#1f2937,#0b0f14);display:grid;place-items:center;border:1px solid rgba(255,255,255,.08)}
+  .brand-mark svg{width:20px;height:20px}
+  .brand h1{margin:0;font-size:15px;font-weight:800;letter-spacing:-.01em;display:flex;flex-direction:column;line-height:1.2}
+  .brand h1 small{font-size:11.5px;font-weight:500;color:#94a3b8;margin-top:2px}
+  .h-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .h-actions button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#fff;border-radius:8px;padding:8px 12px;font-family:inherit;font-weight:600;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+  .h-actions button:hover{background:rgba(255,255,255,.12)}
+  .h-actions button svg{width:14px;height:14px}
+  .h-actions button.primary{background:#3f922a;border-color:#3f922a}
+  .h-actions button.primary:hover{background:#357a22}
+  .me{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 10px 5px 5px;font-size:12.5px;color:#cbd5e1}
+  .me .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3f922a,#2d6b1c);display:grid;place-items:center;font-weight:800;color:#fff;font-size:11px}
+
+  /* ============ TABS (idéntico a /admin) ============ */
+  .tabs{background:#fff;border-bottom:1px solid #e5e7eb;padding:0 22px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;position:sticky;top:66px;z-index:40}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab-btn{background:none;border:none;color:#6b7280;font-family:inherit;font-weight:600;font-size:13.5px;padding:14px 16px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+  .tab-btn:hover{color:#0b0f14}
+  .tab-btn.active{color:#0b0f14;border-bottom-color:#3f922a}
+  .tab-btn .count{background:#f3f4f6;color:#6b7280;font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px;min-width:18px;text-align:center}
+  .tab-btn.active .count{background:#3f922a;color:#fff}
+
+  /* ============ PAGE ============ */
+  .wrap{max-width:1280px;margin:0 auto;padding:24px 22px 60px}
+
+  /* Alert */
+  .alert{background:#fef2f2;border:1px solid #fecaca;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;font-size:13.5px;margin-bottom:18px;color:#991b1b}
+  .alert .dot{width:10px;height:10px;border-radius:50%;background:#dc2626;flex:none;box-shadow:0 0 0 4px rgba(220,38,38,.15);animation:pulseAlert 1.8s infinite}
+  @keyframes pulseAlert{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4)}50%{box-shadow:0 0 0 8px rgba(220,38,38,0)}}
+  .alert strong{color:#7f1d1d}
+  .alert .grow{flex:1}
+  .alert button{background:#dc2626;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer}
+  .alert button:hover{background:#b91c1c}
+
+  /* Stats row */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  @media(max-width:880px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px 18px;transition:.15s}
+  .stat:hover{box-shadow:0 4px 14px rgba(15,23,42,.04)}
+  .stat .l{color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+  .stat .v{font-size:28px;font-weight:800;margin-top:6px;letter-spacing:-.025em;color:#0b0f14;font-variant-numeric:tabular-nums}
+  .stat .d{font-size:12px;color:#3f922a;margin-top:4px;font-weight:700;display:flex;align-items:center;gap:4px}
+  .stat .d.warn{color:#ea580c}
+  .stat .d.muted{color:#6b7280;font-weight:500}
+  .stat .d svg{width:11px;height:11px}
+
+  /* Companies */
+  .companies{display:flex;flex-direction:column;gap:16px}
+  .company{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;transition:.15s}
+  .company:hover{box-shadow:0 6px 20px rgba(15,23,42,.05)}
+  .company-head{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid #f3f4f6;background:#fafbfc}
+  .company-head .ico{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#3f922a,#2d6b1c);color:#fff;display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
+  .company-head .ico.empty{background:#f3f4f6;color:#9ca3af}
+  .company-head .nm{font-weight:800;font-size:15.5px;letter-spacing:-.01em}
+  .company-head .dm{color:#6b7280;font-size:12px;margin-top:1px;font-family:ui-monospace,monospace}
+  .company-head .right{margin-left:auto;display:flex;gap:12px;align-items:center;color:#6b7280;font-size:12px}
+  .company-head .right b{color:#0b0f14;font-weight:700}
+
+  table.bots{width:100%;border-collapse:collapse;font-size:13px}
+  table.bots th{text-align:left;padding:11px 20px;color:#6b7280;font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #f3f4f6;background:#fafbfc}
+  table.bots td{padding:14px 20px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+  table.bots tr:last-child td{border-bottom:none}
+  table.bots tr:hover td{background:#fafbfc}
+  table.bots .name{font-weight:700;color:#0b0f14;font-size:13.5px}
+  table.bots .url{font-family:ui-monospace,monospace;font-size:11.5px;color:#6b7280}
+  table.bots .num{font-weight:800;font-size:14px;color:#0b0f14;font-variant-numeric:tabular-nums}
+
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+  .pill.live{background:#dcfce7;color:#15803d}
+  .pill.demo{background:#fef3c7;color:#a16207}
+  .pill.down{background:#fee2e2;color:#b91c1c}
+  .pill.off{background:#f3f4f6;color:#9ca3af}
+  .pill .pulse{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .pill.live .pulse{animation:pulseDot 1.8s ease-out infinite}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 currentColor;opacity:1}100%{box-shadow:0 0 0 5px transparent;opacity:.4}}
+
+  /* sparkline */
+  .spark{display:flex;align-items:flex-end;gap:2px;height:30px;width:88px}
+  .spark span{flex:1;background:#3f922a;border-radius:2px;opacity:.75;min-height:2px}
+  .spark span:hover{opacity:1}
+
+  .row-acts{display:flex;gap:6px;justify-content:flex-end}
+  .row-acts button{background:#fff;color:#374151;border:1px solid #e5e7eb;border-radius:7px;padding:6px 10px;font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.15s}
+  .row-acts button:hover{border-color:#3f922a;color:#3f922a;background:#f0fdf4}
+  .row-acts button svg{width:13px;height:13px}
+
+  .add-bot{padding:12px 20px;border-top:1px dashed #e5e7eb;text-align:center;background:#fafbfc}
+  .add-bot button{background:transparent;color:#6b7280;border:1px dashed #d1d5db;border-radius:8px;padding:8px 14px;font-size:12.5px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+  .add-bot button:hover{border-color:#3f922a;color:#3f922a;border-style:solid;background:#f0fdf4}
+
+  .empty{padding:30px;text-align:center;color:#6b7280;font-size:13.5px}
+  .empty .btn{margin-top:14px;background:#0b0f14;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  .empty .btn:hover{background:#1f2937}
+  .empty .btn svg{width:14px;height:14px}
+
+  /* ============ EDITOR ============ */
+  .editor{display:none}
+  .editor.show{display:block}
+  .editor .back{display:inline-flex;align-items:center;gap:6px;color:#6b7280;text-decoration:none;font-size:13px;font-weight:600;margin-bottom:16px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+  .editor .back:hover{color:#0b0f14}
+  .ed-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+  .ed-head .ic{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#3f922a,#2d6b1c);color:#fff;display:grid;place-items:center;flex:none}
+  .ed-head h2{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#0b0f14}
+  .ed-head .sub{color:#6b7280;font-size:13px;margin-top:2px;font-family:ui-monospace,monospace}
+  .ed-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+  @media(max-width:900px){.ed-grid{grid-template-columns:1fr}}
+
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:20px;margin-bottom:16px}
+  .card h3{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .card h3 .ext{color:#9ca3af;font-weight:500;text-transform:none;letter-spacing:0}
+  .field{margin-bottom:14px}
+  .field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:12px;color:#6b7280;margin-bottom:6px;font-weight:600}
+  .field input[type=text], .field textarea{width:100%;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:11px 13px;color:#0b0f14;font-family:inherit;font-size:14px;outline:none;transition:.15s}
+  .field input:focus, .field textarea:focus{border-color:#3f922a;box-shadow:0 0 0 4px rgba(63,146,42,.1)}
+  .field textarea{resize:vertical;min-height:80px;font-family:ui-monospace,'SF Mono',monospace;font-size:12.5px}
+
+  .question{background:#fafbfc;border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:10px;transition:.15s}
+  .question:hover{border-color:#d1d5db}
+  .question .qh{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .question .qh .num{width:24px;height:24px;border-radius:50%;background:#3f922a;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800;text-transform:none}
+  .question .qh .typ{color:#9ca3af;font-weight:600}
+  .question .qh .grip{margin-left:auto;color:#cbd5e1;cursor:grab;font-size:14px}
+  .question input.qt{width:100%;background:#fff;border:1px solid #e5e7eb;color:#0b0f14;font-size:14px;padding:10px 12px;outline:none;font-weight:600;font-family:inherit;border-radius:8px;transition:.15s}
+  .question input.qt:focus{border-color:#3f922a;box-shadow:0 0 0 3px rgba(63,146,42,.1)}
+
+  .chips-ed{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:5px 10px;border-radius:999px;font-size:12.5px;font-weight:600}
+  .chip .x{cursor:pointer;opacity:.5;font-size:14px;line-height:1;color:#15803d}
+  .chip .x:hover{opacity:1;color:#dc2626}
+  .chip-add{background:#fff;border:1px dashed #d1d5db;color:#6b7280;padding:5px 10px;border-radius:999px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;transition:.15s}
+  .chip-add:hover{border-color:#3f922a;color:#3f922a;border-style:solid;background:#f0fdf4}
+
+  .add-q{margin-top:8px;background:#fff;border:1px dashed #d1d5db;color:#6b7280;padding:12px;border-radius:10px;font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%;transition:.15s}
+  .add-q:hover{border-color:#3f922a;color:#3f922a;background:#f0fdf4}
+
+  /* SIDE */
+  .meta-row{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px dashed #e5e7eb}
+  .meta-row:last-child{border:none}
+  .meta-row span:first-child{color:#6b7280}
+  .meta-row span:last-child{font-weight:700;color:#0b0f14}
+  .side-acts{display:flex;flex-direction:column;gap:8px}
+  .side-acts button{background:#fff;color:#374151;border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;transition:.15s}
+  .side-acts button:hover{border-color:#3f922a;color:#3f922a;background:#f0fdf4}
+  .side-acts button.danger:hover{border-color:#dc2626;color:#dc2626;background:#fef2f2}
+  .side-acts button svg{width:14px;height:14px}
+
+  .save-bar{position:sticky;bottom:14px;display:flex;gap:10px;margin-top:18px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px;box-shadow:0 -6px 24px rgba(15,23,42,.06);z-index:30}
+  .save-bar .btn{flex:1;justify-content:center;height:44px;display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;border-radius:10px;border:none;transition:.15s}
+  .save-bar .btn.cancel{background:#fff;color:#374151;border:1px solid #e5e7eb}
+  .save-bar .btn.cancel:hover{background:#fafbfc}
+  .save-bar .btn.save{background:linear-gradient(180deg,#3f922a,#357a22);color:#fff;box-shadow:0 4px 14px rgba(63,146,42,.25)}
+  .save-bar .btn.save:hover{box-shadow:0 6px 18px rgba(63,146,42,.35);transform:translateY(-1px)}
+  .save-bar .btn svg{width:15px;height:15px}
+
+  /* AI button */
+  .ai-btn{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 12px rgba(124,58,237,.25);transition:.15s}
+  .ai-btn:hover{box-shadow:0 6px 16px rgba(124,58,237,.35);transform:translateY(-1px)}
+  .ai-btn svg{width:14px;height:14px}
+
+  /* Modal */
+  .modal{display:none;position:fixed;inset:0;background:rgba(11,15,20,.55);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:20px}
+  .modal.open{display:flex}
+  .modal-box{background:#fff;border-radius:18px;max-width:540px;width:100%;padding:24px;box-shadow:0 30px 60px rgba(15,23,42,.25)}
+  .modal-box h3{font-size:17px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:9px;color:#0b0f14;letter-spacing:-.01em}
+  .modal-box h3 svg{width:20px;height:20px}
+  .modal-box .desc{color:#6b7280;font-size:13.5px;margin-bottom:14px}
+  .modal-box textarea{width:100%;background:#fafbfc;border:1px solid #e5e7eb;border-radius:10px;padding:13px;color:#0b0f14;font-family:inherit;font-size:13.5px;min-height:100px;resize:vertical;outline:none;transition:.15s}
+  .modal-box textarea:focus{border-color:#a855f7;background:#fff;box-shadow:0 0 0 4px rgba(168,85,247,.1)}
+  .modal-box .examples{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+  .modal-box .examples small{color:#9ca3af;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:2px}
+  .ex{background:#fafbfc;border:1px solid #e5e7eb;border-radius:9px;padding:9px 13px;font-size:12.5px;color:#6b7280;cursor:pointer;transition:.15s}
+  .ex:hover{color:#0b0f14;border-color:#a855f7;background:#faf5ff}
+  .modal-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+  .modal-acts .btn{background:#fff;color:#374151;border:1px solid #e5e7eb;border-radius:10px;padding:10px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+  .modal-acts .btn:hover{background:#fafbfc}
+
+  /* Note */
+  .note{padding:24px 18px;text-align:center;color:#9ca3af;font-size:11.5px;border-top:1px solid #e5e7eb;margin-top:32px;background:#fafbfc;border-radius:12px}
+  .note b{color:#6b7280}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER (matchea /admin) ============ -->
+<header class="dash-header">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/>
+      </svg>
+    </div>
+    <h1>
+      <span>Centro de Chatbots</span>
+      <small id="lastUpdate">Última sincronización hace 12 segundos</small>
+    </h1>
+  </div>
+  <div class="h-actions">
+    <button onclick="goAdmin()" title="Volver al panel de leads">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Leads
+    </button>
+    <button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      CSV
+    </button>
+    <button class="primary" onclick="addCompany()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      Empresa
+    </button>
+    <span class="me"><span class="av">OG</span>Olga</span>
+  </div>
+</header>
+
+<!-- ============ TABS (matchea /admin) ============ -->
+<nav class="tabs">
+  <button class="tab-btn" onclick="goAdmin()">Leads</button>
+  <button class="tab-btn active">Chatbots <span class="count">7</span></button>
+  <button class="tab-btn" onclick="alert('Demo: Usuarios')">Usuarios</button>
+  <button class="tab-btn" onclick="alert('Demo: Integraciones (WhatsApp, Resend, etc.)')">Integraciones</button>
+  <button class="tab-btn" onclick="alert('Demo: Logs y eventos')">Eventos</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ============ DASHBOARD ============ -->
+  <div id="view-dash">
+
+    <!-- Alerta de bot caído -->
+    <div class="alert">
+      <span class="dot"></span>
+      <strong>1 chatbot caído:</strong>
+      <span class="grow">Playko (pinturaparacanchas...) — no responde desde hace 12 min · último error: 502 Bad Gateway</span>
+      <button onclick="alert('Demo: notificación enviada por correo + WhatsApp\n\nA: govelamaster@gmail.com\nMensaje: bot de Playko caído desde 14:08')">Ver detalle</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="l">Leads totales (90 días)</div>
+        <div class="v">3,701</div>
+        <div class="d"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>18% vs mes anterior</div>
+      </div>
+      <div class="stat">
+        <div class="l">Leads hoy</div>
+        <div class="v">47</div>
+        <div class="d"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>+12 vs ayer</div>
+      </div>
+      <div class="stat">
+        <div class="l">Bots activos</div>
+        <div class="v">6 <small style="color:#9ca3af;font-weight:500;font-size:18px">/ 7</small></div>
+        <div class="d warn">1 caído</div>
+      </div>
+      <div class="stat">
+        <div class="l">Empresas</div>
+        <div class="v">5</div>
+        <div class="d muted">1 sin bot configurado</div>
+      </div>
+    </div>
+
+    <!-- Empresas -->
+    <div class="companies" id="companies"></div>
+
+    <div class="note">
+      <b>Mockup visual</b> · datos ficticios · cuando lo apruebes, lo conectamos a la D1 real de canchadefutbol7.mx/admin para que los datos sean reales y las acciones funcionen.
+    </div>
+  </div>
+
+  <!-- ============ EDITOR ============ -->
+  <div id="view-edit" class="editor">
+    <button class="back" onclick="view('dash')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M15 18l-6-6 6-6"/></svg>
+      Volver a chatbots
+    </button>
+
+    <div class="ed-head">
+      <div class="ic">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+      </div>
+      <div>
+        <h2 id="ed-title">Porterías</h2>
+        <div class="sub" id="ed-sub">canchadefutbol7.mx · /porterias-*</div>
+      </div>
+      <div style="margin-left:auto">
+        <button class="ai-btn" onclick="openAI()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 4.3L18 8l-4.4 1.7L12 14l-1.6-4.3L6 8l4.4-1.7zM18.5 14.5l.7 1.9 1.8.7-1.8.6-.7 1.8-.6-1.8-1.9-.6 1.9-.7z"/></svg>
+          Editar con Claude
+        </button>
+      </div>
+    </div>
+
+    <div class="ed-grid">
+      <div>
+        <div class="card">
+          <h3>Teaser <span class="ext">— lo que se ve antes de abrir el bot</span></h3>
+          <div class="field">
+            <label>Título</label>
+            <input type="text" value="¿Buscas porterías para tu cancha?">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Subtítulo</label>
+            <input type="text" value="Cotiza fútbol 5, 7, 9, 11 o a medida.">
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Preguntas <span class="ext">— arrastra para reordenar</span></h3>
+
+          <div class="question">
+            <div class="qh"><span class="num">1</span> <span class="typ">Pregunta con chips</span> <span class="grip">⋮⋮</span></div>
+            <input class="qt" type="text" value="¿Qué tipo de cancha tienes? Así te recomendamos las porterías ideales.">
+            <div class="chips-ed">
+              <span class="chip">Fútbol 5 <span class="x">×</span></span>
+              <span class="chip">Fútbol 7 <span class="x">×</span></span>
+              <span class="chip">Fútbol 9 <span class="x">×</span></span>
+              <span class="chip">Fútbol 11 / soccer <span class="x">×</span></span>
+              <span class="chip">A medida <span class="x">×</span></span>
+              <span class="chip">No estoy seguro <span class="x">×</span></span>
+              <button class="chip-add">+ chip</button>
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="qh"><span class="num">2</span> <span class="typ">Chips · uno abre texto libre</span> <span class="grip">⋮⋮</span></div>
+            <input class="qt" type="text" value="¿Cuántas porterías necesitas?">
+            <div class="chips-ed">
+              <span class="chip">Solo 1 <span class="x">×</span></span>
+              <span class="chip">Un par (2) <span class="x">×</span></span>
+              <span class="chip">Necesito más de 2 ↗ <span class="x">×</span></span>
+              <span class="chip">No sé / asesórame <span class="x">×</span></span>
+              <button class="chip-add">+ chip</button>
+            </div>
+          </div>
+
+          <div class="question">
+            <div class="qh"><span class="num">3</span> <span class="typ">Texto libre · opcional</span> <span class="grip">⋮⋮</span></div>
+            <input class="qt" type="text" value="¿Quieres comentarnos algo más? (opcional)">
+          </div>
+
+          <div class="question" style="opacity:.7">
+            <div class="qh"><span class="num">4</span> <span class="typ">Datos de contacto · siempre</span> <span class="grip">⋮⋮</span></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+              <span class="chip">Ciudad</span>
+              <span class="chip">Nombre</span>
+              <span class="chip">Cuándo</span>
+              <span class="chip">WhatsApp</span>
+            </div>
+          </div>
+
+          <button class="add-q">+ Agregar pregunta</button>
+        </div>
+
+        <div class="card" style="margin-bottom:0">
+          <h3>Mensaje de WhatsApp final</h3>
+          <div class="field" style="margin-bottom:0">
+            <textarea rows="6">Hola Sportmaster, quiero cotizar porterías 🥅
+• Tipo de cancha: {formato}
+• Cantidad: {cantidad}
+• Comentarios: {comentarios}
+• Ciudad: {ciudad}
+• A nombre de: {nombre}</textarea>
+          </div>
+        </div>
+
+        <div class="save-bar">
+          <button class="btn cancel" onclick="view('dash')">Cancelar</button>
+          <button class="btn save" onclick="alert('Demo: guardado en D1 — el bot se actualiza en todas las páginas /porterias-* al instante (sin redeploy)')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Guardar y publicar
+          </button>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="card">
+          <h3>Estado</h3>
+          <div class="meta-row"><span>Estado</span><span><span class="pill live"><span class="pulse"></span>En vivo</span></span></div>
+          <div class="meta-row"><span>Aplica en</span><span class="url" style="font-family:ui-monospace,monospace;font-size:11.5px">/porterias-*</span></div>
+          <div class="meta-row"><span>Última edición</span><span>hace 2 horas</span></div>
+          <div class="meta-row"><span>Por</span><span>Olga Govela</span></div>
+        </div>
+
+        <div class="card">
+          <h3>Leads</h3>
+          <div class="meta-row"><span>Hoy</span><span style="color:#3f922a">+4</span></div>
+          <div class="meta-row"><span>Esta semana</span><span>27</span></div>
+          <div class="meta-row"><span>Este mes</span><span>142</span></div>
+          <div class="meta-row"><span>Acumulado</span><span>1,289</span></div>
+          <div style="margin-top:14px">
+            <div style="color:#6b7280;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:8px">Últimos 14 días</div>
+            <div class="spark" style="width:100%;height:52px;gap:3px">
+              <span style="height:30%"></span><span style="height:55%"></span><span style="height:42%"></span><span style="height:68%"></span>
+              <span style="height:50%"></span><span style="height:78%"></span><span style="height:35%"></span><span style="height:62%"></span>
+              <span style="height:88%"></span><span style="height:48%"></span><span style="height:72%"></span><span style="height:55%"></span>
+              <span style="height:92%"></span><span style="height:40%"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:0">
+          <h3>Acciones</h3>
+          <div class="side-acts">
+            <button>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Ver leads de este bot
+            </button>
+            <button>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Probar bot en vivo
+            </button>
+            <button class="danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              Pausar bot
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Claude -->
+<div class="modal" id="modal-ai">
+  <div class="modal-box">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="#a855f7"><path d="M12 2l1.6 4.3L18 8l-4.4 1.7L12 14l-1.6-4.3L6 8l4.4-1.7z"/></svg>
+      Editar con Claude
+    </h3>
+    <div class="desc">Dile en lenguaje natural qué cambiar. Claude actualiza los chips, preguntas o copy y te lo deja listo para aprobar.</div>
+    <textarea id="ai-prompt" placeholder="Ej. cambia el chip 'A medida' por 'A medida especial' y agrega chip 'Más de 4'…"></textarea>
+    <div class="examples">
+      <small>Ejemplos que puedes pedir</small>
+      <div class="ex" onclick="setEx(this)">Cambia el saludo a un tono más cercano y agrega un emoji</div>
+      <div class="ex" onclick="setEx(this)">Agrega un chip 'Fútbol americano' al final de la pregunta de tipo de cancha</div>
+      <div class="ex" onclick="setEx(this)">Reescribe la pregunta 2 más corta y directa</div>
+      <div class="ex" onclick="setEx(this)">Traduce todo el bot al inglés manteniendo el tono</div>
+    </div>
+    <div class="modal-acts">
+      <button class="btn" onclick="closeAI()">Cancelar</button>
+      <button class="ai-btn" onclick="alert('Demo: Claude propone los cambios, tú revisas el diff y apruebas')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 4.3L18 8l-4.4 1.7L12 14l-1.6-4.3L6 8l4.4-1.7z"/></svg>
+        Generar cambios
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== Datos ficticios ===== */
+const COMPANIES = [
+  {
+    name:"Sportmaster", domain:"canchadefutbol7.mx", icon:"S",
+    bots:[
+      {name:"Canchas (default)", urlpat:"/ y resto del sitio", status:"live", today:14, week:96, month:412, total:3420, spark:[40,55,30,68,72,45,80,60,90,55,75,68,88,50]},
+      {name:"Porterías", urlpat:"/porterias-*", status:"live", today:4, week:27, month:142, total:1289, spark:[30,55,42,68,50,78,35,62,88,48,72,55,92,40]},
+      {name:"Malla ciclónica", urlpat:"/malla-*", status:"live", today:1, week:6, month:38, total:312, spark:[20,30,15,40,25,50,18,35,45,22,38,28,55,20]},
+      {name:"Bancas", urlpat:"/bancas-* · /sportmaster-bancas-*", status:"demo", today:0, week:2, month:27, total:198, spark:[10,18,8,22,15,28,12,20,28,14,22,18,32,12]},
+      {name:"Alumbrado", urlpat:"/alumbrado-*", status:"live", today:1, week:5, month:19, total:165, spark:[8,15,10,18,12,22,9,16,24,11,18,15,28,10]},
+      {name:"Escuelas (La Escuela Es Nuestra)", urlpat:"/escuelas-dignas-* · /la-escuela-es-nuestra/*", status:"live", today:3, week:18, month:55, total:317, spark:[12,22,15,28,18,35,14,25,38,16,28,22,42,15]},
+    ]
+  },
+  { name:"Sportmaster Gradas", domain:"gradasdefutbol.mx", icon:"G", bots:[] },
+  { name:"Padel Center", domain:"padelcenter.mx", icon:"P",
+    bots:[ {name:"Canchas de pádel", urlpat:"/", status:"live", today:8, week:42, month:178, total:892, spark:[18,32,24,40,30,50,22,38,52,28,42,35,58,28]} ]
+  },
+  { name:"PlayZone Grass", domain:"playzonegrass.com", icon:"Z",
+    bots:[ {name:"Pasto sintético", urlpat:"/", status:"live", today:5, week:28, month:124, total:610, spark:[15,25,18,32,22,42,16,28,40,20,32,25,48,20]} ]
+  },
+  { name:"Playko", domain:"pinturaparacanchas...", icon:"Y",
+    bots:[ {name:"Pintura deportiva", urlpat:"/", status:"down", today:0, week:14, month:64, total:298, spark:[8,18,12,22,15,28,10,20,30,15,22,18,0,0]} ]
+  }
+];
+
+function render(){
+  const root=document.getElementById('companies');
+  root.innerHTML = COMPANIES.map(c=>{
+    if(c.bots.length===0){
+      return `
+      <div class="company">
+        <div class="company-head">
+          <div class="ico empty">${c.icon}</div>
+          <div>
+            <div class="nm">${c.name}</div>
+            <div class="dm">${c.domain}</div>
+          </div>
+          <div class="right"><span class="pill off"><span class="pulse"></span>Sin bot</span></div>
+        </div>
+        <div class="empty">
+          Esta empresa aún no tiene chatbot configurado.
+          <br><button class="btn" onclick="alert('Demo: wizard para crear bot desde plantilla o desde cero')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Crear primer bot
+          </button>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="company">
+      <div class="company-head">
+        <div class="ico">${c.icon}</div>
+        <div>
+          <div class="nm">${c.name}</div>
+          <div class="dm">${c.domain}</div>
+        </div>
+        <div class="right"><b>${c.bots.length}</b> bot${c.bots.length>1?'s':''} · <b>${c.bots.reduce((a,b)=>a+b.today,0)}</b> leads hoy</div>
+      </div>
+      <table class="bots">
+        <thead>
+          <tr><th>Bot</th><th>URLs</th><th>Estado</th><th>Hoy</th><th>Semana</th><th>Mes</th><th>Acumulado</th><th>14 días</th><th></th></tr>
+        </thead>
+        <tbody>
+          ${c.bots.map(b=>{
+            const pill = b.status==='live'?'<span class="pill live"><span class="pulse"></span>En vivo</span>'
+                       : b.status==='demo'?'<span class="pill demo"><span class="pulse"></span>Demo</span>'
+                       : b.status==='down'?'<span class="pill down"><span class="pulse"></span>Caído</span>'
+                       : '<span class="pill off">Inactivo</span>';
+            const bars = b.spark.map(h=>`<span style="height:${Math.max(2,h)}%"></span>`).join('');
+            return `
+            <tr>
+              <td><div class="name">${b.name}</div></td>
+              <td class="url">${b.urlpat}</td>
+              <td>${pill}</td>
+              <td class="num">${b.today}</td>
+              <td class="num">${b.week}</td>
+              <td class="num">${b.month}</td>
+              <td class="num">${b.total.toLocaleString('es-MX')}</td>
+              <td><div class="spark">${bars}</div></td>
+              <td>
+                <div class="row-acts">
+                  <button onclick="view('edit','${b.name}','${c.domain} · ${b.urlpat}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    Editar
+                  </button>
+                  <button onclick="alert('Demo: ver leads de este bot')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Leads
+                  </button>
+                </div>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      <div class="add-bot">
+        <button onclick="alert('Demo: agregar otro bot a ${c.name} (otra URL/variante)')">+ Agregar otro bot a ${c.name}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+render();
+
+function view(v, botName, sub){
+  document.getElementById('view-dash').style.display = v==='dash'?'block':'none';
+  document.getElementById('view-edit').classList.toggle('show', v==='edit');
+  if(v==='edit'){
+    document.getElementById('ed-title').textContent = botName || 'Editar bot';
+    document.getElementById('ed-sub').textContent = sub || '';
+    window.scrollTo(0,0);
+  } else { window.scrollTo(0,0); }
+}
+function goAdmin(){
+  // En prod: window.location.href='/admin'  · aquí solo aviso del demo
+  window.location.href='/admin';
+}
+function addCompany(){
+  const n=prompt('Nombre de la empresa nueva:');
+  if(!n) return;
+  alert('Demo: se agregaría "'+n+'" con un wizard de 3 pasos:\n\n1. Conectar dominio\n2. Elegir plantilla (cancha, accesorio, escuela, blanco)\n3. Probar y publicar');
+}
+function openAI(){ document.getElementById('modal-ai').classList.add('open'); }
+function closeAI(){ document.getElementById('modal-ai').classList.remove('open'); }
+function setEx(el){ document.getElementById('ai-prompt').value = el.textContent; document.getElementById('ai-prompt').focus(); }
+document.getElementById('modal-ai').addEventListener('click', e=>{ if(e.target.id==='modal-ai') closeAI(); });
+</script>
+</body>
+</html>
