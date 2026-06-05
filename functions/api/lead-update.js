@@ -58,7 +58,8 @@ const ALLOWED_FIELDS = new Set([
   "proxima_fecha",
   "razon_perdida",
   "ultimo_contacto_quien",
-  "ultimo_contacto_fecha"
+  "ultimo_contacto_fecha",
+  "estado_manual"
 ]);
 
 export async function onRequestPost(context) {
