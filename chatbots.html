@@ -244,35 +244,27 @@
   <!-- ============ DASHBOARD ============ -->
   <div id="view-dash">
 
-    <!-- Alerta de bot caído -->
-    <div class="alert">
-      <span class="dot"></span>
-      <strong>1 chatbot caído:</strong>
-      <span class="grow">Playko (pinturaparacanchas...) — no responde desde hace 12 min · último error: 502 Bad Gateway</span>
-      <button onclick="alert('Demo: notificación enviada por correo + WhatsApp\n\nA: govelamaster@gmail.com\nMensaje: bot de Playko caído desde 14:08')">Ver detalle</button>
-    </div>
-
-    <!-- Stats -->
+    <!-- Stats: cuando esté conectado a D1 real, estos números se calculan en vivo. -->
     <div class="stats">
       <div class="stat">
         <div class="l">Leads totales (90 días)</div>
-        <div class="v">3,701</div>
-        <div class="d"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>18% vs mes anterior</div>
+        <div class="v">—</div>
+        <div class="d muted">pendiente conexión D1</div>
       </div>
       <div class="stat">
         <div class="l">Leads hoy</div>
-        <div class="v">47</div>
-        <div class="d"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>+12 vs ayer</div>
+        <div class="v">—</div>
+        <div class="d muted">pendiente conexión D1</div>
       </div>
       <div class="stat">
         <div class="l">Bots activos</div>
-        <div class="v">6 <small style="color:#9ca3af;font-weight:500;font-size:18px">/ 7</small></div>
-        <div class="d warn">1 caído</div>
+        <div class="v">1 <small style="color:#9ca3af;font-weight:500;font-size:18px">/ 6</small></div>
+        <div class="d muted">5 en demo (pendientes de integrar)</div>
       </div>
       <div class="stat">
         <div class="l">Empresas</div>
         <div class="v">5</div>
-        <div class="d muted">1 sin bot configurado</div>
+        <div class="d muted">4 sin bot configurado</div>
       </div>
     </div>
 
@@ -392,26 +384,20 @@
       <div class="side">
         <div class="card">
           <h3>Estado</h3>
-          <div class="meta-row"><span>Estado</span><span><span class="pill live"><span class="pulse"></span>En vivo</span></span></div>
+          <div class="meta-row"><span>Estado</span><span><span class="pill demo"><span class="pulse"></span>Demo</span></span></div>
           <div class="meta-row"><span>Aplica en</span><span class="url" style="font-family:ui-monospace,monospace;font-size:11.5px">/porterias-*</span></div>
-          <div class="meta-row"><span>Última edición</span><span>hace 2 horas</span></div>
-          <div class="meta-row"><span>Por</span><span>Olga Govela</span></div>
+          <div class="meta-row"><span>Última edición</span><span>—</span></div>
+          <div class="meta-row"><span>Por</span><span>—</span></div>
         </div>
 
         <div class="card">
           <h3>Leads</h3>
-          <div class="meta-row"><span>Hoy</span><span style="color:#3f922a">+4</span></div>
-          <div class="meta-row"><span>Esta semana</span><span>27</span></div>
-          <div class="meta-row"><span>Este mes</span><span>142</span></div>
-          <div class="meta-row"><span>Acumulado</span><span>1,289</span></div>
-          <div style="margin-top:14px">
-            <div style="color:#6b7280;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:8px">Últimos 14 días</div>
-            <div class="spark" style="width:100%;height:52px;gap:3px">
-              <span style="height:30%"></span><span style="height:55%"></span><span style="height:42%"></span><span style="height:68%"></span>
-              <span style="height:50%"></span><span style="height:78%"></span><span style="height:35%"></span><span style="height:62%"></span>
-              <span style="height:88%"></span><span style="height:48%"></span><span style="height:72%"></span><span style="height:55%"></span>
-              <span style="height:92%"></span><span style="height:40%"></span>
-            </div>
+          <div class="meta-row"><span>Hoy</span><span>0</span></div>
+          <div class="meta-row"><span>Esta semana</span><span>0</span></div>
+          <div class="meta-row"><span>Este mes</span><span>0</span></div>
+          <div class="meta-row"><span>Acumulado</span><span>0</span></div>
+          <div style="color:#9ca3af;font-size:11.5px;margin-top:12px;text-align:center;padding:14px;background:#fafbfc;border-radius:8px;border:1px dashed #e5e7eb">
+            Bot en demo · sin integrar al sitio aún.<br>Al activarse, aquí verás leads y gráfica 14 días.
           </div>
         </div>
 
@@ -465,28 +451,24 @@
 
 <script>
 /* ===== Datos ficticios ===== */
+// Datos honestos: solo "Canchas (default)" está activo en prod. El resto son demos pendientes de integrar.
+// Cuando conectemos a D1 real, los números vendrán de ahí; mientras tanto "—" = sin datos reales aún.
 const COMPANIES = [
   {
     name:"Sportmaster", domain:"canchadefutbol7.mx", icon:"S",
     bots:[
-      {name:"Canchas (default)", urlpat:"/ y resto del sitio", status:"live", today:14, week:96, month:412, total:3420, spark:[40,55,30,68,72,45,80,60,90,55,75,68,88,50]},
-      {name:"Porterías", urlpat:"/porterias-*", status:"live", today:4, week:27, month:142, total:1289, spark:[30,55,42,68,50,78,35,62,88,48,72,55,92,40]},
-      {name:"Malla ciclónica", urlpat:"/malla-*", status:"live", today:1, week:6, month:38, total:312, spark:[20,30,15,40,25,50,18,35,45,22,38,28,55,20]},
-      {name:"Bancas", urlpat:"/bancas-* · /sportmaster-bancas-*", status:"demo", today:0, week:2, month:27, total:198, spark:[10,18,8,22,15,28,12,20,28,14,22,18,32,12]},
-      {name:"Alumbrado", urlpat:"/alumbrado-*", status:"live", today:1, week:5, month:19, total:165, spark:[8,15,10,18,12,22,9,16,24,11,18,15,28,10]},
-      {name:"Escuelas (La Escuela Es Nuestra)", urlpat:"/escuelas-dignas-* · /la-escuela-es-nuestra/*", status:"live", today:3, week:18, month:55, total:317, spark:[12,22,15,28,18,35,14,25,38,16,28,22,42,15]},
+      {name:"Canchas (default)", urlpat:"/ y resto del sitio", status:"live", today:"—", week:"—", month:"—", total:"—", spark:[]},
+      {name:"Porterías", urlpat:"/porterias-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Malla ciclónica", urlpat:"/malla-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Bancas", urlpat:"/bancas-* · /sportmaster-bancas-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Alumbrado", urlpat:"/alumbrado-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Escuelas (La Escuela Es Nuestra)", urlpat:"/escuelas-dignas-* · /la-escuela-es-nuestra/*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
     ]
   },
   { name:"Sportmaster Gradas", domain:"gradasdefutbol.mx", icon:"G", bots:[] },
-  { name:"Padel Center", domain:"padelcenter.mx", icon:"P",
-    bots:[ {name:"Canchas de pádel", urlpat:"/", status:"live", today:8, week:42, month:178, total:892, spark:[18,32,24,40,30,50,22,38,52,28,42,35,58,28]} ]
-  },
-  { name:"PlayZone Grass", domain:"playzonegrass.com", icon:"Z",
-    bots:[ {name:"Pasto sintético", urlpat:"/", status:"live", today:5, week:28, month:124, total:610, spark:[15,25,18,32,22,42,16,28,40,20,32,25,48,20]} ]
-  },
-  { name:"Playko", domain:"pinturaparacanchas...", icon:"Y",
-    bots:[ {name:"Pintura deportiva", urlpat:"/", status:"down", today:0, week:14, month:64, total:298, spark:[8,18,12,22,15,28,10,20,30,15,22,18,0,0]} ]
-  }
+  { name:"Padel Center", domain:"padelcenter.mx", icon:"P", bots:[] },
+  { name:"PlayZone Grass", domain:"playzonegrass.com", icon:"Z", bots:[] },
+  { name:"Playko", domain:"pinturaparacanchas...", icon:"Y", bots:[] }
 ];
 
 function render(){
@@ -532,7 +514,7 @@ function render(){
                        : b.status==='demo'?'<span class="pill demo"><span class="pulse"></span>Demo</span>'
                        : b.status==='down'?'<span class="pill down"><span class="pulse"></span>Caído</span>'
                        : '<span class="pill off">Inactivo</span>';
-            const bars = b.spark.map(h=>`<span style="height:${Math.max(2,h)}%"></span>`).join('');
+            const bars = b.spark.length ? b.spark.map(h=>`<span style="height:${Math.max(2,h)}%"></span>`).join('') : '<span style="color:#cbd5e1;font-size:11px;font-weight:600;width:100%;text-align:center;background:none;height:auto;align-self:center">sin datos</span>';
             return `
             <tr>
               <td><div class="name">${b.name}</div></td>
