@@ -305,6 +305,14 @@ body.rol-vendedor .sinasignar-alert{ display:none; }
 #mineBtn.active{ background:#0b0f14; color:#fff; border-color:#0b0f14; }
 #unassignedPill.active{ background:#dc2626; color:#fff; border-color:#dc2626; }
 body.rol-vendedor #unassignedPill{ display:none; }
+/* Plantillas de WhatsApp */
+.action-cell{ display:flex; align-items:center; gap:6px; justify-content:flex-end; }
+.tpl-btn{ flex:none; width:36px; height:36px; border:1px solid #e2e8f0; background:#fff; border-radius:9px; cursor:pointer; font-size:16px; line-height:1; transition:.15s; }
+.tpl-btn:hover{ background:#f0fdf4; border-color:#86efac; }
+.tpl-menu{ position:absolute; z-index:1000; width:290px; background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 18px 50px rgba(2,6,23,.20); overflow:hidden; }
+.tpl-item{ display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; background:#fff; border:none; border-bottom:1px solid #f1f5f9; cursor:pointer; }
+.tpl-item:last-child{ border-bottom:none; }
+.tpl-item:hover{ background:#f8fafc; }
 /* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
 body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
@@ -317,8 +325,8 @@ body.rol-vendedor .lead-table thead th:nth-child(4),
 body.rol-vendedor .lead-table tbody td:nth-child(4){ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
-body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"],
-body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"]{ display:none !important; }
+body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"],
+body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="plantillas"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"]{ display:none !important; }
 body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
 /* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
 body.rol-admin .cell-select[data-field="status_proyecto"],
@@ -1007,6 +1015,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
     <button class="tab-btn" data-tab="fbads">📘 Facebook</button>
     <button class="tab-btn" data-tab="frases">💬 Frases</button>
+    <button class="tab-btn" data-tab="plantillas">📝 Plantillas</button>
     <button class="tab-btn" data-tab="equipo">👥 Equipo</button>
   </nav>
 
@@ -1297,6 +1306,28 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
           <button id="fraseAdd" class="filter-pill" style="background:#3f922a; color:#fff; border:none; font-weight:700; white-space:nowrap">+ Agregar</button>
         </div>
         <div class="section-body" id="frasesList"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: PLANTILLAS de WhatsApp (solo super admin) ============ -->
+  <div class="tab-content" data-tab-content="plantillas">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">📝</span> Plantillas de WhatsApp</h2>
+          <span class="meta">Mensajes listos que el vendedor envía en 1 clic desde cada lead</span>
+        </div>
+        <p style="margin:4px 4px 14px;font-size:12.5px;color:#64748b;background:#f8fafc;border:1px solid #eef2f6;border-radius:8px;padding:10px 12px">
+          💡 Usa los campos <b>{nombre}</b> <b>{ciudad}</b> <b>{m2}</b> <b>{vendedor}</b> — se rellenan solos con los datos del prospecto al enviar.
+        </p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; padding:0 4px 16px;">
+          <input id="nuevaPlantillaEmoji" type="text" maxlength="4" placeholder="🟢" style="flex:0 0 56px;text-align:center;padding:11px;border:1px solid #e2e8f0;border-radius:9px;font-size:16px" />
+          <input id="nuevaPlantillaTitulo" type="text" maxlength="60" placeholder="Título (ej. Primer contacto)" style="flex:1 1 200px;padding:11px 13px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+          <input id="nuevaPlantillaMsg" type="text" maxlength="600" placeholder="Mensaje con {nombre}, {ciudad}…" style="flex:2 1 320px;padding:11px 13px;border:1px solid #e2e8f0;border-radius:9px;font-size:14px" />
+          <button onclick="addPlantilla()" class="filter-pill" style="flex:0 0 auto;background:#3f922a;color:#fff;border:none;font-weight:700;white-space:nowrap">+ Agregar</button>
+        </div>
+        <div class="section-body" id="plantillasList"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -1656,6 +1687,7 @@ function enterDash(data){
   }
   allLeads = leads;
   applyRoleUI();
+  loadPlantillas();   // todos los roles necesitan las plantillas para el botón 💬
   refreshAll();
   if (CURRENT_ROLE === 'super_admin') { loadFrases(); loadEquipo(); }
 }
@@ -2277,6 +2309,116 @@ async function deleteFrase(id){
   if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') addFrase(); });
 })();
 
+/* =========================================================
+   PLANTILLAS DE WHATSAPP — botón 💬 por lead (responder en 1 clic) + editor
+========================================================= */
+let PLANTILLAS = [];
+async function loadPlantillas(){
+  try {
+    const r = await fetch('/api/plantillas');
+    const d = await r.json();
+    PLANTILLAS = d.plantillas || [];
+  } catch (e) { PLANTILLAS = []; }
+}
+// Rellena {nombre} {ciudad} {m2} {vendedor} con los datos del lead.
+function mergePlantilla(msg, l){
+  const nombre = (l.nombre_real || l.nombre || '').trim() || 'hola';
+  const vendedor = (l.vendedor || '').trim() || (currentUser() || '');
+  return String(msg)
+    .replace(/\{nombre\}/gi, nombre)
+    .replace(/\{ciudad\}/gi, (l.ciudad || '').trim() || 'tu zona')
+    .replace(/\{m2\}/gi, (l.m2 || '').toString().trim() || '—')
+    .replace(/\{vendedor\}/gi, vendedor);
+}
+// Botón 💬 en la fila (solo si hay WhatsApp)
+function plantillasBtn(id){
+  return `<button type="button" class="tpl-btn" title="Plantillas de WhatsApp" onclick="abrirPlantillas(event, ${id})">💬</button>`;
+}
+function cerrarTplMenu(){ const m = document.getElementById('tplMenu'); if (m) m.style.display = 'none'; }
+function abrirPlantillas(ev, id){
+  ev.preventDefault(); ev.stopPropagation();
+  const menu = document.getElementById('tplMenu');
+  const lead = allLeads.find(x => x.id === id);
+  if (!menu || !lead) return;
+  if (!PLANTILLAS.length){ menu.innerHTML = '<div style="padding:12px;color:#94a3b8;font-size:13px">Sin plantillas. Agrégalas en la pestaña Plantillas.</div>'; }
+  else {
+    menu.innerHTML = `<div style="padding:8px 12px;font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #eef2f6">Responder con plantilla</div>` +
+      PLANTILLAS.map(p => `<button type="button" class="tpl-item" onclick="usarPlantilla(${id}, ${p.id})">
+        <span style="font-size:15px">${escapeHtml(p.emoji||'💬')}</span>
+        <span style="flex:1;text-align:left"><b style="display:block;font-size:13px;color:#0f172a">${escapeHtml(p.titulo)}</b><span style="font-size:11.5px;color:#94a3b8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">${escapeHtml(mergePlantilla(p.mensaje, lead).slice(0,70))}…</span></span>
+      </button>`).join('');
+  }
+  // posicionar cerca del botón
+  const r = ev.currentTarget.getBoundingClientRect();
+  menu.style.display = 'block';
+  const mw = 290;
+  let left = r.left + window.scrollX - mw + r.width;
+  if (left < 8) left = 8;
+  menu.style.left = left + 'px';
+  menu.style.top = (r.bottom + window.scrollY + 6) + 'px';
+}
+function usarPlantilla(leadId, pid){
+  const lead = allLeads.find(x => x.id === leadId);
+  const p = PLANTILLAS.find(x => x.id === pid);
+  if (!lead || !p) return;
+  const num = (lead.whatsapp || '').replace(/\D/g,'');
+  const tel = num.startsWith('52') ? num.slice(2) : num;
+  const texto = encodeURIComponent(mergePlantilla(p.mensaje, lead));
+  cerrarTplMenu();
+  window.open(`https://wa.me/52${tel}?text=${texto}`, '_blank');
+}
+document.addEventListener('click', cerrarTplMenu);
+
+// ----- Editor de plantillas (pestaña, solo super admin) -----
+async function loadPlantillasEditor(){
+  const body = document.getElementById('plantillasList');
+  if (!body || CURRENT_ROLE !== 'super_admin') return;
+  await loadPlantillas();
+  if (!PLANTILLAS.length){ body.innerHTML = '<div class="src-empty">Sin plantillas. Agrega una arriba.</div>'; return; }
+  const esc = s => escapeAttr(s);
+  body.innerHTML = PLANTILLAS.map(p => `<div style="display:flex;gap:10px;align-items:flex-start;padding:12px;border-bottom:1px solid #eef2f6">
+      <input value="${esc(p.emoji||'')}" data-id="${p.id}" data-f="emoji" maxlength="4" style="flex:none;width:46px;text-align:center;padding:8px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px" />
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        <input value="${esc(p.titulo)}" data-id="${p.id}" data-f="titulo" placeholder="Título" style="padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:700" />
+        <textarea data-id="${p.id}" data-f="mensaje" rows="2" placeholder="Mensaje… usa {nombre} {ciudad} {m2} {vendedor}" style="padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;resize:vertical;font-family:inherit">${escapeHtml(p.mensaje)}</textarea>
+      </div>
+      <div style="flex:none;display:flex;flex-direction:column;gap:6px">
+        <button onclick="savePlantilla(${p.id}, this)" title="Guardar cambios" style="background:#3f922a;color:#fff;border:none;border-radius:8px;height:32px;padding:0 12px;cursor:pointer;font-weight:700;font-size:12px">Guardar</button>
+        <button onclick="deletePlantilla(${p.id})" title="Quitar" style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;height:30px;cursor:pointer;color:#dc2626">🗑</button>
+      </div>
+    </div>`).join('') + `<div style="padding:12px;text-align:right;font-size:12px;color:#6b7280">${PLANTILLAS.length} plantillas · campos: {nombre} {ciudad} {m2} {vendedor}</div>`;
+}
+async function savePlantilla(id, btn){
+  const row = btn.closest('div').parentElement;
+  const g = f => row.querySelector(`[data-id="${id}"][data-f="${f}"]`).value;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('action','update'); fd.append('id', id);
+  fd.append('emoji', g('emoji')); fd.append('titulo', g('titulo')); fd.append('mensaje', g('mensaje'));
+  try { const r = await fetch('/api/plantillas', { method:'POST', body: fd }); const d = await r.json();
+    btn.textContent = d.ok ? '✓ Guardado' : 'Error'; setTimeout(()=>btn.textContent='Guardar', 1200);
+    if (d.ok) loadPlantillas();
+  } catch(e){ alert('Error: '+e.message); }
+}
+async function addPlantilla(){
+  const t = document.getElementById('nuevaPlantillaTitulo').value.trim();
+  const m = document.getElementById('nuevaPlantillaMsg').value.trim();
+  const e = document.getElementById('nuevaPlantillaEmoji').value.trim();
+  if (!t || !m){ alert('Pon título y mensaje.'); return; }
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('action','add'); fd.append('emoji', e); fd.append('titulo', t); fd.append('mensaje', m);
+  try { const r = await fetch('/api/plantillas', { method:'POST', body: fd }); const d = await r.json();
+    if (d.ok){ document.getElementById('nuevaPlantillaTitulo').value=''; document.getElementById('nuevaPlantillaMsg').value=''; document.getElementById('nuevaPlantillaEmoji').value=''; loadPlantillasEditor(); }
+    else alert(d.error || 'Error');
+  } catch(e){ alert('Error: '+e.message); }
+}
+async function deletePlantilla(id){
+  if (!confirm('¿Quitar esta plantilla?')) return;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const fd = new FormData(); fd.append('p', pwd); fd.append('action','delete'); fd.append('id', id);
+  try { await fetch('/api/plantillas', { method:'POST', body: fd }); loadPlantillasEditor(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+
 // ===== Tab "Equipo" — directorio editable + cuentas de acceso (solo super admin) =====
 async function loadEquipo(){
   const body = document.getElementById('equipoBody');
@@ -2846,7 +2988,7 @@ function renderLeadRow(l, vip){
       <td style="font-weight:800;">${escapeHtml(l.m2 || '—')}</td>
       <td>${selectVendedor(l)}</td>
       <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-      <td>${waNum ? waBtn(waLink) : ''}</td>
+      <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink) : ''}</div></td>
     </tr>`;
   }
 
@@ -2867,7 +3009,7 @@ function renderLeadRow(l, vip){
     <td>${selectVendedor(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
     <td class="origen-cell">${origenCell(l)}</td>
-    <td>${waNum ? waBtn(waLink) : ''}</td>
+    <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink) : ''}</div></td>
   </tr>`;
 }
 
@@ -3340,6 +3482,7 @@ function activateTab(tab){
     content.classList.add('show');
     currentTab = tab;
     if (tab === 'ia') renderIA();
+    if (tab === 'plantillas') loadPlantillasEditor();
   }
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -3445,5 +3588,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 </script>
+<div id="tplMenu" class="tpl-menu" style="display:none"></div>
 </body>
 </html>
