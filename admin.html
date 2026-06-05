@@ -332,8 +332,9 @@ body.rol-vendedor .lead-table thead th:nth-child(4),
 body.rol-vendedor .lead-table tbody td:nth-child(4){ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
-body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"],
-body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="plantillas"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"]{ display:none !important; }
+body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"], body.rol-admin .tab-btn[data-tab="bot"],
+body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="plantillas"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"], body.rol-vendedor .tab-btn[data-tab="bot"]{ display:none !important; }
+@keyframes botPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(34,197,94,.5); } 50%{ box-shadow:0 0 0 6px rgba(34,197,94,0); } }
 body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
 /* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
 body.rol-admin .cell-select[data-field="status_proyecto"],
@@ -1018,6 +1019,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <button class="tab-btn" data-tab="vip">👑 VIP <span class="count" id="tabCountVip">0</span></button>
     <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
     <button class="tab-btn" data-tab="urls">🌐 Por URL</button>
+    <button class="tab-btn" data-tab="bot">🤖 Bot en vivo <span id="botLiveDot" style="display:none;width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 #22c55e;animation:botPulse 1.6s infinite;margin-left:6px;display:none"></span></button>
     <button class="tab-btn" data-tab="ia">🟣 IA</button>
     <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
     <button class="tab-btn" data-tab="fbads">📘 Facebook</button>
@@ -1286,6 +1288,19 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
           <span class="meta">Arriba: usuarios + contraseñas para entrar al panel. Abajo: correo/WhatsApp de cada vendedor.</span>
         </div>
         <div class="section-body" id="equipoBody"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: BOT EN VIVO (solo super admin) ============ -->
+  <div class="tab-content" data-tab-content="bot">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">🤖</span> Bot en vivo — conversaciones de canchadefutbol7.mx</h2>
+          <span class="meta" id="botMeta">Auto-refresca cada 15 seg. Últimos 30 min de actividad.</span>
+        </div>
+        <div class="section-body" id="botBody"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -2058,6 +2073,112 @@ function canalLead(l){
 // ===== Tab "IA" — inteligencia de leads que llegan por motores de IA (AEO/GEO) =====
 function prevMonthKey(mk){ let [y,m]=mk.split('-').map(Number); m--; if(m<1){m=12;y--;} return `${y}-${String(m).padStart(2,'0')}`; }
 function mesLabel(mk){ const [y,m]=mk.split('-'); const M=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']; return `${M[(+m)-1]} ${y}`; }
+/* =========================================================
+   🤖 BOT EN VIVO — monitoreo de conversaciones del chatbot
+========================================================= */
+let BOT_LIVE_TIMER = null;
+let BOT_CACHE = [];
+// Termómetro: detecta palabras "calientes" o de objeción en lo que escribió el cliente
+const BOT_TEMP_PATTERNS = {
+  hot:  [/\burgent/i, /lo antes posible/i, /ya mismo/i, /esta semana/i, /quiero cotiz/i, /me interesa/i, /\?\s*precio/i, /cuanto cuesta/i],
+  obj:  [/muy caro/i, /caro/i, /no me alcanza/i, /(voy a|tengo que)\s*pensar/i, /\bdespués\b/i, /mas adelante/i, /no\s*ahora/i, /\bya tengo\b/i, /\bcompet/i],
+  cold: [/solo cotizando/i, /solo\s*info/i, /curios/i, /tarea/i, /escuela/i, /\bestudio\b/i]
+};
+function botTemperatura(texto){
+  const s = String(texto||'').toLowerCase();
+  if (BOT_TEMP_PATTERNS.obj.some(r => r.test(s)))  return { k:'obj',  label:'⚠️ Objeción',  color:'#b45309', bg:'#fef3c7', bd:'#fde68a' };
+  if (BOT_TEMP_PATTERNS.hot.some(r => r.test(s)))  return { k:'hot',  label:'🔥 Caliente', color:'#b91c1c', bg:'#fee2e2', bd:'#fecaca' };
+  if (BOT_TEMP_PATTERNS.cold.some(r => r.test(s))) return { k:'cold', label:'🧊 Frío',     color:'#475569', bg:'#f1f5f9', bd:'#e2e8f0' };
+  return null;
+}
+function botTiempo(fechaUtc){
+  try { const t = Date.parse(String(fechaUtc).replace(' ','T')+'Z'); const s = Math.max(0, Math.round((Date.now()-t)/1000));
+    if (s < 60) return `hace ${s}s`;
+    const m = Math.floor(s/60); if (m < 60) return `hace ${m} min`;
+    return 'hace ' + Math.floor(m/60) + ' h';
+  } catch(e){ return ''; }
+}
+function botEstado(l, ahoraMs){
+  const t = (() => { try { return Date.parse(String(l.fecha).replace(' ','T')+'Z'); } catch(e){ return 0; } })();
+  const secs = Math.round((ahoraMs - t)/1000);
+  if (l.estado === 'completo') return { k:'completo', label:'✅ Completó', color:'#15803d', bg:'#dcfce7' };
+  if (secs < 90)               return { k:'vivo',     label:'🟢 EN VIVO',  color:'#15803d', bg:'#dcfce7' };
+  if (secs < 300)              return { k:'activo',   label:'🟡 Activo',   color:'#b45309', bg:'#fef3c7' };
+  return { k:'abandono', label:'⚪ Abandonado', color:'#64748b', bg:'#f1f5f9' };
+}
+function botBubble(qui, texto){
+  if (qui === 'bot') return `<div style="display:flex;justify-content:flex-start;margin:4px 0"><div style="background:#f1f5f9;color:#0f172a;border-radius:12px 12px 12px 3px;padding:7px 11px;font-size:12.5px;max-width:88%">${escapeHtml(texto)}</div></div>`;
+  return `<div style="display:flex;justify-content:flex-end;margin:4px 0"><div style="background:#dcfce7;color:#0b5d28;border-radius:12px 12px 3px 12px;padding:7px 11px;font-size:12.5px;max-width:88%">${escapeHtml(texto)}</div></div>`;
+}
+// Reconstruye la conversación a partir de los campos guardados.
+function botConversacion(l){
+  const out = [];
+  out.push(['bot', '¡Hola! Soy tu asesor Sportmaster 👋 ¿Para qué tipo de cancha?']);
+  if (l.comentarios){
+    const tipo = (String(l.comentarios).match(/Tipo:\s*([^·]+)/i)||[,''])[1].trim();
+    if (tipo) out.push(['cli', tipo]);
+  }
+  if (l.ciudad){ out.push(['bot', '¿En qué ciudad la quieres?']); out.push(['cli', l.ciudad]); }
+  if (l.m2){    out.push(['bot', '¿Cuántos m² tiene tu terreno?']); out.push(['cli', l.m2 + ' m²']); }
+  if (l.timeline){ out.push(['bot', '¿En qué tiempo quieres comenzar?']); out.push(['cli', l.timeline]); }
+  if (l.comentarios){
+    const acc = (String(l.comentarios).match(/Accesorios:\s*(.+)$/i)||[,''])[1].trim();
+    if (acc) { out.push(['bot', '¿Accesorios?']); out.push(['cli', acc]); }
+  }
+  if (l.nombre){ out.push(['bot', '¿A nombre de quién la cotización?']); out.push(['cli', l.nombre]); }
+  if (l.whatsapp){ out.push(['bot', '¿A qué WhatsApp te la mandamos?']); out.push(['cli', l.whatsapp]); }
+  return out;
+}
+function botCard(l, ahoraMs){
+  const est = botEstado(l, ahoraMs);
+  // El texto del cliente para el termómetro = nombre + comentarios + timeline
+  const blob = [l.nombre, l.comentarios, l.timeline, l.ciudad].filter(Boolean).join(' ');
+  const temp = botTemperatura(blob);
+  const urlPath = (l.url||'').replace(/^https?:\/\/[^/]+/,'') || '—';
+  const conv = botConversacion(l).map(([q,t]) => botBubble(q,t)).join('');
+  const wa = (l.whatsapp||'').replace(/\D/g,'');
+  const tel = wa.startsWith('52') ? wa.slice(2) : wa;
+  const waBtnH = (wa.length>=10) ? `<a href="https://wa.me/52${tel}" target="_blank" style="background:#25d366;color:#fff;text-decoration:none;font-weight:700;font-size:12px;padding:7px 12px;border-radius:7px">💬 WhatsApp</a>` : '';
+  return `<div style="border:1px solid #eef2f6;border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff;box-shadow:0 2px 8px rgba(2,6,23,.04)">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="background:${est.bg};color:${est.color};border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800">${est.label}</span>
+        ${temp ? `<span style="background:${temp.bg};color:${temp.color};border:1px solid ${temp.bd};border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800">${temp.label}</span>` : ''}
+        <span style="font-size:12px;color:#64748b">${botTiempo(l.fecha)}</span>
+      </div>
+      <div style="font-size:11.5px;color:#94a3b8;font-family:ui-monospace,monospace" title="${escapeAttr(l.url||'')}">${escapeHtml(urlPath.slice(0,46))}${urlPath.length>46?'…':''}</div>
+    </div>
+    <div style="background:#fafbfc;border:1px solid #f1f5f9;border-radius:10px;padding:8px 10px;max-height:200px;overflow-y:auto">${conv}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#64748b">
+      <div><b style="color:#0f172a">${escapeHtml(l.nombre||'(sin nombre)')}</b>${l.ciudad ? ' · 📍 '+escapeHtml(l.ciudad) : ''}${l.m2 ? ' · '+escapeHtml(l.m2)+' m²' : ''}</div>
+      ${waBtnH}
+    </div>
+  </div>`;
+}
+async function refrescarBot(){
+  const body = document.getElementById('botBody'); const meta = document.getElementById('botMeta'); const dot = document.getElementById('botLiveDot');
+  if (!body) return;
+  try {
+    const pwd = localStorage.getItem(STORAGE_KEY) || '';
+    const r = await fetch(`/api/bot-vivo?p=${encodeURIComponent(pwd)}`);
+    const d = await r.json();
+    if (!d.ok){ body.innerHTML = '<div class="src-empty">No autorizado.</div>'; return; }
+    BOT_CACHE = d.chats || [];
+    const ahora = Date.now();
+    const vivos = BOT_CACHE.filter(l => { const t = Date.parse(String(l.fecha).replace(' ','T')+'Z'); return (ahora-t) < 90000 && l.estado !== 'completo'; }).length;
+    if (dot) dot.style.display = vivos > 0 ? 'inline-block' : 'none';
+    if (meta) meta.textContent = `Auto-refresca cada 15 seg · ${BOT_CACHE.length} chats últimos 30 min · ${vivos} en vivo ahora`;
+    if (!BOT_CACHE.length){ body.innerHTML = '<div class="src-empty">😴 Sin chats en los últimos 30 minutos. Aparecerán aquí en cuanto alguien abra el bot.</div>'; return; }
+    body.innerHTML = BOT_CACHE.map(l => botCard(l, ahora)).join('');
+  } catch (e) { body.innerHTML = '<div class="src-empty">Error al cargar.</div>'; }
+}
+function iniciarBotLive(){
+  if (BOT_LIVE_TIMER) return;
+  refrescarBot();
+  BOT_LIVE_TIMER = setInterval(() => {
+    if (currentTab === 'bot' && !document.hidden) refrescarBot();
+  }, 15000);
+}
 function renderIA(){
   const body = document.getElementById('iaBody');
   if (!body) return;
@@ -3593,6 +3714,7 @@ function activateTab(tab){
     content.classList.add('show');
     currentTab = tab;
     if (tab === 'ia') renderIA();
+    if (tab === 'bot') iniciarBotLive();
     if (tab === 'plantillas') loadPlantillasEditor();
   }
 }
