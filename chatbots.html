@@ -457,12 +457,12 @@ const COMPANIES = [
   {
     name:"Sportmaster", domain:"canchadefutbol7.mx", icon:"S",
     bots:[
-      {name:"Canchas (default)", urlpat:"/ y resto del sitio", status:"live", today:"—", week:"—", month:"—", total:"—", spark:[]},
-      {name:"Porterías", urlpat:"/porterias-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
-      {name:"Malla ciclónica", urlpat:"/malla-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
-      {name:"Bancas", urlpat:"/bancas-* · /sportmaster-bancas-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
-      {name:"Alumbrado", urlpat:"/alumbrado-*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
-      {name:"Escuelas (La Escuela Es Nuestra)", urlpat:"/escuelas-dignas-* · /la-escuela-es-nuestra/*", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Canchas (default)", urlpat:"/ y resto del sitio", visitUrl:"https://canchadefutbol7.mx/", status:"live", today:"—", week:"—", month:"—", total:"—", spark:[]},
+      {name:"Porterías", urlpat:"/porterias-*", visitUrl:"https://canchadefutbol7.mx/porterias-canchas-futbol-7/", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Malla ciclónica", urlpat:"/malla-*", visitUrl:"https://canchadefutbol7.mx/malla-ciclonica-cancha-futbol-7/", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Bancas", urlpat:"/bancas-* · /sportmaster-bancas-*", visitUrl:"https://canchadefutbol7.mx/bancas-futbol-7/", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Alumbrado", urlpat:"/alumbrado-*", visitUrl:"https://canchadefutbol7.mx/alumbrado-cancha-futbol-7/", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
+      {name:"Escuelas (La Escuela Es Nuestra)", urlpat:"/escuelas-dignas-* · /la-escuela-es-nuestra/*", visitUrl:"https://canchadefutbol7.mx/la-escuela-es-nuestra/", status:"demo", today:0, week:0, month:0, total:0, spark:[]},
     ]
   },
   { name:"Sportmaster Gradas", domain:"gradasdefutbol.mx", icon:"G", bots:[] },
@@ -527,6 +527,10 @@ function render(){
               <td><div class="spark">${bars}</div></td>
               <td>
                 <div class="row-acts">
+                  <a href="${b.visitUrl||'#'}" target="_blank" rel="noopener" title="Abrir página en una pestaña nueva" style="display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #c7ecd5;background:#f0fdf4;color:#15803d;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Ver en sitio
+                  </a>
                   <button onclick="view('edit','${b.name}','${c.domain} · ${b.urlpat}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                     Editar
