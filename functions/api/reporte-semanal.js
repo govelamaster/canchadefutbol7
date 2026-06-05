@@ -163,6 +163,13 @@ export async function onRequest({ request, env }) {
     return txt(globalHtml);
   }
 
+  // Vista previa: manda el correo de UN vendedor a Olga (para revisar sin spamear al vendedor)
+  const mailV = url.searchParams.get("mailto_olga");
+  if (mailV && porVendedor[mailV]) {
+    await sendEmail(env, olgaEmail, `📋 Vista previa del correo de ${mailV}`, buildVendorHtml(mailV, porVendedor[mailV]));
+    return txt("Vista previa de " + esc(mailV) + " enviada a " + esc(olgaEmail));
+  }
+
   const enviados = [];
   await sendEmail(env, olgaEmail, `📊 Reporte semanal — ${total} leads nuevos`, globalHtml);
   enviados.push("Olga<" + olgaEmail + ">");
