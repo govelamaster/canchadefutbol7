@@ -319,6 +319,7 @@ body.rol-vendedor #unassignedPill{ display:none; }
 @keyframes slaPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(220,38,38,.35); } 50%{ box-shadow:0 0 0 5px rgba(220,38,38,0); } }
 .speed-alert{ display:flex; align-items:center; gap:8px; background:linear-gradient(90deg,#fef2f2,#fff5f5); border:1px solid #fecaca; color:#991b1b; border-radius:14px; padding:13px 16px; margin-bottom:16px; font-size:14px; }
 .speed-alert b{ color:#b91c1c; }
+.rec-badge{ display:inline-flex; align-items:center; gap:3px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:800; white-space:nowrap; }
 /* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
 body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
@@ -1734,6 +1735,7 @@ function normalizeLead(l){
   return {
     ...l,
     vendedor: l.vendedor || '',
+    recurrente: l.recurrente || 0,
     estado_manual: l.estado_manual || '',
     tipo_cliente: l.tipo_cliente || '',
     status_proyecto: l.status_proyecto || 'Sin atender',
@@ -3090,7 +3092,8 @@ function renderLeadRow(l, vip){
   const m2 = escapeHtml(l.m2 || '?');
   const comentShort = (l.comentarios || '').replace(/^\s*Tipo:\s*/i, '').trim();
   const subWa = waNum ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="lead-wa">${escapeHtml(l.whatsapp)}</a>` : '';
-  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}${slaBadge(l)}`;
+  const recBadge = (l.recurrente == 1) ? '<span class="rec-badge" title="Cliente que ya había contactado antes (mismo WhatsApp). Re-asignado a su vendedor.">🔁 Recurrente</span>' : '';
+  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}${recBadge}${slaBadge(l)}`;
   return `<tr data-lead-id="${l.id}" class="${rowClass}${urgente ? ' row-urgent' : ''}">
     <td class="lead-cell">
       ${nombreCell(l)}

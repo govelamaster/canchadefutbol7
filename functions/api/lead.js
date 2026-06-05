@@ -23,6 +23,7 @@ export async function onRequestPost(context) {
 
   try {
     const sid = (payload.session_id || '').trim();
+    const waNorm = (payload.whatsapp || '').replace(/\D/g, '').slice(-10); // teléfono normalizado (10 díg.)
     let changed = 0;
 
     // Si ya existe una fila con este session_id (ej. guardado "parcial"),
@@ -31,7 +32,7 @@ export async function onRequestPost(context) {
       const upd = await env.DB.prepare(`
         UPDATE leads SET
           estado = ?, nombre = ?, whatsapp = ?, ciudad = ?, m2 = ?,
-          timeline = ?, comentarios = ?, fuente = ?, url = ?, gclid = ?, campania = ?
+          timeline = ?, comentarios = ?, fuente = ?, url = ?, gclid = ?, campania = ?, wa_norm = ?
         WHERE session_id = ?
       `).bind(
         payload.estado || '',
@@ -45,6 +46,7 @@ export async function onRequestPost(context) {
         payload.url || '',
         payload.gclid || '',
         payload.campania || '',
+        waNorm,
         sid
       ).run();
       changed = (upd.meta && upd.meta.changes) || 0;
@@ -53,8 +55,8 @@ export async function onRequestPost(context) {
     if (!changed) {
       await env.DB.prepare(`
         INSERT INTO leads
-          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, ip, user_agent)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, wa_norm, ip, user_agent)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         sid,
         payload.estado || '',
@@ -68,6 +70,7 @@ export async function onRequestPost(context) {
         payload.url || '',
         payload.gclid || '',
         payload.campania || '',
+        waNorm,
         request.headers.get('cf-connecting-ip') || '',
         request.headers.get('user-agent') || ''
       ).run();
@@ -77,16 +80,38 @@ export async function onRequestPost(context) {
     // si falta RESEND_API_KEY simplemente se omite. Solo avisamos en leads
     // "completos" o de formulario para no spamear con los parciales del bot.
     const esParcial = (payload.estado || '').toLowerCase() === 'parcial';
-    if (!esParcial && env.RESEND_API_KEY) {
-      // id del lead (para el botón "Asignar desde el correo")
+    if (!esParcial) {
+      // id del lead recién guardado
       let leadId = null;
       try {
         const row = await env.DB.prepare("SELECT id FROM leads WHERE session_id = ? ORDER BY id DESC LIMIT 1").bind(sid).first();
         leadId = row ? row.id : null;
       } catch (e) { leadId = null; }
-      const emailCtx = context.waitUntil ? context : null;
-      const send = sendLeadEmail(env, payload, request, leadId);
-      if (emailCtx) emailCtx.waitUntil(send); else await send;
+
+      // 🔁 DETECCIÓN DE DUPLICADOS (blindada: si falla, el lead YA quedó guardado)
+      // Si el mismo teléfono ya tenía un vendedor, se lo re-asignamos al mismo y marcamos recurrente.
+      let recurrenteVendedor = null;
+      try {
+        if (leadId && /^\d{10}$/.test(waNorm)) {
+          const prior = await env.DB.prepare(
+            "SELECT id, vendedor FROM leads WHERE wa_norm = ? AND id != ? AND TRIM(COALESCE(vendedor,'')) != '' ORDER BY id DESC LIMIT 1"
+          ).bind(waNorm, leadId).first();
+          if (prior && prior.vendedor) {
+            await env.DB.prepare("UPDATE leads SET vendedor = ?, recurrente = 1, dup_de = ? WHERE id = ?")
+              .bind(prior.vendedor, prior.id, leadId).run();
+            recurrenteVendedor = prior.vendedor;
+          }
+        }
+      } catch (e) { /* silencioso: nunca rompe la captura */ }
+
+      // Avisos por correo (opcional: si falta RESEND_API_KEY se omite)
+      if (env.RESEND_API_KEY) {
+        const emailCtx = context.waitUntil ? context : null;
+        const send = recurrenteVendedor
+          ? notifyRecurrente(env, payload, recurrenteVendedor)          // al MISMO vendedor: "tu cliente volvió"
+          : sendLeadEmail(env, payload, request, leadId);              // flujo normal: aviso para asignar
+        if (emailCtx) emailCtx.waitUntil(send); else await send;
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
@@ -148,6 +173,50 @@ async function sendLeadEmail(env, d, request, leadId) {
       body: JSON.stringify({ from, to, subject, html }),
     });
   } catch (e) { /* silencioso: nunca rompe el guardado del lead */ }
+}
+
+// Correo del vendedor (directorio en D1). "" si no tiene.
+async function emailDeVendedor(env, nombre) {
+  try {
+    const row = await env.DB.prepare("SELECT email FROM vendedores WHERE nombre = ? COLLATE NOCASE").bind(nombre).first();
+    return row && row.email ? String(row.email).trim() : '';
+  } catch (e) { return ''; }
+}
+
+// 🔁 Aviso al MISMO vendedor de que su cliente volvió a contactar.
+async function notifyRecurrente(env, d, vendedor) {
+  try {
+    let to = await emailDeVendedor(env, vendedor);
+    if (!to) to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com'; // fallback: avisa a Olga
+    const from = env.LEADS_FROM || 'Leads canchadefutbol7 <leads@canchadefutbol7.mx>';
+    const esc = (s) => String(s == null ? '-' : s).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+    const nombre = (d.nombre || 'tu cliente').trim();
+    const wa = (d.whatsapp || '').replace(/\D/g, '');
+    const tel = wa.startsWith('52') ? wa.slice(2) : wa;
+    const msg = encodeURIComponent(`Hola ${nombre} 👋 Soy ${vendedor} de Sportmaster, vi que retomaste tu interés en una cancha de fútbol 7${d.ciudad ? ' en ' + d.ciudad : ''}. ¿Cómo te puedo apoyar?`);
+    const waLink = wa ? `https://wa.me/52${tel}?text=${msg}` : '';
+    const html = `
+      <div style="font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;max-width:520px;margin:0 auto;color:#0f172a">
+        <div style="background:linear-gradient(135deg,#1e3a8a,#1d4ed8);color:#fff;border-radius:16px 16px 0 0;padding:20px 24px">
+          <div style="font-size:13px;opacity:.85;text-transform:uppercase;letter-spacing:.04em">Cliente recurrente</div>
+          <div style="font-size:21px;font-weight:800;margin-top:2px">🔁 ${esc(nombre)} volvió a contactar</div>
+        </div>
+        <div style="border:1px solid #eef2f6;border-top:none;border-radius:0 0 16px 16px;padding:22px 24px;background:#fff">
+          <p style="font-size:14.5px;margin:0 0 14px">Hola <b>${esc(vendedor)}</b>, este cliente <b>ya es tuyo</b> y acaba de volver a dejar sus datos. Retómalo, ya conoces su historia:</p>
+          <div style="background:#f8fafc;border:1px solid #eef2f6;border-radius:12px;padding:14px 16px;font-size:14px">
+            <div><b>${esc(nombre)}</b> · 📍 ${esc(d.ciudad || '—')} · <b>${esc(d.m2 || '?')} m²</b></div>
+            <div style="color:#64748b;margin-top:4px">WhatsApp: ${esc(d.whatsapp || '—')}</div>
+          </div>
+          ${waLink ? `<a href="${waLink}" style="display:inline-block;margin-top:16px;background:#25d366;color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:12px 20px;border-radius:10px">💬 Contactar por WhatsApp</a>` : ''}
+          <p style="font-size:12px;color:#94a3b8;margin-top:16px">No cuenta como lead nuevo — es seguimiento. Panel: <a href="https://canchadefutbol7.mx/admin" style="color:#1d4ed8">canchadefutbol7.mx/admin</a></p>
+        </div>
+      </div>`;
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from, to, subject: `🔁 ${nombre} volvió a contactar — es tu cliente`, html }),
+    });
+  } catch (e) { /* silencioso */ }
 }
 
 // CORS preflight
