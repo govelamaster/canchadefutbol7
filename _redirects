@@ -26,3 +26,16 @@
 # URL fantasma (CF Pages servía la home con imágenes rotas) → precio real
 /precios-pasto-sintetico-para-canchas/  /pasto-sintetico-para-cancha-de-futbol-precio-m2/  301
 /precios-pasto-sintetico-para-canchas   /pasto-sintetico-para-cancha-de-futbol-precio-m2/  301
+
+# URLs fantasma de accesorios — CF Pages servía la página genérica "cuánto cuesta" en lugar de 404.
+# Cada slug viejo va a su página real para no perder tráfico de Ads/SEO/backlinks.
+/porterias-canchas-futbol-7/      /porterias-para-canchas-de-futbol/      301
+/porterias-canchas-futbol-7       /porterias-para-canchas-de-futbol/      301
+/bancas-futbol-7/                 /bancas-para-jugadores/                 301
+/bancas-futbol-7                  /bancas-para-jugadores/                 301
+/sportmaster-bancas-futbol-7/     /bancas-para-jugadores/                 301
+/sportmaster-bancas-futbol-7      /bancas-para-jugadores/                 301
+/alumbrado-cancha-futbol-7/       /alumbrado-para-canchas-de-futbol/      301
+/alumbrado-cancha-futbol-7        /alumbrado-para-canchas-de-futbol/      301
+/malla-ciclonica-cancha-futbol-7/ /malla-ciclonica-para-canchas-de-futbol/ 301
+/malla-ciclonica-cancha-futbol-7  /malla-ciclonica-para-canchas-de-futbol/ 301
