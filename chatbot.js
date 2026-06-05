@@ -178,7 +178,8 @@ const Cot = (function(){
   const CONFIG = {
     whatsapp: "525539887615",   // número del negocio (mismo que los CTA del sitio)
     empresa: "Sportmaster",
-    leadApi: "/api/lead"        // guarda el lead en tu base D1 → Panel de Leads (admin.html)
+    leadApi: "/api/lead",       // guarda el lead en tu base D1 → Panel de Leads (admin.html)
+    botConfigApi: "/api/bot-config"  // devuelve la config dinámica del bot por URL (Bancas, Porterías, etc.)
   };
 
   // Atribución de marketing: URL de origen, campaña y CID/gclid (Google Ads)
@@ -217,6 +218,27 @@ const Cot = (function(){
       if (p) saveLead(p.d, p.estado);
     }, 1500);
   }
+  // Arma una línea legible para el panel con TODOS los pasos respondidos del bot.
+  // Bot dinámico (Bancas/Porterías/etc.) → "Tipo: Bancas · Set: ... · Cancha: ..."
+  // Bot genérico (Canchas) → mantiene el formato original "Tipo: ... · Accesorios: ..."
+  function armarComentarios(d){
+    if (BOT_CTX && BOT_CTX.botName){
+      const partes = ['Tipo: ' + BOT_CTX.botName];
+      const omitir = new Set(['nombre','whatsapp','ciudad']); // estos viajan en su columna propia
+      const labels = { set:'Set', tipo:'Cancha', techo:'Techo', capacidad:'Capacidad',
+                       timeline:'Inicio', medidas:'Medidas', accesorios:'Accesorios',
+                       tiempo:'Inicio' };
+      try {
+        steps.forEach(s => {
+          if (omitir.has(s.key)) return;
+          const v = d[s.key];
+          if (v && String(v).trim()) partes.push((labels[s.key] || s.key) + ': ' + String(v).trim());
+        });
+      } catch(e){}
+      return partes.join(' · ');
+    }
+    return `Tipo: ${d.tipo||'-'} · Accesorios: ${d.accesorios||'-'}`;
+  }
   function saveLead(d, estado){
     try{
       const a = atribucion();
@@ -227,22 +249,27 @@ const Cot = (function(){
         body: JSON.stringify({
           session_id: sid(),
           estado: estado || "completo",
-          fuente: "Chatbot",
+          fuente: (BOT_CTX && BOT_CTX.fuenteLabel) || "Chatbot",
           nombre: d.nombre || "",
           whatsapp: (d.whatsapp && d.whatsapp !== "No lo dejó") ? d.whatsapp : "No lo dejó",
           ciudad: d.ciudad || "",
-          m2: d.medidas || "",
-          timeline: d.tiempo || "",
+          m2: d.medidas || d.capacidad || "",
+          timeline: d.timeline || d.tiempo || "",
           url: a.url,
           gclid: a.gclid,
           campania: a.campania,
-          comentarios: `Tipo: ${d.tipo||'-'} · Accesorios: ${d.accesorios||'-'}`
+          comentarios: armarComentarios(d)
         })
       });
     }catch(e){}
   }
 
-  const steps = [
+  // ───────────────────────────────────────────────────────────────
+  // STEPS: por defecto el bot GENÉRICO de canchas. Se PUEDE sobreescribir
+  // por el bot contextual de la URL (cargado desde /api/bot-config).
+  // Si la carga falla -> nos quedamos con este genérico. CERO rompimiento.
+  // ───────────────────────────────────────────────────────────────
+  let steps = [
     { key:"tipo", bot:"¡Hola! 👋 Soy tu asesor. ¿Qué tipo de cancha estás buscando?",
       type:"chips", options:["Fútbol 7","Fútbol soccer","Fútbol americano","Fútbol rápido","Tochito","Pádel","Residencial","Otra"],
       other:"Otra", otherBot:"¡Claro! Cuéntame, ¿qué tipo de cancha necesitas?", otherPh:"Ej. pádel, multideporte, beisbol…" },
@@ -255,6 +282,35 @@ const Cot = (function(){
     { key:"accesorios", bot:(d)=> d.tipo==='Residencial' ? '¡Listo! 🌿 Tu proyecto de área verde está listo para cotizar.' : '¿Quieres incluir accesorios en la cotización? Marca los que te interesen 👇',
       type:"multi", options:["Porterías","Gradas","Alumbrado","Bancas jugadores"], done:"Continuar", none:"Solo la cancha" }
   ];
+  let BOT_CTX = null;        // { botName, fuenteLabel, teaserTitulo, teaserSub } si hay config dinámica
+  let CTX_LOADED = false;    // bandera: ya intentamos cargar config
+
+  // Carga config del bot según URL actual. Si recibe pasos válidos -> los usa.
+  // Si NO -> deja steps genérico intacto. Cualquier error es silencioso.
+  async function loadBotConfig(){
+    if (CTX_LOADED) return;
+    CTX_LOADED = true;
+    try {
+      const path = location.pathname.toLowerCase();
+      const r = await fetch(CONFIG.botConfigApi + '?path=' + encodeURIComponent(path), { cache: 'no-store' });
+      if (!r.ok) return;
+      const d = await r.json();
+      const cfg = d && d.config;
+      if (!cfg || !Array.isArray(cfg.pasos) || !cfg.pasos.length) return;
+      // Validar mínimo cada paso (defensivo: si llega algo raro NO sobreescribimos)
+      const ok = cfg.pasos.every(p => p && typeof p.key === 'string' && typeof p.bot === 'string' && (p.type === 'chips' ? Array.isArray(p.options) : (p.type === 'text' || p.type === 'tel' || p.type === 'multi')));
+      if (!ok) return;
+      steps = cfg.pasos;
+      BOT_CTX = { botName: cfg.botName || '', fuenteLabel: cfg.fuenteLabel || 'Chatbot', teaserTitulo: cfg.teaserTitulo || '', teaserSub: cfg.teaserSub || '' };
+      // Si el teaser tiene textos, los aplicamos al launcher
+      try {
+        const t = document.querySelector('#cot-launcher .title');
+        const s = document.querySelector('#cot-launcher .sub');
+        if (BOT_CTX.teaserTitulo && t) t.textContent = BOT_CTX.teaserTitulo;
+        if (BOT_CTX.teaserSub && s) s.textContent = BOT_CTX.teaserSub;
+      } catch(e){}
+    } catch(e){ /* silencioso: fallback al bot genérico */ }
+  }
 
   let i = 0;
   const data = {};
@@ -402,12 +458,20 @@ const Cot = (function(){
     });
   }
 
+  // Dispara la carga de config en cuanto el bot se monta (no esperamos clic).
+  // Cuando el visitante abre el bot, lo más probable es que ya esté cargada.
+  try { loadBotConfig(); } catch(e){}
+
   return {
-    open(){
+    async open(){
       document.getElementById('cot-panel').classList.add('open');
       document.getElementById('cot-launcher').classList.add('lc-hidden');
+      // Si aún no terminó de cargar la config, le damos hasta 1.2s antes de arrancar.
+      // Si tarda más, arrancamos con el bot genérico para no congelar al usuario.
+      if (!CTX_LOADED || (CONFIG.botConfigApi && !BOT_CTX && Object.keys(data).length === 0)){
+        try { await Promise.race([loadBotConfig(), new Promise(r => setTimeout(r, 1200))]); } catch(e){}
+      }
       if(i===0 && Object.keys(data).length===0 && !body().hasChildNodes()){
-        // Ping inicial: marca el chat como "abierto" para que se vea en /admin → 🤖 Bot en vivo
         try { saveLeadDebounced({}, 'parcial'); } catch(e){}
         ask();
       }

@@ -28,7 +28,7 @@ export async function onRequest({ request, next }) {
   // ⚠️ Los .js se cachean 1 año (immutable). chatbot.js es nombre fijo → versiona la URL
   // con CHATBOT_VER (cámbialo cada vez que edites chatbot.js) para romper la caché al instante.
   // chatbot.js se auto-protege: si la página ya trae el bot inline (la home), no duplica.
-  const CHATBOT_VER = "20260605a";
+  const CHATBOT_VER = "20260605b";
   return new HTMLRewriter()
     .on("body", {
       element(el) {
