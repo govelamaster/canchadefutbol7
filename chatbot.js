@@ -207,6 +207,16 @@ const Cot = (function(){
   // Guarda el lead en el MISMO panel que usa tu formulario (Cloudflare D1).
   // estado "parcial" = apenas tenemos contacto · "completo" = terminó.
   // Se llama 2 veces con el mismo session_id → el endpoint ACTUALIZA, no duplica.
+  // Debounced saveLead: máx 1 guardado cada 1.5 seg para no martillar la API.
+  let _saveT = null, _savePending = null;
+  function saveLeadDebounced(d, estado){
+    _savePending = { d: Object.assign({}, d), estado };
+    if (_saveT) return;
+    _saveT = setTimeout(() => {
+      const p = _savePending; _savePending = null; _saveT = null;
+      if (p) saveLead(p.d, p.estado);
+    }, 1500);
+  }
   function saveLead(d, estado){
     try{
       const a = atribucion();
@@ -362,8 +372,9 @@ const Cot = (function(){
       typing(()=>{ addMsg(step.otherBot, 'bot'); render({ key:step.key, type:"text", ph:step.otherPh }); });
       return;
     }
-    // Apenas tenemos el WhatsApp, guardamos PARCIAL (por si abandona después)
-    if(step.key === 'whatsapp') saveLead(data, 'parcial');
+    // Guardamos PARCIAL en cada paso para que el panel "🤖 Bot en vivo" lo vea en tiempo real
+    // y para no perder leads que abandonan a la mitad. Throttle: máx 1 guardado cada 1.5s.
+    try { saveLeadDebounced(data, 'parcial'); } catch(e){}
     i++; ask();
   }
 
@@ -395,7 +406,11 @@ const Cot = (function(){
     open(){
       document.getElementById('cot-panel').classList.add('open');
       document.getElementById('cot-launcher').classList.add('lc-hidden');
-      if(i===0 && Object.keys(data).length===0 && !body().hasChildNodes()) ask();
+      if(i===0 && Object.keys(data).length===0 && !body().hasChildNodes()){
+        // Ping inicial: marca el chat como "abierto" para que se vea en /admin → 🤖 Bot en vivo
+        try { saveLeadDebounced({}, 'parcial'); } catch(e){}
+        ask();
+      }
     },
     close(){
       document.getElementById('cot-panel').classList.remove('open');
