@@ -24,6 +24,34 @@ function canal(l) {
 const atendido = (l) => (l.status_proyecto || "Sin atender") !== "Sin atender";
 const ganado = (l) => (l.status_proyecto || "") === "Ganado";
 
+// Tarjeta accionable de un prospecto (para el correo del vendedor)
+function prospectoCard(l, vendedor) {
+  const nombre = (l.nombre || "Cliente").trim();
+  const com = String(l.comentarios || "");
+  const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [, ""])[1].trim();
+  const acc = (com.match(/Accesorios:\s*(.+)$/i) || [, ""])[1].trim();
+  const busca = [tipo || "Cancha fútbol 7", acc ? "Accesorios: " + acc : ""].filter(Boolean).join(" · ");
+  const urgente = /lo antes posible/i.test(l.timeline || "");
+  const urg = urgente
+    ? `<span style="background:#fee2e2;color:#b91c1c;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800">🔴 URGENTE</span>`
+    : `<span style="background:#f1f5f9;color:#475569;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:700">🟡 ${esc(l.timeline || "Sin prisa")}</span>`;
+  const num = (l.whatsapp || "").replace(/\D/g, "");
+  const tel = num.startsWith("52") ? num.slice(2) : num;
+  const msg = encodeURIComponent(`Hola ${nombre} 👋 Soy ${vendedor} de Sportmaster. Te contacto por tu interés en una cancha de fútbol 7${l.ciudad ? " en " + l.ciudad : ""}. ¿Cómo te puedo apoyar?`);
+  const wa = num ? `https://wa.me/52${tel}?text=${msg}` : "";
+  return `<div style="border:1px solid #eef2f6;border-radius:14px;padding:14px 16px;margin-bottom:10px;background:#fff">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div>
+        <div style="font-weight:800;font-size:15px;color:#0f172a">${esc(nombre)}</div>
+        <div style="font-size:13px;color:#64748b;margin-top:2px">📍 ${esc(l.ciudad || "—")} · <b>${esc(l.m2 || "?")} m²</b></div>
+      </div>
+      <div>${urg}</div>
+    </div>
+    <div style="font-size:13px;color:#475569;margin:8px 0 12px">🎯 Busca: ${esc(busca)}</div>
+    ${wa ? `<a href="${wa}" style="display:inline-block;background:#25d366;color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:11px 18px;border-radius:10px">💬 Contactar por WhatsApp</a>` : `<span style="font-size:12px;color:#94a3b8">Sin WhatsApp registrado</span>`}
+  </div>`;
+}
+
 async function sendEmail(env, to, subject, html) {
   const from = env.LEADS_FROM || "Leads canchadefutbol7 <leads@canchadefutbol7.mx>";
   await fetch("https://api.resend.com/emails", {
@@ -60,7 +88,7 @@ export async function onRequest({ request, env }) {
   let leads = [];
   try {
     const rs = await env.DB.prepare(
-      "SELECT fecha, nombre, ciudad, vendedor, status_proyecto, gclid, campania FROM leads WHERE estado != 'parcial' AND fecha >= datetime('now','-7 days') ORDER BY fecha DESC"
+      "SELECT fecha, nombre, ciudad, vendedor, status_proyecto, gclid, campania, m2, timeline, comentarios, whatsapp FROM leads WHERE estado != 'parcial' AND fecha >= datetime('now','-7 days') ORDER BY fecha DESC"
     ).all();
     leads = rs.results || [];
   } catch (e) { return txt("DB error: " + esc(e.message), 500); }
@@ -77,12 +105,14 @@ export async function onRequest({ request, env }) {
   const porFuente = {};
   leads.forEach(l => { const c = canal(l); porFuente[c] = (porFuente[c] || 0) + 1; });
   const porVendedor = {};
+  const porVendedorLeads = {};
   leads.forEach(l => {
     const v = (l.vendedor || "").trim() || "(sin asignar)";
     porVendedor[v] = porVendedor[v] || { asignados: 0, atendidos: 0, ganados: 0 };
     porVendedor[v].asignados++;
     if (atendido(l)) porVendedor[v].atendidos++;
     if (ganado(l)) porVendedor[v].ganados++;
+    (porVendedorLeads[v] = porVendedorLeads[v] || []).push(l);
   });
   const fuenteChips = Object.entries(porFuente).sort((a, b) => b[1] - a[1])
     .map(([f, n]) => `<span style="display:inline-block;background:#eafaf1;color:#1f7a3d;border:1px solid #c7ecd5;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;margin:0 6px 6px 0">${esc(f)} · ${n}</span>`).join("");
@@ -107,8 +137,31 @@ export async function onRequest({ request, env }) {
       <tbody>${vendRows || '<tr><td colspan="4" style="padding:10px;color:#94a3b8">—</td></tr>'}</tbody>
     </table>`);
 
+  // Constructor del correo accionable de un vendedor (lista de prospectos + WhatsApp)
+  function buildVendorHtml(v, s) {
+    const misLeads = (porVendedorLeads[v] || []);
+    const urgentes = misLeads.filter(l => /lo antes posible/i.test(l.timeline || "")).length;
+    const m2Total = misLeads.reduce((a, l) => a + (parseInt(String(l.m2).replace(/\D/g, ""), 10) || 0), 0);
+    const cards = misLeads.map(l => prospectoCard(l, v)).join("");
+    return shell(`
+      <div style="font-size:18px;font-weight:800;margin-bottom:2px">Hola, ${esc(v)} 👋</div>
+      <div style="color:#64748b;font-size:14px;margin-bottom:16px">Tienes <b style="color:#15803d">${s.asignados} prospecto${s.asignados === 1 ? "" : "s"}</b> asignado${s.asignados === 1 ? "" : "s"} esta semana. Contáctalos rápido — velocidad = ventas 🟢</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+        ${stat(s.asignados, "Prospectos", "#15803d")}
+        ${stat(urgentes, "Urgentes", urgentes ? "#b91c1c" : "#64748b")}
+        ${stat(s.asignados - s.atendidos, "Sin contactar", (s.asignados - s.atendidos) ? "#b91c1c" : "#15803d")}
+        ${stat(m2Total.toLocaleString("es-MX"), "m² en total")}
+      </div>
+      <h3 style="margin:0 0 10px;font-size:15px">📋 Tus prospectos de la semana</h3>
+      ${cards || '<div style="color:#94a3b8;font-size:13px">Sin prospectos esta semana.</div>'}`);
+  }
+
   const olgaEmail = env.LEADS_EMAIL || OLGA_EMAIL_DEFAULT;
-  if (dry) return txt(globalHtml);
+  if (dry) {
+    const vParam = url.searchParams.get("v");
+    if (vParam && porVendedor[vParam]) return txt(buildVendorHtml(vParam, porVendedor[vParam]));
+    return txt(globalHtml);
+  }
 
   const enviados = [];
   await sendEmail(env, olgaEmail, `📊 Reporte semanal — ${total} leads nuevos`, globalHtml);
@@ -120,16 +173,7 @@ export async function onRequest({ request, env }) {
       if (v === "(sin asignar)") continue;
       const to = emailDe[v];
       if (!to) continue;
-      const html = shell(`
-        <div style="font-size:17px;font-weight:800;margin-bottom:4px">Hola, ${esc(v)} 👋</div>
-        <div style="color:#64748b;font-size:13.5px;margin-bottom:16px">Tu resumen de la semana:</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          ${stat(s.asignados, "Tus leads", "#15803d")}
-          ${stat(s.asignados - s.atendidos, "Sin contactar", (s.asignados - s.atendidos) ? "#b91c1c" : "#15803d")}
-          ${stat(s.ganados, "Ganados")}
-        </div>
-        <p style="font-size:13px;color:#64748b;margin-top:16px">Entra al panel para contactarlos rápido: velocidad = ventas 🟢</p>`);
-      await sendEmail(env, to, `📊 Tu semana en Sportmaster — ${s.asignados} leads`, html);
+      await sendEmail(env, to, `📋 ${s.asignados} prospectos para ti — Sportmaster`, buildVendorHtml(v, s));
       enviados.push(v + "<" + to + ">");
     }
   }
