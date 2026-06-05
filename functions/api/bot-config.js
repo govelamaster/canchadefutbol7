@@ -25,7 +25,7 @@ export async function onRequestGet({ request, env }) {
     let row = null;
     try {
       row = await env.DB.prepare(
-        "SELECT bot_name, teaser_titulo, teaser_sub, pasos_json, fuente_label FROM bot_configs WHERE url_pattern = ? AND activo = 1 LIMIT 1"
+        "SELECT bot_name, teaser_titulo, teaser_sub, pasos_json, fuente_label, cta_label FROM bot_configs WHERE url_pattern = ? AND activo = 1 LIMIT 1"
       ).bind(path).first();
     } catch (e) { row = null; }
 
@@ -43,6 +43,7 @@ export async function onRequestGet({ request, env }) {
         botName: row.bot_name,
         teaserTitulo: row.teaser_titulo || "",
         teaserSub: row.teaser_sub || "",
+        cta: row.cta_label || "",
         fuenteLabel: row.fuente_label || "Chatbot",
         pasos
       }

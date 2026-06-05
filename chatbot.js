@@ -287,6 +287,41 @@ const Cot = (function(){
 
   // Carga config del bot según URL actual. Si recibe pasos válidos -> los usa.
   // Si NO -> deja steps genérico intacto. Cualquier error es silencioso.
+  // Aplica los textos del bot contextual al launcher (botón flotante).
+  // Selectores ROBUSTOS basados en la estructura real del HTML:
+  //   <strong>¿Título?</strong>  → cambia con teaserTitulo
+  //   <span>Subtítulo</span>     → cambia con teaserSub
+  //   <button class="cta">CTA</button> → cambia con cta
+  // Reintenta hasta 6 veces (cada 250ms) por si el launcher aún no se montó.
+  function aplicarTeaser(){
+    if (!BOT_CTX) return;
+    let intentos = 0;
+    const tick = () => {
+      const launcher = document.getElementById('cot-launcher');
+      if (!launcher){ if (intentos++ < 6) return setTimeout(tick, 250); return; }
+      try {
+        if (BOT_CTX.teaserTitulo){
+          const t = launcher.querySelector('.txt strong, strong');
+          if (t) t.innerHTML = BOT_CTX.teaserTitulo;
+        }
+        if (BOT_CTX.teaserSub){
+          const s = launcher.querySelector('.txt span, span:not(.dot)');
+          if (s) s.textContent = BOT_CTX.teaserSub;
+        }
+        if (BOT_CTX.cta){
+          const c = launcher.querySelector('button.cta');
+          if (c){
+            // mantener el ícono de flecha, solo cambiar el texto principal
+            const svg = c.querySelector('svg');
+            c.innerHTML = '';
+            c.appendChild(document.createTextNode(BOT_CTX.cta + ' '));
+            if (svg) c.appendChild(svg);
+          }
+        }
+      } catch(e){}
+    };
+    tick();
+  }
   async function loadBotConfig(){
     if (CTX_LOADED) return;
     CTX_LOADED = true;
@@ -301,14 +336,8 @@ const Cot = (function(){
       const ok = cfg.pasos.every(p => p && typeof p.key === 'string' && typeof p.bot === 'string' && (p.type === 'chips' ? Array.isArray(p.options) : (p.type === 'text' || p.type === 'tel' || p.type === 'multi')));
       if (!ok) return;
       steps = cfg.pasos;
-      BOT_CTX = { botName: cfg.botName || '', fuenteLabel: cfg.fuenteLabel || 'Chatbot', teaserTitulo: cfg.teaserTitulo || '', teaserSub: cfg.teaserSub || '' };
-      // Si el teaser tiene textos, los aplicamos al launcher
-      try {
-        const t = document.querySelector('#cot-launcher .title');
-        const s = document.querySelector('#cot-launcher .sub');
-        if (BOT_CTX.teaserTitulo && t) t.textContent = BOT_CTX.teaserTitulo;
-        if (BOT_CTX.teaserSub && s) s.textContent = BOT_CTX.teaserSub;
-      } catch(e){}
+      BOT_CTX = { botName: cfg.botName || '', fuenteLabel: cfg.fuenteLabel || 'Chatbot', teaserTitulo: cfg.teaserTitulo || '', teaserSub: cfg.teaserSub || '', cta: cfg.cta || '' };
+      aplicarTeaser();
     } catch(e){ /* silencioso: fallback al bot genérico */ }
   }
 
