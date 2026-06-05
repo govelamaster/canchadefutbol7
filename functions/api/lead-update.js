@@ -220,6 +220,29 @@ async function notifyReasignado(env, to, vendedorAnterior, nuevoVendedor, l) {
   } catch (e) {}
 }
 
+// Bloque "¿Cómo te fue?" — 4 botones de un clic que actualizan el lead desde el correo.
+const RESULT_SECRET = "sm-result-7Kx9-2026";
+async function _sha(s) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+async function resultadoBlock(leadId, nombre) {
+  if (!leadId) return "";
+  const t = (await _sha(RESULT_SECRET + ":" + leadId)).slice(0, 24);
+  const url = (r) => `https://canchadefutbol7.mx/api/lead-resultado?id=${leadId}&t=${t}&r=${r}`;
+  const btn = (href, bg, color, txt) => `<a href="${href}" style="display:inline-block;background:${bg};color:${color};text-decoration:none;font-weight:700;font-size:13px;padding:10px 14px;border-radius:9px;margin:4px 4px 0 0;border:1px solid ${bg}">${txt}</a>`;
+  const esc = (s) => String(s || "").replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
+  return `
+    <div style="margin-top:22px;padding:16px;background:#f8fafc;border:1px solid #eef2f6;border-radius:12px">
+      <div style="font-size:13.5px;font-weight:800;color:#0f172a;margin-bottom:8px">¿Cómo te fue con ${esc(nombre || "el cliente")}?</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:10px">Un clic y queda registrado en el panel.</div>
+      ${btn(url("interested"),    "#dcfce7", "#15803d", "🟢 Interesado")}
+      ${btn(url("scheduled"),     "#dbeafe", "#1d4ed8", "📅 Agendé")}
+      ${btn(url("noresp"),        "#fef3c7", "#b45309", "⏰ Sin respuesta")}
+      ${btn(url("notinterested"), "#fee2e2", "#b91c1c", "❌ No interesa")}
+    </div>`;
+}
+
 // Manda el correo al vendedor con los datos del cliente. Silencioso ante errores.
 async function notifyVendor(env, to, vendedor, l) {
   try {
@@ -292,6 +315,7 @@ async function notifyVendor(env, to, vendedor, l) {
               ${row('Accesorios', esc(accesorios || '-'))}
             </table>
             ${waLink ? `<a href="${waLink}" style="display:block;text-align:center;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:16px;border-radius:12px;margin-top:22px;box-shadow:0 8px 22px rgba(37,211,102,.34)">💬 Contactar a ${esc(firstName)} por WhatsApp</a>` : ''}
+            ${await resultadoBlock(l.id, nombre)}
             ${fraseVip ? `<p style="text-align:center;font-size:12.5px;color:#64748b;font-style:italic;line-height:1.5;margin:16px 14px 2px">“${esc(fraseVip)}”</p>` : ''}
             <p style="text-align:center;font-size:12px;color:#94a3b8;margin:14px 0 6px">o entra al panel: <a href="https://canchadefutbol7.mx/admin" style="color:#94a3b8">canchadefutbol7.mx/admin</a></p>
           </td></tr>

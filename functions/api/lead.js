@@ -108,7 +108,7 @@ export async function onRequestPost(context) {
       if (env.RESEND_API_KEY) {
         const emailCtx = context.waitUntil ? context : null;
         const send = recurrenteVendedor
-          ? notifyRecurrente(env, payload, recurrenteVendedor)          // al MISMO vendedor: "tu cliente volvió"
+          ? notifyRecurrente(env, payload, recurrenteVendedor, leadId)  // al MISMO vendedor: "tu cliente volvió"
           : sendLeadEmail(env, payload, request, leadId);              // flujo normal: aviso para asignar
         if (emailCtx) emailCtx.waitUntil(send); else await send;
       }
@@ -183,8 +183,30 @@ async function emailDeVendedor(env, nombre) {
   } catch (e) { return ''; }
 }
 
+// Bloque "¿Cómo te fue?" (4 botones de un clic) usando token firmado.
+const RESULT_SECRET = "sm-result-7Kx9-2026";
+async function _sha(s) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+async function resultadoBlock(leadId, nombre) {
+  if (!leadId) return "";
+  const t = (await _sha(RESULT_SECRET + ":" + leadId)).slice(0, 24);
+  const url = (r) => `https://canchadefutbol7.mx/api/lead-resultado?id=${leadId}&t=${t}&r=${r}`;
+  const btn = (href, bg, color, txt) => `<a href="${href}" style="display:inline-block;background:${bg};color:${color};text-decoration:none;font-weight:700;font-size:13px;padding:10px 14px;border-radius:9px;margin:4px 4px 0 0;border:1px solid ${bg}">${txt}</a>`;
+  const esc = (s) => String(s || "").replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
+  return `<div style="margin-top:18px;padding:14px;background:#f8fafc;border:1px solid #eef2f6;border-radius:12px">
+    <div style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:6px">¿Cómo te fue con ${esc(nombre || "el cliente")}?</div>
+    <div style="font-size:11.5px;color:#64748b;margin-bottom:10px">Un clic = se registra en el panel.</div>
+    ${btn(url("interested"), "#dcfce7", "#15803d", "🟢 Interesado")}
+    ${btn(url("scheduled"), "#dbeafe", "#1d4ed8", "📅 Agendé")}
+    ${btn(url("noresp"), "#fef3c7", "#b45309", "⏰ Sin respuesta")}
+    ${btn(url("notinterested"), "#fee2e2", "#b91c1c", "❌ No interesa")}
+  </div>`;
+}
+
 // 🔁 Aviso al MISMO vendedor de que su cliente volvió a contactar.
-async function notifyRecurrente(env, d, vendedor) {
+async function notifyRecurrente(env, d, vendedor, leadId) {
   try {
     let to = await emailDeVendedor(env, vendedor);
     if (!to) to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com'; // fallback: avisa a Olga
@@ -208,6 +230,7 @@ async function notifyRecurrente(env, d, vendedor) {
             <div style="color:#64748b;margin-top:4px">WhatsApp: ${esc(d.whatsapp || '—')}</div>
           </div>
           ${waLink ? `<a href="${waLink}" style="display:inline-block;margin-top:16px;background:#25d366;color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:12px 20px;border-radius:10px">💬 Contactar por WhatsApp</a>` : ''}
+          ${await resultadoBlock(leadId, nombre)}
           <p style="font-size:12px;color:#94a3b8;margin-top:16px">No cuenta como lead nuevo — es seguimiento. Panel: <a href="https://canchadefutbol7.mx/admin" style="color:#1d4ed8">canchadefutbol7.mx/admin</a></p>
         </div>
       </div>`;

@@ -24,8 +24,27 @@ function canal(l) {
 const atendido = (l) => (l.status_proyecto || "Sin atender") !== "Sin atender";
 const ganado = (l) => (l.status_proyecto || "") === "Ganado";
 
+// Bloque "¿Cómo te fue?" — 4 botones para marcar resultado desde el correo
+const RESULT_SECRET = "sm-result-7Kx9-2026";
+async function _sha(s) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+async function resultadoChips(leadId) {
+  if (!leadId) return "";
+  const t = (await _sha(RESULT_SECRET + ":" + leadId)).slice(0, 24);
+  const url = (r) => `https://canchadefutbol7.mx/api/lead-resultado?id=${leadId}&t=${t}&r=${r}`;
+  const chip = (href, bg, color, txt) => `<a href="${href}" style="display:inline-block;background:${bg};color:${color};text-decoration:none;font-weight:700;font-size:12px;padding:6px 10px;border-radius:7px;margin:4px 4px 0 0">${txt}</a>`;
+  return `<div style="margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0">
+    <div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:700">¿Cómo te fue? Marca con un clic:</div>
+    ${chip(url("interested"), "#dcfce7", "#15803d", "🟢 Interesado")}
+    ${chip(url("scheduled"), "#dbeafe", "#1d4ed8", "📅 Agendé")}
+    ${chip(url("noresp"), "#fef3c7", "#b45309", "⏰ Sin respuesta")}
+    ${chip(url("notinterested"), "#fee2e2", "#b91c1c", "❌ No interesa")}
+  </div>`;
+}
 // Tarjeta accionable de un prospecto (para el correo del vendedor)
-function prospectoCard(l, vendedor) {
+async function prospectoCard(l, vendedor) {
   const nombre = (l.nombre || "Cliente").trim();
   const com = String(l.comentarios || "");
   const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [, ""])[1].trim();
@@ -52,6 +71,7 @@ function prospectoCard(l, vendedor) {
     </div>
     <div style="font-size:13px;color:#475569;margin:8px 0 12px">🎯 Busca: ${esc(busca)}</div>
     ${accion}
+    ${await resultadoChips(l.id)}
   </div>`;
 }
 
@@ -141,11 +161,11 @@ export async function onRequest({ request, env }) {
     </table>`);
 
   // Constructor del correo accionable de un vendedor (lista de prospectos + WhatsApp)
-  function buildVendorHtml(v, s) {
+  async function buildVendorHtml(v, s) {
     const misLeads = (porVendedorLeads[v] || []);
     const urgentes = misLeads.filter(l => /lo antes posible/i.test(l.timeline || "")).length;
     const m2Total = misLeads.reduce((a, l) => a + (parseInt(String(l.m2).replace(/\D/g, ""), 10) || 0), 0);
-    const cards = misLeads.map(l => prospectoCard(l, v)).join("");
+    const cards = (await Promise.all(misLeads.map(l => prospectoCard(l, v)))).join("");
     return shell(`
       <div style="font-size:18px;font-weight:800;margin-bottom:2px">Hola, ${esc(v)} 👋</div>
       <div style="color:#64748b;font-size:14px;margin-bottom:16px">Tienes <b style="color:#15803d">${s.asignados} prospecto${s.asignados === 1 ? "" : "s"}</b> asignado${s.asignados === 1 ? "" : "s"} esta semana. Contáctalos rápido — velocidad = ventas 🟢</div>
@@ -162,14 +182,14 @@ export async function onRequest({ request, env }) {
   const olgaEmail = env.LEADS_EMAIL || OLGA_EMAIL_DEFAULT;
   if (dry) {
     const vParam = url.searchParams.get("v");
-    if (vParam && porVendedor[vParam]) return txt(buildVendorHtml(vParam, porVendedor[vParam]));
+    if (vParam && porVendedor[vParam]) return txt(await buildVendorHtml(vParam, porVendedor[vParam]));
     return txt(globalHtml);
   }
 
   // Vista previa: manda el correo de UN vendedor a Olga (para revisar sin spamear al vendedor)
   const mailV = url.searchParams.get("mailto_olga");
   if (mailV && porVendedor[mailV]) {
-    await sendEmail(env, olgaEmail, `📋 Vista previa del correo de ${mailV}`, buildVendorHtml(mailV, porVendedor[mailV]));
+    await sendEmail(env, olgaEmail, `📋 Vista previa del correo de ${mailV}`, await buildVendorHtml(mailV, porVendedor[mailV]));
     return txt("Vista previa de " + esc(mailV) + " enviada a " + esc(olgaEmail));
   }
 
@@ -183,7 +203,7 @@ export async function onRequest({ request, env }) {
       if (v === "(sin asignar)") continue;
       const to = emailDe[v];
       if (!to) continue;
-      await sendEmail(env, to, `📋 ${s.asignados} prospectos para ti — Sportmaster`, buildVendorHtml(v, s));
+      await sendEmail(env, to, `📋 ${s.asignados} prospectos para ti — Sportmaster`, await buildVendorHtml(v, s));
       enviados.push(v + "<" + to + ">");
     }
   }
