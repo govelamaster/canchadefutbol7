@@ -39,9 +39,9 @@ function prospectoCard(l, vendedor) {
   const tieneNum = num.length >= 10;
   const tel = num.startsWith("52") ? num.slice(2) : num;
   const msg = encodeURIComponent(`Hola ${nombre} 👋 Soy ${vendedor} de Sportmaster. Te contacto por tu interés en una cancha de fútbol 7${l.ciudad ? " en " + l.ciudad : ""}. ¿Cómo te puedo apoyar?`);
-  // El botón SIEMPRE aparece. Con número -> chat directo. Sin número -> abre WhatsApp con el mensaje listo para elegir contacto.
-  const wa = tieneNum ? `https://wa.me/52${tel}?text=${msg}` : `https://wa.me/?text=${msg}`;
-  const waSub = tieneNum ? "" : `<div style="font-size:11px;color:#b45309;margin-top:6px">⚠️ Su número no quedó registrado — búscalo en tus contactos o en el chat del sitio.</div>`;
+  const accion = tieneNum
+    ? `<a href="https://wa.me/52${tel}?text=${msg}" style="display:inline-block;background:#25d366;color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:11px 18px;border-radius:10px">💬 Contactar por WhatsApp</a>`
+    : `<div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:700">⚠️ Sin WhatsApp — no podemos contactarlo. Este lead se capturó incompleto.</div>`;
   return `<div style="border:1px solid #eef2f6;border-radius:14px;padding:14px 16px;margin-bottom:10px;background:#fff">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
       <div>
@@ -51,8 +51,7 @@ function prospectoCard(l, vendedor) {
       <div>${urg}</div>
     </div>
     <div style="font-size:13px;color:#475569;margin:8px 0 12px">🎯 Busca: ${esc(busca)}</div>
-    <a href="${wa}" style="display:inline-block;background:#25d366;color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:11px 18px;border-radius:10px">💬 Contactar por WhatsApp</a>
-    ${waSub}
+    ${accion}
   </div>`;
 }
 
