@@ -305,6 +305,16 @@ body.rol-vendedor .sinasignar-alert{ display:none; }
 #mineBtn.active{ background:#0b0f14; color:#fff; border-color:#0b0f14; }
 #unassignedPill.active{ background:#dc2626; color:#fff; border-color:#dc2626; }
 body.rol-vendedor #unassignedPill{ display:none; }
+/* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
+body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
+body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
+body.rol-vendedor .tab-btn[data-tab="urls"],                 /* tab Por URL */
+body.rol-vendedor .tab-btn[data-tab="leaderboard"]{ display:none !important; }
+/* Tabla más limpia: sin columnas Vendedor (col 2) ni Origen/marketing (col 4) */
+body.rol-vendedor .lead-table thead th:nth-child(2),
+body.rol-vendedor .lead-table tbody td:nth-child(2),
+body.rol-vendedor .lead-table thead th:nth-child(4),
+body.rol-vendedor .lead-table tbody td:nth-child(4){ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"],
@@ -971,7 +981,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
           <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/>
         </svg>
       </div>
-      <h1>Leads · Cotizador F7<small id="lastUpdate">Cargando…</small></h1>
+      <h1><span id="dashTitle">Leads · Cotizador F7</span><small id="lastUpdate">Cargando…</small></h1>
     </div>
     <div class="actions">
       <button class="asistente-chip" id="asistenteChip" title="Cambiar usuario">
@@ -1002,6 +1012,9 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
 
   <!-- ============ TAB: LEADS ============ -->
   <div class="tab-content show" data-tab-content="leads">
+
+    <!-- Saludo personal (solo vendedores) -->
+    <div id="vendorHello" style="display:none"></div>
 
     <!-- Alertas accionables PRIMERO (lo más urgente del día) -->
     <!-- ============ ESPERANDO MI RESPUESTA ============ -->
@@ -1554,6 +1567,34 @@ function applyRoleUI(){
   document.body.classList.add(cls);
   const ub = document.getElementById('usersBtn');
   if (ub) ub.style.display = (CURRENT_ROLE === 'super_admin') ? '' : 'none';
+  // Título del header: saludo personal al vendedor
+  const dt = document.getElementById('dashTitle');
+  if (dt) dt.textContent = (CURRENT_ROLE === 'vendedor') ? ('Hola, ' + (currentUser() || '')) : 'Leads · Cotizador F7';
+  renderVendorHello();
+}
+// Saludo limpio tipo Apple para el vendedor: su nombre + 3 números clave de SUS prospectos.
+function renderVendorHello(){
+  const box = document.getElementById('vendorHello');
+  if (!box) return;
+  if (CURRENT_ROLE !== 'vendedor'){ box.style.display = 'none'; return; }
+  const nombre = currentUser() || 'vendedor';
+  const total = allLeads.length;
+  const porAtender = allLeads.filter(l => !['Ganado','Perdido'].includes(l.status_proyecto || '')).length;
+  const ganados = allLeads.filter(l => (l.status_proyecto || '') === 'Ganado').length;
+  const nuevosHoy = allLeads.filter(l => ymdMx(l.fecha) === hoyMx()).length;
+  const mini = (n, t, c) => `<div style="flex:1 1 90px;min-width:90px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:12px 14px"><div style="font-size:26px;font-weight:800;line-height:1;color:${c||'#fff'}">${n}</div><div style="font-size:12px;opacity:.9;margin-top:4px">${t}</div></div>`;
+  box.style.display = '';
+  box.innerHTML = `
+    <div style="background:linear-gradient(135deg,#0b3d1f 0%,#15522c 100%);color:#fff;border-radius:22px;padding:24px 26px;margin-bottom:18px;box-shadow:0 12px 34px rgba(11,61,31,.28)">
+      <div style="font-size:23px;font-weight:800;letter-spacing:-.02em">Hola, ${escapeHtml(nombre)} 👋</div>
+      <div style="opacity:.85;font-size:14px;margin-top:3px">Estos son tus prospectos. Escríbeles por WhatsApp con el botón verde 👇</div>
+      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+        ${mini(total, 'Prospectos')}
+        ${mini(porAtender, 'Por atender', '#ffe08a')}
+        ${mini(ganados, 'Ganados', '#9af5c0')}
+        ${mini(nuevosHoy, 'Nuevos hoy')}
+      </div>
+    </div>`;
 }
 
 /* ===== Gestión de usuarios (solo admin) ===== */
@@ -1609,6 +1650,9 @@ function enterDash(data){
   if (CURRENT_ROLE === 'vendedor') {
     const yo = (currentUser() || '').trim().toLowerCase();
     leads = leads.filter(l => (l.vendedor || '').trim().toLowerCase() === yo);
+    // El vendedor arranca viendo TODOS sus prospectos (no solo los de hoy)
+    currentRange = 'all';
+    document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
   }
   allLeads = leads;
   applyRoleUI();
@@ -1672,6 +1716,7 @@ setInterval(() => {
 ========================================================= */
 function refreshAll(){
   updateLastSync();
+  renderVendorHello();
   populateVendedorFilter();
   renderVendorTray();
   renderStats();
