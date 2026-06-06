@@ -29,6 +29,21 @@ DISPLAY = {
  "nezahualcoyotl":"Nezahualcóyotl","cuautitlan":"Cuautitlán","comitan-de-dominguez":"Comitán de Domínguez",
  "tapachula":"Tapachula","tuxtla-gutierrez":"Tuxtla Gutiérrez","chilpancingo-de-los-bravo":"Chilpancingo de los Bravo",
  "ciudad-guzman":"Ciudad Guzmán","fresnillo":"Fresnillo","apatzingan":"Apatzingán",
+ # ===== GRUPO 1 (ene-abr 2026 alta conv Google Ads) =====
+ "tehuacan":"Tehuacán","san-martin-texmelucan":"San Martín Texmelucan","atlixco":"Atlixco",
+ "san-pedro-cholula":"San Pedro Cholula","huauchinango":"Huauchinango","izucar-de-matamoros":"Izúcar de Matamoros",
+ "teziutlan":"Teziutlán","cuautlancingo":"Cuautlancingo","amozoc":"Amozoc",
+ "minatitlan-veracruz":"Minatitlán","tuxpan-veracruz":"Tuxpan","boca-del-rio":"Boca del Río","papantla":"Papantla",
+ "zamora":"Zamora","lazaro-cardenas":"Lázaro Cárdenas","patzcuaro":"Pátzcuaro","la-piedad":"La Piedad",
+ "ciudad-hidalgo-michoacan":"Ciudad Hidalgo","zitacuaro":"Zitácuaro","sahuayo":"Sahuayo",
+ "tulancingo":"Tulancingo","tula-de-allende":"Tula de Allende","tizayuca":"Tizayuca","huejutla":"Huejutla",
+ "ixmiquilpan":"Ixmiquilpan","mineral-de-la-reforma":"Mineral de la Reforma","actopan":"Actopan",
+ "tepeji-del-rio":"Tepeji del Río","apan":"Apan",
+ "soledad-de-graciano-sanchez":"Soledad de Graciano Sánchez","ciudad-valles":"Ciudad Valles",
+ "matehuala":"Matehuala","rio-verde":"Río Verde","tamazunchale":"Tamazunchale","ebano":"Ébano",
+ "tamuin":"Tamuín","salinas-slp":"Salinas","cardenas-slp":"Cárdenas",
+ "guadalupe-zacatecas":"Guadalupe","jerez":"Jerez","sombrerete":"Sombrerete","pinos":"Pinos",
+ "rio-grande":"Río Grande","loreto-zacatecas":"Loreto","calera":"Calera","ojocaliente":"Ojocaliente",
 }
 REGION = {
  "cdmx":"centro","toluca":"centro","puebla":"centro","pachuca":"centro","queretaro":"centro",
@@ -52,6 +67,18 @@ REGION = {
  "chalco":"centro","ixtapaluca":"centro","ecatepec-de-morelos":"centro","nezahualcoyotl":"centro",
  "cuautitlan":"centro","chilpancingo-de-los-bravo":"centro","chetumal":"sureste","comitan-de-dominguez":"sureste",
  "tapachula":"sureste","tuxtla-gutierrez":"sureste","ciudad-guzman":"occidente","apatzingan":"occidente","fresnillo":"bajio",
+ # ===== GRUPO 1 regiones =====
+ "tehuacan":"centro","san-martin-texmelucan":"centro","atlixco":"centro","san-pedro-cholula":"centro",
+ "huauchinango":"centro","izucar-de-matamoros":"centro","teziutlan":"centro","cuautlancingo":"centro","amozoc":"centro",
+ "minatitlan-veracruz":"golfo","tuxpan-veracruz":"golfo","boca-del-rio":"golfo","papantla":"golfo",
+ "zamora":"occidente","lazaro-cardenas":"occidente","patzcuaro":"occidente","la-piedad":"occidente",
+ "ciudad-hidalgo-michoacan":"occidente","zitacuaro":"occidente","sahuayo":"occidente",
+ "tulancingo":"centro","tula-de-allende":"centro","tizayuca":"centro","huejutla":"centro",
+ "ixmiquilpan":"centro","mineral-de-la-reforma":"centro","actopan":"centro","tepeji-del-rio":"centro","apan":"centro",
+ "soledad-de-graciano-sanchez":"bajio","ciudad-valles":"bajio","matehuala":"bajio","rio-verde":"bajio",
+ "tamazunchale":"bajio","ebano":"bajio","tamuin":"bajio","salinas-slp":"bajio","cardenas-slp":"bajio",
+ "guadalupe-zacatecas":"bajio","jerez":"bajio","sombrerete":"bajio","pinos":"bajio","rio-grande":"bajio",
+ "loreto-zacatecas":"bajio","calera":"bajio","ojocaliente":"bajio",
 }
 HUBS = ["cdmx","guadalajara","monterrey"]
 FILL = ["puebla","queretaro","leon","toluca","merida","cancun","tijuana","san-luis-potosi",
