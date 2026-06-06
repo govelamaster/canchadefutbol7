@@ -320,6 +320,11 @@ body.rol-vendedor #unassignedPill{ display:none; }
 .speed-alert{ display:flex; align-items:center; gap:8px; background:linear-gradient(90deg,#fef2f2,#fff5f5); border:1px solid #fecaca; color:#991b1b; border-radius:14px; padding:13px 16px; margin-bottom:16px; font-size:14px; }
 .speed-alert b{ color:#b91c1c; }
 .rec-badge{ display:inline-flex; align-items:center; gap:3px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:800; white-space:nowrap; }
+/* Nivel del lead — reemplaza al viejo "Incompleto" con 3 niveles claros */
+.lead-nivel{ display:inline-flex; align-items:center; gap:3px; border-radius:999px; padding:2px 9px; font-size:10.5px; font-weight:800; white-space:nowrap; letter-spacing:.02em; }
+.nl-contactable{ background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; }
+.nl-parcial{ background:#fef3c7; color:#b45309; border:1px solid #fde68a; }
+.nl-solo{ background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0; }
 /* Origen: dominio + slug, en 2 líneas legibles sin truncar */
 .origen-cell{ max-width:260px; }
 .origen-url{ display:block; text-decoration:none; line-height:1.35; margin:2px 0 4px; }
@@ -1529,6 +1534,30 @@ function ayerMx(){ return new Date(Date.now() - 864e5).toLocaleDateString('en-CA
 /* ===== Speed-to-lead: tiempo sin contactar ===== */
 function minsDesde(fecha){ try { const t = Date.parse(String(fecha).replace(' ','T')+'Z'); return Math.max(0, Math.round((Date.now()-t)/60000)); } catch(e){ return 0; } }
 function fmtDur(m){ if (m < 60) return m + ' min'; const h = Math.floor(m/60); if (h < 24) return h + (m%60>=30?'.5':'') + ' h'; return Math.floor(h/24) + ' d'; }
+// Clasifica el lead en 4 niveles para que veas de un vistazo si se puede contactar.
+// 'completo'    → terminó el bot (mejor caso)
+// 'contactable' → no terminó, PERO dejó WhatsApp + nombre real → tu vendedor lo puede llamar
+// 'parcial'     → dejó algunos datos pero NO WhatsApp → casi imposible contactar
+// 'soloabrio'   → abrió el bot y se fue sin escribir nada útil → no es lead
+function nivelLead(l){
+  if ((l.estado||'') === 'completo') return 'completo';
+  const wa = String(l.whatsapp||'').replace(/\D/g,'');
+  const hayTel = wa.length >= 10 && wa !== 'NoloDejó' && !/^0+$/.test(wa);
+  // Nombre real (no el placeholder "Nombre" del input vacío)
+  const nom = String(l.nombre_real||l.nombre||'').trim();
+  const hayNom = nom && nom.toLowerCase() !== 'nombre' && nom.length >= 2;
+  const otros = [l.ciudad, l.m2, l.timeline].filter(v => String(v||'').trim()).length;
+  if (hayTel && hayNom) return 'contactable';
+  if (hayTel || hayNom || otros >= 2) return 'parcial';
+  return 'soloabrio';
+}
+function badgeNivel(l){
+  const n = nivelLead(l);
+  if (n === 'completo') return '';
+  if (n === 'contactable') return '<span class="lead-nivel nl-contactable" title="Dejó WhatsApp + nombre. ¡Llámalo!">🟢 CONTACTABLE</span>';
+  if (n === 'parcial')     return '<span class="lead-nivel nl-parcial" title="Dejó algunos datos pero NO WhatsApp">🟡 PARCIAL</span>';
+  return '<span class="lead-nivel nl-solo" title="Abrió el bot pero no escribió nada útil">⚪ SOLO ABRIÓ</span>';
+}
 // Pendiente = tiene vendedor asignado, aún no atendido y status sigue "Sin atender".
 // NO mostramos badge para leads "sin asignar" — no es justo medir tiempo si nadie es responsable aún.
 function slaPendiente(l){
@@ -3218,9 +3247,7 @@ function renderLeadRow(l, vip){
   const waLink = waNum
     ? `https://wa.me/52${waNum.startsWith('52') ? waNum.slice(2) : waNum}?text=${encodeURIComponent(buildReplyMsg(l))}`
     : '#';
-  const badge = l.estado === 'completo'
-    ? ''
-    : '<span class="badge parcial"><span class="dot"></span>Incompleto</span>';
+  const badge = badgeNivel(l);
   const tocado = l.tocado_por
     ? `<div class="small-meta">por ${escapeHtml(l.tocado_por)} · ${formatFecha(l.tocado_fecha)}</div>`
     : '';
