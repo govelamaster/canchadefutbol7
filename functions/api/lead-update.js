@@ -251,6 +251,30 @@ async function resultadoBlock(leadId, nombre) {
     </div>`;
 }
 
+// Bloque NUEVO de "Compromiso de atención" — solo en correo de asignación.
+// 4 botones de cuándo atender + botón grande "Ya lo atendí".
+async function compromisoBlock(leadId, nombre){
+  if (!leadId) return "";
+  const t = (await _sha(RESULT_SECRET + ":" + leadId)).slice(0, 24);
+  const urlC = (m) => `https://canchadefutbol7.mx/api/lead-compromiso?id=${leadId}&t=${t}&min=${m}`;
+  const urlA = `https://canchadefutbol7.mx/api/lead-atendido?id=${leadId}&t=${t}`;
+  const btn = (href,bg,color,txt)=>`<a href="${href}" style="display:inline-block;background:${bg};color:${color};text-decoration:none;font-weight:800;font-size:13px;padding:11px 14px;border-radius:9px;margin:4px 4px 0 0">${txt}</a>`;
+  const esc = (s) => String(s || "").replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
+  return `
+    <div style="margin-top:18px;padding:16px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px">
+      <div style="font-size:14px;font-weight:800;color:#92400e;margin-bottom:6px">⏰ ¿Cuándo vas a atender a ${esc(nombre||"el cliente")}?</div>
+      <div style="font-size:12px;color:#b45309;margin-bottom:10px">1 clic para comprometerte. Si no marcas nada, te recordamos cada 30 min.</div>
+      ${btn(urlC(0),"#dcfce7","#15803d","✋ Ahora")}
+      ${btn(urlC(15),"#fef3c7","#b45309","⏱ 15 min")}
+      ${btn(urlC(30),"#fed7aa","#9a3412","⏱ 30 min")}
+      ${btn(urlC(60),"#fecaca","#991b1b","⏱ 1 hora")}
+      <div style="margin-top:14px;padding-top:12px;border-top:1px dashed #fde68a">
+        <a href="${urlA}" style="display:inline-block;background:#15803d;color:#fff;text-decoration:none;font-weight:800;font-size:14px;padding:13px 22px;border-radius:10px">✅ Ya lo atendí</a>
+        <div style="font-size:11.5px;color:#64748b;margin-top:6px">Presiona esto cuando ya hayas contactado al cliente.</div>
+      </div>
+    </div>`;
+}
+
 // Manda el correo al vendedor con los datos del cliente. Silencioso ante errores.
 async function notifyVendor(env, to, vendedor, l) {
   try {
@@ -323,6 +347,7 @@ async function notifyVendor(env, to, vendedor, l) {
               ${row('Accesorios', esc(accesorios || '-'))}
             </table>
             ${waLink ? `<a href="${waLink}" style="display:block;text-align:center;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:16px;border-radius:12px;margin-top:22px;box-shadow:0 8px 22px rgba(37,211,102,.34)">💬 Contactar a ${esc(firstName)} por WhatsApp</a>` : ''}
+            ${await compromisoBlock(l.id, nombre)}
             ${await resultadoBlock(l.id, nombre)}
             ${fraseVip ? `<p style="text-align:center;font-size:12.5px;color:#64748b;font-style:italic;line-height:1.5;margin:16px 14px 2px">“${esc(fraseVip)}”</p>` : ''}
             <p style="text-align:center;font-size:12px;color:#94a3b8;margin:14px 0 6px">o entra al panel: <a href="https://canchadefutbol7.mx/admin" style="color:#94a3b8">canchadefutbol7.mx/admin</a></p>
