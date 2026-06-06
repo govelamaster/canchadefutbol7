@@ -320,6 +320,12 @@ body.rol-vendedor #unassignedPill{ display:none; }
 .speed-alert{ display:flex; align-items:center; gap:8px; background:linear-gradient(90deg,#fef2f2,#fff5f5); border:1px solid #fecaca; color:#991b1b; border-radius:14px; padding:13px 16px; margin-bottom:16px; font-size:14px; }
 .speed-alert b{ color:#b91c1c; }
 .rec-badge{ display:inline-flex; align-items:center; gap:3px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; border-radius:999px; padding:2px 9px; font-size:11px; font-weight:800; white-space:nowrap; }
+/* Origen: dominio + slug, en 2 líneas legibles sin truncar */
+.origen-cell{ max-width:260px; }
+.origen-url{ display:block; text-decoration:none; line-height:1.35; margin:2px 0 4px; }
+.origen-url:hover .origen-slug{ color:#0f172a; text-decoration:underline; }
+.origen-dom{ font-size:11.5px; font-weight:700; color:#0f172a; }
+.origen-slug{ font-size:11px; color:#64748b; font-family:ui-monospace,Menlo,monospace; word-break:break-all; white-space:normal; }
 /* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
 body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
@@ -3231,12 +3237,29 @@ function renderLeadRow(l, vip){
   </tr>`;
 }
 
-/* Origen del lead: campaña + URL + gclid/CID (métrica de marketing) */
+/* Origen del lead: campaña (de dónde viene) + DOMINIO + SLUG legible + gclid.
+   Sin truncado: el slug se parte en 2 líneas para que se lea completo. */
 function origenCell(l){
   if (!l.url && !l.campania && !l.gclid) return '<span class="small-meta">—</span>';
   const camp = l.campania ? `<div style="font-weight:700;color:#3f922a;font-size:12px">${escapeHtml(l.campania)}</div>` : '';
-  const urlShort = (l.url || '').replace(/^https?:\/\//,'');
-  const urlEl = l.url ? `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="small-meta" style="display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(l.url)}">${escapeHtml(urlShort)}</a>` : '';
+  let urlEl = '';
+  if (l.url){
+    let dominio = '', slug = '';
+    try {
+      const u = new URL(l.url);
+      dominio = u.hostname.replace(/^www\./,'');
+      slug = (u.pathname + (u.search || '')).replace(/^\/$/, '/ (home)');
+    } catch(e){
+      const s = String(l.url).replace(/^https?:\/\//,'');
+      const i = s.indexOf('/');
+      dominio = i >= 0 ? s.slice(0,i) : s;
+      slug = i >= 0 ? s.slice(i) : '/';
+    }
+    urlEl = `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="origen-url" title="Abrir en nueva pestaña: ${escapeHtml(l.url)}">
+      <div class="origen-dom">${escapeHtml(dominio)}</div>
+      <div class="origen-slug">${escapeHtml(slug)}</div>
+    </a>`;
+  }
   const gclidEl = l.gclid ? `<div class="small-meta" title="Google Ads click ID">🔑 ${escapeHtml(l.gclid.slice(0,22))}${l.gclid.length>22?'…':''}</div>` : '';
   return camp + urlEl + gclidEl;
 }
