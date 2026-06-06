@@ -1538,9 +1538,20 @@ function slaPendiente(l){
 }
 function slaBadge(l){
   if (!slaPendiente(l)) return '';
-  // Cuenta desde que fue asignado (no desde que cayó). Fallback a l.fecha si no hay asignado_fecha.
   const desde = l.asignado_fecha || l.fecha;
   const m = minsDesde(desde);
+  // 1) Si hay compromiso vigente → mostrar "Atiende en X min" verde tranquilo
+  if (l.compromiso_fecha){
+    const venceMs = Date.parse(String(l.compromiso_fecha).replace(' ','T')+'Z');
+    const restan = Math.round((venceMs - Date.now())/60000);
+    if (restan > 0){
+      return `<span class="sla-badge" title="Compromiso del vendedor" style="background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe">⏰ Atiende en ${restan} min</span>`;
+    }
+    // Vencido → rojo fuerte
+    const venc = Math.abs(restan);
+    return `<span class="sla-badge sla-pulse" title="Compromiso vencido" style="background:#fee2e2;color:#b91c1c;border:1px solid #fecaca">🔴 Vencido hace ${venc} min · atender YA</span>`;
+  }
+  // 2) Sin compromiso → escala verde/ámbar/rojo según tiempo desde asignación
   const c = m < 15 ? ['#dcfce7','#15803d','#bbf7d0'] : (m < 30 ? ['#fef3c7','#b45309','#fde68a'] : ['#fee2e2','#b91c1c','#fecaca']);
   return `<span class="sla-badge${m>=30?' sla-pulse':''}" title="Tiempo desde que se asignó al vendedor" style="background:${c[0]};color:${c[1]};border:1px solid ${c[2]}">⏱ ${fmtDur(m)} sin atender</span>`;
 }
