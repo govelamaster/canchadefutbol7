@@ -1529,12 +1529,20 @@ function ayerMx(){ return new Date(Date.now() - 864e5).toLocaleDateString('en-CA
 /* ===== Speed-to-lead: tiempo sin contactar ===== */
 function minsDesde(fecha){ try { const t = Date.parse(String(fecha).replace(' ','T')+'Z'); return Math.max(0, Math.round((Date.now()-t)/60000)); } catch(e){ return 0; } }
 function fmtDur(m){ if (m < 60) return m + ' min'; const h = Math.floor(m/60); if (h < 24) return h + (m%60>=30?'.5':'') + ' h'; return Math.floor(h/24) + ' d'; }
-function slaPendiente(l){ return (l.status_proyecto || 'Sin atender') === 'Sin atender'; }
+// Pendiente = tiene vendedor asignado, aún no atendido y status sigue "Sin atender".
+// NO mostramos badge para leads "sin asignar" — no es justo medir tiempo si nadie es responsable aún.
+function slaPendiente(l){
+  if (l.atendido_fecha) return false;
+  if (!(l.vendedor || '').trim()) return false;
+  return (l.status_proyecto || 'Sin atender') === 'Sin atender';
+}
 function slaBadge(l){
   if (!slaPendiente(l)) return '';
-  const m = minsDesde(l.fecha);
+  // Cuenta desde que fue asignado (no desde que cayó). Fallback a l.fecha si no hay asignado_fecha.
+  const desde = l.asignado_fecha || l.fecha;
+  const m = minsDesde(desde);
   const c = m < 15 ? ['#dcfce7','#15803d','#bbf7d0'] : (m < 30 ? ['#fef3c7','#b45309','#fde68a'] : ['#fee2e2','#b91c1c','#fecaca']);
-  return `<span class="sla-badge${m>=30?' sla-pulse':''}" title="Tiempo sin contactar (velocidad = ventas)" style="background:${c[0]};color:${c[1]};border:1px solid ${c[2]}">⏱ ${fmtDur(m)} sin contactar</span>`;
+  return `<span class="sla-badge${m>=30?' sla-pulse':''}" title="Tiempo desde que se asignó al vendedor" style="background:${c[0]};color:${c[1]};border:1px solid ${c[2]}">⏱ ${fmtDur(m)} sin atender</span>`;
 }
 function ymdMx(fecha){
   if (!fecha) return '';
@@ -1759,6 +1767,11 @@ function normalizeLead(l){
     ...l,
     vendedor: l.vendedor || '',
     recurrente: l.recurrente || 0,
+    asignado_fecha: l.asignado_fecha || '',
+    compromiso_min: l.compromiso_min || 0,
+    compromiso_fecha: l.compromiso_fecha || '',
+    atendido_fecha: l.atendido_fecha || '',
+    recordatorios: l.recordatorios || 0,
     estado_manual: l.estado_manual || '',
     tipo_cliente: l.tipo_cliente || '',
     status_proyecto: l.status_proyecto || 'Sin atender',

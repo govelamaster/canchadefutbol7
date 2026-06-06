@@ -117,7 +117,15 @@ export async function onRequestPost(context) {
       if (!nuevo) {
         // Mandado a "Sin asignar": recordamos quién lo tenía (para el reenvío al reasignar).
         if (oldVendedor) { try { await env.DB.prepare("UPDATE leads SET vendedor_anterior = ? WHERE id = ?").bind(oldVendedor, id).run(); } catch (e) {} }
-      } else if (env.RESEND_API_KEY) {
+      } else {
+        // Asignación o reasignación → arranca el reloj SLA del vendedor + resetea compromiso y atención.
+        try {
+          await env.DB.prepare(
+            "UPDATE leads SET asignado_fecha = ?, compromiso_min = 0, compromiso_fecha = NULL, atendido_fecha = NULL, recordatorios = 0 WHERE id = ?"
+          ).bind(now, id).run();
+        } catch (e) {}
+      }
+      if (nuevo && env.RESEND_API_KEY) {
         const lead = await env.DB.prepare(
           "SELECT nombre, nombre_real, whatsapp, ciudad, m2, timeline, comentarios FROM leads WHERE id = ?"
         ).bind(id).first();

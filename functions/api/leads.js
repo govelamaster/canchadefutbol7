@@ -38,7 +38,8 @@ export async function onRequestGet(context) {
       SELECT id, fecha, session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente,
              url, gclid, campania,
              vendedor, tipo_cliente, status_proyecto, notas_internas, tocado_por, tocado_fecha, estado_manual,
-             recurrente, dup_de
+             recurrente, dup_de,
+             asignado_fecha, compromiso_min, compromiso_fecha, atendido_fecha, recordatorios
       FROM leads
       ORDER BY fecha DESC
       LIMIT 5000
