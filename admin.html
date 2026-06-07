@@ -346,52 +346,63 @@ body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-al
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"], body.rol-admin .tab-btn[data-tab="bot"],
 body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="plantillas"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"], body.rol-vendedor .tab-btn[data-tab="bot"]{ display:none !important; }
 @keyframes botPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(34,197,94,.5); } 50%{ box-shadow:0 0 0 6px rgba(34,197,94,0); } }
-body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
+/* Botón basurero inline por fila: ya no se usa (reemplazado por bulk en toolbar) */
+.del-btn{ display:none !important; }
 /* Selección múltiple para borrar leads en lote (solo dueño) */
-body.rol-admin .bulk-bar, body.rol-vendedor .bulk-bar,
+body.rol-admin .bulk-trash-btn, body.rol-vendedor .bulk-trash-btn,
 body.rol-admin .bulk-check, body.rol-vendedor .bulk-check{ display:none !important; }
-.bulk-bar{
-  display:none;
-  align-items:center; gap:12px; flex-wrap:wrap;
-  margin:0 0 10px;
-  padding:10px 14px;
-  background:linear-gradient(180deg,#fef2f2,#fee2e2);
-  border:1px solid #fecaca;
-  border-radius:12px;
-}
-.bulk-bar.show{ display:flex; }
-.bulk-bar .bulk-count{
-  font-weight:800; font-size:14px; color:#991b1b; letter-spacing:-.01em;
-}
-.bulk-bar label.bulk-all{
-  display:inline-flex; align-items:center; gap:8px;
-  font-size:13px; font-weight:600; color:#374151;
-  cursor:pointer; user-select:none;
-}
-.bulk-bar .bulk-del-btn{
-  margin-left:auto;
-  height:36px; padding:0 16px;
-  background:#dc2626; color:#fff; border:0; border-radius:9px;
-  font-family:inherit; font-size:13.5px; font-weight:700;
-  cursor:pointer; display:inline-flex; align-items:center; gap:8px;
-  transition:transform .15s, box-shadow .2s, background .2s;
-}
-.bulk-bar .bulk-del-btn:hover{ background:#b91c1c; transform:translateY(-1px); box-shadow:0 6px 14px rgba(220,38,38,.25); }
-.bulk-bar .bulk-del-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
-.bulk-bar .bulk-clear{
-  background:#fff; color:#374151; border:1px solid #e5e7eb; border-radius:8px;
-  height:32px; padding:0 12px; font-family:inherit; font-size:12.5px; font-weight:600;
-  cursor:pointer;
-}
-.bulk-bar .bulk-clear:hover{ background:#f9fafb; }
 .bulk-check{
   flex:none;
   width:18px; height:18px;
   cursor:pointer;
   accent-color:#dc2626;
-  margin-right:4px;
+  margin:9px 4px 0 0;
 }
-.nombre-wrap .bulk-check{ margin-top:9px; }
+/* Botón basurero en la toolbar (al final, junto a "Sin asignar") */
+.bulk-trash-btn{
+  position:relative;
+  height:36px; min-width:42px;
+  padding:0 12px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  color:#9ca3af;
+  font-family:inherit; font-size:13px; font-weight:700;
+  transition:all .18s;
+}
+.bulk-trash-btn svg{ width:18px; height:18px; }
+.bulk-trash-btn:disabled{ cursor:not-allowed; opacity:.55; }
+.bulk-trash-btn.has-selection{
+  background:#dc2626; color:#fff; border-color:#dc2626;
+}
+.bulk-trash-btn.has-selection:hover{
+  background:#b91c1c; border-color:#b91c1c;
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(220,38,38,.28);
+}
+.bulk-trash-btn .bulk-trash-count{
+  display:none;
+  background:rgba(255,255,255,.22);
+  border-radius:6px;
+  padding:2px 8px;
+  font-size:12.5px; font-weight:800;
+  letter-spacing:.01em;
+}
+.bulk-trash-btn.has-selection .bulk-trash-count{ display:inline-block; }
+/* Master checkbox dentro de la toolbar */
+.bulk-master{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:0 10px; height:36px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  font-size:12.5px; font-weight:600; color:#374151;
+  cursor:pointer; user-select:none;
+}
+.bulk-master input{ accent-color:#dc2626; width:16px; height:16px; cursor:pointer; }
+body.rol-admin .bulk-master, body.rol-vendedor .bulk-master{ display:none !important; }
 /* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
 body.rol-admin .cell-select[data-field="status_proyecto"],
 body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; background:transparent; }
@@ -1136,21 +1147,17 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
         <button class="filter-pill active" data-filter="all">Todos</button>
         <button class="filter-pill" id="unassignedPill" onclick="filtrarSinAsignar()" title="Ver solo los leads sin vendedor">🔴 Sin asignar</button>
       </div>
+      <label class="bulk-master" title="Seleccionar/deseleccionar todos los visibles">
+        <input type="checkbox" id="bulkSelectAll" onchange="toggleSelectAllLeads(this.checked)" />
+        Todos
+      </label>
+      <button type="button" class="bulk-trash-btn" id="bulkDelBtn" onclick="bulkDeleteLeads()" disabled title="Eliminar leads seleccionados">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg>
+        <span class="bulk-trash-count" id="bulkCount">0</span>
+      </button>
     </div>
 
     <div class="table-wrap">
-      <div class="bulk-bar" id="bulkBar">
-        <label class="bulk-all">
-          <input type="checkbox" class="bulk-check" id="bulkSelectAll" onchange="toggleSelectAllLeads(this.checked)" />
-          Seleccionar todos los visibles
-        </label>
-        <span class="bulk-count" id="bulkCount">0 seleccionados</span>
-        <button type="button" class="bulk-clear" onclick="clearBulkSelection()">Limpiar</button>
-        <button type="button" class="bulk-del-btn" id="bulkDelBtn" onclick="bulkDeleteLeads()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg>
-          Eliminar seleccionados
-        </button>
-      </div>
       <table class="lead-table">
         <thead>
           <tr>
@@ -3762,16 +3769,15 @@ function clearBulkSelection(){
   updateBulkBar();
 }
 function updateBulkBar(){
-  const bar = document.getElementById('bulkBar');
   const count = document.getElementById('bulkCount');
   const btn = document.getElementById('bulkDelBtn');
   const all = document.getElementById('bulkSelectAll');
-  if (!bar || !count || !btn) return;
+  if (!btn) return;
   const n = selectedLeadIds.size;
-  if (n > 0) bar.classList.add('show'); else bar.classList.remove('show');
-  count.textContent = `${n} seleccionado${n === 1 ? '' : 's'}`;
+  if (count) count.textContent = String(n);
   btn.disabled = n === 0;
-  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg> Eliminar ${n > 0 ? n + ' ' : ''}seleccionado${n === 1 ? '' : 's'}`;
+  btn.classList.toggle('has-selection', n > 0);
+  btn.setAttribute('title', n === 0 ? 'Selecciona leads para eliminar' : `Eliminar ${n} lead${n === 1 ? '' : 's'} seleccionado${n === 1 ? '' : 's'}`);
   if (all){
     const visibles = visibleLeadIds();
     const todosMarcados = visibles.length > 0 && visibles.every(id => selectedLeadIds.has(id));
