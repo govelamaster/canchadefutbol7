@@ -47,4 +47,4 @@ Medidas aproximadas, ciudad, tipo de cancha, uso esperado, fotos del área y si 
 
 ## Medidas de canchas de futbol 5, 7, rápido y 11
 
-Futbol 5: desde 40 x 20 m. Futbol 7: 50 x 30 m a 60 x 40 m; con 1.5 m de contracancha por lado, 53 x 33 m a 63 x 43 m. Futbol rápido: 53 x 33 m. Futbol 11 / soccer: 60 x 90 m a 90 x 120 m; con 1.5 m de contracancha por lado, 63 x 93 m a 93 x 123 m.
+Futbol 5: desde 40 x 20 m. Futbol 7: 50 x 30 m a 60 x 40 m; con 1.5 m de contracancha por lado, 53×22 m a 63 x 43 m. Futbol rápido: 53×22 m. Futbol 11 / soccer: 60 x 90 m a 90 x 120 m; con 1.5 m de contracancha por lado, 63 x 93 m a 93 x 123 m.

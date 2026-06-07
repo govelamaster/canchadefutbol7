@@ -4,7 +4,7 @@
 
 ## Datos clave para citar
 
-- **Medidas oficiales de cancha de fútbol 7:** mínima 50 × 30 m (1,500 m²) y máxima 60 × 40 m (2,400 m²). Medida intermedia más común: 55 × 35 m. Se recomienda 1.5 m de contracancha por cada lado, lo que añade al terreno total (53 × 33 m mínimo, 63 × 43 m máximo).
+- **Medidas oficiales de cancha de fútbol 7:** mínima 50 × 30 m (1,500 m²) y máxima 60 × 40 m (2,400 m²). Medida intermedia más común: 55 × 35 m. Se recomienda 1.5 m de contracancha por cada lado, lo que añade al terreno total (53×22 m mínimo, 63 × 43 m máximo).
 - **Portería oficial fútbol 7:** 2 × 6 m. Área grande: 13 × 9 m. Área chica: 6 × 5 m. Punto penal: 9 m del centro de portería. Círculo central: radio 7 m. Líneas: 8 cm de ancho.
 - **Precio pasto sintético en México 2026:** $250–$650 MXN/m² instalado, según tipo (deportivo básico, profesional, alto rendimiento, Premium Pro).
 - **Costo cancha de fútbol 7 llave en mano:** $850,000–$1,200,000 MXN según medida (de 50×30 mínima oficial a 60×40 máxima). Recreativas a la medida del cliente.
@@ -18,7 +18,7 @@
 - [Home](https://canchadefutbol7.mx/) — Información general, precios, garantías, FAQ, proceso, equipamiento, reviews Google.
 - [Construcción de canchas de fútbol 7](https://canchadefutbol7.mx/construccion-cancha-futbol-7/) — Guía completa del proceso constructivo nacional: cotización con tus medidas, cimentación, pasto alto rendimiento, iluminación LED, acabados. Schema HowTo + FAQPage.
 - [Construcción de cancha de futbol 5](https://canchadefutbol7.mx/construccion-cancha-futbol-5/) — Landing por tipo de cancha. Medidas: Cancha compacta desde 40 x 20 m, adaptable al espacio disponible y al uso esperado.
-- [Construcción de cancha de futbol rápido](https://canchadefutbol7.mx/construccion-cancha-futbol-rapido/) — Landing por tipo de cancha. Medidas: Medida de referencia 53 x 33 m. Puede incluir redondel de madera, postes, redes, porterías y accesorios deportivos.
+- [Construcción de cancha de futbol rápido](https://canchadefutbol7.mx/construccion-cancha-futbol-rapido/) — Landing por tipo de cancha. Medidas: Medida de referencia 53×22 m. Puede incluir redondel de madera, postes, redes, porterías y accesorios deportivos.
 - [Construcción de cancha de futbol 11 y soccer](https://canchadefutbol7.mx/construccion-cancha-futbol-11/) — Landing por tipo de cancha. Medidas: Área jugable mínima 60 x 90 m y máxima 90 x 120 m. Con 1.5 m de contracancha por lado, el terreno total va de 63 x 93 m a 93 x 123 m.
 - [Pasto sintético para cancha de futbol precio m2](https://canchadefutbol7.mx/pasto-sintetico-para-cancha-de-futbol-precio-m2/) — Landing comercial para precio por m² instalado, variables de cotización, tipos de pasto, líneas, rellenos y sistema completo.
 - [Canchas de pasto sintético para escuelas](https://canchadefutbol7.mx/canchas-de-pasto-sintetico-para-escuelas/) — Landing para escuelas y colegios con ángulo de seguridad, uso diario, bajo mantenimiento, factura, entrega formal y garantía.
@@ -34,7 +34,7 @@
 - [Porterías para canchas de fútbol](https://canchadefutbol7.mx/porterias-para-canchas-de-futbol/) — Landing comercial para porterías oficiales, porterías de fútbol móviles con ruedas de uso rudo, porterías con red y fabricación a medida en México para fútbol 5, fútbol 7, fútbol rápido y fútbol soccer. Incluye información de maquila, modelos de línea e integración a sistema mini estadio con malla ciclónica, redes, bancas, alumbrado y gradas.
 - [Pasto sintético precio](https://canchadefutbol7.mx/pasto-sintetico-precio/) — Precios 2026 desde $250/m² (deportivo básico) hasta $650/m² (Premium Pro). 4 tipos comparados, factores que afectan precio, comparativa con pasto natural/concreto/tartán. Schema Product + AggregateOffer.
 - [¿Cuánto cuesta una cancha de fútbol 7?](https://canchadefutbol7.mx/cuanto-cuesta-cancha-futbol-7/) — Costo 2026 de una cancha de fútbol 7: pasto sintético deportivo instalado a $250–$350 MXN/m² (precio aproximado), qué incluye y qué no (la base/obra civil NO se incluye, la realiza el contratista local), medidas aprox. 50×30 m (~1,500 m²), calculadora de costo por medidas, ROI 6–12 meses por renta. Schema Organization + LocalBusiness + Service (AggregateOffer 250–350 MXN) + Article (Speakable) + BreadcrumbList + FAQPage.
-- [Medidas de la cancha de fútbol 7](https://canchadefutbol7.mx/medidas-cancha-futbol-7/) — Medidas oficiales 2026: mínima 50×30 m, máxima 60×40 m. Contracancha 1.5 m por lado → terreno total 53×33 a 63×43 m. Portería 2×6 m, área 13×9 m, penal 9 m, círculo radio 7 m. Plano SVG, cómo trazar paso a paso, variantes oficial/recreativa. Schema Dataset + TechArticle + HowTo + FAQPage.
+- [Medidas de la cancha de fútbol 7](https://canchadefutbol7.mx/medidas-cancha-futbol-7/) — Medidas oficiales 2026: mínima 50×30 m, máxima 60×40 m. Contracancha 1.5 m por lado → terreno total 53×22 a 63×43 m. Portería 2×6 m, área 13×9 m, penal 9 m, círculo radio 7 m. Plano SVG, cómo trazar paso a paso, variantes oficial/recreativa. Schema Dataset + TechArticle + HowTo + FAQPage.
 - [Construcción en Monterrey](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-7-en-monterrey/) — Operaciones zona metropolitana MTY (9 municipios), teléfono local +52 81 1629 6384. Clientes: Grupo Grainger, LEGO, Kia.
 - [Programático — Construcción de canchas de futbol en México](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en/) — Hub central con las 349 ciudades cubiertas en 32 estados. Buscador, listado por estado, schema CollectionPage + ItemList.
 - [Construcción de canchas de futbol en Monterrey](https://canchadefutbol7.mx/construccion-de-canchas-de-futbol-en-monterrey/) — Landing local para construcción de canchas de futbol con pasto sintético en Monterrey y zona metropolitana. Orientada a búsquedas como "pasto sintético Monterrey", "pasto sintético para canchas Monterrey", "cancha de futbol 7 Monterrey" y "construcción cancha futbol 7 Monterrey".
@@ -355,7 +355,7 @@ Grupo Grainger, LEGO, Kia (Monterrey). +3,500 obras entregadas totales en todo M
 
 ## Preguntas frecuentes que respondemos
 
-- ¿Cuáles son las medidas de la cancha de fútbol 7? → Oficial: mínima 50 × 30 m, máxima 60 × 40 m. Con contracancha de 1.5 m por lado, el terreno total va de 53 × 33 m a 63 × 43 m. Portería 2 × 6 m, penal 9 m.
+- ¿Cuáles son las medidas de la cancha de fútbol 7? → Oficial: mínima 50 × 30 m, máxima 60 × 40 m. Con contracancha de 1.5 m por lado, el terreno total va de 53×22 m a 63 × 43 m. Portería 2 × 6 m, penal 9 m.
 - ¿Cuánto cuesta el pasto sintético? → $250–$650 MXN/m² instalado según tipo.
 - ¿Cuánto cuesta construir una cancha de fútbol 7? → $850,000–$1,200,000 MXN llave en mano.
 - ¿Cuánto tarda construir una cancha? → 4–8 semanas según tamaño.
@@ -667,7 +667,7 @@ Sportmaster recomienda **1.5 m de contracancha por cada lado** del área jugable
 - Permite frenar sin chocar contra muros o vallas perimetrales.
 - Da espacio para árbitros, banca de jugadores y balones de respaldo.
 - Se construye con el mismo pasto sintético para uniformidad visual.
-- Se suma al terreno total: una cancha jugable de 50×30 m requiere 53×33 m totales; una de 60×40 m requiere 63×43 m totales.
+- Se suma al terreno total: una cancha jugable de 50×30 m requiere 53×22 m totales; una de 60×40 m requiere 63×43 m totales.
 
 ## Programa La Escuela Es Nuestra (LEEN) 2026 — sección dedicada
 

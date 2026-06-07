@@ -25,7 +25,7 @@ Construcción de canchas de futbol en Escuinapa. El proyecto puede incluir sumin
 
 - Futbol 5: desde 40 x 20 m.
 - Futbol 7: 50 x 30 m a 60 x 30 m.
-- Futbol rápido: 53 x 33 m, con opción de redondel, postes y redes.
+- Futbol rápido: 53×22 m, con opción de redondel, postes y redes.
 - Futbol 11 / soccer: 60 x 90 m a 90 x 120 m.
 - Escuelas y colegios: canchas para uso diario, recreos, clases y torneos internos.
 - Clubes y complejos deportivos: canchas para reservas, ligas, academias y operación comercial.

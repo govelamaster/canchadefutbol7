@@ -10,8 +10,8 @@ Construcción de cancha de futbol 7. El proyecto puede incluir suministro e inst
 
 ## Medidas clave
 
-- Área jugable mínima 50 x 30 m y máxima 60 x 40 m. Con 1.5 m de contracancha por lado, el terreno total va de 53 x 33 m a 63 x 43 m.
-- Referencia de terreno: Terreno total 53 x 33 m a 63 x 43 m.
+- Área jugable mínima 50 x 30 m y máxima 60 x 40 m. Con 1.5 m de contracancha por lado, el terreno total va de 53×22 m a 63 x 43 m.
+- Referencia de terreno: Terreno total 53×22 m a 63 x 43 m.
 
 ## Búsquedas e intención principal
 
@@ -35,11 +35,11 @@ Construcción de cancha de futbol 7. El proyecto puede incluir suministro e inst
 
 ### ¿Qué medidas tiene una cancha de futbol 7?
 
-La medida mínima jugable de futbol 7 es 50 x 30 m y la máxima 60 x 40 m. Al dejar 1.5 m de contracancha en laterales largos y cortos, el terreno total se convierte en 53 x 33 m mínimo y 63 x 43 m máximo.
+La medida mínima jugable de futbol 7 es 50 x 30 m y la máxima 60 x 40 m. Al dejar 1.5 m de contracancha en laterales largos y cortos, el terreno total se convierte en 53×22 m mínimo y 63 x 43 m máximo.
 
 ### ¿Cuánto cuesta construir una cancha de futbol 7?
 
-El precio depende de medida, tipo de pasto sintético, rellenos, líneas, accesorios, ubicación y alcance contratado. La medida jugable va de 50 x 30 m a 60 x 40 m; con contracancha, el terreno total recomendado va de 53 x 33 m a 63 x 43 m.
+El precio depende de medida, tipo de pasto sintético, rellenos, líneas, accesorios, ubicación y alcance contratado. La medida jugable va de 50 x 30 m a 60 x 40 m; con contracancha, el terreno total recomendado va de 53×22 m a 63 x 43 m.
 
 ### ¿Qué información se necesita para cotizar?
 
@@ -47,4 +47,4 @@ Medidas aproximadas, ciudad, tipo de cancha, uso esperado, fotos del área y si 
 
 ## Medidas de canchas de futbol 5, 7, rápido y 11
 
-Futbol 5: desde 40 x 20 m. Futbol 7: 50 x 30 m a 60 x 40 m; con 1.5 m de contracancha por lado, 53 x 33 m a 63 x 43 m. Futbol rápido: 53 x 33 m. Futbol 11 / soccer: 60 x 90 m a 90 x 120 m; con 1.5 m de contracancha por lado, 63 x 93 m a 93 x 123 m.
+Futbol 5: desde 40 x 20 m. Futbol 7: 50 x 30 m a 60 x 40 m; con 1.5 m de contracancha por lado, 53×22 m a 63 x 43 m. Futbol rápido: 53×22 m. Futbol 11 / soccer: 60 x 90 m a 90 x 120 m; con 1.5 m de contracancha por lado, 63 x 93 m a 93 x 123 m.
