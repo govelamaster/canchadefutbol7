@@ -44,10 +44,20 @@ export async function onRequestGet({ request, env }) {
         ).bind(domain).first();
       }
 
-      // 3) compat backward: filas viejas sin domain
-      if (!row) {
+      // 3) compat backward: filas con domain default (canchadefutbol7.mx).
+      // CRÍTICO: restringir al dominio default — sin esto, un dominio sin seed
+      // matchearía CUALQUIER bot con url_pattern='/' (bug visto 2026-06-07:
+      // pickleball mostraba teaser de PlayZone).
+      if (!row && domain !== 'canchadefutbol7.mx') {
         row = await env.DB.prepare(
-          SELECT + " WHERE url_pattern = ? AND activo = 1 LIMIT 1"
+          SELECT + " WHERE domain = 'canchadefutbol7.mx' AND url_pattern = ? AND activo = 1 LIMIT 1"
+        ).bind(path).first();
+        // Si encontró match en canchadefutbol7.mx pero pedimos otro dominio,
+        // NO devolver — el bot debe quedar genérico hasta tener seed del dominio.
+        if (row) row = null;
+      } else if (!row) {
+        row = await env.DB.prepare(
+          SELECT + " WHERE domain = 'canchadefutbol7.mx' AND url_pattern = ? AND activo = 1 LIMIT 1"
         ).bind(path).first();
       }
     } catch (e) { row = null; }
