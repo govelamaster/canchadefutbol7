@@ -1,8 +1,15 @@
 /**
- * GET /api/bot-config?path=/bancas-para-jugadores/
- * Devuelve la configuración del chatbot para esa URL.
+ * GET /api/bot-config?path=/bancas-para-jugadores/&domain=canchadefutbol7.mx
+ * Devuelve la configuración del chatbot para ese (dominio, URL).
  * Si no encuentra match -> 200 { ok: true, config: null } -> chatbot.js cae al bot genérico.
  * Siempre responde rápido y nunca falla con error: si la DB explota, devuelve null (fallback seguro).
+ *
+ * MULTI-TENANT: columna `domain` en bot_configs identifica la empresa.
+ *   Default = 'canchadefutbol7.mx' (back-compat con filas existentes).
+ *   Fallback en orden:
+ *     1) (domain, path) exacto
+ *     2) (domain, '/') = bot por default de ese dominio
+ *     3) (canchadefutbol7.mx, path) compat con filas viejas sin domain
  */
 function json(o, s) {
   return new Response(JSON.stringify(o), {
@@ -19,14 +26,30 @@ export async function onRequestGet({ request, env }) {
   try {
     const url = new URL(request.url);
     const path = (url.searchParams.get("path") || "/").toLowerCase();
+    const domain = (url.searchParams.get("domain") || "canchadefutbol7.mx").toLowerCase().replace(/^www\./, "");
     if (!env.DB) return json({ ok: true, config: null });
 
-    // Busca match EXACTO primero, después por prefijo (para futuros patterns con *)
+    const SELECT = "SELECT bot_name, teaser_titulo, teaser_sub, pasos_json, fuente_label, cta_label FROM bot_configs";
     let row = null;
     try {
+      // 1) match exacto (domain + path)
       row = await env.DB.prepare(
-        "SELECT bot_name, teaser_titulo, teaser_sub, pasos_json, fuente_label, cta_label FROM bot_configs WHERE url_pattern = ? AND activo = 1 LIMIT 1"
-      ).bind(path).first();
+        SELECT + " WHERE domain = ? AND url_pattern = ? AND activo = 1 LIMIT 1"
+      ).bind(domain, path).first();
+
+      // 2) default por dominio (url_pattern = '/')
+      if (!row && path !== "/") {
+        row = await env.DB.prepare(
+          SELECT + " WHERE domain = ? AND url_pattern = '/' AND activo = 1 LIMIT 1"
+        ).bind(domain).first();
+      }
+
+      // 3) compat backward: filas viejas sin domain
+      if (!row) {
+        row = await env.DB.prepare(
+          SELECT + " WHERE url_pattern = ? AND activo = 1 LIMIT 1"
+        ).bind(path).first();
+      }
     } catch (e) { row = null; }
 
     if (!row) return json({ ok: true, config: null });

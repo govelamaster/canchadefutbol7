@@ -175,11 +175,18 @@
 
   /* --- lógica del bot (idéntica a la home) --- */
 const Cot = (function(){
+  // MULTI-TENANT: si el chatbot vive en otro dominio (gradasdefutbol.mx, etc.)
+  // las APIs siguen corriendo en canchadefutbol7.mx. Detectamos host y usamos
+  // URLs absolutas cross-origin cuando hace falta.
+  const __HOST = (location.hostname || '').toLowerCase();
+  const __IS_PRIMARY = /(^|\.)canchadefutbol7\./.test(__HOST);
+  const __ORIGIN = __IS_PRIMARY ? '' : 'https://canchadefutbol7.mx';
   const CONFIG = {
     whatsapp: "525539887615",   // número del negocio (mismo que los CTA del sitio)
     empresa: "Sportmaster",
-    leadApi: "/api/lead",       // guarda el lead en tu base D1 → Panel de Leads (admin.html)
-    botConfigApi: "/api/bot-config"  // devuelve la config dinámica del bot por URL (Bancas, Porterías, etc.)
+    domain: __HOST,             // multi-tenant: dominio donde corre el chatbot
+    leadApi: __ORIGIN + "/api/lead",       // guarda el lead en D1 → Panel de Leads
+    botConfigApi: __ORIGIN + "/api/bot-config"  // config dinámica del bot por (domain, URL)
   };
 
   // Atribución de marketing: URL de origen, campaña y CID/gclid (Google Ads)
@@ -249,6 +256,7 @@ const Cot = (function(){
         body: JSON.stringify({
           session_id: sid(),
           estado: estado || "completo",
+          domain: CONFIG.domain,  // multi-tenant: identifica empresa por dominio
           fuente: (BOT_CTX && BOT_CTX.fuenteLabel) || "Chatbot",
           nombre: d.nombre || "",
           whatsapp: (d.whatsapp && d.whatsapp !== "No lo dejó") ? d.whatsapp : "No lo dejó",
@@ -327,7 +335,7 @@ const Cot = (function(){
     CTX_LOADED = true;
     try {
       const path = location.pathname.toLowerCase();
-      const r = await fetch(CONFIG.botConfigApi + '?path=' + encodeURIComponent(path), { cache: 'no-store' });
+      const r = await fetch(CONFIG.botConfigApi + '?path=' + encodeURIComponent(path) + '&domain=' + encodeURIComponent(CONFIG.domain), { cache: 'no-store' });
       if (!r.ok) return;
       const d = await r.json();
       const cfg = d && d.config;
