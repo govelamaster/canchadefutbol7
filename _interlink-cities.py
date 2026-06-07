@@ -67,6 +67,13 @@ DISPLAY = {
  "huimanguillo":"Huimanguillo","paraiso":"Paraíso","tenosique":"Tenosique","teapa":"Teapa","centla":"Centla",
  "jalpa-de-mendez":"Jalpa de Méndez",
  "tecate":"Tecate","loreto-bcs":"Loreto","ciudad-constitucion":"Ciudad Constitución","mulege":"Mulegé",
+ # ===== GRUPO 3 (cerrar top10 Jal/NL/Qro) =====
+ "tlaquepaque":"Tlaquepaque","tonala-jalisco":"Tonalá","tlajomulco-de-zuniga":"Tlajomulco de Zúñiga",
+ "el-salto-jalisco":"El Salto","ocotlan-jalisco":"Ocotlán",
+ "general-escobedo":"General Escobedo","juarez-nuevo-leon":"Juárez","garcia-nuevo-leon":"García",
+ "cadereyta-jimenez":"Cadereyta Jiménez",
+ "san-juan-del-rio":"San Juan del Río","el-marques":"El Marqués","corregidora":"Corregidora",
+ "tequisquiapan":"Tequisquiapan","pedro-escobedo":"Pedro Escobedo",
 }
 REGION = {
  "cdmx":"centro","toluca":"centro","puebla":"centro","pachuca":"centro","queretaro":"centro",
@@ -123,6 +130,12 @@ REGION = {
  "villahermosa":"sureste","cardenas-tabasco":"sureste","comalcalco":"sureste","macuspana":"sureste",
  "huimanguillo":"sureste","paraiso":"sureste","tenosique":"sureste","teapa":"sureste","centla":"sureste","jalpa-de-mendez":"sureste",
  "tecate":"noroeste","loreto-bcs":"noroeste","ciudad-constitucion":"noroeste","mulege":"noroeste",
+ # ===== GRUPO 3 regiones =====
+ "tlaquepaque":"occidente","tonala-jalisco":"occidente","tlajomulco-de-zuniga":"occidente",
+ "el-salto-jalisco":"occidente","ocotlan-jalisco":"occidente",
+ "general-escobedo":"noreste","juarez-nuevo-leon":"noreste","garcia-nuevo-leon":"noreste","cadereyta-jimenez":"noreste",
+ "san-juan-del-rio":"centro","el-marques":"centro","corregidora":"centro",
+ "tequisquiapan":"centro","pedro-escobedo":"centro",
 }
 HUBS = ["cdmx","guadalajara","monterrey"]
 FILL = ["puebla","queretaro","leon","toluca","merida","cancun","tijuana","san-luis-potosi",
