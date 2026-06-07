@@ -108,6 +108,13 @@ DISPLAY = {
  "interlomas":"Interlomas","bosque-real":"Bosque Real","la-herradura":"La Herradura",
  "tecamachalco":"Tecamachalco","satelite":"Satélite","lomas-verdes":"Lomas Verdes",
  "echegaray":"Echegaray","lomas-anahuac":"Lomas Anáhuac",
+ # ===== GRUPO 7 (zonas tipo Esmeralda + corredores CDMX) =====
+ "zona-esmeralda":"Zona Esmeralda","hacienda-de-valle-escondido":"Hacienda de Valle Escondido",
+ "hacienda-del-pedregal":"Hacienda del Pedregal","calacoaya":"Calacoaya","lago-de-guadalupe":"Lago de Guadalupe",
+ "boulevares":"Boulevares","ciudad-brisa":"Ciudad Brisa","lomas-country":"Lomas Country",
+ "hacienda-de-las-palmas":"Hacienda de las Palmas","real-hacienda":"Real Hacienda",
+ "anahuac-cdmx":"Anáhuac","granada-cdmx":"Granada","lindavista":"Lindavista",
+ "san-jeronimo-cdmx":"San Jerónimo","acoxpa":"Acoxpa","centro-historico-cdmx":"Centro Histórico",
 }
 REGION = {
  "cdmx":"centro","toluca":"centro","puebla":"centro","pachuca":"centro","queretaro":"centro",
@@ -199,6 +206,12 @@ REGION = {
  "del-valle-cdmx":"centro","narvarte":"centro","napoles-cdmx":"centro","san-angel":"centro","coapa":"centro",
  "interlomas":"centro","bosque-real":"centro","la-herradura":"centro","tecamachalco":"centro",
  "satelite":"centro","lomas-verdes":"centro","echegaray":"centro","lomas-anahuac":"centro",
+ # ===== GRUPO 7 regiones =====
+ "zona-esmeralda":"centro","hacienda-de-valle-escondido":"centro","hacienda-del-pedregal":"centro",
+ "calacoaya":"centro","lago-de-guadalupe":"centro","boulevares":"centro","ciudad-brisa":"centro",
+ "lomas-country":"centro","hacienda-de-las-palmas":"centro","real-hacienda":"centro",
+ "anahuac-cdmx":"centro","granada-cdmx":"centro","lindavista":"centro",
+ "san-jeronimo-cdmx":"centro","acoxpa":"centro","centro-historico-cdmx":"centro",
 }
 HUBS = ["cdmx","guadalajara","monterrey"]
 FILL = ["puebla","queretaro","leon","toluca","merida","cancun","tijuana","san-luis-potosi",
