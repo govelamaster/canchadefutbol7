@@ -347,6 +347,51 @@ body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbad
 body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="plantillas"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"], body.rol-vendedor .tab-btn[data-tab="bot"]{ display:none !important; }
 @keyframes botPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(34,197,94,.5); } 50%{ box-shadow:0 0 0 6px rgba(34,197,94,0); } }
 body.rol-admin .del-btn, body.rol-vendedor .del-btn{ display:none !important; }
+/* Selección múltiple para borrar leads en lote (solo dueño) */
+body.rol-admin .bulk-bar, body.rol-vendedor .bulk-bar,
+body.rol-admin .bulk-check, body.rol-vendedor .bulk-check{ display:none !important; }
+.bulk-bar{
+  display:none;
+  align-items:center; gap:12px; flex-wrap:wrap;
+  margin:0 0 10px;
+  padding:10px 14px;
+  background:linear-gradient(180deg,#fef2f2,#fee2e2);
+  border:1px solid #fecaca;
+  border-radius:12px;
+}
+.bulk-bar.show{ display:flex; }
+.bulk-bar .bulk-count{
+  font-weight:800; font-size:14px; color:#991b1b; letter-spacing:-.01em;
+}
+.bulk-bar label.bulk-all{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:13px; font-weight:600; color:#374151;
+  cursor:pointer; user-select:none;
+}
+.bulk-bar .bulk-del-btn{
+  margin-left:auto;
+  height:36px; padding:0 16px;
+  background:#dc2626; color:#fff; border:0; border-radius:9px;
+  font-family:inherit; font-size:13.5px; font-weight:700;
+  cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+  transition:transform .15s, box-shadow .2s, background .2s;
+}
+.bulk-bar .bulk-del-btn:hover{ background:#b91c1c; transform:translateY(-1px); box-shadow:0 6px 14px rgba(220,38,38,.25); }
+.bulk-bar .bulk-del-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+.bulk-bar .bulk-clear{
+  background:#fff; color:#374151; border:1px solid #e5e7eb; border-radius:8px;
+  height:32px; padding:0 12px; font-family:inherit; font-size:12.5px; font-weight:600;
+  cursor:pointer;
+}
+.bulk-bar .bulk-clear:hover{ background:#f9fafb; }
+.bulk-check{
+  flex:none;
+  width:18px; height:18px;
+  cursor:pointer;
+  accent-color:#dc2626;
+  margin-right:4px;
+}
+.nombre-wrap .bulk-check{ margin-top:9px; }
 /* Admin: campos en solo-lectura (no edita) salvo reasignar vendedor */
 body.rol-admin .cell-select[data-field="status_proyecto"],
 body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; background:transparent; }
@@ -1094,6 +1139,18 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     </div>
 
     <div class="table-wrap">
+      <div class="bulk-bar" id="bulkBar">
+        <label class="bulk-all">
+          <input type="checkbox" class="bulk-check" id="bulkSelectAll" onchange="toggleSelectAllLeads(this.checked)" />
+          Seleccionar todos los visibles
+        </label>
+        <span class="bulk-count" id="bulkCount">0 seleccionados</span>
+        <button type="button" class="bulk-clear" onclick="clearBulkSelection()">Limpiar</button>
+        <button type="button" class="bulk-del-btn" id="bulkDelBtn" onclick="bulkDeleteLeads()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg>
+          Eliminar seleccionados
+        </button>
+      </div>
       <table class="lead-table">
         <thead>
           <tr>
@@ -1523,6 +1580,7 @@ const STATUS_PROYECTO = ['Sin atender','Contactado','Cotizado','Negociación','G
 const PRECIO_M2_MXN = 1500; // para pipeline value estimado
 
 let allLeads = [];
+const selectedLeadIds = new Set();
 
 // La base D1 guarda fechas en UTC. "Hoy" / "7 días" deben calcularse en hora de
 // MÉXICO o se desfasan de noche (bug 2026-06-01: de 18:00 a 24:00 MX ya es día
@@ -3274,12 +3332,19 @@ function renderLeadRow(l, vip){
   const subWa = waNum ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="lead-wa">${escapeHtml(l.whatsapp)}</a>` : '';
   const recBadge = (l.recurrente == 1) ? '<span class="rec-badge" title="Cliente que ya había contactado antes (mismo WhatsApp). Re-asignado a su vendedor.">🔁 Recurrente</span>' : '';
   const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}${recBadge}${slaBadge(l)}`;
+  const bulkChecked = selectedLeadIds.has(Number(l.id)) ? 'checked' : '';
+  const bulkCheckHTML = `<input type="checkbox" class="bulk-check row-bulk-check" data-bulk-id="${l.id}" ${bulkChecked} onclick="event.stopPropagation()" onchange="toggleBulkSelect(${l.id}, this.checked)" title="Seleccionar para borrar en lote" />`;
   return `<tr data-lead-id="${l.id}" class="${rowClass}${urgente ? ' row-urgent' : ''}">
     <td class="lead-cell">
+      <div style="display:flex;align-items:flex-start;gap:6px">
+        ${bulkCheckHTML}
+        <div style="flex:1;min-width:0">
       ${nombreCell(l)}
       ${flags ? `<div class="lead-flags">${flags}</div>` : ''}
       <div class="lead-sub">${ciudad} · <strong>${m2} m²</strong>${subWa}${!urgente && l.timeline ? ` · ${escapeHtml(l.timeline)}` : ''}</div>
       <div class="lead-foot">${escapeHtml(fecha)}${comentShort ? ` · ${escapeHtml(comentShort)}` : ''}</div>
+        </div>
+      </div>
     </td>
     <td>${selectVendedor(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
