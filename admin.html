@@ -3297,6 +3297,7 @@ function renderTable(){
   if (thV) thV.innerHTML = 'Vendedor ' + (vendorSortDir === 'desc' ? '<span style="color:#3f922a">▼</span>' : vendorSortDir === 'asc' ? '<span style="color:#3f922a">▲</span>' : '<span style="color:#cbd5e1">↕</span>');
   body.innerHTML = rows.map(l => renderLeadRow(l, /*vip*/ false)).join('');
   bindRowEvents(body);
+  updateBulkBar();
 }
 
 function renderLeadRow(l, vip){
@@ -3721,10 +3722,97 @@ async function deleteLead(id, btn){
     const data = await r.json();
     if (!r.ok || !data.ok) throw new Error(data.error || 'Error');
     allLeads = allLeads.filter(l => Number(l.id) !== nid);
+    selectedLeadIds.delete(nid);
     refreshAll();
   } catch (err) {
     if (btn) btn.disabled = false;
     alert('No se pudo eliminar: ' + err.message);
+  }
+}
+
+/* =========================================================
+   BULK SELECT + DELETE LEADS (solo dueño)
+========================================================= */
+function visibleLeadIds(){
+  const body = document.getElementById('leadsBody');
+  if (!body) return [];
+  return Array.from(body.querySelectorAll('tr[data-lead-id]'))
+    .map(tr => Number(tr.getAttribute('data-lead-id')))
+    .filter(n => Number.isFinite(n));
+}
+function toggleBulkSelect(id, checked){
+  const nid = Number(id);
+  if (checked) selectedLeadIds.add(nid); else selectedLeadIds.delete(nid);
+  updateBulkBar();
+}
+function toggleSelectAllLeads(checked){
+  const ids = visibleLeadIds();
+  if (checked) ids.forEach(id => selectedLeadIds.add(id));
+  else ids.forEach(id => selectedLeadIds.delete(id));
+  document.querySelectorAll('#leadsBody .row-bulk-check').forEach(cb => {
+    cb.checked = checked;
+  });
+  updateBulkBar();
+}
+function clearBulkSelection(){
+  selectedLeadIds.clear();
+  document.querySelectorAll('#leadsBody .row-bulk-check').forEach(cb => { cb.checked = false; });
+  const all = document.getElementById('bulkSelectAll');
+  if (all) all.checked = false;
+  updateBulkBar();
+}
+function updateBulkBar(){
+  const bar = document.getElementById('bulkBar');
+  const count = document.getElementById('bulkCount');
+  const btn = document.getElementById('bulkDelBtn');
+  const all = document.getElementById('bulkSelectAll');
+  if (!bar || !count || !btn) return;
+  const n = selectedLeadIds.size;
+  if (n > 0) bar.classList.add('show'); else bar.classList.remove('show');
+  count.textContent = `${n} seleccionado${n === 1 ? '' : 's'}`;
+  btn.disabled = n === 0;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6"/></svg> Eliminar ${n > 0 ? n + ' ' : ''}seleccionado${n === 1 ? '' : 's'}`;
+  if (all){
+    const visibles = visibleLeadIds();
+    const todosMarcados = visibles.length > 0 && visibles.every(id => selectedLeadIds.has(id));
+    all.checked = todosMarcados;
+    all.indeterminate = !todosMarcados && visibles.some(id => selectedLeadIds.has(id));
+  }
+}
+async function bulkDeleteLeads(){
+  const ids = Array.from(selectedLeadIds);
+  if (!ids.length) return;
+  const msg = ids.length === 1
+    ? `¿Eliminar 1 lead?\n\nEsta acción NO se puede deshacer.`
+    : `¿Eliminar ${ids.length} leads seleccionados?\n\nEsta acción NO se puede deshacer.`;
+  if (!confirm(msg)) return;
+  const btn = document.getElementById('bulkDelBtn');
+  if (btn) btn.disabled = true;
+  const pwd = localStorage.getItem(STORAGE_KEY);
+  const okIds = [];
+  const fails = [];
+  for (const id of ids){
+    try {
+      const fd = new FormData();
+      fd.append('p', pwd);
+      fd.append('id', id);
+      const r = await fetch(API_DELETE, {method:'POST', body: fd});
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || !data.ok) throw new Error(data.error || ('HTTP ' + r.status));
+      okIds.push(id);
+    } catch (err){
+      fails.push({ id, err: err.message });
+    }
+  }
+  if (okIds.length){
+    allLeads = allLeads.filter(l => !okIds.includes(Number(l.id)));
+    okIds.forEach(id => selectedLeadIds.delete(id));
+  }
+  if (btn) btn.disabled = false;
+  refreshAll();
+  if (fails.length){
+    alert(`Eliminados: ${okIds.length}\nFallaron: ${fails.length}\n\n` +
+      fails.slice(0,5).map(f => `#${f.id}: ${f.err}`).join('\n'));
   }
 }
 
