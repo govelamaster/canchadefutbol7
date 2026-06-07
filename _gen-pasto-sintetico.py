@@ -35,9 +35,30 @@ def gen_city(slug):
     os.makedirs(dst, exist_ok=True)
 
     h = TPL_HTML
+    # FIX: para no-Tamaulipas, mapear archivos renombrados (que solo existen en 7 Tamaulipas)
+    # a los archivos originales que SI existen en cada construccion-{slug}/assets/
+    TAMAULIPAS = {"tampico","reynosa","matamoros","nuevo-laredo","ciudad-victoria","ciudad-madero","altamira"}
+    if slug not in TAMAULIPAS:
+        norms = {
+            "pasto-sintetico-en-tampico.jpg": "construccion-cancha-futbol-tampico-pasto-sintetico.webp",
+            "cancha-de-futbol-7-en-tampico.jpg": "pasto-sintetico-tampico-cancha-futbol-7.webp",
+            "construccion-de-canchas-de-futbol-en-tampico.jpg": "pasto-sintetico-tampico-cancha-de-futbol.webp",
+            "cancha-de-futbol-5-en-tampico.webp": "instalacion-pasto-sintetico-cancha-futbol-5.webp",
+            "cancha-de-futbol-11-en-tampico.webp": "instalacion-pasto-sintetico-cancha-futbol-11.webp",
+            "cancha-futbol-rapido-en-tampico.webp": "cancha-futbol-rapido-pasto-sintetico-instalado.webp",
+            "pasto-sintetico-hibrido-en-tampico.webp": "pasto-sintetico-hibrido-para-canchas.webp",
+            "pasto-sintetico-monofilamento-en-tampico.webp": "pasto-sintetico-monofilamento-para-canchas.webp",
+            "cancha-de-futbol-para-escuelas-en-tampico.jpg": "obra-real-pasto-sintetico-cancha-futbol-04.jpg",
+            "cancha-de-futbol-para-clubes-en-tampico.jpg": "obra-real-pasto-sintetico-cancha-futbol-05.jpg",
+            "cancha-de-futbol-para-municipios-en-tampico.jpg": "obra-real-pasto-sintetico-cancha-futbol-06.jpg",
+        }
+        for old, new in norms.items():
+            h = h.replace(old, new)
     # URLs & paths slug (lowercase) — antes que labels
     h = h.replace("pasto-sintetico-en-tampico", f"pasto-sintetico-en-{slug}")
     h = h.replace("/construccion-de-canchas-de-futbol-en-tampico/", f"/construccion-de-canchas-de-futbol-en-{slug}/")
+    # filenames dentro de assets/ que aún tienen 'tampico'
+    h = re.sub(r'(assets/[^"\']*?)tampico', rf'\1{slug}', h)
     # geo
     h = re.sub(r'(geo\.region"\s+content=")[^"]+(")', rf'\1{region}\2', h)
     h = re.sub(r'(geo\.placename"\s+content=")[^"]+(")', rf'\1{placename}\2', h)
