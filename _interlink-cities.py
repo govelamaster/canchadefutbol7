@@ -100,6 +100,14 @@ DISPLAY = {
  "zinacantepec":"Zinacantepec","valle-de-bravo":"Valle de Bravo","la-paz-edomex":"La Paz",
  "texcoco":"Texcoco","nicolas-romero":"Nicolás Romero","acolman":"Acolman",
  "tepotzotlan-edomex":"Tepotzotlán","tultepec":"Tultepec","zumpango":"Zumpango",
+ # ===== GRUPO 6 (zonas premium CDMX + Edomex) =====
+ "polanco":"Polanco","santa-fe-cdmx":"Santa Fe","roma-cdmx":"Roma","condesa":"Condesa",
+ "lomas-de-chapultepec":"Lomas de Chapultepec","bosques-de-las-lomas":"Bosques de las Lomas",
+ "pedregal-cdmx":"Pedregal","del-valle-cdmx":"Del Valle","narvarte":"Narvarte",
+ "napoles-cdmx":"Nápoles","san-angel":"San Ángel","coapa":"Coapa",
+ "interlomas":"Interlomas","bosque-real":"Bosque Real","la-herradura":"La Herradura",
+ "tecamachalco":"Tecamachalco","satelite":"Satélite","lomas-verdes":"Lomas Verdes",
+ "echegaray":"Echegaray","lomas-anahuac":"Lomas Anáhuac",
 }
 REGION = {
  "cdmx":"centro","toluca":"centro","puebla":"centro","pachuca":"centro","queretaro":"centro",
@@ -185,6 +193,12 @@ REGION = {
  "tecamac":"centro","coacalco":"centro","huixquilucan":"centro","metepec-edomex":"centro",
  "zinacantepec":"centro","valle-de-bravo":"centro","la-paz-edomex":"centro","texcoco":"centro",
  "nicolas-romero":"centro","acolman":"centro","tepotzotlan-edomex":"centro","tultepec":"centro","zumpango":"centro",
+ # ===== GRUPO 6 regiones (todo centro/ZMVM) =====
+ "polanco":"centro","santa-fe-cdmx":"centro","roma-cdmx":"centro","condesa":"centro",
+ "lomas-de-chapultepec":"centro","bosques-de-las-lomas":"centro","pedregal-cdmx":"centro",
+ "del-valle-cdmx":"centro","narvarte":"centro","napoles-cdmx":"centro","san-angel":"centro","coapa":"centro",
+ "interlomas":"centro","bosque-real":"centro","la-herradura":"centro","tecamachalco":"centro",
+ "satelite":"centro","lomas-verdes":"centro","echegaray":"centro","lomas-anahuac":"centro",
 }
 HUBS = ["cdmx","guadalajara","monterrey"]
 FILL = ["puebla","queretaro","leon","toluca","merida","cancun","tijuana","san-luis-potosi",
