@@ -115,6 +115,13 @@ DISPLAY = {
  "hacienda-de-las-palmas":"Hacienda de las Palmas","real-hacienda":"Real Hacienda",
  "anahuac-cdmx":"Anáhuac","granada-cdmx":"Granada","lindavista":"Lindavista",
  "san-jeronimo-cdmx":"San Jerónimo","acoxpa":"Acoxpa","centro-historico-cdmx":"Centro Histórico",
+ # ===== GRUPO 8 (pendientes Olga + corredores B2B) =====
+ "cumbres-naucalpan":"Cumbres","las-aguilas-naucalpan":"Las Águilas","olivar-de-los-padres":"Olivar de los Padres",
+ "vista-hermosa-cuajimalpa":"Vista Hermosa","huehuetoca":"Huehuetoca",
+ "doctores-cdmx":"Doctores","escandon":"Escandón","mixcoac":"Mixcoac",
+ "pedregal-de-santa-ursula":"Pedregal de Santa Úrsula","aragon-cdmx":"Aragón",
+ "reforma-cdmx":"Reforma","insurgentes-cdmx":"Insurgentes","insurgentes-sur":"Insurgentes Sur",
+ "periferico-cdmx":"Periférico","viaducto-cdmx":"Viaducto","eje-central":"Eje Central",
 }
 REGION = {
  "cdmx":"centro","toluca":"centro","puebla":"centro","pachuca":"centro","queretaro":"centro",
@@ -212,6 +219,13 @@ REGION = {
  "lomas-country":"centro","hacienda-de-las-palmas":"centro","real-hacienda":"centro",
  "anahuac-cdmx":"centro","granada-cdmx":"centro","lindavista":"centro",
  "san-jeronimo-cdmx":"centro","acoxpa":"centro","centro-historico-cdmx":"centro",
+ # ===== GRUPO 8 regiones =====
+ "cumbres-naucalpan":"centro","las-aguilas-naucalpan":"centro","olivar-de-los-padres":"centro",
+ "vista-hermosa-cuajimalpa":"centro","huehuetoca":"centro",
+ "doctores-cdmx":"centro","escandon":"centro","mixcoac":"centro",
+ "pedregal-de-santa-ursula":"centro","aragon-cdmx":"centro",
+ "reforma-cdmx":"centro","insurgentes-cdmx":"centro","insurgentes-sur":"centro",
+ "periferico-cdmx":"centro","viaducto-cdmx":"centro","eje-central":"centro",
 }
 HUBS = ["cdmx","guadalajara","monterrey"]
 FILL = ["puebla","queretaro","leon","toluca","merida","cancun","tijuana","san-luis-potosi",
