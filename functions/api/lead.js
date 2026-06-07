@@ -107,9 +107,12 @@ export async function onRequestPost(context) {
       // Avisos por correo (opcional: si falta RESEND_API_KEY se omite)
       if (env.RESEND_API_KEY) {
         const emailCtx = context.waitUntil ? context : null;
+        // MULTI-TENANT: el dominio donde corrió el chatbot lo manda el widget.
+        // Si no llega, fallback a canchadefutbol7.mx (compat hacia atrás).
+        const leadDomain = (payload.domain || 'canchadefutbol7.mx').toLowerCase().replace(/^www\./,'');
         const send = recurrenteVendedor
-          ? notifyRecurrente(env, payload, recurrenteVendedor, leadId)  // al MISMO vendedor: "tu cliente volvió"
-          : sendLeadEmail(env, payload, request, leadId);              // flujo normal: aviso para asignar
+          ? notifyRecurrente(env, payload, recurrenteVendedor, leadId, leadDomain)
+          : sendLeadEmail(env, payload, request, leadId, leadDomain);
         if (emailCtx) emailCtx.waitUntil(send); else await send;
       }
     }
@@ -130,8 +133,9 @@ async function sha256hex(s) {
   return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
 }
 
-async function sendLeadEmail(env, d, request, leadId) {
+async function sendLeadEmail(env, d, request, leadId, leadDomain) {
   try {
+    leadDomain = leadDomain || 'canchadefutbol7.mx';
     const to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com';
     // El "from" debe ser de un dominio verificado en Resend (canchadefutbol7.mx).
     const from = env.LEADS_FROM || 'Leads canchadefutbol7 <leads@canchadefutbol7.mx>';
@@ -140,7 +144,7 @@ async function sendLeadEmail(env, d, request, leadId) {
     const com = String(d.comentarios || '');
     const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,''])[1].trim();
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,''])[1].trim();
-    const subject = `Nuevo lead${d.fuente ? ' (' + d.fuente + ')' : ''}: ${d.nombre || 'sin nombre'}${d.ciudad ? ' — ' + d.ciudad : ''}`;
+    const subject = `Nuevo lead ${leadDomain}${d.fuente ? ' (' + d.fuente + ')' : ''}: ${d.nombre || 'sin nombre'}${d.ciudad ? ' — ' + d.ciudad : ''}`;
     const row = (k, v) => `<tr><td style="padding:4px 14px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${v}</td></tr>`;
     let assignBtn = '';
     if (leadId) {
@@ -149,7 +153,7 @@ async function sendLeadEmail(env, d, request, leadId) {
     }
     const html = `
       <div style="font-family:system-ui,-apple-system,sans-serif;color:#0f172a">
-        <h2 style="margin:0 0 14px">Nuevo lead de canchadefutbol7.mx</h2>
+        <h2 style="margin:0 0 14px">Nuevo lead de ${esc(leadDomain)}</h2>
         <table style="font-size:14px;border-collapse:collapse">
           ${row('Nombre', esc(d.nombre))}
           ${row('WhatsApp', `${esc(d.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir chat</a>` : ''}`)}
@@ -206,7 +210,8 @@ async function resultadoBlock(leadId, nombre) {
 }
 
 // 🔁 Aviso al MISMO vendedor de que su cliente volvió a contactar.
-async function notifyRecurrente(env, d, vendedor, leadId) {
+// `leadDomain` (multi-tenant) es opcional — solo para logs/subject; el comportamiento sigue igual.
+async function notifyRecurrente(env, d, vendedor, leadId, leadDomain) {
   try {
     let to = await emailDeVendedor(env, vendedor);
     if (!to) to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com'; // fallback: avisa a Olga
