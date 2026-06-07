@@ -90,6 +90,16 @@ DISPLAY = {
  "cuernavaca":"Cuernavaca","jiutepec":"Jiutepec","temixco":"Temixco","yautepec":"Yautepec","tepoztlan":"Tepoztlán",
  "campeche-capital":"Campeche","champoton":"Champotón","escarcega":"Escárcega","calkini":"Calkiní","hopelchen":"Hopelchén",
  "tlaxcala-capital":"Tlaxcala","apizaco":"Apizaco","huamantla":"Huamantla","chiautempan":"Chiautempan","zacatelco":"Zacatelco",
+ # ===== GRUPO 5 (ZMVM — CDMX alcaldias + Edomex restantes) =====
+ "iztapalapa":"Iztapalapa","gustavo-a-madero":"Gustavo A. Madero","tlalpan":"Tlalpan","coyoacan":"Coyoacán",
+ "alvaro-obregon-cdmx":"Álvaro Obregón","cuauhtemoc-cdmx":"Cuauhtémoc","iztacalco":"Iztacalco",
+ "magdalena-contreras":"Magdalena Contreras","milpa-alta":"Milpa Alta","tlahuac":"Tláhuac",
+ "venustiano-carranza-cdmx":"Venustiano Carranza","azcapotzalco":"Azcapotzalco","xochimilco":"Xochimilco",
+ "benito-juarez-cdmx":"Benito Juárez","miguel-hidalgo-cdmx":"Miguel Hidalgo","cuajimalpa":"Cuajimalpa",
+ "tecamac":"Tecámac","coacalco":"Coacalco","huixquilucan":"Huixquilucan","metepec-edomex":"Metepec",
+ "zinacantepec":"Zinacantepec","valle-de-bravo":"Valle de Bravo","la-paz-edomex":"La Paz",
+ "texcoco":"Texcoco","nicolas-romero":"Nicolás Romero","acolman":"Acolman",
+ "tepotzotlan-edomex":"Tepotzotlán","tultepec":"Tultepec","zumpango":"Zumpango",
 }
 REGION = {
  "cdmx":"centro","toluca":"centro","puebla":"centro","pachuca":"centro","queretaro":"centro",
@@ -167,6 +177,14 @@ REGION = {
  "cuernavaca":"centro","jiutepec":"centro","temixco":"centro","yautepec":"centro","tepoztlan":"centro",
  "campeche-capital":"sureste","champoton":"sureste","escarcega":"sureste","calkini":"sureste","hopelchen":"sureste",
  "tlaxcala-capital":"centro","apizaco":"centro","huamantla":"centro","chiautempan":"centro","zacatelco":"centro",
+ # ===== GRUPO 5 regiones (todo ZMVM = centro) =====
+ "iztapalapa":"centro","gustavo-a-madero":"centro","tlalpan":"centro","coyoacan":"centro",
+ "alvaro-obregon-cdmx":"centro","cuauhtemoc-cdmx":"centro","iztacalco":"centro","magdalena-contreras":"centro",
+ "milpa-alta":"centro","tlahuac":"centro","venustiano-carranza-cdmx":"centro","azcapotzalco":"centro",
+ "xochimilco":"centro","benito-juarez-cdmx":"centro","miguel-hidalgo-cdmx":"centro","cuajimalpa":"centro",
+ "tecamac":"centro","coacalco":"centro","huixquilucan":"centro","metepec-edomex":"centro",
+ "zinacantepec":"centro","valle-de-bravo":"centro","la-paz-edomex":"centro","texcoco":"centro",
+ "nicolas-romero":"centro","acolman":"centro","tepotzotlan-edomex":"centro","tultepec":"centro","zumpango":"centro",
 }
 HUBS = ["cdmx","guadalajara","monterrey"]
 FILL = ["puebla","queretaro","leon","toluca","merida","cancun","tijuana","san-luis-potosi",
