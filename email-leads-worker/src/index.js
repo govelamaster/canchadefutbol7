@@ -43,8 +43,10 @@ export default {
     }
 
     try {
+      // INSERT OR IGNORE: si llega el mismo correo por 2 rutas distintas (reenvío Gmail
+      // + form WP + Hotmail Beto), el UNIQUE INDEX en session_id evita duplicado.
       await env.DB.prepare(`
-        INSERT INTO leads
+        INSERT OR IGNORE INTO leads
           (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, wa_norm, ip, user_agent, landing)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
