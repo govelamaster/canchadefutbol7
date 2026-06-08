@@ -348,17 +348,19 @@ body.rol-vendedor #unassignedPill{ display:none; }
 .origen-url{ display:block; text-decoration:none; line-height:1.35; margin:2px 0 4px; }
 .origen-url:hover .origen-slug{ color:#0f172a; text-decoration:underline; }
 .origen-dom{ font-size:11.5px; font-weight:700; color:#0f172a; }
-.origen-slug{ font-size:11px; color:#64748b; font-family:ui-monospace,Menlo,monospace; word-break:break-all; white-space:normal; }
+.origen-slug{ font-size:11px; color:#64748b; font-family:ui-monospace,Menlo,monospace; max-width:230px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.origen-url:hover .origen-slug{ white-space:normal; word-break:break-all; max-width:none; }
 /* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
 body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
 body.rol-vendedor .tab-btn[data-tab="urls"],                 /* tab Por URL */
 body.rol-vendedor .tab-btn[data-tab="leaderboard"]{ display:none !important; }
-/* Tabla más limpia: sin columnas Origen (col 2) ni Vendedor (col 4) */
+/* Tabla más limpia: oculta col 2 (⏱ Tiempo) y col 5 (Status) en vista vendedor.
+   Tras el swap Vendedor↔Status: Vendedor pasa a col 4, Status pasa a col 5. */
 body.rol-vendedor .lead-table thead th:nth-child(2),
 body.rol-vendedor .lead-table tbody td:nth-child(2),
-body.rol-vendedor .lead-table thead th:nth-child(4),
-body.rol-vendedor .lead-table tbody td:nth-child(4){ display:none; }
+body.rol-vendedor .lead-table thead th:nth-child(5),
+body.rol-vendedor .lead-table tbody td:nth-child(5){ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"], body.rol-admin .tab-btn[data-tab="bot"],
@@ -1184,8 +1186,8 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
             <th>Lead</th>
             <th style="white-space:nowrap">⏱ Tiempo</th>
             <th>🌐 Origen</th>
-            <th>Status</th>
             <th id="thVendedor" style="cursor:pointer;user-select:none" title="Ordenar por nº de asignaciones (mayor/menor)">Vendedor <span style="color:#cbd5e1">↕</span></th>
+            <th>Status</th>
             <th></th>
           </tr>
         </thead>
@@ -3420,8 +3422,8 @@ function renderLeadRow(l, vip){
     </td>
     <td class="tiempo-cell">${slaBadge(l) || '<span class="tiempo-vacio">—</span>'}</td>
     <td class="origen-cell">${origenCell(l)}</td>
-    <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
     <td>${selectVendedor(l)}</td>
+    <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
     <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
   </tr>`;
 }
@@ -3488,29 +3490,42 @@ function origenCell(l){
   } else if (f === 'email_otro') {
     badge = `<div style="display:inline-block;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:800;letter-spacing:.02em;margin-bottom:3px">📨 Email otro</div>`;
   }
-  const camp = l.campania ? `<div style="font-weight:700;color:#3f922a;font-size:12px">${escapeHtml(l.campania)}</div>` : '';
+  // Campaña: si es un campaign ID numérico (Google Ads) → chip pequeño identificable.
+  // Si es texto (nombre de bot/landing) → más visible. Nunca mostrar como bloque grande.
+  let camp = '';
+  if (l.campania) {
+    const isNumericCampaign = /^\d{6,}$/.test(String(l.campania).trim());
+    if (isNumericCampaign) {
+      camp = `<div style="font-size:10.5px;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:5px;padding:1px 6px;display:inline-block;font-weight:700;letter-spacing:.02em" title="Google Ads Campaign ID">Camp #${escapeHtml(l.campania)}</div>`;
+    } else {
+      camp = `<div style="font-weight:700;color:#3f922a;font-size:11.5px">${escapeHtml(l.campania)}</div>`;
+    }
+  }
   let urlEl = '';
   if (l.url){
     let dominio = '', slug = '';
     try {
       const u = new URL(l.url);
       dominio = u.hostname.replace(/^www\./,'');
-      slug = (u.pathname + (u.search || '')).replace(/^\/$/, '/ (home)');
+      // SOLO pathname — los query params (utm/gclid/gad_*) eran contaminación visual
+      slug = u.pathname.replace(/^\/$/, '');
     } catch(e){
-      const s = String(l.url).replace(/^https?:\/\//,'');
+      const s = String(l.url).replace(/^https?:\/\//,'').split('?')[0];
       const i = s.indexOf('/');
       dominio = i >= 0 ? s.slice(0,i) : s;
-      slug = i >= 0 ? s.slice(i) : '/';
+      slug = i >= 0 ? s.slice(i) : '';
     }
-    urlEl = `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="origen-url" title="Abrir en nueva pestaña: ${escapeHtml(l.url)}">
+    const slugView = slug || '/ (home)';
+    urlEl = `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="origen-url" title="${escapeAttr(l.url)}">
       <div class="origen-dom">${escapeHtml(dominio)}</div>
-      <div class="origen-slug">${escapeHtml(slug)}</div>
+      ${slugView ? `<div class="origen-slug">${escapeHtml(slugView)}</div>` : ''}
     </a>`;
   }
-  const gclidEl = l.gclid ? `<div class="small-meta" title="Google Ads click ID">🔑 ${escapeHtml(l.gclid.slice(0,22))}${l.gclid.length>22?'…':''}</div>` : '';
   // Si no hay url pero sí landing (ej. Cliengo Facebook que viene solo con landing), mostrar landing
   const landingEl = (!l.url && l.landing) ? `<div class="origen-dom" style="color:#3f922a;font-weight:700">${escapeHtml(l.landing)}</div>` : '';
-  return badge + camp + urlEl + landingEl + gclidEl;
+  // NOTA: NO mostramos el gclid en la UI — es un hash de 70+ chars sin valor humano.
+  // Se mantiene en D1 para que el CSV de "📡 Tráfico Ads" lo exporte a Google Ads/Meta.
+  return badge + camp + urlEl + landingEl;
 }
 
 /* =========================================================
