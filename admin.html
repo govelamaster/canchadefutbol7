@@ -194,6 +194,34 @@ html,body{
 .stat-card.sinasignar-alert .num{ color:#dc2626; }
 .stat-card.sinasignar-on{ box-shadow:0 0 0 3px rgba(220,38,38,.28); border-color:#dc2626; }
 .stat-card[onclick]:hover{ transform:translateY(-2px); transition:transform .15s ease; }
+/* Stats v2: dos filas (Hoy / Acumulado) con dots de color en lugar de emoji */
+.stats{ display:flex; flex-direction:column; gap:10px; padding:18px 22px 8px; }
+.stats-row{
+  display:grid; gap:10px; max-width:100%;
+  grid-template-columns:repeat(auto-fit, minmax(118px, 1fr));
+}
+.stats-row-label{
+  font-size:10px; font-weight:700; color:#94a3b8;
+  text-transform:uppercase; letter-spacing:.1em;
+  margin:0 0 -2px 2px;
+}
+.stat-card.compact{ padding:11px 13px; border-radius:11px; }
+.stat-card.compact .label{ font-size:10.5px; display:flex; align-items:center; gap:6px; }
+.stat-card.compact .num{ font-size:22px; margin-top:2px; }
+.dot{
+  display:inline-block; width:8px; height:8px; border-radius:50%;
+  flex:0 0 8px; box-shadow:0 0 0 2px rgba(15,23,42,.04);
+}
+.dot-total{ background:#0b0f14; }
+.dot-gads{ background:#3f922a; }
+.dot-gorg{ background:#4285f4; }
+.dot-bing{ background:#008373; }
+.dot-ia{ background:#a855f7; }
+.dot-cliengo{ background:#ec4899; }
+.dot-otro{ background:#94a3b8; }
+.dot-sa{ background:#dc2626; }
+.dot-ganados{ background:#16a34a; }
+.dot-parciales{ background:#d97706; }
 
 /* Section card (corte hoy / por fuente) */
 .section{ max-width:100%; margin:0 auto 14px; padding:0 22px; }
@@ -1167,7 +1195,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       </div>
       <div class="filters">
         <button class="filter-pill active" data-filter="all" title="Mostrar todos los leads del rango">Ver todos</button>
-        <button class="filter-pill" id="unassignedPill" onclick="filtrarSinAsignar()" title="Ver solo los leads sin vendedor">🔴 Sin asignar</button>
+        <button class="filter-pill" id="unassignedPill" onclick="filtrarSinAsignar()" title="Ver solo los leads sin vendedor">Sin asignar</button>
       </div>
       <label class="bulk-master" title="Marcar todos los leads visibles para acción en lote (borrar, asignar…)">
         <input type="checkbox" id="bulkSelectAll" onchange="toggleSelectAllLeads(this.checked)" />
@@ -2132,22 +2160,50 @@ document.getElementById('vendedorFilter').addEventListener('change', (e) => {
 /* =========================================================
    STATS + CORTE HOY + POR FUENTE
 ========================================================= */
+// Clasifica un lead a uno de los buckets del top: gads | gorg | bing | ia | cliengo | otro
+function bucketCanal(l){
+  if ((l.gclid || '').trim()) return 'gads';
+  if (/[?&](gclid|gbraid|wbraid|gad_source|gad_campaignid)=/.test(l.url || '')) return 'gads';
+  const f = (l.fuente || '').toLowerCase().trim();
+  if (f.startsWith('google_ads_')) return 'gads';
+  if (f.startsWith('cliengo_')) return 'cliengo';
+  if (typeof motorIA === 'function' && motorIA(l)) return 'ia';
+  const c = (l.campania || '').toLowerCase().trim();
+  if (/\bbing\./.test(c)) return 'bing';
+  if (/\bgoogle\./.test(c)) return 'gorg';
+  if (/yahoo\.|duckduckgo|ecosia|brave|yandex|baidu/.test(c)) return 'gorg';
+  return 'otro';
+}
+
 function renderStats(){
-  const total = allLeads.length;
-  const completos = allLeads.filter(l => l.estado === 'completo').length;
-  const parciales = allLeads.filter(l => l.estado === 'parcial').length;
-  const today = hoyMx();
-  const hoy = allLeads.filter(l => ymdMx(l.fecha) === today).length;
-  const ganados = allLeads.filter(l => l.status_proyecto === 'Ganado').length;
+  // Stats SIEMPRE reflejan el rango activo (Hoy/Ayer/7d/Histórico) — antes mostraba
+  // "TOTAL LEADS: 45" estático aunque filtraras "Hoy", lo cual confundía.
+  const { leads: rangeLeads, label: rangeLabel } = leadsDelRango();
+  const total = rangeLeads.length;
+  const parciales = rangeLeads.filter(l => l.estado === 'parcial').length;
+  const ganados = rangeLeads.filter(l => l.status_proyecto === 'Ganado').length;
+  // Sin asignar: alerta global (no la limito por rango — son los que urgen ahora)
   const sinAsignar = allLeads.filter(esSinAsignar).length;
-  const cardSA = `<div class="stat-card ${sinAsignar > 0 ? 'sinasignar-alert' : ''} ${currentUnassigned ? 'sinasignar-on' : ''}" onclick="filtrarSinAsignar()" style="cursor:pointer" title="Clic para ver/asignar">
-      <div class="label">🔴 Sin asignar${currentUnassigned ? ' (viendo)' : ''}</div><div class="num">${sinAsignar}</div></div>`;
+
+  const card = (dot, label, num, cls='') => `
+    <div class="stat-card compact ${cls}">
+      <div class="label"><span class="dot ${dot}"></span>${label}</div>
+      <div class="num">${num}</div>
+    </div>`;
+
+  const cardSA = `<div class="stat-card compact ${sinAsignar > 0 ? 'sinasignar-alert' : ''} ${currentUnassigned ? 'sinasignar-on' : ''}"
+       onclick="filtrarSinAsignar()" style="cursor:pointer" title="Clic para ver/asignar">
+      <div class="label"><span class="dot dot-sa"></span>Sin asignar${currentUnassigned ? ' (viendo)' : ''}</div>
+      <div class="num">${sinAsignar}</div>
+    </div>`;
+
+  // 1 sola fila — más limpia, sincronizada al filtro activo
   document.getElementById('stats').innerHTML = `
-    ${cardSA}
-    <div class="stat-card"><div class="label">Total Leads</div><div class="num">${total}</div></div>
-    <div class="stat-card green"><div class="label">Ganados</div><div class="num">${ganados}</div></div>
-    <div class="stat-card yellow"><div class="label">Parciales</div><div class="num">${parciales}</div></div>
-    <div class="stat-card"><div class="label">Hoy</div><div class="num">${hoy}</div></div>
+    <div class="stats-row">
+      ${cardSA}
+      ${card('dot-total',     'Visibles (' + rangeLabel + ')', total)}
+      ${card('dot-ganados',   'Ganados',                ganados,   'green')}
+    </div>
   `;
 }
 
@@ -3493,16 +3549,16 @@ function origenCell(l){
   } else if (f === 'email_otro') {
     badge = `<div style="display:inline-block;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:800;letter-spacing:.02em;margin-bottom:3px">📨 Email otro</div>`;
   }
-  // Campaña: si es un campaign ID numérico (Google Ads) → chip pequeño identificable.
-  // Si es texto (nombre de bot/landing) → más visible. Nunca mostrar como bloque grande.
+  // Campaña: si es ID numérico (Google Ads) → NO se muestra en la fila — es ruido visual.
+  // Sigue guardado y exportable desde tab Audiencias. El badge "🎯 Google Ads" ya da el contexto.
+  // Si es texto (nombre de bot Cliengo) → sí se muestra (info útil para vendedor).
   let camp = '';
   if (l.campania) {
     const isNumericCampaign = /^\d{6,}$/.test(String(l.campania).trim());
-    if (isNumericCampaign) {
-      camp = `<div style="font-size:10.5px;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:5px;padding:1px 6px;display:inline-block;font-weight:700;letter-spacing:.02em" title="Google Ads Campaign ID">Camp #${escapeHtml(l.campania)}</div>`;
-    } else {
+    if (!isNumericCampaign) {
       camp = `<div style="font-weight:700;color:#3f922a;font-size:11.5px">${escapeHtml(l.campania)}</div>`;
     }
+    // Numérico → oculto. El campaign ID queda en l.campania para tab Audiencias.
   }
   let urlEl = '';
   if (l.url){
@@ -3518,10 +3574,11 @@ function origenCell(l){
       dominio = i >= 0 ? s.slice(0,i) : s;
       slug = i >= 0 ? s.slice(i) : '';
     }
-    const slugView = slug || '/ (home)';
+    // Si slug es "" o solo "/" → es home → no mostramos línea aparte (el dominio basta)
+    const showSlug = slug && slug !== '/';
     urlEl = `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener" class="origen-url" title="${escapeAttr(l.url)}">
       <div class="origen-dom">${escapeHtml(dominio)}</div>
-      ${slugView ? `<div class="origen-slug">${escapeHtml(slugView)}</div>` : ''}
+      ${showSlug ? `<div class="origen-slug">${escapeHtml(slug)}</div>` : ''}
     </a>`;
   }
   // Si no hay url pero sí landing (ej. Cliengo Facebook que viene solo con landing), mostrar landing
