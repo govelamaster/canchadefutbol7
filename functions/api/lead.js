@@ -26,6 +26,16 @@ export async function onRequestPost(context) {
     const waNorm = (payload.whatsapp || '').replace(/\D/g, '').slice(-10); // teléfono normalizado (10 díg.)
     let changed = 0;
 
+    // 🆕 Fix raíz multi-tenant: si el chatbot NO mandó gclid (porque la URL es rara
+    // o es una versión vieja del widget) pero la URL contiene gclid/gbraid/wbraid,
+    // lo extraemos acá y lo guardamos en la columna correcta. Así el panel,
+    // los reportes y las conversiones offline a Google Ads quedan limpios.
+    if (!(payload.gclid && String(payload.gclid).trim()) && payload.url) {
+      const u = String(payload.url);
+      const m = u.match(/[?&](gclid|gbraid|wbraid)=([^&#]+)/);
+      if (m && m[2]) payload.gclid = decodeURIComponent(m[2]);
+    }
+
     // Si ya existe una fila con este session_id (ej. guardado "parcial"),
     // la actualizamos en vez de crear una duplicada.
     if (sid) {

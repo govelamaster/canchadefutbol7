@@ -2238,6 +2238,9 @@ function motorIA(l){
 }
 function canalLead(l){
   if ((l.gclid || '').trim()) return 'Google Ads';
+  // 🆕 Fallback defensivo: si el chatbot no extrajo el gclid a su columna pero la URL lo tiene
+  // (típico en URLs con doble query string o redirección rara), también lo contamos como Google Ads.
+  if (/[?&](gclid|gad_source|gbraid|wbraid|gad_campaignid)=/.test(l.url || '')) return 'Google Ads';
   // Email-leads worker etiqueta `fuente` con prefijos estables — los mapeamos a un canal legible
   const f = (l.fuente || '').toLowerCase().trim();
   if (f.startsWith('google_ads_')) return 'Google Ads';
