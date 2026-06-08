@@ -291,6 +291,10 @@ html,body{
 .lead-msg .lead-msg-chip-urgent{
   background:#dc2626 !important; color:#fff !important; font-weight:800;
 }
+/* Columna TIEMPO (SLA): compacta, vertical, fácil de escanear */
+.tiempo-cell{ vertical-align:top; padding:10px 8px; white-space:nowrap; min-width:135px; }
+.tiempo-cell .sla-badge{ display:inline-block; }
+.tiempo-vacio{ color:#cbd5e1; font-size:12px; }
 /* ===== Fila "Lead" consolidada (estilo CRM moderno) ===== */
 .lead-cell{ padding:10px 12px; min-width:240px; vertical-align:top; }
 .lead-cell .nombre-input{ font-size:14px; font-weight:700; }
@@ -1172,6 +1176,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
         <thead>
           <tr>
             <th>Lead</th>
+            <th style="white-space:nowrap">⏱ Tiempo</th>
             <th>🌐 Origen</th>
             <th>Status</th>
             <th id="thVendedor" style="cursor:pointer;user-select:none" title="Ordenar por nº de asignaciones (mayor/menor)">Vendedor <span style="color:#cbd5e1">↕</span></th>
@@ -3369,7 +3374,8 @@ function renderLeadRow(l, vip){
   const mensajeClaro = mensajeClaroDeLead(l, urgente);
   const subWa = waNum ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="lead-wa">${escapeHtml(l.whatsapp)}</a>` : '';
   const recBadge = (l.recurrente == 1) ? '<span class="rec-badge" title="Cliente que ya había contactado antes (mismo WhatsApp). Re-asignado a su vendedor.">🔁 Recurrente</span>' : '';
-  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}${recBadge}${slaBadge(l)}`;
+  // slaBadge se mueve a su propia columna (#tiempo-cell) para no amontonar la celda Lead
+  const flags = `${badge}${urgente ? '<span class="tl-urgent">Lo antes posible</span>' : ''}${recBadge}`;
   const bulkChecked = selectedLeadIds.has(Number(l.id)) ? 'checked' : '';
   const bulkCheckHTML = `<input type="checkbox" class="bulk-check row-bulk-check" data-bulk-id="${l.id}" ${bulkChecked} onclick="event.stopPropagation()" onchange="toggleBulkSelect(${l.id}, this.checked)" title="Seleccionar para borrar en lote" />`;
   return `<tr data-lead-id="${l.id}" class="${rowClass}${urgente ? ' row-urgent' : ''}">
@@ -3385,6 +3391,7 @@ function renderLeadRow(l, vip){
         </div>
       </div>
     </td>
+    <td class="tiempo-cell">${slaBadge(l) || '<span class="tiempo-vacio">—</span>'}</td>
     <td class="origen-cell">${origenCell(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
     <td>${selectVendedor(l)}</td>
