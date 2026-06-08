@@ -1109,6 +1109,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <button class="tab-btn" data-tab="ia">🟣 IA</button>
     <button class="tab-btn" data-tab="gads">🎯 Google Ads</button>
     <button class="tab-btn" data-tab="fbads">📘 Facebook</button>
+    <button class="tab-btn" data-tab="trafico">📡 Tráfico Ads</button>
     <button class="tab-btn" data-tab="frases">💬 Frases</button>
     <button class="tab-btn" data-tab="plantillas">📝 Plantillas</button>
     <button class="tab-btn" data-tab="equipo">👥 Equipo</button>
@@ -1411,6 +1412,21 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
           <span class="meta">Cuánto crece cada motor de IA y qué clientes caen por ahí</span>
         </div>
         <div class="section-body" id="iaBody"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: TRÁFICO ADS — visitas de Google Ads que no convirtieron ============ -->
+  <div class="tab-content" data-tab-content="trafico">
+    <div class="section" style="padding:0;">
+      <div class="section-card">
+        <div class="section-head" style="flex-wrap:wrap; gap:8px;">
+          <h2><span class="emoji">📡</span> Tráfico Ads — visitas pagadas (gclid)</h2>
+          <span class="meta">Visitas que llegaron de Google Ads, hayan o no llenado el formulario. Útil para remarketing.</span>
+        </div>
+        <div class="section-body" id="traficoBody">
+          <div class="src-empty">Carga al abrir el tab…</div>
+        </div>
       </div>
     </div>
   </div>
@@ -4045,6 +4061,94 @@ function formatMoney(n){
 }
 
 /* =========================================================
+   TAB: TRÁFICO ADS — visitas gclid + tasa conversión + export CSV
+========================================================= */
+async function renderTraficoAds(){
+  const body = document.getElementById('traficoBody');
+  if (!body) return;
+  body.innerHTML = '<div class="src-empty" style="padding:24px;color:#64748b">Cargando…</div>';
+  const pwd = localStorage.getItem(STORAGE_KEY) || '';
+  try {
+    const r = await fetch(`/api/visitor-clicks?p=${encodeURIComponent(pwd)}`, { cache: 'no-store' });
+    if (!r.ok) { body.innerHTML = '<div class="src-empty" style="color:#dc2626">Error HTTP '+r.status+'</div>'; return; }
+    const j = await r.json();
+    if (!j.ok) { body.innerHTML = '<div class="src-empty">'+(j.error||'Error')+'</div>'; return; }
+
+    const total = j.count || 0;
+    const conLead = j.con_lead || 0;
+    const sinLead = j.sin_lead || 0;
+    const tasa = j.tasa_conversion_pct || 0;
+
+    if (total === 0) {
+      body.innerHTML = `
+        <div style="padding:32px 22px">
+          <div style="text-align:center;padding:30px;background:#f8fafc;border-radius:12px;color:#64748b">
+            <div style="font-size:28px;margin-bottom:6px">📡</div>
+            <div style="font-size:15px;font-weight:700;color:#0b0f14;margin-bottom:4px">Sin visitas registradas todavía</div>
+            <div style="font-size:13px">Pega el snippet de tracking en tus landings de Google Ads para empezar a capturar gclids.</div>
+            <div style="margin-top:14px;font-size:11.5px;color:#94a3b8">Snippet en: <code>email-leads-worker/SNIPPET-TRACK-VISIT.html</code></div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    const stat = (label, num, color) => `
+      <div style="flex:1;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px">
+        <div style="font-size:11px;color:#64748b;letter-spacing:.05em;text-transform:uppercase;font-weight:700">${label}</div>
+        <div style="font-size:26px;font-weight:800;color:${color||'#0b0f14'};margin-top:2px">${num}</div>
+      </div>`;
+
+    // Por campaña
+    const campRows = Object.entries(j.por_campania || {}).sort((a,b)=>b[1].clicks-a[1].clicks).slice(0,10).map(([camp,obj]) => {
+      const conv = obj.clicks > 0 ? Math.round(obj.leads/obj.clicks*1000)/10 : 0;
+      return `<tr><td style="font-family:monospace;font-size:11.5px">${escapeHtml(camp)}</td><td style="text-align:right;font-weight:700">${obj.clicks}</td><td style="text-align:right;color:#0b8a3e;font-weight:700">${obj.leads}</td><td style="text-align:right;color:${conv>=5?'#0b8a3e':conv>=1?'#b45309':'#dc2626'};font-weight:800">${conv}%</td></tr>`;
+    }).join('');
+
+    // Lista detallada
+    const visitRows = (j.visits || []).slice(0,200).map(v => {
+      const fecha = (v.received_at || '').replace('T',' ').slice(0,16);
+      const cid = v.gclid || v.gbraid || v.wbraid || '';
+      const cidShort = cid.length > 28 ? cid.slice(0,28)+'…' : cid;
+      const badge = v.has_lead
+        ? '<span style="background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;border-radius:5px;padding:1px 7px;font-size:10.5px;font-weight:800">✓ Lead</span>'
+        : '<span style="background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;border-radius:5px;padding:1px 7px;font-size:10.5px">solo visita</span>';
+      return `<tr><td style="white-space:nowrap;color:#64748b;font-size:11.5px">${escapeHtml(fecha)}</td><td>${badge}</td><td style="font-weight:700;font-size:12px">${escapeHtml(v.domain||'')}</td><td style="font-family:monospace;font-size:11px;color:#64748b">${escapeHtml(v.path||'')}</td><td style="font-family:monospace;font-size:10.5px" title="${escapeAttr(cid)}">${escapeHtml(cidShort)}</td><td style="font-family:monospace;font-size:11px">${escapeHtml(v.gad_campaignid||'—')}</td></tr>`;
+    }).join('');
+
+    body.innerHTML = `
+      <div style="padding:18px 22px">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+          ${stat('Total clicks Ads', total)}
+          ${stat('Convirtieron', conLead, '#0b8a3e')}
+          ${stat('Solo visitaron', sinLead, '#b45309')}
+          ${stat('Tasa conversión', tasa + '%', tasa >= 5 ? '#0b8a3e' : '#dc2626')}
+          <div style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center">
+            <a href="/api/visitor-clicks?p=${encodeURIComponent(pwd)}&format=csv" style="background:#0f172a;color:#fff;padding:10px 16px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none">⬇ Exportar CSV</a>
+          </div>
+        </div>
+
+        <h3 style="margin:18px 0 8px;font-size:14px;font-weight:800">📊 Por campaña (top 10)</h3>
+        <div style="overflow-x:auto"><table class="lb-table" style="font-size:13px;width:100%">
+          <thead><tr><th>Campaign ID</th><th style="text-align:right">Clicks</th><th style="text-align:right">Leads</th><th style="text-align:right">Conv.</th></tr></thead>
+          <tbody>${campRows || '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:14px">Sin campañas identificadas</td></tr>'}</tbody>
+        </table></div>
+
+        <h3 style="margin:22px 0 8px;font-size:14px;font-weight:800">📋 Últimas 200 visitas</h3>
+        <div style="overflow-x:auto;max-height:600px;overflow-y:auto"><table class="lb-table" style="font-size:13px;width:100%">
+          <thead style="position:sticky;top:0;background:#fff;z-index:1"><tr><th>Fecha</th><th>Estado</th><th>Dominio</th><th>Path</th><th>gclid</th><th>Campaign</th></tr></thead>
+          <tbody>${visitRows}</tbody>
+        </table></div>
+
+        <div style="margin-top:14px;padding:12px 14px;background:#f8fafc;border-radius:8px;font-size:12px;color:#64748b">
+          💡 <b>Cómo usarlo:</b> Descarga el CSV → en Google Ads ve a Audiencias → Crear audiencia → Coincidencia con clientes → Sube el CSV (usa columna gclid). Después conecta esa audiencia a campañas de remarketing.
+        </div>
+      </div>`;
+  } catch (err) {
+    body.innerHTML = '<div class="src-empty" style="color:#dc2626;padding:20px">Error: '+escapeHtml(err.message)+'</div>';
+  }
+}
+
+/* =========================================================
    TABS
 ========================================================= */
 function activateTab(tab){
@@ -4060,6 +4164,7 @@ function activateTab(tab){
     if (tab === 'ia') renderIA();
     if (tab === 'bot') iniciarBotLive();
     if (tab === 'plantillas') loadPlantillasEditor();
+    if (tab === 'trafico') renderTraficoAds();
   }
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {

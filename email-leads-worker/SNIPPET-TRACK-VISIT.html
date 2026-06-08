@@ -1,0 +1,53 @@
+<!--
+========================================================================
+SNIPPET DE TRACKING DE VISITAS PAGADAS (Google Ads gclid/gbraid/wbraid)
+========================================================================
+
+Pegar este bloque ANTES del </body> en TODAS las landings donde quieras
+capturar visitas de Google Ads:
+
+  - sportmaster.mx/sportmasterlp/
+  - sportmaster.mx/*  (cualquier landing pagada)
+  - canchasdepadel.mx/* (si tienes campañas)
+  - canchasfutbol.mx/*
+  - etc.
+
+Funciona offline-friendly: si el endpoint cae, NO rompe la página.
+Solo se ejecuta UNA vez por sesión por gclid (no spamea D1 con reloads).
+
+Para WordPress/Elementor: pegar en "Custom HTML" del footer, o usar el
+plugin "Insert Headers and Footers" → Footer.
+========================================================================
+-->
+<script>
+(function(){
+  try {
+    var p = new URLSearchParams(location.search);
+    var gclid  = p.get('gclid')  || '';
+    var gbraid = p.get('gbraid') || '';
+    var wbraid = p.get('wbraid') || '';
+    if (!gclid && !gbraid && !wbraid) return;
+    var clickId = gclid || gbraid || wbraid;
+    var key = 'sm_track_' + clickId;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    var sessionId = 'sess_' + Math.random().toString(36).slice(2,10) + '_' + Date.now();
+    fetch('https://canchadefutbol7.mx/api/track-visit', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      mode: 'cors',
+      keepalive: true,
+      body: JSON.stringify({
+        gclid: gclid,
+        gbraid: gbraid,
+        wbraid: wbraid,
+        gad_source: p.get('gad_source') || '',
+        gad_campaignid: p.get('gad_campaignid') || '',
+        url: location.href,
+        referrer: document.referrer || '',
+        session_id: sessionId
+      })
+    }).catch(function(){});
+  } catch (e) {}
+})();
+</script>
