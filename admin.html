@@ -279,12 +279,17 @@ html,body{
   font-size:12.5px; font-weight:800; color:#3f922a;
   background:rgba(63,146,42,.10); border-radius:999px; padding:3px 10px;
 }
-/* Timeline urgente: "Lo antes posible" en rojo */
+/* Timeline urgente: "Lo antes posible" en ROJO SÓLIDO — máxima visibilidad para acción inmediata */
 .tl-urgent{
   display:inline-block;
-  background:#fef2f2; color:#dc2626; border:1px solid #fecaca;
-  font-size:11px; font-weight:800; padding:2px 8px; border-radius:6px;
-  letter-spacing:.01em;
+  background:#dc2626; color:#fff; border:none;
+  font-size:11px; font-weight:800; padding:3px 10px; border-radius:6px;
+  letter-spacing:.02em; text-transform:uppercase;
+  box-shadow:0 1px 2px rgba(220,38,38,.35);
+}
+/* Chip de "lo antes posible" dentro del mensaje claro: hereda el rojo sólido para consistencia */
+.lead-msg .lead-msg-chip-urgent{
+  background:#dc2626 !important; color:#fff !important; font-weight:800;
 }
 /* ===== Fila "Lead" consolidada (estilo CRM moderno) ===== */
 .lead-cell{ padding:10px 12px; min-width:240px; vertical-align:top; }
@@ -3420,7 +3425,11 @@ function mensajeClaroDeLead(l, urgenteBadgeYaPuesto) {
           return true;
         })
         .slice(0, 4); // máximo 4 chips para no saturar
-      const chips = detalles.map(d => `<span class="lead-msg-chip">${escapeHtml(d)}</span>`).join('');
+      const chips = detalles.map(d => {
+        const esUrgente = /lo antes posible|urgent|inmediato|ya mismo|hoy/i.test(d);
+        const cls = esUrgente ? 'lead-msg-chip lead-msg-chip-urgent' : 'lead-msg-chip';
+        return `<span class="${cls}">${escapeHtml(d)}</span>`;
+      }).join('');
       return `<span class="lead-msg-label">${escapeHtml(titulo)}</span>${chips}`;
     }
   }
