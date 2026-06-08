@@ -92,6 +92,13 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
   const waNorm = (telefono || '').replace(/\D/g, '').slice(-10);
   const chatText = extractChatTranscript(body);
 
+  // URL: prefer Page: del body. Si no existe, construir desde landing (que viene del subject Cliengo
+  // y suele traer dominio.tld o dominio.tld/path). Así l.url siempre tiene algo navegable.
+  let finalUrl = page || '';
+  if (!finalUrl && landing && /^[\w.-]+\.[a-z]{2,}/i.test(landing)) {
+    finalUrl = 'https://' + landing.replace(/^https?:\/\//, '');
+  }
+
   return {
     session_id: sessionId,
     fuente,
@@ -101,7 +108,7 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
     wa_norm: waNorm,
     ciudad,
     estado,
-    url: page || '',
+    url: finalUrl,
     campania: landing,
     comentarios: chatText,
     user_agent: '',
