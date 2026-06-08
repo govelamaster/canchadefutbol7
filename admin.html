@@ -1624,7 +1624,7 @@ function nivelLead(l){
 function badgeNivel(l){
   const n = nivelLead(l);
   if (n === 'completo') return '';
-  if (n === 'contactable') return '<span class="lead-nivel nl-contactable" title="Dejó WhatsApp + nombre. ¡Llámalo!">🟢 CONTACTABLE</span>';
+  if (n === 'contactable') return '';  // 🟢 CONTACTABLE era ruido — todos los leads de email/Cliengo lo eran. Solo alertamos por excepción.
   if (n === 'parcial')     return '<span class="lead-nivel nl-parcial" title="Dejó algunos datos pero NO WhatsApp">🟡 PARCIAL</span>';
   return '<span class="lead-nivel nl-solo" title="Abrió el bot pero no escribió nada útil">⚪ SOLO ABRIÓ</span>';
 }
