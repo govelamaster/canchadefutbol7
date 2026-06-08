@@ -3385,7 +3385,21 @@ function renderLeadRow(l, vip){
 /* Origen del lead: campaña (de dónde viene) + DOMINIO + SLUG legible + gclid.
    Sin truncado: el slug se parte en 2 líneas para que se lea completo. */
 function origenCell(l){
-  if (!l.url && !l.campania && !l.gclid) return '<span class="small-meta">—</span>';
+  if (!l.url && !l.campania && !l.gclid && !l.fuente && !l.landing) return '<span class="small-meta">—</span>';
+  // Badge de canal: Cliengo / Google Ads / Form orgánico — usa canalLead que ya reconoce las nuevas fuentes
+  const f = (l.fuente || '').toLowerCase().trim();
+  let badge = '';
+  if (f.startsWith('cliengo_')) {
+    const sub = f.replace('cliengo_', '');
+    const subLabel = sub === 'web' ? 'web' : (sub === 'facebook' ? 'Facebook' : (sub === 'instagram' ? 'Instagram' : sub));
+    badge = `<div style="display:inline-block;background:#dcfce7;color:#166534;border:1px solid #bbf7d0;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:800;letter-spacing:.02em;margin-bottom:3px">💬 Cliengo · ${escapeHtml(subLabel)}</div>`;
+  } else if (f.startsWith('google_ads_')) {
+    badge = `<div style="display:inline-block;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:800;letter-spacing:.02em;margin-bottom:3px">🎯 Google Ads</div>`;
+  } else if (f === 'form_organico') {
+    badge = `<div style="display:inline-block;background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:800;letter-spacing:.02em;margin-bottom:3px">📝 Form orgánico</div>`;
+  } else if (f === 'email_otro') {
+    badge = `<div style="display:inline-block;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:800;letter-spacing:.02em;margin-bottom:3px">📨 Email otro</div>`;
+  }
   const camp = l.campania ? `<div style="font-weight:700;color:#3f922a;font-size:12px">${escapeHtml(l.campania)}</div>` : '';
   let urlEl = '';
   if (l.url){
@@ -3406,7 +3420,9 @@ function origenCell(l){
     </a>`;
   }
   const gclidEl = l.gclid ? `<div class="small-meta" title="Google Ads click ID">🔑 ${escapeHtml(l.gclid.slice(0,22))}${l.gclid.length>22?'…':''}</div>` : '';
-  return camp + urlEl + gclidEl;
+  // Si no hay url pero sí landing (ej. Cliengo Facebook que viene solo con landing), mostrar landing
+  const landingEl = (!l.url && l.landing) ? `<div class="origen-dom" style="color:#3f922a;font-weight:700">${escapeHtml(l.landing)}</div>` : '';
+  return badge + camp + urlEl + landingEl + gclidEl;
 }
 
 /* =========================================================
