@@ -294,7 +294,9 @@ html,body{
 .lead-sub strong{ color:#0b0f14; font-weight:700; }
 .lead-wa{ color:#475569; text-decoration:none; }
 .lead-wa:hover{ color:#3f922a; text-decoration:underline; }
-.lead-foot{ margin:3px 0 0 33px; font-size:11px; color:#9ca3af; font-style:italic; }
+.lead-foot{ margin:3px 0 0 33px; font-size:11px; color:#9ca3af; font-style:italic; max-width:520px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; line-height:1.4; }
+.lead-foot:hover{ -webkit-line-clamp:unset; max-width:none; }
+.lead-cell{ max-width:560px; }
 tr.row-urgent{ background:rgba(220,38,38,.025); }
 tr.row-urgent td.lead-cell{ box-shadow:inset 3px 0 0 #dc2626; }
 /* Vista VENDEDOR: oculta controles de admin que no le sirven */

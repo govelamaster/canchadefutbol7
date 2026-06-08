@@ -77,9 +77,16 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
   if (!subjMatch) return null;
 
   const landing = subjMatch[1].replace(/\/+$/, '').trim();
-  const nombre = pick(body, /^\s*Nombre:\s*(.+)$/im) || extractNameFromChat(body);
-  const telefono = pick(body, /^\s*Tel[eé]fono:\s*(.+)$/im) || extractPhoneFromChat(body);
-  const ubicacion = pick(body, /^\s*Ubicaci[oó]n:\s*(.+)$/im);
+  // Conversación parseada: respuestas del Contacto asociadas a preguntas del Asesor
+  const chat = parseCliengoChat(body);
+
+  const nombre = pick(body, /^\s*Nombre:\s*(.+)$/im)
+    || chat.nombre
+    || '';
+  const telefono = pick(body, /^\s*Tel[eé]fono:\s*(.+)$/im)
+    || chat.telefono
+    || extractPhoneFromChat(body);
+  const ubicacion = pick(body, /^\s*Ubicaci[oó]n:\s*(.+)$/im) || chat.ciudad || '';
   const page = pick(body, /^\s*Page:\s*(.+)$/im);
   const fuenteCliengo = (pick(body, /^\s*Fuente:\s*(.+)$/im) || '').toLowerCase();
   const medio = (pick(body, /^\s*Medio:\s*(.+)$/im) || '').toLowerCase();
@@ -88,32 +95,178 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
   if (fuenteCliengo.includes('facebook') || medio.includes('facebook')) fuente = 'cliengo_facebook';
   else if (fuenteCliengo.includes('instagram') || medio.includes('instagram')) fuente = 'cliengo_instagram';
 
-  const { ciudad, estado } = splitCityState(ubicacion);
+  const { ciudad, estado } = splitCityState(ubicacion || (chat.ciudad || ''));
   const waNorm = (telefono || '').replace(/\D/g, '').slice(-10);
-  const chatText = extractChatTranscript(body);
 
-  // URL: prefer Page: del body. Si no existe, construir desde landing (que viene del subject Cliengo
-  // y suele traer dominio.tld o dominio.tld/path). Así l.url siempre tiene algo navegable.
+  // URL: prefer Page: del body. Si no existe, construir desde landing
   let finalUrl = page || '';
   if (!finalUrl && landing && /^[\w.-]+\.[a-z]{2,}/i.test(landing)) {
     finalUrl = 'https://' + landing.replace(/^https?:\/\//, '');
   }
 
+  // Comentarios estructurados (NO toda la conversación)
+  const lineas = [];
+  if (chat.interes) lineas.push(`Interés: ${chat.interes}`);
+  if (chat.mensajeCliente) lineas.push(`Mensaje del cliente: "${chat.mensajeCliente}"`);
+  if (chat.extras && chat.extras.length) lineas.push(`Notas: ${chat.extras.join(' · ')}`);
+  const comentariosEstructurados = lineas.join('\n');
+
   return {
     session_id: sessionId,
     fuente,
     landing,
-    nombre: nombre || '',
+    nombre: titleCaseName(nombre || ''),
     whatsapp: telefono || '',
     wa_norm: waNorm,
-    ciudad,
-    estado,
+    ciudad: titleCaseCity(ciudad),
+    estado: titleCaseCity(estado),
     url: finalUrl,
-    campania: landing,
-    comentarios: chatText,
+    campania: '',  // antes ponía landing → causaba duplicación en columna ORIGEN
+    comentarios: comentariosEstructurados,
     user_agent: '',
     ip: ''
   };
+}
+
+// Parsea el chat Cliengo: asocia cada pregunta del Asesor con la respuesta inmediata del Contacto.
+// Devuelve campos estructurados (nombre, ciudad, teléfono, interés, mensaje libre, extras).
+function parseCliengoChat(body) {
+  const out = { nombre: '', ciudad: '', telefono: '', interes: '', mensajeCliente: '', extras: [] };
+  const lines = body.split('\n').map(l => l.trim()).filter(Boolean);
+
+  // Construir secuencia ordenada de turnos
+  const turnos = [];
+  for (const ln of lines) {
+    const m = ln.match(/^(Asesor|Contacto):\s*(.*)$/i);
+    if (m) turnos.push({ rol: m[1].toLowerCase(), txt: m[2].trim() });
+    if (/^Datos de contacto/i.test(ln) || /^Gestiona tu contacto/i.test(ln)) break;
+  }
+
+  // Patrones de preguntas que dispara el bot Cliengo
+  const RE_NOMBRE = /(nombre|llamas|c[oó]mo te dices|qui[eé]n eres|a que.\s*nombre|a qu[eé] nombre)/i;
+  const RE_CIUDAD = /(ciudad|donde te encuentras|d[oó]nde est[aá]s|localidad|estado|ubicaci[oó]n|d[oó]nde ser[ií]a|d[oó]nde sera)/i;
+  const RE_TELEFONO = /(whatsapp|tel[eé]fono|n[uú]mero|celular)/i;
+  const RE_EXTRA = /(algo m[aá]s|consulta adicional|quieres agregar|comentar|cu[aá]ntas|cuantas|en cu[aá]nto tiempo|cuando|presupuesto)/i;
+  const RE_INTERES_DIRECT = /(te interesa|qu[eé] buscas|qu[eé] necesitas|c[oó]mo te puedo ayudar|en qu[eé] podemos ayudarte|qu[eé] tipo)/i;
+
+  const contactoLibre = []; // mensajes del Contacto que no respondieron a una pregunta específica
+
+  for (let i = 0; i < turnos.length; i++) {
+    const t = turnos[i];
+    if (t.rol !== 'asesor') continue;
+    // siguiente Contacto inmediato (puede haber varios Asesor seguidos)
+    let nextContacto = null;
+    for (let j = i + 1; j < turnos.length; j++) {
+      if (turnos[j].rol === 'contacto') { nextContacto = turnos[j]; break; }
+      if (turnos[j].rol === 'asesor') continue;
+    }
+    if (!nextContacto || !nextContacto.txt) continue;
+
+    if (!out.nombre && RE_NOMBRE.test(t.txt) && looksLikeName(nextContacto.txt)) {
+      out.nombre = nextContacto.txt;
+    } else if (!out.ciudad && RE_CIUDAD.test(t.txt)) {
+      out.ciudad = nextContacto.txt;
+    } else if (!out.telefono && RE_TELEFONO.test(t.txt) && /\d{8,}/.test(nextContacto.txt)) {
+      out.telefono = nextContacto.txt.replace(/[^\d]/g, '');
+    } else if (RE_EXTRA.test(t.txt) && !['nada','no','ninguno','ninguna'].includes(nextContacto.txt.toLowerCase())) {
+      out.extras.push(nextContacto.txt);
+    }
+  }
+
+  // Primer Contacto = mensaje inicial libre del cliente (ANTES de cualquier pregunta del Asesor)
+  for (const t of turnos) {
+    if (t.rol === 'contacto') {
+      if (t.txt && !out.mensajeCliente && t.txt.length > 1) {
+        out.mensajeCliente = t.txt;
+      }
+      break;
+    }
+    if (t.rol === 'asesor') break; // ya empezó el bot, no hay mensaje inicial
+  }
+  // Si no hubo mensaje inicial, usar el primer mensaje libre que no sea datos básicos
+  if (!out.mensajeCliente) {
+    for (const t of turnos) {
+      if (t.rol !== 'contacto') continue;
+      const x = t.txt.trim();
+      if (!x) continue;
+      if (x === out.nombre || x === out.ciudad || x === out.telefono) continue;
+      if (/^\d{8,}$/.test(x.replace(/\D/g,''))) continue;
+      if (['si','sí','no','ok','gracias','perfecto','bien'].includes(x.toLowerCase())) continue;
+      out.mensajeCliente = x;
+      break;
+    }
+  }
+
+  // Interés: detectar por palabras clave en TODO lo que dijo el Contacto
+  const allCliente = turnos.filter(t => t.rol === 'contacto').map(t => t.txt).join(' ').toLowerCase();
+  out.interes = detectInteres(allCliente);
+
+  return out;
+}
+
+const INTERES_KEYWORDS = [
+  ['Pasto sintético',     /pasto sint[eé]tico|c[eé]sped sint[eé]tico|grass sint[eé]tico|pasto artificial/i],
+  ['Cancha de fútbol 7',  /cancha de f[uú]tbol\s*7|f[uú]tbol\s*7|f7|cancha de futbol|cancha multiusos/i],
+  ['Cancha de pádel',     /\bp[aá]del\b|cancha de padel|padel/i],
+  ['Cancha de fútbol americano', /futbol americano|f[uú]tbol americano|tochito/i],
+  ['Cancha de pickleball',/pickleball/i],
+  ['Cancha de tenis',     /\btenis\b/i],
+  ['Cancha de béisbol',   /b[eé]isbol|softbol/i],
+  ['Putting green',       /putting green|golf/i],
+  ['Malla ciclónica',     /malla cicl[oó]nica|malla|cerca cicl[oó]nica/i],
+  ['Alumbrado/reflectores', /alumbrado|reflector|iluminaci[oó]n|luminaria/i],
+  ['Gradas/bancas',       /grada|banca para jugadores/i],
+  ['Porterías',           /porter[ií]a|arco|red de porter/i],
+  ['Pintura para canchas',/pintura|pintar la cancha|repintar/i],
+  ['Pasto jardín',        /jard[ií]n|residencial|patio|terraza/i],
+];
+function detectInteres(text) {
+  for (const [name, re] of INTERES_KEYWORDS) if (re.test(text)) return name;
+  return '';
+}
+
+function looksLikeName(s) {
+  if (!s) return false;
+  const t = s.trim();
+  if (t.length < 2 || t.length > 60) return false;
+  if (/\d{4,}/.test(t)) return false; // tiene un número largo, no es nombre
+  // 1-5 palabras, principalmente letras
+  const words = t.split(/\s+/);
+  if (words.length > 5) return false;
+  return /^[A-Za-zÁÉÍÓÚÑáéíóúñ.\s]{2,}$/.test(t);
+}
+
+function titleCaseName(s) {
+  if (!s) return '';
+  return s.toLowerCase().split(/\s+/).map(w => {
+    if (!w) return w;
+    if (w.length <= 2 && /^(de|la|el|y|del|los|las)$/i.test(w)) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ').trim();
+}
+
+function titleCaseCity(s) {
+  if (!s) return '';
+  // mapeo de abreviaturas comunes de estados MX
+  const ABBR = {
+    'tamps': 'Tamaulipas', 'tamp': 'Tamaulipas',
+    'nl': 'Nuevo León', 'n.l.': 'Nuevo León',
+    'jal': 'Jalisco',
+    'cdmx': 'Ciudad de México', 'df': 'Ciudad de México',
+    'edomex': 'Estado de México', 'edo mex': 'Estado de México', 'edo. mex.': 'Estado de México',
+    'qro': 'Querétaro', 'sin': 'Sinaloa', 'son': 'Sonora',
+    'bc': 'Baja California', 'bcs': 'Baja California Sur',
+    'pue': 'Puebla', 'gto': 'Guanajuato', 'mich': 'Michoacán',
+    'ver': 'Veracruz', 'oax': 'Oaxaca', 'chih': 'Chihuahua',
+    'coah': 'Coahuila', 'yuc': 'Yucatán', 'qroo': 'Quintana Roo',
+  };
+  const parts = s.split(/[,/·]/).map(x => x.trim()).filter(Boolean);
+  const titled = parts.map(p => {
+    const lower = p.toLowerCase().replace(/\.$/, '');
+    if (ABBR[lower]) return ABBR[lower];
+    return titleCaseName(p);
+  });
+  return titled.join(', ');
 }
 
 function parseElementor({ subject, body, sessionId }) {
