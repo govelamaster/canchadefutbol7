@@ -34,6 +34,10 @@ export default {
     if (!lead) lead = parseElementor(ctxMeta);
 
     if (!lead) {
+      // Antes de guardar en leads_unparsed, descartar silenciosamente correos que claramente NO son leads
+      if (!looksLikeLead(subject, body, fromAddr)) {
+        return; // ruido (promos/newsletters/notifs) — no se guarda ni se ve
+      }
       await saveUnparsed(env, message, raw, 'no_parser_matched');
       return;
     }
@@ -227,6 +231,53 @@ function extractNameFromChat(body) {
     if (/^[A-ZÁÉÍÓÚÑa-záéíóúñ.\s]{4,}$/.test(t) && t.split(/\s+/).length <= 5) return t;
   }
   return '';
+}
+
+// Heurística: ¿este correo tiene pinta de lead? Solo guarda en leads_unparsed si pasa.
+// Estricto por default: descarta todo lo que no parezca claramente un formulario o un mensaje de contacto.
+function looksLikeLead(subject, body, fromAddr) {
+  const s = (subject + ' ' + fromAddr).toLowerCase();
+  const b = (body || '').toLowerCase();
+
+  // Lista negra obvia: si trae alguna de estas pistas en subject o sender, es ruido
+  const blacklistSender = [
+    'noreply@google.com', 'no-reply@accounts.google.com',
+    'mailer-daemon@', 'postmaster@',
+    'newsletter', 'campaign', 'marketing',
+    'promo', 'offer', 'deals',
+    'support@', 'billing@', 'notifications@',
+    'security-noreply', 'invoice', 'receipt',
+    'linkedin.com', 'facebook.com', 'instagram.com', 'tiktok.com',
+    'amazon.', 'mercadolibre', 'paypal', 'stripe',
+    'apple.com', 'icloud.com'
+  ];
+  for (const p of blacklistSender) if (s.includes(p)) return false;
+
+  const blacklistSubject = [
+    'unsubscribe', 'newsletter', 'last chance', 'sale ', 'off!', '% off',
+    'webinar', 'masterclass', 'curso', 'descarga', 'ebook',
+    'recibo', 'factura', 'invoice', 'receipt', 'order', 'pedido',
+    'verifica', 'verify your', 'reset your password', 'security alert',
+    'login', 'sign in', 'two-factor', '2fa', 'authentication',
+    'reunión', 'meeting reminder', 'calendar invitation'
+  ];
+  for (const p of blacklistSubject) if (s.includes(p)) return false;
+
+  // Lista blanca: si trae alguna de estas señales, parece lead → guarda en unparsed para revisión
+  const leadSignals = [
+    'tienes un nuevo contacto', 'nuevo contacto', 'nuevo lead', 'new lead',
+    'formulario', 'contact form', 'cotiz', 'quotation',
+    'whatsapp', 'teléfono:', 'phone:', 'mensaje:', 'message:',
+    'me interesa', 'i am interested', 'interested in',
+    'funciona con: elementor', 'wpforms', 'gravity forms', 'contact form 7',
+    'url de la página:', 'ip remota:', 'agente de usuario:',
+    'cliengo', 'tidio', 'tawk', 'crisp',
+    'sportmaster', 'canchadefutbol', 'canchasdepadel', 'padelcenter', 'playzone', 'puttinggreen'
+  ];
+  for (const p of leadSignals) if (b.includes(p) || s.includes(p)) return true;
+
+  // Por default: descarta. Si en el futuro aparece un formato nuevo, agregamos su keyword arriba.
+  return false;
 }
 
 function stripHtml(html) {
