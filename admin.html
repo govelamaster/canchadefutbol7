@@ -1075,6 +1075,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <button id="refreshBtn" title="Refrescar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refrescar</button>
       <button id="urlBuilderBtn" title="Generar URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>URL</button>
       <button id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
+      <button id="unparsedBtn" style="display:none" title="Correos que el Email Worker no clasificó"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Sin clasificar <span id="unparsedCount" style="background:#fef3c7;color:#92400e;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;margin-left:4px">0</span></button>
       <button id="usersBtn" style="display:none" title="Gestionar usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Usuarios</button>
       <button id="logoutBtn" class="logout">Salir</button>
     </div>
@@ -1773,6 +1774,11 @@ function applyRoleUI(){
   document.body.classList.add(cls);
   const ub = document.getElementById('usersBtn');
   if (ub) ub.style.display = (CURRENT_ROLE === 'super_admin') ? '' : 'none';
+  const upb = document.getElementById('unparsedBtn');
+  if (upb) {
+    upb.style.display = (CURRENT_ROLE === 'super_admin') ? '' : 'none';
+    if (CURRENT_ROLE === 'super_admin') refreshUnparsedCount();
+  }
   // Título del header: saludo personal al vendedor
   const dt = document.getElementById('dashTitle');
   if (dt) dt.textContent = (CURRENT_ROLE === 'vendedor') ? ('Hola, ' + (currentUser() || '')) : 'Leads · Cotizador F7';
@@ -2189,6 +2195,14 @@ function motorIA(l){
 }
 function canalLead(l){
   if ((l.gclid || '').trim()) return 'Google Ads';
+  // Email-leads worker etiqueta `fuente` con prefijos estables — los mapeamos a un canal legible
+  const f = (l.fuente || '').toLowerCase().trim();
+  if (f.startsWith('google_ads_')) return 'Google Ads';
+  if (f === 'cliengo_web') return 'Cliengo (web)';
+  if (f === 'cliengo_facebook') return 'Cliengo (Facebook)';
+  if (f === 'cliengo_instagram') return 'Cliengo (Instagram)';
+  if (f === 'form_organico') return 'Form orgánico';
+  if (f === 'email_otro') return 'Email (sin clasificar)';
   const c = (l.campania || '').toLowerCase().trim();
   if (!c || c === 'directo') return 'Directo / sin referente';
   if (motorIA(l)) return 'IA (ChatGPT, Perplexity…)';
@@ -2392,7 +2406,14 @@ function renderCanales(){
 
 // ===== Tab "Google Ads" — conversiones offline (gclid) filtrables + CSV =====
 let gadsCity = 'all', gadsUrlF = 'all', gadsPeriod = 'all';
-function urlKeyOf(l){ return (l.url || '').replace(/^https?:\/\//,'').split('?')[0].replace(/\/$/,'') || 'directo'; }
+function urlKeyOf(l){
+  const fromUrl = (l.url || '').replace(/^https?:\/\//,'').split('?')[0].replace(/\/$/,'');
+  if (fromUrl) return fromUrl;
+  // Fallback: leads del Email Worker (ej. Cliengo Facebook) no tienen URL pero sí `landing`
+  const lnd = (l.landing || '').trim();
+  if (lnd) return lnd;
+  return 'directo';
+}
 function gadsFiltered(){
   let rows = allLeads.filter(l => (l.gclid || '').trim());
   if (gadsPeriod === 'today'){ const h = hoyMx(); rows = rows.filter(l => ymdMx(l.fecha) === h); }
@@ -4017,6 +4038,73 @@ function csvEscape(v){
   const s = String(v);
   if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
   return s;
+}
+
+/* =========================================================
+   SIN CLASIFICAR — correos que el Email Worker no pudo parsear
+========================================================= */
+async function refreshUnparsedCount(){
+  try {
+    const pwd = localStorage.getItem(STORAGE_KEY) || '';
+    if (!pwd) return;
+    const r = await fetch(`/api/leads-unparsed?p=${encodeURIComponent(pwd)}`, { cache: 'no-store' });
+    if (!r.ok) return;
+    const j = await r.json();
+    const n = (j && j.count) || 0;
+    const badge = document.getElementById('unparsedCount');
+    if (badge) {
+      badge.textContent = n;
+      badge.style.background = n > 0 ? '#fef3c7' : '#e5e7eb';
+      badge.style.color = n > 0 ? '#92400e' : '#64748b';
+    }
+  } catch (_) {}
+}
+function openUnparsedModal(items){
+  const rows = items.map(it => `
+    <tr>
+      <td style="white-space:nowrap;color:#64748b;font-size:12px">${escapeHtml((it.received_at || '').slice(0,16).replace('T',' '))}</td>
+      <td style="font-size:12px"><b>${escapeHtml(it.sender || '—')}</b><br><span style="color:#64748b">→ ${escapeHtml(it.recipient || '')}</span></td>
+      <td style="font-size:12.5px;max-width:280px">${escapeHtml(it.subject || '(sin asunto)')}</td>
+      <td><span style="background:#fef3c7;color:#92400e;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700">${escapeHtml(it.reason || 'desconocido')}</span></td>
+      <td><button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block'" style="font-size:11px;padding:3px 8px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer">Ver crudo</button><pre style="display:none;max-height:300px;overflow:auto;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px;font-size:11px;margin-top:6px;white-space:pre-wrap;word-break:break-word">${escapeHtml((it.raw || '').slice(0, 5000))}</pre></td>
+    </tr>
+  `).join('');
+  const html = `
+    <div id="unparsedModal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow:auto" onclick="if(event.target===this)this.remove()">
+      <div style="background:#fff;border-radius:14px;max-width:1100px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)" onclick="event.stopPropagation()">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e5e7eb">
+          <h2 style="margin:0;font-size:17px">📨 Correos sin clasificar <span style="color:#92400e;background:#fef3c7;border-radius:8px;padding:2px 9px;font-size:13px;margin-left:6px">${items.length}</span></h2>
+          <button onclick="document.getElementById('unparsedModal').remove()" style="border:none;background:#f1f5f9;border-radius:7px;padding:6px 12px;font-size:13px;cursor:pointer">Cerrar</button>
+        </div>
+        <div style="padding:18px 22px">
+          <p style="margin:0 0 12px;font-size:12.5px;color:#64748b;background:#f8fafc;border-radius:8px;padding:10px 13px">
+            Estos son correos que llegaron a <code>leads@canchadefutbol7.mx</code> pero el Email Worker no supo qué formato eran. Revísalos: si encuentras un patrón nuevo (otro CRM, otro plugin de WordPress, etc.), avísame para agregar la regla.
+          </p>
+          ${items.length === 0 ? '<div style="padding:40px;text-align:center;color:#94a3b8">🎉 Sin pendientes — todos los correos cayeron clasificados.</div>' : `
+          <div style="overflow-x:auto"><table class="lb-table" style="font-size:13px;width:100%"><thead><tr><th>Recibido</th><th>De → para</th><th>Asunto</th><th>Motivo</th><th>Raw</th></tr></thead><tbody>${rows}</tbody></table></div>
+          `}
+        </div>
+      </div>
+    </div>`;
+  const wrap = document.createElement('div');
+  wrap.innerHTML = html;
+  document.body.appendChild(wrap.firstElementChild);
+}
+const unparsedBtnEl = document.getElementById('unparsedBtn');
+if (unparsedBtnEl) {
+  unparsedBtnEl.addEventListener('click', async () => {
+    const pwd = localStorage.getItem(STORAGE_KEY) || '';
+    if (!pwd) { alert('Tu sesión expiró. Vuelve a entrar.'); return; }
+    try {
+      const r = await fetch(`/api/leads-unparsed?p=${encodeURIComponent(pwd)}`, { cache: 'no-store' });
+      if (!r.ok) { alert('Error cargando sin clasificar: HTTP ' + r.status); return; }
+      const j = await r.json();
+      openUnparsedModal((j && j.items) || []);
+      refreshUnparsedCount();
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  });
 }
 
 /* =========================================================

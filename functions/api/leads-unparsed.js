@@ -1,6 +1,7 @@
 /**
- * GET /api/leads?p=<password>
- * Devuelve todos los leads en JSON. Protegido con password simple.
+ * GET /api/leads-unparsed?p=<password>
+ * Devuelve los correos que el Email Worker no pudo clasificar.
+ * Para tab "Sin clasificar" del admin.
  */
 
 const ADMIN_PASSWORD = "Cancha2026!";
@@ -10,7 +11,7 @@ async function sha256hex(s) {
   const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
 }
-// Autorizado si es la clave maestra O la contraseña de un usuario registrado.
+
 async function authorized(env, pwd) {
   if (!pwd) return false;
   if (pwd === ADMIN_PASSWORD) return true;
@@ -28,37 +29,24 @@ export async function onRequestGet(context) {
 
   if (!(await authorized(env, auth))) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'content-type': 'application/json' }
+      status: 401, headers: { 'content-type': 'application/json' }
     });
   }
 
   try {
     const result = await env.DB.prepare(`
-      SELECT id, fecha, session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente,
-             url, gclid, campania, landing,
-             vendedor, tipo_cliente, status_proyecto, notas_internas, tocado_por, tocado_fecha, estado_manual,
-             recurrente, dup_de,
-             asignado_fecha, compromiso_min, compromiso_fecha, atendido_fecha, recordatorios
-      FROM leads
-      ORDER BY fecha DESC
-      LIMIT 5000
+      SELECT id, received_at, sender, recipient, subject, reason, raw, reviewed
+      FROM leads_unparsed
+      ORDER BY received_at DESC
+      LIMIT 500
     `).all();
 
-    return new Response(JSON.stringify({
-      ok: true,
-      count: result.results.length,
-      leads: result.results
-    }), {
-      headers: {
-        'content-type': 'application/json',
-        'cache-control': 'no-store'
-      }
+    return new Response(JSON.stringify({ ok: true, count: result.results.length, items: result.results }), {
+      headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
     });
   } catch (err) {
     return new Response(JSON.stringify({ ok: false, error: err.message }), {
-      status: 500,
-      headers: { 'content-type': 'application/json' }
+      status: 500, headers: { 'content-type': 'application/json' }
     });
   }
 }
