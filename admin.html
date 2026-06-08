@@ -1284,6 +1284,15 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       </div>
     </div>
 
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 22px 0;flex-wrap:wrap">
+      <label for="vipVendedorFilter" style="font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.06em">Filtrar vendedor:</label>
+      <select id="vipVendedorFilter" style="padding:8px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;background:#fff;cursor:pointer">
+        <option value="all">Todos</option>
+        <option value="__unassigned__">Sin asignar</option>
+      </select>
+      <span id="vipFilterMeta" style="font-size:12px;color:#94a3b8"></span>
+    </div>
+
     <div class="table-wrap">
       <table class="lead-table">
         <thead>
@@ -4037,16 +4046,58 @@ function m2Area(raw){
 function vipLeads(){
   return allLeads.filter(l => m2Area(l.m2) >= 3000);
 }
+let currentVipVendedor = 'all';
+(function initVipFilter(){
+  const sel = document.getElementById('vipVendedorFilter');
+  if (!sel) return;
+  sel.addEventListener('change', e => {
+    currentVipVendedor = e.target.value;
+    renderVip();
+  });
+})();
 function renderVip(){
-  const leads = vipLeads();
+  const all = vipLeads();
   const body  = document.getElementById('vipBody');
   const empty = document.getElementById('vipEmpty');
-  // Stats
+  const sel   = document.getElementById('vipVendedorFilter');
+  const meta  = document.getElementById('vipFilterMeta');
+
+  // Poblar el dropdown con vendedores que SÍ tienen leads VIP (orden alfabético, dedup)
+  if (sel){
+    const vendedoresConVip = [...new Set(all.map(l => (l.vendedor || '').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+    const fixed = ['all','__unassigned__'];
+    const existing = [...sel.options].map(o => o.value);
+    // Reconstruir solo si cambió la lista (evita perder selección actual)
+    if (vendedoresConVip.join('|') !== existing.filter(v => !fixed.includes(v)).join('|')){
+      sel.innerHTML = `<option value="all">Todos</option><option value="__unassigned__">Sin asignar</option>` +
+        vendedoresConVip.map(v => `<option value="${v}">${v}</option>`).join('');
+      // Restaurar selección si sigue vigente
+      sel.value = [...sel.options].some(o => o.value === currentVipVendedor) ? currentVipVendedor : 'all';
+      if (sel.value !== currentVipVendedor) currentVipVendedor = sel.value;
+    }
+  }
+
+  // Aplicar filtro
+  let leads = all;
+  if (currentVipVendedor === '__unassigned__'){
+    leads = all.filter(l => !(l.vendedor || '').trim());
+  } else if (currentVipVendedor !== 'all'){
+    leads = all.filter(l => (l.vendedor || '').trim() === currentVipVendedor);
+  }
+
+  // Stats (siempre sobre el subconjunto visible)
   const totalM2 = leads.reduce((s, l) => s + m2Area(l.m2), 0);
   const ganados = leads.filter(l => l.status_proyecto === 'Ganado').length;
   document.getElementById('vipCount').textContent = leads.length;
   document.getElementById('vipM2').textContent = totalM2.toLocaleString('es-MX');
   document.getElementById('vipGanados').textContent = ganados;
+
+  if (meta){
+    meta.textContent = currentVipVendedor === 'all'
+      ? `${all.length} proyectos VIP totales`
+      : `${leads.length} de ${all.length} proyectos VIP`;
+  }
+
   if (leads.length === 0) {
     body.innerHTML = '';
     empty.style.display = 'block';
