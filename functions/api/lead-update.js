@@ -220,11 +220,14 @@ async function notifyReasignado(env, to, vendedorAnterior, nuevoVendedor, l) {
           <tr><td style="background:#0f172a;color:#cbd5e1;padding:18px 30px;font-size:12.5px;text-align:center;font-style:italic;line-height:1.4">"En Sportmaster vivimos de clientes satisfechos y bien atendidos."</td></tr>
         </table>
       </div>`;
+    // 🔕 Olga 2026-06-09: silenciado (cuota Resend). Reasignación va al dashboard.
+    /*
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({ from, to, subject, html })
     });
+    */
   } catch (e) {}
 }
 
@@ -355,11 +358,14 @@ async function notifyVendor(env, to, vendedor, l) {
           <tr><td style="background:#0f172a;color:#cbd5e1;padding:16px 30px;font-size:12px;text-align:center">Sportmaster · Canchas de Fútbol 7 — ¡Mucho éxito! 🌟</td></tr>
         </table>
       </div>`;
+    // 🔕 Olga 2026-06-09: silenciado (cuota Resend). Asignación va al resumen 9 AM.
+    /*
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({ from, to, subject, html })
     });
+    */
   } catch (e) { /* silencioso: nunca rompe el guardado */ }
 }
 

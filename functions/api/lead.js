@@ -207,6 +207,10 @@ async function sendLeadEmail(env, d, request, leadId, leadDomain) {
       `Panel: https://canchadefutbol7.mx/admin`,
     ].join('\n');
 
+    // 🔕 Olga 2026-06-09: silenciado para no quemar la cuota de Resend.
+    // Todo el ruido de "nuevo lead" va al dashboard /admin + resumen 9 AM al vendedor.
+    // Si en algún momento quieres reactivar el ping individual, descomenta el bloque.
+    /*
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -215,6 +219,7 @@ async function sendLeadEmail(env, d, request, leadId, leadDomain) {
       },
       body: JSON.stringify({ from, to, reply_to: replyTo, subject, html, text }),
     });
+    */
   } catch (e) { /* silencioso: nunca rompe el guardado del lead */ }
 }
 
@@ -279,6 +284,8 @@ async function notifyRecurrente(env, d, vendedor, leadId, leadDomain) {
           <p style="font-size:12px;color:#94a3b8;margin-top:16px">No cuenta como lead nuevo — es seguimiento. Panel: <a href="https://canchadefutbol7.mx/admin" style="color:#1d4ed8">canchadefutbol7.mx/admin</a></p>
         </div>
       </div>`;
+    // 🔕 Olga 2026-06-09: silenciado (cuota Resend). Recurrentes van al dashboard.
+    /*
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
@@ -289,6 +296,7 @@ async function notifyRecurrente(env, d, vendedor, leadId, leadDomain) {
         text: `Seguimiento\n\n${nombre} (cliente recurrente) volvió a dejar sus datos.\nWhatsApp: ${d.whatsapp || '-'}\nCiudad: ${d.ciudad || '-'}\nm²: ${d.m2 || '-'}\n\nPanel: https://canchadefutbol7.mx/admin`,
       }),
     });
+    */
   } catch (e) { /* silencioso */ }
 }
 
