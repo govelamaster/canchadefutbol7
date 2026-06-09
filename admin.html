@@ -1196,6 +1196,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <div class="filters">
         <button class="filter-pill active" data-filter="all" title="Mostrar todos los leads del rango">Ver todos</button>
         <button class="filter-pill" id="unassignedPill" onclick="filtrarSinAsignar()" title="Ver solo los leads sin vendedor">Sin asignar</button>
+        <button class="filter-pill" id="abandonedPill" onclick="filtrarAbandonados()" title="Asignados hace +2h, sin atender y sin compromiso vigente">🚨 Abandonados</button>
       </div>
       <label class="bulk-master" title="Marcar todos los leads visibles para acción en lote (borrar, asignar…)">
         <input type="checkbox" id="bulkSelectAll" onchange="toggleSelectAllLeads(this.checked)" />
@@ -1732,6 +1733,7 @@ function ymdMx(fecha){
 let currentFilter = 'all';
 let currentRange = 'today';   // por defecto la tabla muestra SOLO los leads de hoy
 let currentUnassigned = false; // ver solo leads sin vendedor asignado
+let currentAbandoned = false;  // ver solo leads abandonados (>=2h sin atender, sin compromiso vigente)
 let currentSearch = '';
 
 // Lead sin asignar = sin vendedor y aún activo (no Ganado/Perdido)
@@ -1748,6 +1750,39 @@ function filtrarSinAsignar(){
   }
   const up = document.getElementById('unassignedPill');
   if (up) up.classList.toggle('active', currentUnassigned);
+  renderVendorTray();
+  renderStats();
+  renderTable();
+  document.querySelector('.toolbar')?.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// Abandonado = asignado a vendedor, sin atender, status "Sin atender",
+// han pasado >=2h desde la asignación y no tiene compromiso vigente.
+function esAbandonado(l){
+  if (l.atendido_fecha) return false;
+  if (!(l.vendedor || '').trim()) return false;
+  if ((l.status_proyecto || 'Sin atender') !== 'Sin atender') return false;
+  if (!l.asignado_fecha) return false;
+  const asigMs = Date.parse(String(l.asignado_fecha).replace(' ', 'T') + 'Z');
+  if (!asigMs || (Date.now() - asigMs) < 2 * 3600 * 1000) return false;
+  if (l.compromiso_fecha){
+    const c = Date.parse(String(l.compromiso_fecha).replace(' ', 'T') + 'Z');
+    if (c && c > Date.now()) return false; // compromiso vigente
+  }
+  return true;
+}
+function filtrarAbandonados(){
+  currentAbandoned = !currentAbandoned;
+  if (currentAbandoned){
+    currentRange = 'all';
+    document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
+    // No mezclar con "sin asignar" (son cosas distintas)
+    if (currentUnassigned){
+      currentUnassigned = false;
+      document.getElementById('unassignedPill')?.classList.remove('active');
+    }
+  }
+  document.getElementById('abandonedPill')?.classList.toggle('active', currentAbandoned);
   renderVendorTray();
   renderStats();
   renderTable();
@@ -3394,6 +3429,7 @@ function renderTable(){
     }
   }
   if (currentUnassigned) rows = rows.filter(esSinAsignar);
+  if (currentAbandoned) rows = rows.filter(esAbandonado);
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
   if (currentVendedor !== 'all') rows = rows.filter(l => (l.vendedor || '') === currentVendedor);
   if (currentSearch){
