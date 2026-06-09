@@ -165,7 +165,9 @@
     }
     @media (max-width:620px){
       .brand img{width:170px}.hero::before{background:linear-gradient(180deg,rgba(0,0,0,.8),rgba(18,62,10,.58))}
-      .hero h1{font-size:29px;line-height:1.04;letter-spacing:0}.coverage{font-size:24px}.proof{font-size:15px;line-height:1.42}.form-card{padding:22px}.section{padding:54px 0}
+      .hero-inner > div:first-child{width:100%;max-width:350px}
+      .hero h1{font-size:28px;line-height:1.05;letter-spacing:0}.coverage{font-size:24px}.proof{font-size:15px;line-height:1.42;max-width:350px}.form-card{padding:22px;width:100%;max-width:350px;overflow:hidden}.section{padding:54px 0}
+      input,textarea{min-width:0}
       .hero-badges{gap:10px}.badge{max-width:100%;font-size:12px;line-height:1.25}
       .phone{flex-wrap:wrap;line-height:1.35}
       .sports-grid,.trust-grid,.logo-grid{grid-template-columns:1fr}.sport-body p{min-height:0}.photo-grid{display:block}.photo-grid figure{height:220px;margin-bottom:12px}
@@ -489,14 +491,6 @@
     </div>
   </footer>
 
-  <div class="bottom-sticky">
-    <div class="bottom-inner">
-      <div class="bottom-copy"><small>Cotizacion en 20 minutos</small>Recibe el precio real de tu cancha</div>
-      <div class="bottom-actions">
-        <a class="btn" href="https://wa.me/525539887615?text=Hola%2C%20quiero%20cotizar%20una%20cancha%20Sportmaster">Cotizar por WhatsApp</a>
-      </div>
-    </div>
-  </div>
   <div class="cookies" id="cookies">Utilizamos cookies para mejorar tu experiencia, si estas de acuerdo continua navegando. <button type="button">Vale</button></div>
   <script>
     const phone = "525539887615";
