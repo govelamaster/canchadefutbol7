@@ -157,23 +157,26 @@ async function sendLeadEmail(env, d, request, leadId, leadDomain) {
   try {
     leadDomain = leadDomain || 'canchadefutbol7.mx';
     const to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com';
-    // El "from" debe ser de un dominio verificado en Resend (canchadefutbol7.mx).
-    const from = env.LEADS_FROM || 'Leads canchadefutbol7 <leads@canchadefutbol7.mx>';
+    // 🆕 Anti-spam: from neutral (marca, no dominio), reply-to apuntando al buzón real,
+    //    subject SIN dominios cruzados, text alt (multipart), Gmail castiga menos.
+    const from = env.LEADS_FROM || 'Sportmaster Leads <leads@canchadefutbol7.mx>';
+    const replyTo = env.LEADS_REPLY_TO || 'formulariosweb2021@gmail.com';
     const esc = (s) => String(s || '-').replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
     const wa = (d.whatsapp || '').replace(/\D/g, '');
     const com = String(d.comentarios || '');
     const tipo = (com.match(/Tipo:\s*([^·]+)/i) || [,''])[1].trim();
     const accesorios = (com.match(/Accesorios:\s*(.+)$/i) || [,''])[1].trim();
-    const subject = `Nuevo lead ${leadDomain}${d.fuente ? ' (' + d.fuente + ')' : ''}: ${d.nombre || 'sin nombre'}${d.ciudad ? ' — ' + d.ciudad : ''}`;
+    // Subject limpio: SIN dominios, SIN emojis (los emojis elevan el spam score en B2B).
+    const subject = `Nuevo lead — ${d.nombre || 'sin nombre'}${d.ciudad ? ', ' + d.ciudad : ''}${d.m2 ? ' · ' + d.m2 + ' m²' : ''}`;
     const row = (k, v) => `<tr><td style="padding:4px 14px 4px 0;color:#64748b">${k}</td><td style="padding:4px 0;font-weight:600">${v}</td></tr>`;
     let assignBtn = '';
     if (leadId) {
       const t = (await sha256hex(ASSIGN_SECRET + ':' + leadId)).slice(0, 24);
-      assignBtn = `<a href="https://canchadefutbol7.mx/api/assign?id=${leadId}&t=${t}" style="display:inline-block;margin:6px 0 4px;background:#3f922a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:13px 24px;border-radius:10px">🎯 Asignar a un vendedor</a>`;
+      assignBtn = `<a href="https://canchadefutbol7.mx/api/assign?id=${leadId}&t=${t}" style="display:inline-block;margin:6px 0 4px;background:#3f922a;color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;padding:13px 24px;border-radius:10px">Asignar a un vendedor</a>`;
     }
     const html = `
       <div style="font-family:system-ui,-apple-system,sans-serif;color:#0f172a">
-        <h2 style="margin:0 0 14px">Nuevo lead de ${esc(leadDomain)}</h2>
+        <h2 style="margin:0 0 14px">Nuevo lead recibido</h2>
         <table style="font-size:14px;border-collapse:collapse">
           ${row('Nombre', esc(d.nombre))}
           ${row('WhatsApp', `${esc(d.whatsapp)}${wa ? ` &nbsp;<a href="https://wa.me/52${wa.slice(-10)}">abrir chat</a>` : ''}`)}
@@ -183,10 +186,26 @@ async function sendLeadEmail(env, d, request, leadId, leadDomain) {
           ${row('Tipo de cancha', esc(tipo || '-'))}
           ${row('Accesorios', esc(accesorios || '-'))}
           ${row('Fuente', `${esc(d.fuente)}${d.campania ? ' · ' + esc(d.campania) : ''}`)}
+          ${row('Sitio', esc(leadDomain))}
         </table>
         ${assignBtn}
         <p style="font-size:12px;color:#64748b;margin-top:16px">Panel de leads: <a href="https://canchadefutbol7.mx/admin">canchadefutbol7.mx/admin</a></p>
       </div>`;
+    // Versión texto plano (multipart) — Gmail premia los multipart bien armados.
+    const text = [
+      `Nuevo lead recibido`,
+      ``,
+      `Nombre: ${d.nombre || '-'}`,
+      `WhatsApp: ${d.whatsapp || '-'}`,
+      `Ciudad: ${d.ciudad || '-'}`,
+      `m²: ${d.m2 || '-'}`,
+      `Inicio: ${d.timeline || '-'}`,
+      `Tipo de cancha: ${tipo || '-'}`,
+      `Fuente: ${d.fuente || '-'}${d.campania ? ' · ' + d.campania : ''}`,
+      `Sitio: ${leadDomain}`,
+      ``,
+      `Panel: https://canchadefutbol7.mx/admin`,
+    ].join('\n');
 
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -194,7 +213,7 @@ async function sendLeadEmail(env, d, request, leadId, leadDomain) {
         'Authorization': `Bearer ${env.RESEND_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ from, to, subject, html }),
+      body: JSON.stringify({ from, to, reply_to: replyTo, subject, html, text }),
     });
   } catch (e) { /* silencioso: nunca rompe el guardado del lead */ }
 }
@@ -235,7 +254,8 @@ async function notifyRecurrente(env, d, vendedor, leadId, leadDomain) {
   try {
     let to = await emailDeVendedor(env, vendedor);
     if (!to) to = env.LEADS_EMAIL || 'formulariosweb2021@gmail.com'; // fallback: avisa a Olga
-    const from = env.LEADS_FROM || 'Leads canchadefutbol7 <leads@canchadefutbol7.mx>';
+    const from = env.LEADS_FROM || 'Sportmaster Leads <leads@canchadefutbol7.mx>';
+    const replyTo = env.LEADS_REPLY_TO || 'formulariosweb2021@gmail.com';
     const esc = (s) => String(s == null ? '-' : s).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
     const nombre = (d.nombre || 'tu cliente').trim();
     const wa = (d.whatsapp || '').replace(/\D/g, '');
@@ -262,7 +282,12 @@ async function notifyRecurrente(env, d, vendedor, leadId, leadDomain) {
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to, subject: `🔁 ${nombre} volvió a contactar — es tu cliente`, html }),
+      body: JSON.stringify({
+        from, to, reply_to: replyTo,
+        subject: `Seguimiento — ${nombre} volvió a contactar`,
+        html,
+        text: `Seguimiento\n\n${nombre} (cliente recurrente) volvió a dejar sus datos.\nWhatsApp: ${d.whatsapp || '-'}\nCiudad: ${d.ciudad || '-'}\nm²: ${d.m2 || '-'}\n\nPanel: https://canchadefutbol7.mx/admin`,
+      }),
     });
   } catch (e) { /* silencioso */ }
 }
