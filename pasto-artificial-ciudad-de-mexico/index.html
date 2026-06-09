@@ -35,6 +35,7 @@
     .hero{position:relative;min-height:670px;background:#111 url("../assets/pasto-sintetico-cancha-futbol-7-cdmx-hero.webp") center/cover no-repeat;color:#fff;overflow:hidden}
     .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.76) 0%,rgba(18,62,10,.54) 48%,rgba(0,0,0,.13) 100%)}
     .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr 420px;gap:42px;align-items:center;padding:70px 0 76px}
+    .hero-inner > *,.price-showcase > *,.split > *{min-width:0}
     .hero h1{font-size:clamp(38px,5vw,66px);line-height:.98;text-transform:uppercase;letter-spacing:-.035em;font-weight:950;max-width:760px;text-shadow:0 5px 20px rgba(0,0,0,.32);overflow-wrap:break-word}
     .hero h1 em{font-style:normal;color:var(--green-light)}
     .coverage{margin:20px 0 12px;font-size:clamp(21px,3vw,38px);line-height:1.05;text-transform:uppercase;font-weight:950;color:#fff}
@@ -164,13 +165,40 @@
     }
     @media (max-width:620px){
       .brand img{width:170px}.hero::before{background:linear-gradient(180deg,rgba(0,0,0,.8),rgba(18,62,10,.58))}
-      .hero h1{font-size:32px;line-height:1.02;letter-spacing:-.018em}.coverage{font-size:24px}.proof{font-size:16px;line-height:1.42}.form-card{padding:22px}.section{padding:54px 0}
+      .hero h1{font-size:29px;line-height:1.04;letter-spacing:0}.coverage{font-size:24px}.proof{font-size:15px;line-height:1.42}.form-card{padding:22px}.section{padding:54px 0}
       .hero-badges{gap:10px}.badge{max-width:100%;font-size:12px;line-height:1.25}
       .phone{flex-wrap:wrap;line-height:1.35}
       .sports-grid,.trust-grid,.logo-grid{grid-template-columns:1fr}.sport-body p{min-height:0}.photo-grid{display:block}.photo-grid figure{height:220px;margin-bottom:12px}
       .price-feature{padding:52px 0}.price-panel{padding:22px}.price-amount strong{font-size:78px}.price-amount span{font-size:28px}.project-visual{min-height:560px}.project-card{left:14px;right:14px;width:auto;padding:20px}.price-note{align-items:flex-start;padding:16px}.price-feature .price-cta .btn{min-width:0;width:100%}
       .footer-inner{grid-template-columns:1fr;text-align:left}.footer-contact{text-align:left}.footer-brand img{width:190px}.cookies{display:none}
       .bottom-inner{display:grid;grid-template-columns:1fr;gap:9px;padding:10px 0}.bottom-copy{font-size:15px}.bottom-actions{display:grid;grid-template-columns:1fr}.bottom-actions .btn{padding:12px 10px;font-size:12px}
+    }
+    .faq{background:#f9fafb;padding:80px 0}
+    .faq-wrap{max-width:880px}
+    .faq-header{text-align:center;margin-bottom:36px}
+    .faq-header h2{font-size:clamp(28px,3.5vw,40px);line-height:1.08;font-weight:950;letter-spacing:-.035em;color:#111;margin:8px 0 10px}
+    .faq-header p{color:#666;font-weight:650;font-size:16px;max-width:620px;margin:0 auto}
+    .faq-list{display:flex;flex-direction:column;gap:12px}
+    .faq-list details{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+    .faq-list details[open]{border-color:var(--green);box-shadow:0 6px 20px rgba(79,159,34,.14)}
+    .faq-list summary{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;font-weight:800;font-size:16px;color:#111;list-style:none}
+    .faq-list summary::-webkit-details-marker{display:none}
+    .faq-list .q-num{flex:0 0 auto;width:30px;height:30px;background:var(--green);color:#fff;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900}
+    .faq-list details[open] .q-num{background:var(--green-dark)}
+    .faq-list .q-text{flex:1 1 auto;line-height:1.3}
+    .faq-list .q-arrow{flex:0 0 auto;width:10px;height:10px;border-right:2px solid var(--green);border-bottom:2px solid var(--green);transform:rotate(45deg);transition:transform .25s;margin-right:6px}
+    .faq-list details[open] .q-arrow{transform:rotate(-135deg)}
+    .faq-answer{padding:4px 22px 22px 22px;border-top:1px solid var(--line)}
+    .faq-pill{display:inline-block;background:#e8f4dc;color:var(--green-dark);border-radius:99px;font-size:12px;font-weight:800;padding:4px 12px;margin:14px 0 10px;text-transform:uppercase;letter-spacing:.04em}
+    .faq-answer p{font-size:16px;line-height:1.65;color:#374151;margin-top:8px}
+    .faq-answer strong{color:#111;font-weight:850}
+    .faq-cta{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:#fff;text-decoration:none;font-weight:850;font-size:14px;padding:11px 18px;border-radius:4px;margin-top:14px;box-shadow:0 8px 18px rgba(79,159,34,.25);text-transform:uppercase;letter-spacing:.02em}
+    .faq-cta:hover{background:var(--green-dark)}
+    @media (max-width:640px){
+      .faq{padding:56px 0}
+      .faq-list summary{font-size:15px;padding:16px 16px;gap:11px}
+      .faq-answer{padding:4px 16px 18px 16px}
+      .faq-answer p{font-size:15px}
     }
   </style>
 </head>
@@ -349,6 +377,94 @@
       </div>
     </section>
 
+    <section class="section faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq-wrap">
+        <div class="faq-header">
+          <span class="eyebrow">Preguntas frecuentes</span>
+          <h2 id="faq-title">Canchas de fútbol 7 con pasto sintético en CDMX</h2>
+          <p>Respuestas rápidas sobre precio, instalación, garantía y cobertura en Ciudad de México y Área Metropolitana.</p>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary><span class="q-num">1</span><span class="q-text">¿Cuánto cuesta una cancha de fútbol 7 con pasto sintético en CDMX?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Precios</span>
+              <p>Una cancha de fútbol 7 de <strong>800 m²</strong> cuesta desde <strong>$230 MXN/m² + IVA</strong>, lo que equivale a aproximadamente <strong>$184,000–$280,000 MXN solo en pasto sintético e instalación</strong>, según el tipo de pasto seleccionado (30, 40 o 50 mm). La base civil se cotiza por separado con el contratista de obra.</p>
+              <a class="faq-cta" href="https://wa.me/525539887615?text=Hola%2C%20quiero%20cotizar%20una%20cancha%20de%20f%C3%BAtbol%207%20en%20CDMX" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">2</span><span class="q-text">¿Qué incluye la instalación de pasto sintético con Sportmaster?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Servicio</span>
+              <p>La instalación incluye: <strong>suministro del pasto sintético deportivo importado de polietileno de alto rendimiento, transporte a obra en CDMX, instalación profesional sobre base civil ya preparada, sellado de juntas, marcación de líneas de juego y entrega final.</strong></p>
+              <p>No incluye: preparación de la base civil, drenajes, alumbrado LED, malla perimetral ni porterías. Estos accesorios se cotizan por separado a solicitud del cliente.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">3</span><span class="q-text">¿Cuánto tiempo tarda la instalación de una cancha de fútbol 7?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Tiempo</span>
+              <p>Una cancha de fútbol 7 estándar se instala en <strong>5 a 7 días naturales</strong>, una vez que la base civil está terminada, nivelada y seca. Para canchas de fútbol 11 o proyectos con múltiples canchas, el plazo se ajusta según las dimensiones totales del proyecto.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">4</span><span class="q-text">¿Atienden toda la CDMX y el Área Metropolitana?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Cobertura</span>
+              <p>Sí. Sportmaster instala canchas en las <strong>16 alcaldías de la Ciudad de México</strong> y en los principales municipios del Área Metropolitana: <strong>Naucalpan, Tlalnepantla, Atizapán, Huixquilucan, Cuautitlán Izcalli, Coacalco, Ecatepec, Nezahualcóyotl y Chimalhuacán.</strong></p>
+              <p>Con más de <strong>3,500 proyectos instalados en los 32 estados de México</strong>, también atendemos obras fuera de la zona metropolitana.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">5</span><span class="q-text">¿Qué garantía tiene el pasto sintético deportivo?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Garantía</span>
+              <p>El pasto sintético Sportmaster cuenta con <strong>9 años de garantía de fábrica contra decoloración por rayos UV</strong> y <strong>2 años de garantía en mano de obra de instalación.</strong> La garantía aplica con uso deportivo normal y mantenimiento básico recomendado por el fabricante.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">6</span><span class="q-text">¿Tienen precio especial para escuelas, colegios y universidades?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Sector educativo</span>
+              <p>Sí. Sportmaster tiene un <strong>programa específico para instituciones educativas</strong> con descuentos por volumen y opciones de pago diferido. También participamos en programas gubernamentales como <strong>SOBSE, SEDATU, CEFUT, PILARES, UTOPÍA y La Escuela es Nuestra.</strong></p>
+              <p>Al cotizar, indica que el proyecto es para una institución educativa para recibir la propuesta correspondiente.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">7</span><span class="q-text">¿Instalan canchas de fútbol 5, fútbol 7 y fútbol 11?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Tipos de cancha</span>
+              <p>Sí. Sportmaster fabrica e instala canchas para <strong>fútbol 5, fútbol 7, fútbol rápido (soccer) y fútbol 11.</strong> El tipo de pasto varía según las dimensiones y la intensidad de uso esperada: <strong>30 mm para uso amateur, 40 mm para uso intermedio y 50 mm para uso profesional o intensivo.</strong></p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">8</span><span class="q-text">¿Cómo puedo pedir una cotización para mi cancha?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Cotización</span>
+              <p>Da clic en el botón de WhatsApp y envía tres datos: <strong>(1) medidas aproximadas de tu cancha, (2) alcaldía o municipio, y (3) si la base civil ya está lista.</strong> Recibirás una cotización formal en menos de <strong>20 minutos</strong> en días hábiles.</p>
+              <a class="faq-cta" href="https://wa.me/525539887615?text=Hola%2C%20quiero%20cotizar%20mi%20cancha%20de%20pasto%20sint%C3%A9tico" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">9</span><span class="q-text">¿Necesito tener la base civil lista antes de que lleguen a instalar?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Base civil</span>
+              <p>Sí. La <strong>base civil</strong> (concreto, asfalto o tezontle compactado) debe estar terminada y nivelada antes de la instalación del pasto. Sportmaster se especializa exclusivamente en la <strong>instalación del pasto sintético sobre la base ya preparada</strong> por el contratista de obra del cliente. Esto reduce costos totales y te da control directo sobre la obra civil.</p>
+            </div>
+          </details>
+          <details>
+            <summary><span class="q-num">10</span><span class="q-text">¿Cuál es el precio por m² del pasto sintético deportivo instalado?</span><span class="q-arrow" aria-hidden="true"></span></summary>
+            <div class="faq-answer">
+              <span class="faq-pill">Precio por m²</span>
+              <p>El precio del pasto sintético deportivo instalado comienza desde <strong>$230/m² + IVA</strong>, con instalación incluida. El costo sube según el modelo elegido: <strong>$230–$280/m² pasto 30 mm (amateur), $300–$360/m² pasto 40 mm (intermedio), $380–$450/m² pasto 50 mm (profesional).</strong> A mayor cantidad de m², mejor precio por volumen.</p>
+              <a class="faq-cta" href="https://wa.me/525539887615?text=Hola%2C%20me%20interesa%20el%20precio%20por%20m%C2%B2%20de%20pasto%20sint%C3%A9tico" target="_blank" rel="noopener">Ver precio para tu proyecto</a>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <section class="section cta">
       <div class="wrap">
         <h2>¿Necesitas una cotizacion?</h2>
@@ -394,5 +510,25 @@
       document.querySelector("#cookies").style.display = "none";
     });
   </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "name": "Preguntas frecuentes – Canchas de Fútbol 7 con Pasto Sintético CDMX",
+  "description": "Respuestas sobre costos, instalación, garantía y cobertura de canchas de fútbol 7 con pasto sintético en Ciudad de México. Sportmaster México.",
+  "mainEntity": [
+    {"@type":"Question","name":"¿Cuánto cuesta una cancha de fútbol 7 con pasto sintético en CDMX?","acceptedAnswer":{"@type":"Answer","text":"Una cancha de fútbol 7 de 800 m² cuesta desde $230 MXN/m² + IVA en pasto sintético e instalación, equivalente a aproximadamente $184,000–$280,000 MXN según el tipo de pasto. El precio final depende del modelo (30, 40 o 50 mm) y la cantidad total contratada. La base civil se cotiza aparte con el contratista de obra."}},
+    {"@type":"Question","name":"¿Qué incluye la instalación de pasto sintético con Sportmaster?","acceptedAnswer":{"@type":"Answer","text":"Incluye suministro del pasto sintético deportivo importado de polietileno de alto rendimiento, transporte a la obra en CDMX, instalación profesional sobre base civil ya preparada, sellado de juntas, marcación de líneas de juego y entrega final. No incluye base civil, drenajes, alumbrado, malla perimetral ni porterías."}},
+    {"@type":"Question","name":"¿Cuánto tiempo tarda la instalación de una cancha de fútbol 7?","acceptedAnswer":{"@type":"Answer","text":"Una cancha de fútbol 7 estándar se instala en 5 a 7 días naturales, una vez que la base civil está terminada, nivelada y seca. Para canchas de fútbol 11 o múltiples canchas, el plazo se ajusta según las dimensiones totales del proyecto."}},
+    {"@type":"Question","name":"¿Atienden toda la CDMX y el Área Metropolitana?","acceptedAnswer":{"@type":"Answer","text":"Sí. Sportmaster instala canchas en las 16 alcaldías de la Ciudad de México y en los municipios metropolitanos: Naucalpan, Tlalnepantla, Atizapán, Huixquilucan, Cuautitlán Izcalli, Coacalco, Ecatepec, Nezahualcóyotl y Chimalhuacán. Con más de 3,500 proyectos en los 32 estados de México, también atendemos proyectos fuera de la zona metropolitana."}},
+    {"@type":"Question","name":"¿Qué garantía tiene el pasto sintético deportivo?","acceptedAnswer":{"@type":"Answer","text":"El pasto sintético Sportmaster incluye 9 años de garantía de fábrica contra decoloración por rayos UV y 2 años de garantía en mano de obra de instalación. La garantía aplica con uso deportivo normal y mantenimiento básico recomendado."}},
+    {"@type":"Question","name":"¿Tienen precio especial para escuelas, colegios y universidades?","acceptedAnswer":{"@type":"Answer","text":"Sí. Sportmaster ofrece descuentos por volumen y opciones de pago diferido para instituciones educativas. También participamos en programas gubernamentales como SOBSE, SEDATU, CEFUT, PILARES, UTOPÍA y La Escuela es Nuestra. Al cotizar, indique que el proyecto es para una institución educativa."}},
+    {"@type":"Question","name":"¿Instalan canchas de fútbol 5, fútbol 7 y fútbol 11?","acceptedAnswer":{"@type":"Answer","text":"Sí. Sportmaster instala canchas para fútbol 5, fútbol 7, fútbol rápido (soccer) y fútbol 11. El tipo de pasto varía según dimensiones e intensidad de uso: 30 mm para uso amateur, 40 mm para uso intermedio y 50 mm para uso profesional o intensivo."}},
+    {"@type":"Question","name":"¿Cómo puedo pedir una cotización para mi cancha?","acceptedAnswer":{"@type":"Answer","text":"Envía un mensaje por WhatsApp con tres datos: medidas aproximadas de la cancha, alcaldía o municipio, y si la base civil ya está lista. Recibirás una cotización formal en menos de 20 minutos en días hábiles."}},
+    {"@type":"Question","name":"¿Necesito tener la base civil lista antes de que lleguen a instalar?","acceptedAnswer":{"@type":"Answer","text":"Sí. La base civil (concreto, asfalto o tezontle compactado) debe estar terminada y nivelada antes de la instalación. Sportmaster instala el pasto sintético sobre la base ya preparada por el contratista de obra del cliente, lo que reduce costos totales y da mayor control sobre la obra civil."}},
+    {"@type":"Question","name":"¿Cuál es el precio por m² del pasto sintético deportivo instalado?","acceptedAnswer":{"@type":"Answer","text":"El precio del pasto sintético deportivo instalado comienza desde $230/m² + IVA. El costo varía según el modelo: $230–$280/m² para pasto 30 mm (amateur), $300–$360/m² para pasto 40 mm (intermedio) y $380–$450/m² para pasto 50 mm (profesional). A mayor cantidad de m², mejor precio por volumen."}}
+  ]
+}
+</script>
 </body>
 </html>
