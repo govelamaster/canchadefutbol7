@@ -115,15 +115,25 @@ export async function onRequestPost(context) {
       } catch (e) { /* silencioso: nunca rompe la captura */ }
 
       // Avisos por correo (opcional: si falta RESEND_API_KEY se omite)
-      if (env.RESEND_API_KEY) {
-        const emailCtx = context.waitUntil ? context : null;
-        // MULTI-TENANT: el dominio donde corrió el chatbot lo manda el widget.
-        // Si no llega, fallback a canchadefutbol7.mx (compat hacia atrás).
-        const leadDomain = (payload.domain || 'canchadefutbol7.mx').toLowerCase().replace(/^www\./,'');
-        const send = recurrenteVendedor
-          ? notifyRecurrente(env, payload, recurrenteVendedor, leadId, leadDomain)
-          : sendLeadEmail(env, payload, request, leadId, leadDomain);
-        if (emailCtx) emailCtx.waitUntil(send); else await send;
+      // 🆕 ANTI-DUPLICADOS: solo se manda UNA vez por session_id, con flag `notificado`.
+      //    Si el chatbot hace 7 POSTs (parcial→completo→wa_click→…), solo el primero notifica.
+      if (env.RESEND_API_KEY && leadId) {
+        let yaNotificado = 1;
+        try {
+          const r = await env.DB.prepare("SELECT notificado FROM leads WHERE id = ?").bind(leadId).first();
+          yaNotificado = r && r.notificado ? 1 : 0;
+        } catch (_) { yaNotificado = 0; /* si la columna aún no existe, tratamos como no notificado */ }
+        if (!yaNotificado){
+          const emailCtx = context.waitUntil ? context : null;
+          const leadDomain = (payload.domain || 'canchadefutbol7.mx').toLowerCase().replace(/^www\./,'');
+          const send = (recurrenteVendedor
+              ? notifyRecurrente(env, payload, recurrenteVendedor, leadId, leadDomain)
+              : sendLeadEmail(env, payload, request, leadId, leadDomain)
+          ).then(async () => {
+            try { await env.DB.prepare("UPDATE leads SET notificado = 1 WHERE id = ?").bind(leadId).run(); } catch(_){}
+          });
+          if (emailCtx) emailCtx.waitUntil(send); else await send;
+        }
       }
     }
 
