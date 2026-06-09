@@ -401,6 +401,12 @@ function looksLikeLead(subject, body, fromAddr) {
   const s = (subject + ' ' + fromAddr).toLowerCase();
   const b = (body || '').toLowerCase();
 
+  // EXCEPCIÓN: el código de verificación de reenvío Gmail viene de
+  // forwarding-noreply@google.com y caería en el blacklist `noreply@google.com`.
+  // Lo dejamos pasar para que se guarde en leads_unparsed y poder leer el código.
+  if (s.includes('forwarding-noreply@google.com')) return true;
+  if (s.includes('gmail forwarding confirmation') || s.includes('confirmación de reenv') || s.includes('confirmacion de reenv')) return true;
+
   // Lista negra obvia: si trae alguna de estas pistas en subject o sender, es ruido
   const blacklistSender = [
     'noreply@google.com', 'no-reply@accounts.google.com',
