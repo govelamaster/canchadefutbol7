@@ -542,11 +542,17 @@ const Cot = (function(){
   check();
 })();
 
-/* Todos los CTA de WhatsApp de la página abren el chatbot (excepto el botón final del propio chat) */
+/* Todos los CTA de WhatsApp de la página abren el chatbot (excepto el botón final del propio chat).
+   OPT-OUT: si el link tiene clase .wa-direct, data-direct, o su texto matchea
+   "contáctanos|contactanos|háblanos|llámanos|escríbenos", va DIRECTO a WhatsApp
+   sin pasar por el bot (caso: botones "Contáctanos por WhatsApp"). */
 document.addEventListener('click', function(e){
   var a = e.target.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href*="whatsapp.com/send"]');
   if(!a) return;
   if(a.closest('#cot-panel')) return;   // el botón final del chat sí debe ir a WhatsApp
+  if(a.classList.contains('wa-direct') || a.hasAttribute('data-direct')) return; // opt-out explícito
+  var txt = (a.textContent || '').toLowerCase();
+  if(/cont[áa]ct[ae]nos|h[áa]blanos|ll[áa]manos|escr[íi]benos/.test(txt)) return; // opt-out por texto
   e.preventDefault();
   if(typeof Cot !== 'undefined') Cot.open();
 }, true);
