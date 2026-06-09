@@ -625,11 +625,40 @@
     const phone = "525539887615";
     const buildWaUrl = (message) => `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
-    document.querySelector("#cotizar").addEventListener("submit", (event) => {
+    document.querySelector("#cotizar").addEventListener("submit", async (event) => {
       event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      const text = `Hola, quiero cotizar mi cancha.\n\nNombre: ${data.get("nombre") || ""}\nWhatsApp: ${data.get("whatsapp") || ""}\nMensaje: ${data.get("mensaje") || ""}`;
-      window.location.href = buildWaUrl(text);
+      const form = event.currentTarget;
+      const data = new FormData(form);
+      const nombre = String(data.get("nombre") || "").trim();
+      const whatsapp = String(data.get("whatsapp") || "").trim();
+      const mensaje = String(data.get("mensaje") || "").trim();
+      const text = `Hola, quiero cotizar mi cancha.\n\nNombre: ${nombre}\nWhatsApp: ${whatsapp}\nMensaje: ${mensaje}`;
+
+      const payload = {
+        session_id: `pasto-cdmx-hero-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        estado: "formulario",
+        nombre,
+        whatsapp,
+        ciudad: "CDMX / Zona Metropolitana",
+        comentarios: `${mensaje}${mensaje ? " · " : ""}Origen: formulario hero (Realiza tu consulta)`,
+        fuente: "Landing pasto artificial CDMX",
+        url: window.location.href,
+        campania: "pasto-artificial-ciudad-de-mexico",
+        domain: "canchadefutbol7.mx"
+      };
+
+      try {
+        await fetch("/api/lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          keepalive: true
+        });
+      } catch (error) {
+        console.warn("No se pudo registrar el lead localmente.", error);
+      } finally {
+        window.location.href = buildWaUrl(text);
+      }
     });
 
     const adminQuoteForm = document.querySelector("#adminQuoteForm");
