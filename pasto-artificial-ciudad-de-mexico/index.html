@@ -149,13 +149,15 @@
     .footer-contact strong{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--green-dark)}
     .footer-contact a{font-size:18px;font-weight:900;text-decoration:none;color:#1b1b1b}
     .footer-contact span{font-size:13px;color:#666}
-    .bottom-sticky{position:fixed;left:0;right:0;bottom:0;z-index:36;background:rgba(18,18,18,.96);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.12);box-shadow:0 -14px 34px rgba(0,0,0,.2)}
-    .bottom-inner{width:min(1160px,calc(100% - 28px));margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 0}
-    .bottom-copy{color:#fff;font-weight:950;text-transform:uppercase;letter-spacing:-.02em;line-height:1.05}
-    .bottom-copy small{display:block;color:#b7dca2;font-size:11px;letter-spacing:.08em;margin-bottom:3px}
-    .bottom-actions{display:flex;gap:10px;align-items:center}
-    .bottom-actions .btn{padding:13px 18px;font-size:13px;white-space:nowrap}
-    .cookies{position:fixed;left:18px;bottom:18px;background:#fff;border:1px solid var(--line);box-shadow:0 14px 34px rgba(0,0,0,.18);border-radius:4px;padding:14px 15px;z-index:34;max-width:360px;font-size:13px;color:#555}
+    .bottom-sticky{position:fixed;left:0;right:0;bottom:14px;z-index:80;pointer-events:none}
+    .bottom-inner{width:min(820px,calc(100% - 28px));margin:auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:16px 20px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 18px 55px rgba(0,0,0,.18);pointer-events:auto}
+    .bottom-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#eff8ef;color:var(--green);font-size:23px;box-shadow:inset 0 0 0 1px rgba(79,159,34,.15)}
+    .bottom-copy{min-width:0;color:#101417;line-height:1.12}
+    .bottom-copy strong{display:block;font-size:19px;font-weight:950;letter-spacing:-.025em}
+    .bottom-copy strong span{color:var(--green)}
+    .bottom-copy small{display:block;margin-top:7px;color:#667085;font-size:13px;font-weight:700;letter-spacing:0;text-transform:none}
+    .bottom-actions .btn{padding:15px 25px;font-size:14px;white-space:nowrap;border-radius:9px;text-transform:none}
+    .cookies{display:none}
     .cookies button{margin-left:8px;background:#111;color:#fff;border:0;border-radius:3px;padding:8px 12px;font-weight:800;cursor:pointer}
     @media (max-width:920px){
       .top-inner{height:auto;padding:14px 0;align-items:flex-start;flex-direction:column}.nav-cta{display:none}.phone{font-size:14px}
@@ -173,7 +175,7 @@
       .sports-grid,.trust-grid,.logo-grid{grid-template-columns:1fr}.sport-body p{min-height:0}.photo-grid{display:block}.photo-grid figure{height:220px;margin-bottom:12px}
       .price-feature{padding:52px 0}.price-panel{padding:22px}.price-amount strong{font-size:78px}.price-amount span{font-size:28px}.project-visual{min-height:560px}.project-card{left:14px;right:14px;width:auto;padding:20px}.price-note{align-items:flex-start;padding:16px}.price-feature .price-cta .btn{min-width:0;width:100%}
       .footer-inner{grid-template-columns:1fr;text-align:left}.footer-contact{text-align:left}.footer-brand img{width:190px}.cookies{display:none}
-      .bottom-inner{display:grid;grid-template-columns:1fr;gap:9px;padding:10px 0}.bottom-copy{font-size:15px}.bottom-actions{display:grid;grid-template-columns:1fr}.bottom-actions .btn{padding:12px 10px;font-size:12px}
+      .bottom-sticky{bottom:10px}.bottom-inner{grid-template-columns:1fr;gap:10px;padding:14px}.bottom-icon{display:none}.bottom-copy strong{font-size:17px}.bottom-copy small{font-size:12px}.bottom-actions{display:grid;grid-template-columns:1fr}.bottom-actions .btn{width:100%;padding:13px 10px;font-size:13px}
     }
     .faq{background:#f9fafb;padding:80px 0}
     .faq-wrap{max-width:880px}
@@ -291,9 +293,9 @@
 
     <section class="section intro">
       <div class="wrap">
-        <span class="eyebrow">Proveedores N°1 de pasto sintetico deportivo</span>
-        <h2>Tipos de canchas con pasto sintetico que construimos</h2>
-        <p class="lead">En Sportmaster fabricamos e instalamos superficies deportivas para proyectos reales: clubes, escuelas, ligas, municipios y desarrollos privados. Calculamos el costo de acuerdo con medidas, uso y especificaciones tecnicas.</p>
+        <span class="eyebrow">Proveedores N°1 de pasto sintético deportivo</span>
+        <h2>Tipos de canchas con pasto sintético que construimos en CDMX</h2>
+        <p class="lead">En Sportmaster fabricamos e instalamos superficies deportivas para proyectos reales: clubes, escuelas, ligas, municipios y desarrollos privados en Ciudad de México y Área Metropolitana. Calculamos el costo de acuerdo con medidas, uso y especificaciones técnicas.</p>
       </div>
     </section>
 
@@ -490,6 +492,19 @@
       </div>
     </div>
   </footer>
+
+  <div class="bottom-sticky" aria-label="Cotización rápida por WhatsApp">
+    <div class="bottom-inner">
+      <div class="bottom-icon" aria-hidden="true">▢</div>
+      <div class="bottom-copy">
+        <strong>¿Estás por construir una <span>cancha deportiva?</span></strong>
+        <small>Recibe una propuesta personalizada para tu proyecto.</small>
+      </div>
+      <div class="bottom-actions">
+        <a class="btn" href="https://wa.me/525539887615?text=Hola%2C%20quiero%20recibir%20una%20propuesta%20para%20una%20cancha%20deportiva%20en%20CDMX">Recibir propuesta →</a>
+      </div>
+    </div>
+  </div>
 
   <div class="cookies" id="cookies">Utilizamos cookies para mejorar tu experiencia, si estas de acuerdo continua navegando. <button type="button">Vale</button></div>
   <script>
