@@ -3430,6 +3430,12 @@ function renderTable(){
       rows = rows.filter(l => ymdMx(l.fecha) >= c);
     }
   }
+  // Decisión Olga 2026-06-09: PARCIAL y SOLO ABRIÓ son ruido (no se puede contactar).
+  // Ocultar del dashboard todo lead sin WhatsApp de 8+ dígitos.
+  // Override: ?showAll=1 en la URL los muestra (para auditoría).
+  if (!new URLSearchParams(location.search).has('showAll')) {
+    rows = rows.filter(l => ((l.whatsapp || '').replace(/\D/g, '').length >= 8));
+  }
   if (currentUnassigned) rows = rows.filter(esSinAsignar);
   if (currentAbandoned) rows = rows.filter(esAbandonado);
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
