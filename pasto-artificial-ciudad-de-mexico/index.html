@@ -50,9 +50,9 @@
     .form-card p{color:var(--muted);font-weight:700;margin-bottom:20px}
     .field{display:block;margin-bottom:13px}
     .field span{display:block;font-size:12px;text-transform:uppercase;font-weight:900;color:#333;margin-bottom:6px;letter-spacing:.04em}
-    input,textarea{width:100%;border:1px solid #d7d7d7;border-radius:3px;padding:14px 13px;font:inherit;font-size:15px;outline:none;background:#fff}
+    input,textarea,select{width:100%;border:1px solid #d7d7d7;border-radius:3px;padding:14px 13px;font:inherit;font-size:15px;outline:none;background:#fff}
     textarea{min-height:102px;resize:vertical}
-    input:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(79,159,34,.16)}
+    input:focus,textarea:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(79,159,34,.16)}
     .btn{border:0;border-radius:3px;background:var(--green);color:#fff;font-weight:950;text-transform:uppercase;letter-spacing:.02em;padding:16px 22px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;box-shadow:0 10px 22px rgba(79,159,34,.28)}
     .btn:hover{background:var(--green-dark)}
     .btn.orange{background:var(--orange)}
@@ -71,6 +71,7 @@
     .price-amount strong{font-size:clamp(72px,8vw,108px);letter-spacing:-.06em}
     .price-amount span{font-size:34px;color:#111;font-weight:950;padding-bottom:12px}
     .price-amount em{font-style:normal;color:#111;font-size:20px;font-weight:900;padding-bottom:4px}
+    .installed-note{display:inline-flex;align-items:center;background:#eaf5e6;color:var(--green-dark);font-size:13px;font-weight:950;text-transform:uppercase;letter-spacing:.04em;padding:7px 10px;border-radius:4px;margin:-6px 0 14px}
     .include-title{border-top:2px solid var(--green);padding-top:18px;margin-top:8px;font-weight:950}
     .check-list{display:grid;gap:14px;list-style:none;padding:18px 0 0}
     .check-list li{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700}
@@ -140,6 +141,35 @@
     .logo-card small{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em;margin-top:4px}
     .tech{background:#fff}
     .tech p{font-size:18px;color:#4f4f4f;max-width:900px}
+    .quote-admin{background:#114d27;color:#fff;padding:78px 0}
+    .quote-admin .wrap{max-width:900px}
+    .quote-head{text-align:center;margin:0 auto 38px;max-width:760px}
+    .quote-pill{display:inline-flex;background:rgba(255,255,255,.12);color:#72e39b;border-radius:99px;padding:8px 16px;font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+    .quote-head h2{font-size:clamp(34px,4.6vw,52px);line-height:1.04;font-weight:950;letter-spacing:-.04em;text-transform:none;margin-bottom:16px}
+    .quote-head p{font-size:18px;color:rgba(255,255,255,.82);font-weight:700;line-height:1.55}
+    .quote-card{max-width:620px;margin:0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:34px;box-shadow:0 24px 60px rgba(0,0,0,.22)}
+    .quote-card .field span{color:#fff;letter-spacing:.08em}
+    .quote-card input,.quote-card select{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.25);color:#fff;border-radius:7px}
+    .quote-card input::placeholder{color:rgba(255,255,255,.48)}
+    .quote-card select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#fff 50%),linear-gradient(135deg,#fff 50%,transparent 50%);background-position:calc(100% - 18px) 20px,calc(100% - 12px) 20px;background-size:6px 6px;background-repeat:no-repeat}
+    .quote-card select option{color:#111;background:#fff}
+    .quote-card input:focus,.quote-card select:focus{border-color:#72e39b;box-shadow:0 0 0 3px rgba(114,227,155,.18)}
+    .quote-card .btn{width:100%;margin-top:10px;background:#17692f;border-radius:7px;text-transform:none;font-size:15px;box-shadow:0 12px 26px rgba(0,0,0,.18)}
+    .quote-card .btn:hover{background:#1b7b38}
+    .quote-foot{margin-top:16px;text-align:center;color:rgba(255,255,255,.72);font-size:12px;font-weight:700}
+    .quote-status{min-height:18px;margin-top:12px;text-align:center;color:#aaf0bf;font-size:12px;font-weight:850}
+    .coverage-zone{background:#f4f7f2;padding:86px 0 88px}
+    .coverage-head{text-align:center;max-width:820px;margin:0 auto 44px}
+    .coverage-pill{display:inline-flex;align-items:center;background:#e6f2e4;color:var(--green-dark);border-radius:99px;padding:7px 14px;font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
+    .coverage-head h2{font-size:clamp(34px,4.4vw,50px);line-height:1.06;font-weight:950;letter-spacing:-.045em;color:#101828;text-transform:none;margin-bottom:18px}
+    .coverage-head p{font-size:17px;color:#344054;font-weight:650;line-height:1.6}
+    .coverage-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:960px;margin:0 auto}
+    .coverage-card{background:#fff;border:1px solid #dbe4d8;border-radius:8px;padding:30px 28px;box-shadow:0 16px 36px rgba(17,77,39,.06)}
+    .coverage-card h3{font-size:20px;line-height:1.15;color:#111827;font-weight:950;letter-spacing:-.025em;margin-bottom:10px}
+    .coverage-card p{color:#344054;font-size:15px;font-weight:650;line-height:1.55;margin-bottom:22px}
+    .zone-tags{display:flex;flex-wrap:wrap;gap:10px}
+    .zone-tags span{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:8px 13px;border:1px solid #d7e0ea;border-radius:999px;color:#111827;background:#fbfcff;font-size:12px;font-weight:850;white-space:nowrap;cursor:default;transition:transform .18s ease,background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .zone-tags span:hover{background:var(--green-dark);border-color:var(--green-dark);color:#fff;transform:translateY(-2px);box-shadow:0 10px 22px rgba(47,116,22,.22)}
     .cta{background:linear-gradient(90deg,rgba(0,0,0,.76),rgba(0,0,0,.48)),url("../assets/cancha-futbol-7-cdmx-iluminada.webp") center/cover;color:#fff;text-align:center}
     .cta h2{max-width:900px;margin-inline:auto}
     .cta p{font-size:19px;color:#eee;margin-bottom:25px}
@@ -154,7 +184,8 @@
     .footer-contact span{font-size:13px;color:#666}
     .bottom-sticky{position:fixed;left:0;right:0;bottom:14px;z-index:80;pointer-events:none}
     .bottom-inner{width:min(820px,calc(100% - 28px));margin:auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:16px 20px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 18px 55px rgba(0,0,0,.18);pointer-events:auto}
-    .bottom-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#eff8ef;color:var(--green);font-size:23px;box-shadow:inset 0 0 0 1px rgba(79,159,34,.15)}
+    .bottom-icon{position:relative;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#eff8ef;color:var(--green);font-size:23px;box-shadow:inset 0 0 0 1px rgba(79,159,34,.15)}
+    .bottom-icon::after{content:"";position:absolute;right:3px;top:4px;width:12px;height:12px;border-radius:50%;background:#e12727;border:2px solid #fff;box-shadow:0 0 0 4px rgba(225,39,39,.12)}
     .bottom-copy{min-width:0;color:#101417;line-height:1.12}
     .bottom-copy strong{display:block;font-size:19px;font-weight:950;letter-spacing:-.025em}
     .bottom-copy strong span{color:var(--green)}
@@ -167,6 +198,7 @@
       .hero-inner,.split,.features .split,.price-showcase{grid-template-columns:1fr}.hero{min-height:auto}.hero-inner{padding:44px 0}.form-card{max-width:520px}
       .project-visual{min-height:520px}.project-card{right:18px;top:auto;bottom:18px}
       .sports-grid{grid-template-columns:1fr 1fr}.logo-grid{grid-template-columns:1fr 1fr}.photo-grid{grid-template-rows:170px 170px}
+      .coverage-grid{grid-template-columns:1fr}
     }
     @media (max-width:620px){
       .brand img{width:190px}.top-inner{grid-template-columns:1fr}.top-trust{font-size:14px}.top-icon{width:38px;height:38px;font-size:21px}.hero::before{background:linear-gradient(180deg,rgba(0,0,0,.8),rgba(18,62,10,.58))}
@@ -176,6 +208,8 @@
       .hero-badges{gap:10px}.badge{max-width:100%;font-size:12px;line-height:1.25}
       .sports-grid,.trust-grid,.logo-grid{grid-template-columns:1fr}.sport-body p{min-height:0}.photo-grid{display:block}.photo-grid figure{height:220px;margin-bottom:12px}
       .price-feature{padding:52px 0}.price-panel{padding:22px}.price-amount strong{font-size:78px}.price-amount span{font-size:28px}.project-visual{min-height:560px}.project-card{left:14px;right:14px;width:auto;padding:20px}.price-note{align-items:flex-start;padding:16px}.price-feature .price-cta .btn{min-width:0;width:100%}
+      .quote-admin{padding:58px 0}.quote-card{padding:24px 18px}.quote-head p{font-size:16px}
+      .coverage-zone{padding:58px 0}.coverage-head{margin-bottom:28px}.coverage-head p{font-size:15px}.coverage-card{padding:22px 18px}.zone-tags{gap:8px}.zone-tags span{font-size:11px;padding:7px 10px;white-space:normal;text-align:center}
       .footer-inner{grid-template-columns:1fr;text-align:left}.footer-contact{text-align:left}.footer-brand img{width:190px}.cookies{display:none}
       .bottom-sticky{bottom:10px}.bottom-inner{grid-template-columns:1fr;gap:10px;padding:14px}.bottom-icon{display:none}.bottom-copy strong{font-size:17px}.bottom-copy small{font-size:12px}.bottom-actions{display:grid;grid-template-columns:1fr}.bottom-actions .btn{width:100%;padding:13px 10px;font-size:13px}
     }
@@ -256,10 +290,11 @@
           <article class="price-panel">
             <small>Desde</small>
             <div class="price-amount"><strong>$230</strong><span>/m²</span><em>+ IVA</em></div>
-            <div class="include-title">Incluye:</div>
+            <div class="installed-note">Precio incluye instalación</div>
+            <div class="include-title">Incluye instalación:</div>
             <ul class="check-list">
-              <li>Pasto sintético deportivo</li>
-              <li>Instalación profesional</li>
+              <li>Pasto sintético deportivo instalado</li>
+              <li>Mano de obra profesional</li>
               <li>Pegamento y uniones</li>
               <li>Materiales de instalación</li>
             </ul>
@@ -356,26 +391,9 @@
             <li>Durabilidad para alto trafico deportivo</li>
             <li>Instalacion profesional de la superficie deportiva</li>
           </ul>
-          <a class="btn orange" href="https://wa.me/525539887615?text=Quiero%20cotizar%20mi%20cancha%20y%20recibir%20el%20precio%20real">Cotiza tu cancha</a>
+          <a class="btn orange" href="https://wa.me/525539887615?text=Quiero%20cotizar%20mi%20cancha%20y%20recibir%20el%20precio%20real" onclick="if(window.Cot){event.preventDefault();Cot.open();}">Cotiza tu cancha</a>
         </div>
         <div class="features-img"><img src="../assets/cancha-futbol-7-cdmx-iluminada.webp" alt="Cancha de fútbol 7 lista para operar con pasto sintético Sportmaster en CDMX" loading="lazy" width="1280" height="720"></div>
-      </div>
-    </section>
-
-    <section class="section logos">
-      <div class="wrap">
-        <span class="eyebrow">Proyectos realizados</span>
-        <h2>Instituciones deportivas, educativas y organismos oficiales</h2>
-        <div class="logo-grid">
-          <div class="logo-card">Liga Mexicana<br><small>Beisbol</small></div>
-          <div class="logo-card">Gobierno<br><small>Tamaulipas</small></div>
-          <div class="logo-card">Adidas<br><small>Deporte</small></div>
-          <div class="logo-card">Gobierno<br><small>CDMX</small></div>
-          <div class="logo-card">Kia<br><small>Corporativo</small></div>
-          <div class="logo-card">Grupo Lego<br><small>Institucional</small></div>
-          <div class="logo-card">INDEPORTE<br><small>Deportivo</small></div>
-          <div class="logo-card">CONADE<br><small>Oficial</small></div>
-        </div>
       </div>
     </section>
 
@@ -384,6 +402,46 @@
         <span class="eyebrow">Experiencia y capacidad tecnica</span>
         <h2>Construimos canchas de futbol con pasto sintetico ajustadas a tu presupuesto</h2>
         <p>Sportmaster trabaja con clientes particulares, institucionales y deportivos en todo Mexico. Usamos pasto sintetico deportivo fabricado bajo estandares internacionales y materiales disenados para operacion amateur, profesional y de alto trafico.</p>
+      </div>
+    </section>
+
+    <section class="quote-admin" id="cotizacion-formal">
+      <div class="wrap">
+        <div class="quote-head">
+          <span class="quote-pill">Cotiza tu cancha en CDMX</span>
+          <h2>Cotización formal en 20 minutos</h2>
+          <p>Llena este formulario o mándanos un WhatsApp directo. Te contactamos con cotización por escrito el mismo día.</p>
+        </div>
+        <form class="quote-card" id="adminQuoteForm">
+          <label class="field">
+            <span>Nombre</span>
+            <input name="nombre" autocomplete="name" placeholder="Tu nombre" required>
+          </label>
+          <label class="field">
+            <span>WhatsApp</span>
+            <input name="whatsapp" inputmode="tel" autocomplete="tel" placeholder="55 1234 5678" required>
+          </label>
+          <label class="field">
+            <span>Tipo de cancha</span>
+            <select name="tipo" required>
+              <option value="">Selecciona</option>
+              <option>Fútbol 7</option>
+              <option>Fútbol rápido</option>
+              <option>Soccer / fútbol 11</option>
+              <option>Fútbol 5</option>
+              <option>Escuela o colegio</option>
+              <option>Club o complejo deportivo</option>
+              <option>Otro proyecto deportivo</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Metros cuadrados aproximados</span>
+            <input name="m2" inputmode="numeric" placeholder="Ej: 800 m²" required>
+          </label>
+          <button class="btn" type="submit">Enviar a WhatsApp</button>
+          <div class="quote-status" id="quoteStatus" aria-live="polite"></div>
+          <p class="quote-foot">Guardamos tu solicitud en el panel de Sportmaster y abrimos WhatsApp con el mensaje listo.</p>
+        </form>
       </div>
     </section>
 
@@ -475,6 +533,56 @@
       </div>
     </section>
 
+    <section class="coverage-zone" id="cobertura-cdmx">
+      <div class="wrap">
+        <div class="coverage-head">
+          <span class="coverage-pill">Pasto sintético CDMX</span>
+          <h2>Cobertura en toda la Ciudad de México y Zona Metropolitana</h2>
+          <p>Instalamos canchas de pasto sintético en las 16 alcaldías de CDMX y los principales municipios del Estado de México conurbado.</p>
+        </div>
+        <div class="coverage-grid">
+          <article class="coverage-card">
+            <h3>Ciudad de México · 16 alcaldías</h3>
+            <p>Atención directa en toda la CDMX, con tiempos de respuesta menores a 24 horas.</p>
+            <div class="zone-tags" aria-label="Alcaldías de Ciudad de México">
+              <span>Álvaro Obregón</span>
+              <span>Azcapotzalco</span>
+              <span>Benito Juárez</span>
+              <span>Coyoacán</span>
+              <span>Cuajimalpa</span>
+              <span>Cuauhtémoc</span>
+              <span>G. A. Madero</span>
+              <span>Iztacalco</span>
+              <span>Iztapalapa</span>
+              <span>M. Contreras</span>
+              <span>Miguel Hidalgo</span>
+              <span>Milpa Alta</span>
+              <span>Tláhuac</span>
+              <span>Tlalpan</span>
+              <span>V. Carranza</span>
+              <span>Xochimilco</span>
+            </div>
+          </article>
+          <article class="coverage-card">
+            <h3>Estado de México · Zona conurbada</h3>
+            <p>Municipios del Estado de México con cobertura directa para proyectos deportivos.</p>
+            <div class="zone-tags" aria-label="Municipios del Estado de México">
+              <span>Naucalpan</span>
+              <span>Tlalnepantla</span>
+              <span>Atizapán</span>
+              <span>Huixquilucan</span>
+              <span>Cuautitlán Izcalli</span>
+              <span>Coacalco</span>
+              <span>Ecatepec</span>
+              <span>Nezahualcóyotl</span>
+              <span>Tultitlán</span>
+              <span>Chimalhuacán</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section cta">
       <div class="wrap">
         <h2>¿Necesitas una cotizacion?</h2>
@@ -515,12 +623,72 @@
   <div class="cookies" id="cookies">Utilizamos cookies para mejorar tu experiencia, si estas de acuerdo continua navegando. <button type="button">Vale</button></div>
   <script>
     const phone = "525539887615";
+    const buildWaUrl = (message) => `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
     document.querySelector("#cotizar").addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-      const text = `Hola, quiero cotizar mi cancha.%0A%0ANombre: ${encodeURIComponent(data.get("nombre") || "")}%0AWhatsApp: ${encodeURIComponent(data.get("whatsapp") || "")}%0AMensaje: ${encodeURIComponent(data.get("mensaje") || "")}`;
-      window.location.href = `https://wa.me/${phone}?text=${text}`;
+      const text = `Hola, quiero cotizar mi cancha.\n\nNombre: ${data.get("nombre") || ""}\nWhatsApp: ${data.get("whatsapp") || ""}\nMensaje: ${data.get("mensaje") || ""}`;
+      window.location.href = buildWaUrl(text);
     });
+
+    const adminQuoteForm = document.querySelector("#adminQuoteForm");
+    if (adminQuoteForm) {
+      adminQuoteForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const submit = form.querySelector('button[type="submit"]');
+        const status = document.querySelector("#quoteStatus");
+        const data = new FormData(form);
+        const nombre = String(data.get("nombre") || "").trim();
+        const whatsapp = String(data.get("whatsapp") || "").trim();
+        const tipo = String(data.get("tipo") || "").trim();
+        const m2 = String(data.get("m2") || "").trim();
+        const cleanPhone = whatsapp.replace(/\D/g, "").slice(-10);
+
+        if (cleanPhone.length !== 10) {
+          status.textContent = "Escribe un WhatsApp de 10 dígitos.";
+          return;
+        }
+
+        const payload = {
+          session_id: `pasto-cdmx-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          estado: "formulario",
+          nombre,
+          whatsapp,
+          ciudad: "CDMX / Zona Metropolitana",
+          m2,
+          timeline: "Cotización formal en 20 minutos",
+          comentarios: `Tipo: ${tipo} · Origen: formulario antes de FAQ`,
+          fuente: "Landing pasto artificial CDMX",
+          url: window.location.href,
+          campania: "pasto-artificial-ciudad-de-mexico",
+          domain: "canchadefutbol7.mx"
+        };
+
+        const message = `Hola, quiero una cotización formal para una cancha con pasto sintético en CDMX.\n\nNombre: ${nombre}\nWhatsApp: ${whatsapp}\nTipo de cancha: ${tipo}\nMetros cuadrados aproximados: ${m2}`;
+
+        try {
+          submit.disabled = true;
+          submit.textContent = "Enviando...";
+          status.textContent = "Registrando tu solicitud...";
+          const response = await fetch("/api/lead", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            keepalive: true
+          });
+          if (!response.ok) throw new Error(`Lead API respondió ${response.status}`);
+          status.textContent = "Solicitud registrada. Abriendo WhatsApp...";
+        } catch (error) {
+          console.warn("No se pudo registrar el lead localmente.", error);
+          status.textContent = "Abriendo WhatsApp...";
+        } finally {
+          window.location.href = buildWaUrl(message);
+        }
+      });
+    }
+
     document.querySelector("#cookies button").addEventListener("click", () => {
       document.querySelector("#cookies").style.display = "none";
     });
