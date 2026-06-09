@@ -42,6 +42,25 @@ export default {
       return;
     }
 
+    // Dedup ventana 30 min por wa_norm + landing: si el mismo lead llega 2-3 veces
+    // (usuario que le da submit varias veces, o varios destinatarios del form),
+    // no duplicar el row en el dashboard.
+    try {
+      if (lead.wa_norm && lead.wa_norm.length >= 8 && (lead.landing || lead.url)) {
+        const dup = await env.DB.prepare(
+          `SELECT id FROM leads
+           WHERE wa_norm = ?
+             AND (landing = ? OR url = ?)
+             AND fecha >= datetime('now', '-30 minutes')
+           LIMIT 1`
+        ).bind(lead.wa_norm, lead.landing || '', lead.url || '').first();
+        if (dup) {
+          // mismo lead recibido hace menos de 30 min: silenciar duplicado
+          return;
+        }
+      }
+    } catch (e) { /* si la query falla, seguimos al INSERT normal */ }
+
     try {
       // INSERT OR IGNORE: si llega el mismo correo por 2 rutas distintas (reenvío Gmail
       // + form WP + Hotmail Beto), el UNIQUE INDEX en session_id evita duplicado.
