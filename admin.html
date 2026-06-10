@@ -1773,6 +1773,7 @@ function filtrarSinAsignar(){
     currentRange = 'all';
     document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
     renderUrlBreakdown();
+    populateOrigenFilter();
   }
   const up = document.getElementById('unassignedPill');
   if (up) up.classList.toggle('active', currentUnassigned);
@@ -1802,6 +1803,7 @@ function filtrarAbandonados(){
   if (currentAbandoned){
     currentRange = 'all';
     document.querySelectorAll('.filter-pill[data-range]').forEach(b => b.classList.toggle('active', b.dataset.range === 'all'));
+    populateOrigenFilter();
     // No mezclar con "sin asignar" (son cosas distintas)
     if (currentUnassigned){
       currentUnassigned = false;
@@ -2207,20 +2209,31 @@ function populateVendedorFilter(){
   sel.value = current || 'all';
 }
 // Filtro por origen (Olga 2026-06-10)
+// El conteo respeta el RANGO activo (Hoy/Ayer/7d/Histórico) para que matche la tabla.
 function populateOrigenFilter(){
   const sel = document.getElementById('origenFilter');
   if (!sel) return;
+  // Filtrar por rango actual (sin aplicar otros filtros como vendedor/origen/búsqueda)
+  let pool = allLeads;
+  if (currentRange === 'today'){
+    const t = hoyMx(); pool = pool.filter(l => ymdMx(l.fecha) === t);
+  } else if (currentRange === 'yesterday'){
+    const y = ayerMx(); pool = pool.filter(l => ymdMx(l.fecha) === y);
+  } else if (currentRange === '7d'){
+    const c = hace6diasMx(); pool = pool.filter(l => ymdMx(l.fecha) >= c);
+  }
+  // currentRange === 'all' → pool entero
   const set = new Map();
-  allLeads.forEach(l => {
+  pool.forEach(l => {
     const c = canalLead(l);
     if (!c) return;
     set.set(c, (set.get(c) || 0) + 1);
   });
   const sorted = [...set.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0],'es'));
   const prev = currentOrigen;
-  sel.innerHTML = '<option value="all">🌐 Todos los orígenes</option>' +
+  const labelRango = currentRange === 'today' ? 'hoy' : currentRange === 'yesterday' ? 'ayer' : currentRange === '7d' ? '7d' : 'histórico';
+  sel.innerHTML = `<option value="all">🌐 Todos los orígenes (${labelRango})</option>` +
     sorted.map(([c, n]) => `<option value="${c.replace(/"/g, '&quot;')}">${c} (${n})</option>`).join('');
-  // Mantener selección actual si sigue siendo válida
   if (prev !== 'all' && [...sel.options].some(o => o.value === prev)) sel.value = prev;
   else sel.value = 'all';
 }
@@ -3304,6 +3317,7 @@ document.querySelectorAll('.filter-pill[data-range]').forEach(btn => {
     renderVendorTray();
     renderTable();
     renderUrlBreakdown();
+    populateOrigenFilter(); // conteo del dropdown debe matchear el rango activo
   });
 });
 document.getElementById('searchInput').addEventListener('input', (e) => {
