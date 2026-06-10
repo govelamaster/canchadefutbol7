@@ -2118,11 +2118,20 @@ function refreshAll(){
    VENDOR TRAY — leads asignados HOY por vendedor
 ========================================================= */
 // Devuelve {leads, label} según el rango de fecha seleccionado (Hoy/Ayer/7d/Acumulado).
+// Filtra leads que NO se muestran en la tabla principal (sin WhatsApp 8+ dígitos)
+// para que TODOS los contadores estén alineados. Bug Olga 2026-06-10:
+// stats decían "2 sin asignar" pero la tabla estaba vacía porque eran leads sin WA.
+function _filtrarLeadsVisibles(leads){
+  if (new URLSearchParams(location.search).has('showAll')) return leads;
+  return leads.filter(l => ((l.whatsapp || '').replace(/\D/g, '').length >= 8));
+}
 function leadsDelRango(){
-  if (currentRange === 'yesterday'){ const y = ayerMx(); return { leads: allLeads.filter(l => ymdMx(l.fecha) === y), label:'ayer' }; }
-  if (currentRange === '7d'){ const c = hace6diasMx(); return { leads: allLeads.filter(l => ymdMx(l.fecha) >= c), label:'en 7 días' }; }
-  if (currentRange === 'all'){ return { leads: allLeads.slice(), label:'acumulado' }; }
-  const t = hoyMx(); return { leads: allLeads.filter(l => ymdMx(l.fecha) === t), label:'hoy' };
+  let leads, label;
+  if (currentRange === 'yesterday'){ const y = ayerMx(); leads = allLeads.filter(l => ymdMx(l.fecha) === y); label = 'ayer'; }
+  else if (currentRange === '7d'){ const c = hace6diasMx(); leads = allLeads.filter(l => ymdMx(l.fecha) >= c); label = 'en 7 días'; }
+  else if (currentRange === 'all'){ leads = allLeads.slice(); label = 'acumulado'; }
+  else { const t = hoyMx(); leads = allLeads.filter(l => ymdMx(l.fecha) === t); label = 'hoy'; }
+  return { leads: _filtrarLeadsVisibles(leads), label };
 }
 function renderVendorTray(){
   const tray = document.getElementById('vendorTray');
