@@ -1190,6 +1190,9 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <select class="vendedor-filter" id="vendedorFilter">
         <option value="all">👥 Todos los vendedores</option>
       </select>
+      <select class="vendedor-filter" id="origenFilter" title="Filtrar por origen del lead">
+        <option value="all">🌐 Todos los orígenes</option>
+      </select>
       <button class="filter-pill" id="mineBtn" style="white-space:nowrap" title="Ver solo los leads asignados a mí">🙋 Míos</button>
       <div class="filters" id="rangeFilters">
         <button class="filter-pill active" data-range="today" title="Leads recibidos hoy">📅 Hoy</button>
@@ -1810,6 +1813,7 @@ function filtrarAbandonados(){
   document.querySelector('.toolbar')?.scrollIntoView({behavior:'smooth', block:'center'});
 }
 let currentVendedor = 'all';
+let currentOrigen = 'all'; // Filtro por origen (Olga 2026-06-10): Google Ads / SEO / Cliengo / etc.
 let vendorSortDir = null; // null = orden normal · 'desc' = más asignaciones arriba · 'asc' = menos arriba
 let currentTab = 'leads';
 let currentPeriod = 'month-current';
@@ -2085,6 +2089,7 @@ function refreshAll(){
   renderVendorHello();
   renderSpeedAlert();
   populateVendedorFilter();
+  populateOrigenFilter();
   renderVendorTray();
   renderStats();
   renderTodayBreakdown();
@@ -2199,6 +2204,30 @@ function populateVendedorFilter(){
     ${vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}${cnt[v] ? ` · ${cnt[v]}` : ''}</option>`).join('')}`;
   sel.value = current || 'all';
 }
+// Filtro por origen (Olga 2026-06-10)
+function populateOrigenFilter(){
+  const sel = document.getElementById('origenFilter');
+  if (!sel) return;
+  const set = new Map();
+  allLeads.forEach(l => {
+    const c = canalLead(l);
+    if (!c) return;
+    set.set(c, (set.get(c) || 0) + 1);
+  });
+  const sorted = [...set.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0],'es'));
+  const prev = currentOrigen;
+  sel.innerHTML = '<option value="all">🌐 Todos los orígenes</option>' +
+    sorted.map(([c, n]) => `<option value="${c.replace(/"/g, '&quot;')}">${c} (${n})</option>`).join('');
+  // Mantener selección actual si sigue siendo válida
+  if (prev !== 'all' && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+  else sel.value = 'all';
+}
+document.getElementById('origenFilter').addEventListener('change', (e) => {
+  currentOrigen = e.target.value;
+  renderStats();
+  renderTable();
+});
+
 document.getElementById('vendedorFilter').addEventListener('change', (e) => {
   currentVendedor = e.target.value;
   const mb = document.getElementById('mineBtn');
@@ -2566,9 +2595,59 @@ function renderCanales(){
   const rank = c => { const i = order.indexOf(c); return i < 0 ? 99 : i; };
   const arr = Object.entries(byCanal).sort((a,b) => rank(a[0]) - rank(b[0]) || b[1] - a[1]);
   const icon = c => c.startsWith('Google Ads') ? '🟢' : c.startsWith('SEO') ? '🔵' : c.startsWith('IA') ? '🟣' : c.startsWith('Directo') ? '⚪' : '🟠';
-  body.innerHTML = '<div class="url-list">' + arr.map(([c,n]) =>
-    `<div class="url-row"><span class="url-rank" style="background:none;font-size:14px">${icon(c)}</span><code class="url-path" style="font-family:inherit;font-weight:700">${escapeHtml(c)}</code><span class="url-count">${n}</span></div>`
+  body.innerHTML = '<div class="url-list" id="canalesList">' + arr.map(([c,n], i) =>
+    `<div class="url-row" data-canal-idx="${i}" data-canal-name="${escapeAttr(c)}" onclick="toggleCanalDetalle(this)" style="cursor:pointer" title="Click para ver desglose por URL">
+      <span class="url-rank" style="background:none;font-size:14px">${icon(c)}</span>
+      <code class="url-path" style="font-family:inherit;font-weight:700">${escapeHtml(c)}</code>
+      <span class="url-count">${n}</span>
+    </div>
+    <div class="canal-detalle" data-canal-detalle="${i}" style="display:none;padding:8px 14px 14px;background:#f8fafc;border-bottom:1px solid #e2e8f0"></div>`
   ).join('') + '</div>';
+}
+
+// Drill-down "Por canal — hoy": al click, listar URLs específicas del canal con conteo.
+// Olga 2026-06-10: ver de qué URLs vienen los leads de cada canal.
+function toggleCanalDetalle(rowEl){
+  const detalle = rowEl.nextElementSibling;
+  if (!detalle || !detalle.classList.contains('canal-detalle')) return;
+  const wasOpen = detalle.style.display !== 'none';
+  // Cerrar TODOS los detalles (solo 1 abierto)
+  document.querySelectorAll('.canal-detalle').forEach(d => { d.style.display = 'none'; });
+  if (wasOpen) return;
+  const canalName = rowEl.dataset.canalName || '';
+  const hoy = hoyMx();
+  const leadsCanal = allLeads.filter(l => ymdMx(l.fecha) === hoy && canalLead(l) === canalName);
+  // Agrupar por URL (limpiando query string para juntar UTM variants)
+  const byUrl = {};
+  leadsCanal.forEach(l => {
+    let key = (l.url || '').trim();
+    if (!key) key = (l.landing || '').trim();
+    if (!key) key = '(sin URL)';
+    const sinQs = key.split(/[?#]/)[0];
+    byUrl[sinQs] = (byUrl[sinQs] || 0) + 1;
+  });
+  const urls = Object.entries(byUrl).sort((a,b) => b[1] - a[1]);
+  if (!urls.length){
+    detalle.innerHTML = '<div style="color:#94a3b8;font-size:12px">Sin URLs registradas.</div>';
+  } else {
+    const filas = urls.map(([url, n]) => {
+      const short = url.length > 100 ? url.slice(0, 97) + '…' : url;
+      return `<tr>
+        <td style="padding:7px 10px;color:#0f172a;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace" title="${escapeAttr(url)}">${escapeHtml(short)}</td>
+        <td style="padding:7px 10px;text-align:right;font-weight:800;color:#0f172a;font-variant-numeric:tabular-nums;width:70px">${n}</td>
+      </tr>`;
+    }).join('');
+    detalle.innerHTML = `
+      <div style="font-size:12px;color:#64748b;font-weight:700;margin-bottom:6px">${escapeHtml(canalName)} · ${leadsCanal.length} leads · ${urls.length} URL${urls.length === 1 ? '' : 's'}</div>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+        <thead><tr style="background:#f1f5f9">
+          <th style="padding:7px 10px;text-align:left;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">URL</th>
+          <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;width:70px">Leads</th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+      </table>`;
+  }
+  detalle.style.display = '';
 }
 
 // ===== Tab "Google Ads" — conversiones offline (gclid) filtrables + CSV =====
@@ -3459,6 +3538,7 @@ function renderTable(){
   if (currentAbandoned) rows = rows.filter(esAbandonado);
   if (currentFilter !== 'all') rows = rows.filter(l => l.estado === currentFilter);
   if (currentVendedor !== 'all') rows = rows.filter(l => (l.vendedor || '') === currentVendedor);
+  if (currentOrigen !== 'all') rows = rows.filter(l => canalLead(l) === currentOrigen);
   if (currentSearch){
     rows = rows.filter(l => {
       const blob = `${l.nombre} ${l.nombre_real} ${l.whatsapp} ${l.ciudad} ${l.comentarios} ${l.notas_internas} ${l.vendedor} ${l.tipo_cliente}`.toLowerCase();
@@ -3977,6 +4057,7 @@ async function saveField(id, field, value, el){
     renderHoyTeToca();
     document.getElementById('tabCountVip').textContent = vipLeads().length;
     populateVendedorFilter();
+  populateOrigenFilter();
     // Visual: switch to saved checkmark briefly
     dot.className = 'cell-saved';
     setTimeout(() => dot.remove(), 1500);
@@ -4300,12 +4381,22 @@ function renderReporte(){
   const filas = dias.map(d => {
     const r = byDay[d];
     const pctP = r.total ? Math.round(100*r.pagado/r.total) : 0;
-    return `<tr>
+    // Celdas clickeables solo si hay conteo > 0 (Olga 2026-06-10: drill-down por URL)
+    const cellOrg = r.organico > 0
+      ? `<td onclick="toggleReporteDetalle(this,'${d}','org')" style="padding:10px 14px;text-align:right;color:#15803d;font-weight:800;font-variant-numeric:tabular-nums;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px" title="Click para ver desglose por URL">${r.organico}</td>`
+      : `<td style="padding:10px 14px;text-align:right;color:#15803d;font-weight:800;font-variant-numeric:tabular-nums;opacity:.45">${r.organico}</td>`;
+    const cellPag = r.pagado > 0
+      ? `<td onclick="toggleReporteDetalle(this,'${d}','pag')" style="padding:10px 14px;text-align:right;color:#1d4ed8;font-weight:800;font-variant-numeric:tabular-nums;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px" title="Click para ver desglose por URL">${r.pagado}</td>`
+      : `<td style="padding:10px 14px;text-align:right;color:#1d4ed8;font-weight:800;font-variant-numeric:tabular-nums;opacity:.45">${r.pagado}</td>`;
+    return `<tr data-reporte-day="${d}">
       <td style="padding:10px 14px;font-weight:700;color:#0f172a">${fmtDia(d)}<div style="font-size:11px;color:#94a3b8;font-weight:500;margin-top:2px">${d}</div></td>
-      <td style="padding:10px 14px;text-align:right;color:#15803d;font-weight:800;font-variant-numeric:tabular-nums">${r.organico}</td>
-      <td style="padding:10px 14px;text-align:right;color:#1d4ed8;font-weight:800;font-variant-numeric:tabular-nums">${r.pagado}</td>
+      ${cellOrg}
+      ${cellPag}
       <td style="padding:10px 14px;text-align:right;font-weight:800;color:#0f172a;font-variant-numeric:tabular-nums">${r.total}</td>
       <td style="padding:10px 14px;text-align:right;font-size:12px;color:#64748b">${pctP}% pago</td>
+    </tr>
+    <tr class="reporte-detalle" data-detalle-day="${d}" style="display:none;background:#f8fafc">
+      <td colspan="5" style="padding:0 14px 14px"></td>
     </tr>`;
   }).join('');
 
@@ -4356,6 +4447,57 @@ function renderReporte(){
     </p>`;
   // Guardar referencia para que exportarReporteCSV() sepa qué rango y datos usar
   window.__reporteData = { dias, byDay, range: reporteRange };
+}
+
+// Toggle de detalle por URL al click en un número de Orgánico/Pagado en la tabla del Reporte.
+// Olga 2026-06-10: ver desglose por URL del día seleccionado.
+function toggleReporteDetalle(cellEl, day, type){
+  const tr = cellEl.closest('tr');
+  const detalleRow = tr ? tr.nextElementSibling : null;
+  if (!detalleRow || !detalleRow.classList.contains('reporte-detalle')) return;
+  const td = detalleRow.querySelector('td');
+  const wasOpen = detalleRow.style.display !== 'none' && detalleRow.dataset.openType === type;
+  // Cerrar TODOS los detalles abiertos (solo 1 abierto a la vez)
+  document.querySelectorAll('tr.reporte-detalle').forEach(r => { r.style.display = 'none'; r.dataset.openType = ''; });
+  if (wasOpen) return; // re-click en lo mismo cierra
+  // Filtrar leads de ese día + ese origen
+  const wanted = allLeads.filter(l => ymdMx(l.fecha) === day && (type === 'pag' ? esPagado(l) : !esPagado(l)));
+  // Agrupar por URL (o landing si url vacío)
+  const byUrl = {};
+  wanted.forEach(l => {
+    let key = (l.url || '').trim();
+    if (!key) key = (l.landing || '').trim();
+    if (!key) key = '(sin URL)';
+    // Quitar query string para agrupar variantes de la misma página (utm, gclid, etc.)
+    const sinQs = key.split(/[?#]/)[0];
+    byUrl[sinQs] = (byUrl[sinQs] || 0) + 1;
+  });
+  const urls = Object.entries(byUrl).sort((a,b) => b[1] - a[1]);
+  if (!urls.length){
+    td.innerHTML = '<div style="padding:10px 4px;color:#94a3b8;font-size:12px">Sin URLs registradas para este día.</div>';
+  } else {
+    const color = type === 'pag' ? '#1d4ed8' : '#15803d';
+    const label = type === 'pag' ? '💰 Pagado' : '🌱 Orgánico';
+    const total = urls.reduce((a, [_, n]) => a + n, 0);
+    const filas = urls.map(([url, n]) => {
+      const short = url.length > 90 ? url.slice(0, 87) + '…' : url;
+      return `<tr>
+        <td style="padding:7px 10px;color:#0f172a;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace" title="${esc(url)}">${esc(short)}</td>
+        <td style="padding:7px 10px;text-align:right;color:${color};font-weight:800;font-variant-numeric:tabular-nums;width:70px">${n}</td>
+      </tr>`;
+    }).join('');
+    td.innerHTML = `
+      <div style="padding:8px 4px 0;font-size:12px;color:#64748b;font-weight:700">${label} del ${day} · ${total} ${total === 1 ? 'lead' : 'leads'} · ${urls.length} URL${urls.length === 1 ? '' : 's'} únicas</div>
+      <table style="width:100%;border-collapse:collapse;margin-top:8px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+        <thead><tr style="background:#f1f5f9">
+          <th style="padding:7px 10px;text-align:left;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">URL</th>
+          <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;width:70px">Leads</th>
+        </tr></thead>
+        <tbody>${filas}</tbody>
+      </table>`;
+  }
+  detalleRow.style.display = '';
+  detalleRow.dataset.openType = type;
 }
 
 // Descarga el reporte actual como CSV (UTF-8 con BOM para Excel).
