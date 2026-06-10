@@ -42,32 +42,86 @@ export default {
       return;
     }
 
-    // Dedup ventana 30 min por wa_norm + landing: si el mismo lead llega 2-3 veces
-    // (usuario que le da submit varias veces, o varios destinatarios del form),
-    // no duplicar el row en el dashboard.
+    // Merge inteligente (Olga 2026-06-10): en lugar de descartar duplicados,
+    // ENRIQUECER el lead existente o crear nuevo con WARNING según el caso.
+    // Cubre: cliente que entra a 2 landings del mismo dominio (interés alto),
+    // mismo número con distinto nombre (B2B con secretaria), y duplicados puros.
+    let notasInternasExtra = '';
+    let mergeAlreadyHandled = false;
     try {
-      if (lead.wa_norm && lead.wa_norm.length >= 8 && (lead.landing || lead.url)) {
-        const dup = await env.DB.prepare(
-          `SELECT id FROM leads
+      if (lead.wa_norm && lead.wa_norm.length >= 8) {
+        const existing = await env.DB.prepare(
+          `SELECT id, nombre, url, landing, comentarios, vendedor, fecha
+           FROM leads
            WHERE wa_norm = ?
-             AND (landing = ? OR url = ?)
              AND fecha >= datetime('now', '-30 minutes')
-           LIMIT 1`
-        ).bind(lead.wa_norm, lead.landing || '', lead.url || '').first();
-        if (dup) {
-          // mismo lead recibido hace menos de 30 min: silenciar duplicado
-          return;
+           ORDER BY fecha DESC LIMIT 1`
+        ).bind(lead.wa_norm).first();
+
+        if (existing) {
+          const normName = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/g, '').replace(/\s+/g, ' ').trim();
+          const sameName = normName(existing.nombre) === normName(lead.nombre) || !lead.nombre || !existing.nombre;
+          const sameUrl = (existing.url || '').trim() === (lead.url || '').trim();
+          const sameComentarios = (existing.comentarios || '').trim() === (lead.comentarios || '').trim();
+          const sameDomain = (() => {
+            try {
+              const a = new URL(existing.url || '').hostname.replace(/^www\./, '');
+              const b = new URL(lead.url || '').hostname.replace(/^www\./, '');
+              return a && b && a === b;
+            } catch { return (existing.landing || '').split('/')[0] === (lead.landing || '').split('/')[0]; }
+          })();
+
+          // Hora HH:MM México para etiquetar el append
+          const hhmm = new Date(Date.now() - 6 * 3600 * 1000).toISOString().slice(11, 16);
+
+          // CASO A — duplicado puro: misma persona, misma página, mismo mensaje
+          if (sameName && sameUrl && sameComentarios) {
+            mergeAlreadyHandled = true; // no insertar, ignorar silencioso
+          }
+          // CASO E — mismo número, DISTINTO nombre: B2B con secretaria u oficina compartida
+          else if (!sameName && lead.nombre && existing.nombre) {
+            notasInternasExtra = `⚠️ MISMO WHATSAPP que ${existing.nombre} (lead #${existing.id}` +
+              (existing.vendedor ? `, asignado a ${existing.vendedor}` : '') +
+              `, hace minutos). Verificar si es la misma empresa / oficina compartida.`;
+            // continúa al INSERT normal con esta nota
+          }
+          // CASO B/C/D — mismo nombre: enriquecer existente, indicar interés alto si cambió de página
+          else {
+            let nota;
+            if (sameUrl && !sameComentarios) {
+              nota = `\n[+ Volvió a contactar ${hhmm}: ${lead.comentarios || '(sin mensaje nuevo)'}]`;
+            } else if (sameUrl && sameComentarios) {
+              // identical content, distinct sessionId — reenvío legítimo, ignorar
+              mergeAlreadyHandled = true;
+            } else if (!sameUrl && sameDomain) {
+              nota = `\n[+ INTERÉS ALTO ${hhmm} — también entró a ${lead.url || lead.landing || '(otra página)'}: ${lead.comentarios || '(sin mensaje)'}]`;
+            } else {
+              // distinto dominio (cross-brand: SportMaster + Padel del mismo grupo)
+              nota = `\n[+ INTERÉS ALTO ${hhmm} — también desde ${lead.landing || 'otra marca'}: ${lead.comentarios || '(sin mensaje)'}]`;
+            }
+            if (!mergeAlreadyHandled && nota) {
+              try {
+                await env.DB.prepare(
+                  `UPDATE leads SET comentarios = COALESCE(comentarios, '') || ? WHERE id = ?`
+                ).bind(nota, existing.id).run();
+                mergeAlreadyHandled = true;
+              } catch (e) { /* si falla el UPDATE, insertamos normal abajo */ }
+            }
+          }
         }
       }
-    } catch (e) { /* si la query falla, seguimos al INSERT normal */ }
+    } catch (e) { /* si todo el merge falla, fallback al INSERT normal */ }
+
+    if (mergeAlreadyHandled) return; // ya enriquecimos o ignoramos
 
     try {
-      // INSERT OR IGNORE: si llega el mismo correo por 2 rutas distintas (reenvío Gmail
-      // + form WP + Hotmail Beto), el UNIQUE INDEX en session_id evita duplicado.
-      await env.DB.prepare(`
+      // INSERT con session_id UNIQUE. Si conflict por session_id (reenvío idéntico
+      // de CF), capturamos la excepción y la loggeamos en leads_unparsed con razón
+      // explícita "session_id_conflict" → ya no es silencioso (Olga bug #3 del reporte).
+      const insertRes = await env.DB.prepare(`
         INSERT OR IGNORE INTO leads
-          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, wa_norm, ip, user_agent, landing)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, notas_internas, fuente, url, gclid, campania, wa_norm, ip, user_agent, landing)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         lead.session_id,
         lead.estado || '',
@@ -77,6 +131,7 @@ export default {
         lead.m2 || '',
         lead.timeline || '',
         lead.comentarios || '',
+        notasInternasExtra || '',
         lead.fuente || '',
         lead.url || '',
         lead.gclid || '',
@@ -86,6 +141,12 @@ export default {
         lead.user_agent || '',
         lead.landing || ''
       ).run();
+
+      // Si OR IGNORE silenció el INSERT (session_id duplicado), no hubo cambios.
+      // Loggeamos en leads_unparsed para auditoría — ya no es silencioso.
+      if (insertRes.meta && insertRes.meta.changes === 0) {
+        await saveUnparsed(env, message, raw, 'session_id_conflict (reenvío exacto de CF Email Routing — ya existe lead con este session_id)');
+      }
     } catch (err) {
       await saveUnparsed(env, message, raw, 'd1_insert_error: ' + (err && err.message));
     }
