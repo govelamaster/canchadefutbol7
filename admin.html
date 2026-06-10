@@ -4502,8 +4502,8 @@ function renderReporte(){
   window.__reporteData = { dias, byDay, range: reporteRange };
 }
 
-// Toggle de detalle por URL al click en un número de Orgánico/Pagado en la tabla del Reporte.
-// Olga 2026-06-10: ver desglose por URL del día seleccionado.
+// Toggle de detalle al click en un número de Orgánico/Pagado en la tabla del Reporte.
+// Olga 2026-06-10: ver leads individuales con nombre/WhatsApp/vendedor/status agrupados por URL.
 function toggleReporteDetalle(cellEl, day, type){
   const tr = cellEl.closest('tr');
   const detalleRow = tr ? tr.nextElementSibling : null;
@@ -4512,42 +4512,66 @@ function toggleReporteDetalle(cellEl, day, type){
   const wasOpen = detalleRow.style.display !== 'none' && detalleRow.dataset.openType === type;
   // Cerrar TODOS los detalles abiertos (solo 1 abierto a la vez)
   document.querySelectorAll('tr.reporte-detalle').forEach(r => { r.style.display = 'none'; r.dataset.openType = ''; });
-  if (wasOpen) return; // re-click en lo mismo cierra
+  if (wasOpen) return;
   // Filtrar leads de ese día + ese origen
   const wanted = allLeads.filter(l => ymdMx(l.fecha) === day && (type === 'pag' ? esPagado(l) : !esPagado(l)));
-  // Agrupar por URL (o landing si url vacío)
+  // Agrupar por URL normalizada (sin query string para juntar utm variants)
   const byUrl = {};
   wanted.forEach(l => {
     let key = (l.url || '').trim();
     if (!key) key = (l.landing || '').trim();
     if (!key) key = '(sin URL)';
-    // Quitar query string para agrupar variantes de la misma página (utm, gclid, etc.)
     const sinQs = key.split(/[?#]/)[0];
-    byUrl[sinQs] = (byUrl[sinQs] || 0) + 1;
+    (byUrl[sinQs] = byUrl[sinQs] || []).push(l);
   });
-  const urls = Object.entries(byUrl).sort((a,b) => b[1] - a[1]);
-  if (!urls.length){
-    td.innerHTML = '<div style="padding:10px 4px;color:#94a3b8;font-size:12px">Sin URLs registradas para este día.</div>';
+  const grupos = Object.entries(byUrl).sort((a,b) => b[1].length - a[1].length);
+  if (!grupos.length){
+    td.innerHTML = '<div style="padding:10px 4px;color:#94a3b8;font-size:12px">Sin leads para este día.</div>';
   } else {
-    const color = type === 'pag' ? '#1d4ed8' : '#15803d';
+    const colorBase = type === 'pag' ? '#1d4ed8' : '#15803d';
+    const colorBg = type === 'pag' ? '#eff6ff' : '#f0fdf4';
     const label = type === 'pag' ? '💰 Pagado' : '🌱 Orgánico';
-    const total = urls.reduce((a, [_, n]) => a + n, 0);
-    const filas = urls.map(([url, n]) => {
+    const total = grupos.reduce((a, [, arr]) => a + arr.length, 0);
+    const hora = ts => ts ? new Date(String(ts).replace(' ', 'T') + 'Z').toLocaleTimeString('es-MX', { timeZone: TZ_MX, hour: '2-digit', minute: '2-digit' }) : '—';
+    const html = grupos.map(([url, leads]) => {
       const short = url.length > 90 ? url.slice(0, 87) + '…' : url;
-      return `<tr>
-        <td style="padding:7px 10px;color:#0f172a;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace" title="${esc(url)}">${esc(short)}</td>
-        <td style="padding:7px 10px;text-align:right;color:${color};font-weight:800;font-variant-numeric:tabular-nums;width:70px">${n}</td>
-      </tr>`;
+      const filas = leads.sort((a,b) => (a.fecha || '').localeCompare(b.fecha || '')).map(l => {
+        const nombre = (l.nombre_real || l.nombre || '—').trim() || '—';
+        const wa = (l.whatsapp || '').replace(/\D/g, '');
+        const tel = wa.startsWith('52') ? wa.slice(2) : wa;
+        const waLink = wa.length >= 10 ? `https://wa.me/52${tel}` : '';
+        const vendedor = (l.vendedor || '').trim();
+        const status = (l.status_proyecto || 'Sin atender').trim();
+        const statusColor = status === 'Ganado' ? '#15803d' : (status === 'Perdido' ? '#b91c1c' : (status === 'Sin atender' ? '#b45309' : '#64748b'));
+        return `<tr style="border-top:1px solid #f1f5f9">
+          <td style="padding:6px 10px;font-size:12.5px;color:#0f172a;font-weight:600">${escapeHtml(nombre)}</td>
+          <td style="padding:6px 10px;font-size:12px;color:#64748b">${hora(l.fecha)}</td>
+          <td style="padding:6px 10px;font-size:12px;color:#0f172a">${waLink ? `<a href="${waLink}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:600">${escapeHtml(l.whatsapp || '')}</a>` : escapeHtml(l.whatsapp || '—')}</td>
+          <td style="padding:6px 10px;font-size:12px;color:#64748b">${escapeHtml(vendedor || '— sin asignar')}</td>
+          <td style="padding:6px 10px;font-size:12px;color:${statusColor};font-weight:700">${escapeHtml(status)}</td>
+        </tr>`;
+      }).join('');
+      return `
+        <div style="margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff">
+          <div style="padding:8px 12px;background:${colorBg};display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+            <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;color:#0f172a;font-weight:600;word-break:break-all" title="${escapeAttr(url)}">${escapeHtml(short)}</code>
+            <span style="background:${colorBase};color:#fff;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:800;white-space:nowrap">${leads.length} ${leads.length === 1 ? 'lead' : 'leads'}</span>
+          </div>
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:#f8fafc;font-size:10.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">
+              <th style="padding:6px 10px;text-align:left;font-weight:700">Lead</th>
+              <th style="padding:6px 10px;text-align:left;font-weight:700">Hora</th>
+              <th style="padding:6px 10px;text-align:left;font-weight:700">WhatsApp</th>
+              <th style="padding:6px 10px;text-align:left;font-weight:700">Vendedor</th>
+              <th style="padding:6px 10px;text-align:left;font-weight:700">Status</th>
+            </tr></thead>
+            <tbody>${filas}</tbody>
+          </table>
+        </div>`;
     }).join('');
     td.innerHTML = `
-      <div style="padding:8px 4px 0;font-size:12px;color:#64748b;font-weight:700">${label} del ${day} · ${total} ${total === 1 ? 'lead' : 'leads'} · ${urls.length} URL${urls.length === 1 ? '' : 's'} únicas</div>
-      <table style="width:100%;border-collapse:collapse;margin-top:8px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
-        <thead><tr style="background:#f1f5f9">
-          <th style="padding:7px 10px;text-align:left;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em">URL</th>
-          <th style="padding:7px 10px;text-align:right;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;width:70px">Leads</th>
-        </tr></thead>
-        <tbody>${filas}</tbody>
-      </table>`;
+      <div style="padding:8px 4px 0;font-size:12px;color:#64748b;font-weight:700">${label} del ${day} · ${total} ${total === 1 ? 'lead' : 'leads'} · ${grupos.length} URL${grupos.length === 1 ? '' : 's'}</div>
+      ${html}`;
   }
   detalleRow.style.display = '';
   detalleRow.dataset.openType = type;
