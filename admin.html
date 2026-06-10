@@ -4209,6 +4209,27 @@ function esPagado(l){
   return false;
 }
 let reporteRange = '30d';
+
+// Agrupa una lista de leads por día MX con conteos org/pag/total + ganados.
+function agruparReporte(leads){
+  const byDay = {};
+  leads.forEach(l => {
+    const d = ymdMx(l.fecha);
+    if (!d) return;
+    if (!byDay[d]) byDay[d] = {organico:0, pagado:0, total:0, ganadosOrg:0, ganadosPag:0};
+    const ganado = (l.status_proyecto || '') === 'Ganado';
+    if (esPagado(l)){
+      byDay[d].pagado++;
+      if (ganado) byDay[d].ganadosPag++;
+    } else {
+      byDay[d].organico++;
+      if (ganado) byDay[d].ganadosOrg++;
+    }
+    byDay[d].total++;
+  });
+  return byDay;
+}
+
 function renderReporte(){
   const body = document.getElementById('reporteBody');
   if (!body) return;
@@ -4216,24 +4237,24 @@ function renderReporte(){
     body.innerHTML = '<div class="src-empty">Aún no hay leads en el sistema.</div>';
     return;
   }
-  // Ventana
-  let rows = allLeads.filter(l => l.fecha);
-  if (reporteRange === '30d'){
-    const cutoff = new Date(Date.now() - 29*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX });
-    rows = rows.filter(l => ymdMx(l.fecha) >= cutoff);
-  } else if (reporteRange === '7d'){
-    const cutoff = new Date(Date.now() - 6*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX });
-    rows = rows.filter(l => ymdMx(l.fecha) >= cutoff);
+  const todosConFecha = allLeads.filter(l => l.fecha);
+
+  // Determinar ventana actual y ventana anterior para comparativa
+  const dayMs = 864e5;
+  let nDias = null;
+  let rows = todosConFecha;
+  let rowsPrev = [];
+  const hoyMx = new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX });
+  if (reporteRange === '30d') nDias = 30;
+  else if (reporteRange === '7d') nDias = 7;
+  if (nDias){
+    const cutoff = new Date(Date.now() - (nDias-1)*dayMs).toLocaleDateString('en-CA', { timeZone: TZ_MX });
+    const cutoffPrev = new Date(Date.now() - (2*nDias-1)*dayMs).toLocaleDateString('en-CA', { timeZone: TZ_MX });
+    rows     = todosConFecha.filter(l => ymdMx(l.fecha) >= cutoff);
+    rowsPrev = todosConFecha.filter(l => ymdMx(l.fecha) >= cutoffPrev && ymdMx(l.fecha) < cutoff);
   }
-  // Agrupar por día MX
-  const byDay = {};
-  rows.forEach(l => {
-    const d = ymdMx(l.fecha);
-    if (!d) return;
-    if (!byDay[d]) byDay[d] = {organico:0, pagado:0, total:0};
-    if (esPagado(l)) byDay[d].pagado++; else byDay[d].organico++;
-    byDay[d].total++;
-  });
+
+  const byDay = agruparReporte(rows);
   const dias = Object.keys(byDay).sort().reverse(); // más reciente primero
   if (!dias.length){
     body.innerHTML = '<div class="src-empty">Sin leads en este rango.</div>';
@@ -4242,10 +4263,32 @@ function renderReporte(){
   // Totales del periodo
   const tot = dias.reduce((a, d) => {
     a.organico += byDay[d].organico; a.pagado += byDay[d].pagado; a.total += byDay[d].total;
+    a.ganadosOrg += byDay[d].ganadosOrg; a.ganadosPag += byDay[d].ganadosPag;
     return a;
-  }, {organico:0, pagado:0, total:0});
+  }, {organico:0, pagado:0, total:0, ganadosOrg:0, ganadosPag:0});
   const pctPag = tot.total ? Math.round(100*tot.pagado/tot.total) : 0;
   const pctOrg = tot.total ? Math.round(100*tot.organico/tot.total) : 0;
+  const convOrg = tot.organico ? Math.round(100*tot.ganadosOrg/tot.organico) : null;
+  const convPag = tot.pagado ? Math.round(100*tot.ganadosPag/tot.pagado) : null;
+
+  // Promedio diario sobre los días del periodo (no solo días con tráfico)
+  const divisorPromedio = nDias || dias.length;
+  const promedio = (tot.total / divisorPromedio).toFixed(1);
+
+  // Comparativa con periodo anterior
+  let comparativaHtml = '';
+  if (nDias && rowsPrev.length){
+    const byDayPrev = agruparReporte(rowsPrev);
+    const totPrev = Object.values(byDayPrev).reduce((a,b) => ({total:a.total+b.total}), {total:0});
+    const promedioPrev = (totPrev.total / nDias).toFixed(1);
+    const delta = totPrev.total ? Math.round(100*(tot.total - totPrev.total)/totPrev.total) : 0;
+    const color = delta > 0 ? '#15803d' : (delta < 0 ? '#b91c1c' : '#64748b');
+    const arrow = delta > 0 ? '🟢 +' : (delta < 0 ? '🔴 ' : '⚪ ');
+    comparativaHtml = `<div style="font-size:12px;color:${color};font-weight:700;margin-top:2px">${arrow}${delta}% vs ${nDias}d antes (eran ${promedioPrev}/día)</div>`;
+  } else if (nDias && !rowsPrev.length){
+    comparativaHtml = `<div style="font-size:12px;color:#94a3b8;margin-top:2px">Sin datos del periodo anterior</div>`;
+  }
+
   // Formato fecha "Lun 10 jun"
   const fmtDia = ymd => {
     const d = new Date(ymd + 'T12:00:00');
@@ -4254,31 +4297,49 @@ function renderReporte(){
   const filas = dias.map(d => {
     const r = byDay[d];
     const pctP = r.total ? Math.round(100*r.pagado/r.total) : 0;
+    const cOrg = r.organico ? Math.round(100*r.ganadosOrg/r.organico) : null;
+    const cPag = r.pagado ? Math.round(100*r.ganadosPag/r.pagado) : null;
+    const convCell = (() => {
+      if (cOrg === null && cPag === null) return '<span style="color:#cbd5e1">—</span>';
+      const a = cOrg === null ? '—' : `<span style="color:#15803d">${cOrg}%</span>`;
+      const b = cPag === null ? '—' : `<span style="color:#1d4ed8">${cPag}%</span>`;
+      return `${a} <span style="color:#cbd5e1">·</span> ${b}`;
+    })();
     return `<tr>
       <td style="padding:10px 14px;font-weight:700;color:#0f172a">${fmtDia(d)}<div style="font-size:11px;color:#94a3b8;font-weight:500;margin-top:2px">${d}</div></td>
       <td style="padding:10px 14px;text-align:right;color:#15803d;font-weight:800;font-variant-numeric:tabular-nums">${r.organico}</td>
       <td style="padding:10px 14px;text-align:right;color:#1d4ed8;font-weight:800;font-variant-numeric:tabular-nums">${r.pagado}</td>
       <td style="padding:10px 14px;text-align:right;font-weight:800;color:#0f172a;font-variant-numeric:tabular-nums">${r.total}</td>
-      <td style="padding:10px 14px;text-align:right;color:#64748b;font-size:12px">${pctP}% pago</td>
+      <td style="padding:10px 14px;text-align:right;font-size:12px;color:#64748b">${pctP}% pago</td>
+      <td style="padding:10px 14px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums">${convCell}</td>
     </tr>`;
   }).join('');
+
   body.innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 16px">
         <div style="font-size:11.5px;color:#15803d;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total orgánico</div>
         <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${tot.organico}</div>
-        <div style="font-size:12px;color:#64748b">${pctOrg}% del total</div>
+        <div style="font-size:12px;color:#64748b">${pctOrg}% del total${convOrg !== null ? ` · 🏆 ${convOrg}% conv` : ''}</div>
       </div>
       <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px">
         <div style="font-size:11.5px;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total pagado</div>
         <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${tot.pagado}</div>
-        <div style="font-size:12px;color:#64748b">${pctPag}% del total</div>
+        <div style="font-size:12px;color:#64748b">${pctPag}% del total${convPag !== null ? ` · 🏆 ${convPag}% conv` : ''}</div>
       </div>
       <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px">
         <div style="font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total leads</div>
         <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${tot.total}</div>
         <div style="font-size:12px;color:#64748b">${dias.length} día${dias.length===1?'':'s'} con tráfico</div>
       </div>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 16px">
+        <div style="font-size:11.5px;color:#b45309;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Promedio</div>
+        <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${promedio}<span style="font-size:14px;color:#94a3b8">/día</span></div>
+        ${comparativaHtml || '<div style="font-size:12px;color:#94a3b8;margin-top:2px">Todo el histórico</div>'}
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <button onclick="exportarReporteCSV()" class="filter-pill" style="background:#0b0f14;color:#fff;border:none;font-weight:700">⬇ CSV</button>
     </div>
     <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
@@ -4288,7 +4349,8 @@ function renderReporte(){
             <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#15803d;text-transform:uppercase;letter-spacing:.05em;font-weight:700">🌱 Orgánico</th>
             <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;font-weight:700">💰 Pagado</th>
             <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total</th>
-            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600">%</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600">% pago</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Conv. Org · Pag</th>
           </tr>
         </thead>
         <tbody>${filas}</tbody>
@@ -4297,7 +4359,46 @@ function renderReporte(){
     <p style="font-size:11.5px;color:#94a3b8;margin-top:12px">
       <b>Pagado</b> = lead con gclid, fuente <code>google_ads_*</code> / <code>fbads_*</code>, o campaign id Google.
       <b>Orgánico</b> = chatbot, formularios, Cliengo, SEO, directo.
+      <b>Conv.</b> = % de leads marcados como "Ganado" sobre el total de ese origen.
     </p>`;
+  // Guardar referencia para que exportarReporteCSV() sepa qué rango y datos usar
+  window.__reporteData = { dias, byDay, range: reporteRange };
+}
+
+// Descarga el reporte actual como CSV (UTF-8 con BOM para Excel).
+function exportarReporteCSV(){
+  const data = window.__reporteData;
+  if (!data || !data.dias || !data.dias.length){
+    alert('No hay datos para exportar.');
+    return;
+  }
+  const headers = ['Dia', 'Organico', 'Pagado', 'Total', 'Pct_Pagado', 'Conv_Organico', 'Conv_Pagado'];
+  const rows = data.dias.map(d => {
+    const r = data.byDay[d];
+    const pctP = r.total ? Math.round(100*r.pagado/r.total) : 0;
+    const cOrg = r.organico ? Math.round(100*r.ganadosOrg/r.organico) : '';
+    const cPag = r.pagado ? Math.round(100*r.ganadosPag/r.pagado) : '';
+    return [d, r.organico, r.pagado, r.total, pctP, cOrg, cPag];
+  });
+  const csv = [headers, ...rows].map(row =>
+    row.map(cell => {
+      const s = String(cell == null ? '' : cell);
+      // Escape si tiene coma, comilla o salto
+      if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }).join(',')
+  ).join('\n');
+  // BOM para que Excel detecte UTF-8 con acentos
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX });
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reporte-orgvspagado-${data.range}-${today}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 // Listeners de los pills de rango (registrados una vez)
 document.addEventListener('click', e => {
