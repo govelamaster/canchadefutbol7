@@ -198,7 +198,22 @@ function parseCliengoChat(body) {
     } else if (!out.ciudad && RE_CIUDAD.test(t.txt)) {
       out.ciudad = nextContacto.txt;
     } else if (!out.telefono && RE_TELEFONO.test(t.txt) && /\d{8,}/.test(nextContacto.txt)) {
-      out.telefono = nextContacto.txt.replace(/[^\d]/g, '');
+      // Bug Olga 2026-06-10: si el cliente menciona 2 números ("Mi cel 5512345678
+      // y mi oficina 5587654321"), el .replace(/[^\d]/g,'') los concatena en 20 dígitos
+      // y slice(-10) se queda con el SEGUNDO. Fix: capturar la PRIMERA secuencia con
+      // 10+ dígitos contiguos (permitiendo separadores típicos de teléfono).
+      const candidates = nextContacto.txt.match(/(?:\+?\d[\d\s\-().]{7,}\d)/g) || [];
+      let picked = '';
+      for (const c of candidates) {
+        const digits = c.replace(/\D/g, '');
+        if (digits.length >= 10 && digits.length <= 13) { picked = digits.slice(-10); break; }
+      }
+      // Fallback (8-9 dígitos legacy o sin separadores estándar): todos los dígitos.
+      if (!picked) {
+        const all = nextContacto.txt.replace(/\D/g, '');
+        if (all.length >= 8) picked = all.length >= 10 ? all.slice(-10) : all;
+      }
+      if (picked) out.telefono = picked;
     } else if (RE_EXTRA.test(t.txt) && !['nada','no','ninguno','ninguna'].includes(nextContacto.txt.toLowerCase())) {
       out.extras.push(nextContacto.txt);
     }
@@ -511,17 +526,21 @@ function looksLikeLead(subject, body, fromAddr) {
 
 function stripHtml(html) {
   if (!html) return '';
-  return html
+  // 1) Quitar <script> y <style> ANTES de cualquier decodificación
+  //    (evita interpretar entities dentro de código).
+  // 2) Convertir <br> y cierres de bloque a \n para preservar saltos de línea.
+  // 3) Quitar todos los demás tags.
+  // 4) Decodificar entities completas (acentos, numéricos, hex) con decodeEntities.
+  //    Bug Olga 2026-06-10: stripHtml viejo solo decodificaba &nbsp;&amp;&lt;&gt;&quot;
+  //    → si el correo venía SOLO en HTML (sin parsed.text), los acentos quedaban como
+  //    "Jes&uacute;s" antes de pasar a parseCliengo/parseElementor.
+  const sinTags = html
     .replace(/<style[\s\S]*?<\/style>/gi, '')
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|div|tr|li|h\d)>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"');
+    .replace(/<[^>]+>/g, '');
+  return decodeEntities(sinTags);
 }
 
 function simpleHash(s) {
