@@ -120,8 +120,8 @@ export default {
       // explícita "session_id_conflict" → ya no es silencioso (Olga bug #3 del reporte).
       const insertRes = await env.DB.prepare(`
         INSERT OR IGNORE INTO leads
-          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, notas_internas, fuente, url, gclid, campania, wa_norm, ip, user_agent, landing)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, notas_internas, fuente, tipo_cliente, url, gclid, campania, wa_norm, ip, user_agent, landing)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         lead.session_id,
         lead.estado || '',
@@ -133,6 +133,7 @@ export default {
         lead.comentarios || '',
         notasInternasExtra || '',
         lead.fuente || '',
+        lead.tipo_cliente || '',
         lead.url || '',
         lead.gclid || '',
         lead.campania || '',
@@ -186,9 +187,20 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
     finalUrl = 'https://' + landing.replace(/^https?:\/\//, '');
   }
 
-  // Comentarios estructurados (NO toda la conversación). Decode entities en todos.
+  // Analizar TODO lo que dijo el Contacto para extraer info valiosa al CRM.
+  // Bug Olga 2026-06-10: el dashboard mostraba "hola" pero el chat tenía m²,
+  // tipo de cancha, altura. Ahora capturamos eso y lo estructuramos.
+  const allCliente = chat.allCliente || '';
+  const m2 = extractM2(allCliente);
+  const altura = extractAltura(allCliente);
+  const tipoCancha = extractTipoCancha(allCliente);
+
+  // Comentarios estructurados con TODO lo relevante. Decode entities en todos.
   const lineas = [];
   if (chat.interes) lineas.push(`Interés: ${decodeEntities(chat.interes)}`);
+  if (tipoCancha) lineas.push(`Tipo: ${tipoCancha}`);
+  if (m2) lineas.push(`m²: ${m2}`);
+  if (altura) lineas.push(`Altura del pasto: ${altura}`);
   if (chat.mensajeCliente) lineas.push(`Mensaje del cliente: "${decodeEntities(chat.mensajeCliente)}"`);
   if (chat.extras && chat.extras.length) lineas.push(`Notas: ${chat.extras.map(decodeEntities).join(' · ')}`);
   const comentariosEstructurados = lineas.join('\n');
@@ -202,6 +214,8 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
     wa_norm: waNorm,
     ciudad: titleCaseCity(ciudad),
     estado: titleCaseCity(estado),
+    m2: m2 || '',                // ← Olga 2026-06-10: capturar m² del chat
+    tipo_cliente: tipoCancha,    // ← guarda tipo de cancha si lo detectó
     url: finalUrl,
     campania: '',  // antes ponía landing → causaba duplicación en columna ORIGEN
     comentarios: comentariosEstructurados,
@@ -292,9 +306,11 @@ function parseCliengoChat(body) {
     }
   }
 
-  // Interés: detectar por palabras clave en TODO lo que dijo el Contacto
-  const allCliente = turnos.filter(t => t.rol === 'contacto').map(t => t.txt).join(' ').toLowerCase();
-  out.interes = detectInteres(allCliente);
+  // Interés: detectar por palabras clave en TODO lo que dijo el Contacto.
+  // También exponemos allCliente para que parseCliengo pueda extraer m²/tipo/altura.
+  const allCliente = turnos.filter(t => t.rol === 'contacto').map(t => t.txt).join(' ');
+  out.allCliente = allCliente;
+  out.interes = detectInteres(allCliente.toLowerCase());
 
   return out;
 }
@@ -342,9 +358,62 @@ function decodeEntities(s) {
 // Bug Olga 2026-06-10: ciudad guardada como "En el Municipio de San Andres Tenjapan".
 function limpiarPrefijoUbicacion(s) {
   if (!s) return '';
-  return s
-    .replace(/^\s*(?:en el municipio de|en la ciudad de|en el estado de|en el pueblo de|en\s+|del?\s+)/i, '')
+  let out = s
+    .replace(/^\s*(?:en el municipio de|en la ciudad de|en el estado de|en el pueblo de|en la delegaci[oó]n de|en la zona de|en\s+|del?\s+)/i, '')
     .trim();
+  // Quitar artículo restante al inicio: "la Universidad", "el Hotel", "los Pinos"
+  out = out.replace(/^\s*(?:la|el|los|las)\s+/i, '');
+  // Capitalizar primera letra para verse limpio
+  return out.replace(/^./, c => c.toUpperCase());
+}
+
+// Extrae m² del texto. Reconoce: "1360 m2", "20 metros cuadrados", "100 mts",
+// "20 metros" (asume m² aunque no diga "cuadrados"). Devuelve string con el
+// número o '' si no hay match plausible.
+// CASO LÍMITE: en "544 metros y 4 cm" debe sacar 544 (no el 4 que es altura).
+function extractM2(text) {
+  if (!text) return '';
+  const T = String(text);
+  // Patrón 1 (más confiable): número + m² / m2 / metros cuadrados / mts
+  const re1 = /(\d{1,5}(?:[.,]\d+)?)\s*(?:m[²2³³2³]|mts?\.?|metros?\s*cuadrados?)/i;
+  const m1 = T.match(re1);
+  if (m1) return m1[1].replace(',', '.');
+  // Patrón 2 (más permisivo): "X metros" sin sufijo "cuadrados". Asume m² si el
+  // número es >= 10 (medidas más pequeñas suelen ser linear/altura).
+  const re2 = /(\d{2,5})\s*metros?\b/i;
+  const m2 = T.match(re2);
+  if (m2 && parseInt(m2[1], 10) >= 10) return m2[1];
+  return '';
+}
+
+// Extrae altura / grosor del pasto. Reconoce: "4 cm", "50mm", "40 mm de pasto".
+function extractAltura(text) {
+  if (!text) return '';
+  const T = String(text);
+  const m = T.match(/(\d{1,3}(?:[.,]\d+)?)\s*(cm|mm)\b/i);
+  return m ? `${m[1].replace(',', '.')}${m[2].toLowerCase()}` : '';
+}
+
+// Detecta el tipo de cancha mencionado en el chat / mensaje. Devuelve canonical name.
+function extractTipoCancha(text) {
+  if (!text) return '';
+  const T = String(text).toLowerCase();
+  // Orden importa: más específicos primero
+  if (/f[uú]tbol\s*(?:r[aá]pido|5)/.test(T)) return 'Fútbol Rápido';
+  if (/f[uú]tbol\s*(?:siete|7)/.test(T)) return 'Fútbol 7';
+  if (/f[uú]tbol\s*(?:americano|am)/.test(T)) return 'Fútbol Americano';
+  if (/f[uú]tbol\s*(?:sala|sal[oó]n)/.test(T)) return 'Fútbol Sala';
+  if (/\bp[aá]del\b/.test(T)) return 'Pádel';
+  if (/\bpickleball\b/.test(T)) return 'Pickleball';
+  if (/\btenis\b/.test(T)) return 'Tenis';
+  if (/\bbasquet|baloncesto|basketball\b/.test(T)) return 'Basquetbol';
+  if (/\bvolei|voleibol|volley/.test(T)) return 'Voleibol';
+  if (/\bb[eé]isbol|baseball/.test(T)) return 'Béisbol';
+  if (/\bsoccer\b/.test(T)) return 'Fútbol';
+  if (/\bf[uú]tbol\b/.test(T)) return 'Fútbol'; // genérico al final
+  if (/\bputting\s*green\b/.test(T)) return 'Putting Green';
+  if (/\bgolf\b/.test(T)) return 'Golf';
+  return '';
 }
 
 // Reconoce nombres como lo haría un CRM serio: incluye Unicode (Müller, Núñez,
@@ -430,10 +499,20 @@ function parseElementor({ subject, body, sessionId }) {
   const landing = (host ? host.replace(/^www\./, '') : '') + (path || '');
   const waNorm = (whatsapp || '').replace(/\D/g, '').slice(-10);
 
-  const comentarios = [
-    mensaje ? mensaje.trim() : '',
-    email ? `Email: ${email}` : ''
-  ].filter(Boolean).join('\n');
+  // Extraer m²/altura/tipo de cancha del mensaje (Olga 2026-06-10: Homer "20 metros")
+  const fullText = `${mensaje || ''} ${path || ''}`;
+  const m2 = extractM2(fullText);
+  const altura = extractAltura(fullText);
+  const tipoCancha = extractTipoCancha(fullText);
+
+  // Comentarios enriquecidos
+  const lineasC = [];
+  if (mensaje && mensaje.trim()) lineasC.push(mensaje.trim());
+  if (tipoCancha) lineasC.push(`Tipo: ${tipoCancha}`);
+  if (m2) lineasC.push(`m²: ${m2}`);
+  if (altura) lineasC.push(`Altura del pasto: ${altura}`);
+  if (email) lineasC.push(`Email: ${email}`);
+  const comentarios = lineasC.filter(Boolean).join('\n');
 
   return {
     session_id: sessionId,
@@ -444,6 +523,8 @@ function parseElementor({ subject, body, sessionId }) {
     wa_norm: waNorm,
     ciudad: '',
     estado: '',
+    m2: m2 || '',                // ← Olga 2026-06-10: capturar m² del mensaje
+    tipo_cliente: tipoCancha,    // ← tipo de cancha si se detectó
     url,
     gclid,
     campania: gadCampaign,
