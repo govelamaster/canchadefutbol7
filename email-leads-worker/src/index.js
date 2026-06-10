@@ -296,7 +296,10 @@ function parseElementor({ subject, body, sessionId }) {
   const nombre = pick(body, /^\s*Nombre:\s*(.+)$/im);
   const email = pick(body, /^\s*Email:\s*(.+)$/im);
   const whatsapp = pick(body, /^\s*(?:WhatsApp|Tel[eé]fono|Phone):\s*(.+)$/im);
-  const mensaje = pick(body, /^\s*(?:Mensaje|Comentarios|Message|Comments):\s*([\s\S]+?)(?=\n---|\nFecha:|\nURL de|\n\s*$)/im);
+  // Mensaje: capturar TODO hasta el siguiente campo conocido o el separador "---".
+  // ⚠️ NO cortar en línea vacía (eso truncaba mensajes multilínea como "Solicito cotización\n\nCliente potencial...").
+  // Olga 2026-06-10: bug Salvador Torres — el "Cliente potencial obtenido desde la Landing Page" se perdía.
+  const mensaje = pick(body, /^\s*(?:Mensaje|Comentarios|Message|Comments):\s*([\s\S]+?)(?=\n\s*---\s*\n|\n\s*Fecha:|\n\s*URL de la p[aá]gina:|\n\s*Agente de usuario:|\n\s*IP remota:|\n\s*Funciona con:|$)/im);
   const url = pick(body, /^\s*URL de la p[aá]gina:\s*(.+)$/im) || '';
   const ua = pick(body, /^\s*Agente de usuario:\s*(.+)$/im) || '';
   const ip = pick(body, /^\s*IP remota:\s*(.+)$/im) || '';
