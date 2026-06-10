@@ -198,21 +198,9 @@ function parseCliengoChat(body) {
     } else if (!out.ciudad && RE_CIUDAD.test(t.txt)) {
       out.ciudad = nextContacto.txt;
     } else if (!out.telefono && RE_TELEFONO.test(t.txt) && /\d{8,}/.test(nextContacto.txt)) {
-      // Bug Olga 2026-06-10: si el cliente menciona 2 números ("Mi cel 5512345678
-      // y mi oficina 5587654321"), el .replace(/[^\d]/g,'') los concatena en 20 dígitos
-      // y slice(-10) se queda con el SEGUNDO. Fix: capturar la PRIMERA secuencia con
-      // 10+ dígitos contiguos (permitiendo separadores típicos de teléfono).
-      const candidates = nextContacto.txt.match(/(?:\+?\d[\d\s\-().]{7,}\d)/g) || [];
-      let picked = '';
-      for (const c of candidates) {
-        const digits = c.replace(/\D/g, '');
-        if (digits.length >= 10 && digits.length <= 13) { picked = digits.slice(-10); break; }
-      }
-      // Fallback (8-9 dígitos legacy o sin separadores estándar): todos los dígitos.
-      if (!picked) {
-        const all = nextContacto.txt.replace(/\D/g, '');
-        if (all.length >= 8) picked = all.length >= 10 ? all.slice(-10) : all;
-      }
+      // Usa extractPhone (helper inteligente): toma el PRIMER teléfono válido,
+      // ignora medidas ("5440 metros"), maneja +52/separadores, descarta precios.
+      const picked = extractPhone(nextContacto.txt);
       if (picked) out.telefono = picked;
     } else if (RE_EXTRA.test(t.txt) && !['nada','no','ninguno','ninguna'].includes(nextContacto.txt.toLowerCase())) {
       out.extras.push(nextContacto.txt);
@@ -298,15 +286,28 @@ function limpiarPrefijoUbicacion(s) {
     .trim();
 }
 
+// Reconoce nombres como lo haría un CRM serio: incluye Unicode (Müller, Núñez,
+// Çağlar), apóstrofes (D'Angelo, O'Brien), guiones (García-López), puntos de
+// abreviatura (J.R., Sr.), números romanos sufijo (Maximiliano III).
+// Rechaza solo lo que claramente NO es nombre: puro dígitos, mensajes largos,
+// emails, URLs.
 function looksLikeName(s) {
   if (!s) return false;
   const t = s.trim();
-  if (t.length < 2 || t.length > 60) return false;
-  if (/\d{4,}/.test(t)) return false; // tiene un número largo, no es nombre
-  // 1-5 palabras, principalmente letras
+  if (t.length < 2 || t.length > 80) return false;
+  // descarta cualquier cosa que parezca email o URL
+  if (/@|https?:\/\/|www\./i.test(t)) return false;
+  // descarta secuencias largas de dígitos (no nombre)
+  if (/\d{4,}/.test(t)) return false;
+  // máximo 6 palabras (nombres compuestos largos existen: "Ana María de los Santos Pérez")
   const words = t.split(/\s+/);
-  if (words.length > 5) return false;
-  return /^[A-Za-zÁÉÍÓÚÑáéíóúñ.\s]{2,}$/.test(t);
+  if (words.length > 6) return false;
+  // núcleo del check: usa propiedad Unicode \p{L} para CUALQUIER letra del mundo,
+  // permite apóstrofes (rectos y curvos), guiones, puntos de abreviatura y espacios.
+  // Permite además sufijos romanos cortos (I, II, III, IV).
+  // Requiere que AL MENOS un caracter sea letra (no solo signos).
+  if (!/\p{L}/u.test(t)) return false;
+  return /^[\p{L}\p{M}.'’\-\s]+(?:\s+(?:I{1,3}|IV|V|VI{0,3}|IX|X))?$/u.test(t);
 }
 
 function titleCaseName(s) {
@@ -455,11 +456,53 @@ function extractChatTranscript(body) {
   return out.join('\n');
 }
 
+// Palabras-unidad que indican que un número NO es teléfono sino medida.
+// Si después de la secuencia de dígitos aparece una de éstas, se descarta.
+const UNIT_WORDS_RE = /^\s*(metros?|mts|m[²2³3]|cm|cms|mm|km|kg|kilos?|grs?|gramos?|litros?|lts|años?|d[ií]as?|meses|horas?|min(?:utos?)?|pesos?|usd|mxn|d[oó]lares|euros?|cuadrad[oa]s?|amplios?|de\s+ancho|de\s+largo|de\s+alto|x|por|×)\b/i;
+
+// Extrae el PRIMER teléfono válido (10 dígitos MX) de un texto. Inteligente:
+//   - Reconoce con/sin prefijo +52, con separadores ( ) - . espacios
+//   - Excluye matches seguidos de palabra-unidad ("5440 metros" no es teléfono)
+//   - Acepta fallback de 8-9 dígitos solo si no encontró 10
+// Devuelve string de dígitos (10 o 8-9) o '' si no hay nada plausible.
+function extractPhone(text) {
+  if (!text) return '';
+  const candidates = [];
+  // Match: opcional +52 / 52, primer dígito, hasta 17 chars de [dígitos/separadores], último dígito.
+  const re = /(\+?5?2?[\s\-]?)?(\d[\d\s\-().]{6,16}\d)/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const raw = m[0];
+    const start = m.index;
+    const end = re.lastIndex;
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length < 8 || digits.length > 13) continue;
+    // Excluir si justo después viene una palabra-unidad ("5440 metros y 4cm")
+    const after = text.slice(end, end + 25);
+    if (UNIT_WORDS_RE.test(after)) continue;
+    // Excluir si justo antes viene "$" (es precio, no teléfono)
+    const before = text.slice(Math.max(0, start - 3), start);
+    if (/\$\s*$/.test(before)) continue;
+    candidates.push(digits.slice(-10).length >= 10 ? digits.slice(-10) : digits);
+  }
+  // Preferir 10 dígitos. Si no hay, devolver el primer 8-9.
+  const ten = candidates.find(c => c.length === 10);
+  if (ten) return ten;
+  return candidates[0] || '';
+}
+
+// Wrapper retrocompatible: busca en líneas "Contacto: ..." del chat Cliengo.
+// Bug Olga 2026-06-10: el viejo agarraba "Contacto: 5440 metros" como teléfono.
 function extractPhoneFromChat(body) {
-  const m = body.match(/Contacto:\s*([\d\s\-().+]{8,})/);
-  if (!m) return '';
-  const digits = m[1].replace(/\D/g, '');
-  return digits.length >= 10 ? digits : '';
+  // Recorrer cada línea Contacto: para no mezclar entre turnos
+  const lineas = String(body || '').split('\n');
+  for (const ln of lineas) {
+    const m = ln.match(/^\s*Contacto:\s*(.+)$/i);
+    if (!m) continue;
+    const phone = extractPhone(m[1]);
+    if (phone && phone.length >= 10) return phone;
+  }
+  return '';
 }
 
 function extractNameFromChat(body) {
