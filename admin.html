@@ -1373,8 +1373,10 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
         <div class="section-head" style="align-items:center;gap:12px;flex-wrap:wrap">
           <h2 style="margin:0"><span class="emoji">📊</span> Reporte diario · Orgánico vs Pagado</h2>
           <div class="filters" id="reporteRange" style="margin-left:auto">
-            <button class="filter-pill active" data-rrange="30d">Últimos 30 días</button>
+            <button class="filter-pill" data-rrange="today">📅 Hoy</button>
+            <button class="filter-pill" data-rrange="yesterday">Ayer</button>
             <button class="filter-pill" data-rrange="7d">7 días</button>
+            <button class="filter-pill active" data-rrange="30d">Últimos 30 días</button>
             <button class="filter-pill" data-rrange="all">Todo el histórico</button>
           </div>
         </div>
@@ -4325,10 +4327,18 @@ function renderReporte(){
   let nDias = null;
   let rows = todosConFecha;
   let rowsPrev = [];
-  const hoyMx = new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX });
+  let singleDay = null; // si filtramos a un solo día específico (today/yesterday)
   if (reporteRange === '30d') nDias = 30;
   else if (reporteRange === '7d') nDias = 7;
-  if (nDias){
+  else if (reporteRange === 'today'){ nDias = 1; singleDay = hoyMx(); }
+  else if (reporteRange === 'yesterday'){ nDias = 1; singleDay = ayerMx(); }
+
+  if (singleDay){
+    // Solo el día seleccionado, comparativa = día previo
+    const prevDay = new Date(new Date(singleDay + 'T12:00:00').getTime() - dayMs).toLocaleDateString('en-CA', { timeZone: TZ_MX });
+    rows     = todosConFecha.filter(l => ymdMx(l.fecha) === singleDay);
+    rowsPrev = todosConFecha.filter(l => ymdMx(l.fecha) === prevDay);
+  } else if (nDias){
     const cutoff = new Date(Date.now() - (nDias-1)*dayMs).toLocaleDateString('en-CA', { timeZone: TZ_MX });
     const cutoffPrev = new Date(Date.now() - (2*nDias-1)*dayMs).toLocaleDateString('en-CA', { timeZone: TZ_MX });
     rows     = todosConFecha.filter(l => ymdMx(l.fecha) >= cutoff);
@@ -4360,6 +4370,9 @@ function renderReporte(){
 
   // Comparativa con periodo anterior (mismo N de días, inmediatamente anteriores)
   let comparativaHtml = '';
+  const etiquetaPrev = singleDay
+    ? (reporteRange === 'today' ? 'ayer' : 'el día previo')
+    : `${nDias}d previos`;
   if (nDias && rowsPrev.length){
     const byDayPrev = agruparReporte(rowsPrev);
     const totPrev = Object.values(byDayPrev).reduce((a,b) => ({total:a.total+b.total}), {total:0});
@@ -4367,12 +4380,19 @@ function renderReporte(){
     const delta = totPrev.total ? Math.round(100*(tot.total - totPrev.total)/totPrev.total) : 0;
     const color = delta > 0 ? '#15803d' : (delta < 0 ? '#b91c1c' : '#64748b');
     const arrow = delta > 0 ? '🟢 +' : (delta < 0 ? '🔴 ' : '⚪ ');
-    const desdePrev = new Date(Date.now() - (2*nDias-1)*dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
-    const hastaPrev = new Date(Date.now() - nDias*dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
-    comparativaHtml = `<div style="font-size:12px;color:${color};font-weight:700;margin-top:2px">${arrow}${delta}% vs ${nDias}d previos</div>
-      <div style="font-size:11px;color:#94a3b8;margin-top:1px">${promedioPrev}/día · ${desdePrev} – ${hastaPrev}</div>`;
+    let rangoTxt;
+    if (singleDay){
+      const prevDate = new Date(new Date(singleDay + 'T12:00:00').getTime() - dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
+      rangoTxt = `${totPrev.total} leads · ${prevDate}`;
+    } else {
+      const desdePrev = new Date(Date.now() - (2*nDias-1)*dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
+      const hastaPrev = new Date(Date.now() - nDias*dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
+      rangoTxt = `${promedioPrev}/día · ${desdePrev} – ${hastaPrev}`;
+    }
+    comparativaHtml = `<div style="font-size:12px;color:${color};font-weight:700;margin-top:2px">${arrow}${delta}% vs ${etiquetaPrev}</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:1px">${rangoTxt}</div>`;
   } else if (nDias && !rowsPrev.length){
-    comparativaHtml = `<div style="font-size:12px;color:#94a3b8;margin-top:2px">Sin datos de los ${nDias}d previos</div>`;
+    comparativaHtml = `<div style="font-size:12px;color:#94a3b8;margin-top:2px">Sin datos de ${etiquetaPrev}</div>`;
   }
 
   // Formato fecha "Lun 10 jun"
@@ -4445,7 +4465,7 @@ function renderReporte(){
     <p style="font-size:11.5px;color:#94a3b8;margin-top:12px;line-height:1.55">
       <b>Pagado</b> = lead con gclid, fuente <code>google_ads_*</code> / <code>fbads_*</code>, o campaign id Google.
       <b>Orgánico</b> = chatbot, formularios, Cliengo, SEO, directo.<br>
-      <b>Comparativa "${nDias || '—'}d previos":</b> ${nDias ? `compara los últimos ${nDias} días con los ${nDias} días inmediatamente anteriores (rolling, NO semana calendario).` : 'no aplica al elegir "Todo el histórico".'}
+      <b>Comparativa:</b> ${singleDay ? (reporteRange === 'today' ? 'hoy vs ayer.' : 'el día seleccionado vs el día anterior.') : (nDias ? `compara los últimos ${nDias} días con los ${nDias} días inmediatamente anteriores (rolling, NO semana calendario).` : 'no aplica al elegir "Todo el histórico".')}
     </p>`;
   // Guardar referencia para que exportarReporteCSV() sepa qué rango y datos usar
   window.__reporteData = { dias, byDay, range: reporteRange };
