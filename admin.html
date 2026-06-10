@@ -2188,8 +2188,11 @@ function updateLastSync(){
    VENDEDORES — smart ordering
 ========================================================= */
 function vendedorCounts(){
+  // Olga 2026-06-10: el conteo debe respetar el rango activo (Hoy/Ayer/7d/Histórico)
+  // para que matche con la tabla. Antes mostraba siempre el acumulado total.
+  const { leads: pool } = leadsDelRango();
   const counts = Object.fromEntries(VENDEDORES.map(v => [v, 0]));
-  allLeads.forEach(l => {
+  pool.forEach(l => {
     if (l.vendedor && counts[l.vendedor] !== undefined) counts[l.vendedor]++;
   });
   return counts;
@@ -2291,8 +2294,8 @@ function renderStats(){
   const total = rangeLeads.length;
   const parciales = rangeLeads.filter(l => l.estado === 'parcial').length;
   const ganados = rangeLeads.filter(l => l.status_proyecto === 'Ganado').length;
-  // Sin asignar: alerta global (no la limito por rango — son los que urgen ahora)
-  const sinAsignar = allLeads.filter(esSinAsignar).length;
+  // Sin asignar: del rango activo (Olga 2026-06-10: consistente con visibles/ganados).
+  const sinAsignar = rangeLeads.filter(esSinAsignar).length;
 
   const card = (dot, label, num, cls='') => `
     <div class="stat-card compact ${cls}">
@@ -2646,9 +2649,10 @@ function toggleCanalDetalle(rowEl){
     detalle.innerHTML = '<div style="color:#94a3b8;font-size:12px">Sin URLs registradas.</div>';
   } else {
     const filas = urls.map(([url, n]) => {
-      const short = url.length > 100 ? url.slice(0, 97) + '…' : url;
       return `<tr>
-        <td style="padding:7px 10px;color:#0f172a;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace" title="${escapeAttr(url)}">${escapeHtml(short)}</td>
+        <td style="padding:7px 10px;color:#0f172a;font-size:13px;font-family:ui-monospace,SFMono-Regular,monospace;word-break:break-all">
+          <a href="${escapeAttr(url)}" target="_blank" rel="noopener" style="color:#0f172a;text-decoration:none" title="Abrir URL">${escapeHtml(url)}</a>
+        </td>
         <td style="padding:7px 10px;text-align:right;font-weight:800;color:#0f172a;font-variant-numeric:tabular-nums;width:70px">${n}</td>
       </tr>`;
     }).join('');
@@ -3315,9 +3319,11 @@ document.querySelectorAll('.filter-pill[data-range]').forEach(btn => {
     btn.classList.add('active');
     currentRange = btn.dataset.range;
     renderVendorTray();
+    renderStats();           // sincroniza Sin asignar / Visibles / Ganados con el rango
     renderTable();
     renderUrlBreakdown();
-    populateOrigenFilter(); // conteo del dropdown debe matchear el rango activo
+    populateOrigenFilter();   // conteos de orígenes por rango
+    populateVendedorFilter(); // conteos de vendedores por rango
   });
 });
 document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -4548,7 +4554,6 @@ function toggleReporteDetalle(cellEl, day, type){
     const total = grupos.reduce((a, [, arr]) => a + arr.length, 0);
     const hora = ts => ts ? new Date(String(ts).replace(' ', 'T') + 'Z').toLocaleTimeString('es-MX', { timeZone: TZ_MX, hour: '2-digit', minute: '2-digit' }) : '—';
     const html = grupos.map(([url, leads]) => {
-      const short = url.length > 90 ? url.slice(0, 87) + '…' : url;
       const filas = leads.sort((a,b) => (a.fecha || '').localeCompare(b.fecha || '')).map(l => {
         const nombre = (l.nombre_real || l.nombre || '—').trim() || '—';
         const wa = (l.whatsapp || '').replace(/\D/g, '');
@@ -4568,7 +4573,7 @@ function toggleReporteDetalle(cellEl, day, type){
       return `
         <div style="margin-top:10px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff">
           <div style="padding:8px 12px;background:${colorBg};display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-            <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;color:#0f172a;font-weight:600;word-break:break-all" title="${escapeAttr(url)}">${escapeHtml(short)}</code>
+            <a href="${escapeAttr(url)}" target="_blank" rel="noopener" style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;color:#0f172a;font-weight:600;word-break:break-all;text-decoration:none;flex:1 1 auto;min-width:0" title="Abrir URL en nueva pestaña">${escapeHtml(url)}</a>
             <span style="background:${colorBase};color:#fff;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:800;white-space:nowrap">${leads.length} ${leads.length === 1 ? 'lead' : 'leads'}</span>
           </div>
           <table style="width:100%;border-collapse:collapse">
