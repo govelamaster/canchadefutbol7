@@ -101,13 +101,13 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
   // Conversación parseada: respuestas del Contacto asociadas a preguntas del Asesor
   const chat = parseCliengoChat(body);
 
-  const nombre = pick(body, /^\s*Nombre:\s*(.+)$/im)
+  const nombre = decodeEntities(pick(body, /^\s*Nombre:\s*(.+)$/im)
     || chat.nombre
-    || '';
+    || '');
   const telefono = pick(body, /^\s*Tel[eé]fono:\s*(.+)$/im)
     || chat.telefono
     || extractPhoneFromChat(body);
-  const ubicacion = pick(body, /^\s*Ubicaci[oó]n:\s*(.+)$/im) || chat.ciudad || '';
+  const ubicacion = limpiarPrefijoUbicacion(decodeEntities(pick(body, /^\s*Ubicaci[oó]n:\s*(.+)$/im) || chat.ciudad || ''));
   const page = pick(body, /^\s*Page:\s*(.+)$/im);
   const fuenteCliengo = (pick(body, /^\s*Fuente:\s*(.+)$/im) || '').toLowerCase();
   const medio = (pick(body, /^\s*Medio:\s*(.+)$/im) || '').toLowerCase();
@@ -125,11 +125,11 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
     finalUrl = 'https://' + landing.replace(/^https?:\/\//, '');
   }
 
-  // Comentarios estructurados (NO toda la conversación)
+  // Comentarios estructurados (NO toda la conversación). Decode entities en todos.
   const lineas = [];
-  if (chat.interes) lineas.push(`Interés: ${chat.interes}`);
-  if (chat.mensajeCliente) lineas.push(`Mensaje del cliente: "${chat.mensajeCliente}"`);
-  if (chat.extras && chat.extras.length) lineas.push(`Notas: ${chat.extras.join(' · ')}`);
+  if (chat.interes) lineas.push(`Interés: ${decodeEntities(chat.interes)}`);
+  if (chat.mensajeCliente) lineas.push(`Mensaje del cliente: "${decodeEntities(chat.mensajeCliente)}"`);
+  if (chat.extras && chat.extras.length) lineas.push(`Notas: ${chat.extras.map(decodeEntities).join(' · ')}`);
   const comentariosEstructurados = lineas.join('\n');
 
   return {
@@ -155,12 +155,22 @@ function parseCliengoChat(body) {
   const out = { nombre: '', ciudad: '', telefono: '', interes: '', mensajeCliente: '', extras: [] };
   const lines = body.split('\n').map(l => l.trim()).filter(Boolean);
 
-  // Construir secuencia ordenada de turnos
+  // Construir secuencia ordenada de turnos.
+  // Bug Olga 2026-06-10: si el mensaje del Contacto/Asesor abarca varias líneas
+  // (ej. "Contacto: hola necesito cotizar pasto sintético\nde 544 metros y 4cm"),
+  // el parser viejo solo agarraba la primera línea. Ahora concatenamos continuaciones.
   const turnos = [];
+  let current = null;
   for (const ln of lines) {
-    const m = ln.match(/^(Asesor|Contacto):\s*(.*)$/i);
-    if (m) turnos.push({ rol: m[1].toLowerCase(), txt: m[2].trim() });
     if (/^Datos de contacto/i.test(ln) || /^Gestiona tu contacto/i.test(ln)) break;
+    const m = ln.match(/^(Asesor|Contacto):\s*(.*)$/i);
+    if (m) {
+      current = { rol: m[1].toLowerCase(), txt: m[2].trim() };
+      turnos.push(current);
+    } else if (current) {
+      // continuación del turno actual (línea sin prefijo Asesor/Contacto)
+      current.txt = (current.txt ? current.txt + ' ' : '') + ln;
+    }
   }
 
   // Patrones de preguntas que dispara el bot Cliengo
@@ -244,6 +254,33 @@ const INTERES_KEYWORDS = [
 function detectInteres(text) {
   for (const [name, re] of INTERES_KEYWORDS) if (re.test(text)) return name;
   return '';
+}
+
+// Decodifica entities HTML en el texto. Cubre acentos español + numéricos + hex.
+// Bug Olga 2026-06-10: parsed.text de Cliengo venía con "Jes&uacute;s" sin decodificar.
+function decodeEntities(s) {
+  if (!s) return s;
+  return String(s)
+    .replace(/&aacute;/gi, 'á').replace(/&eacute;/gi, 'é').replace(/&iacute;/gi, 'í')
+    .replace(/&oacute;/gi, 'ó').replace(/&uacute;/gi, 'ú').replace(/&ntilde;/gi, 'ñ')
+    .replace(/&Aacute;/g, 'Á').replace(/&Eacute;/g, 'É').replace(/&Iacute;/g, 'Í')
+    .replace(/&Oacute;/g, 'Ó').replace(/&Uacute;/g, 'Ú').replace(/&Ntilde;/g, 'Ñ')
+    .replace(/&uuml;/gi, 'ü').replace(/&Uuml;/g, 'Ü')
+    .replace(/&iexcl;/g, '¡').replace(/&iquest;/g, '¿')
+    .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&amp;/g, '&'); // último para no re-decodificar
+}
+
+// Quita prefijos basura típicos en respuestas de ubicación tipo "en el municipio de X".
+// Bug Olga 2026-06-10: ciudad guardada como "En el Municipio de San Andres Tenjapan".
+function limpiarPrefijoUbicacion(s) {
+  if (!s) return '';
+  return s
+    .replace(/^\s*(?:en el municipio de|en la ciudad de|en el estado de|en el pueblo de|en\s+|del?\s+)/i, '')
+    .trim();
 }
 
 function looksLikeName(s) {
