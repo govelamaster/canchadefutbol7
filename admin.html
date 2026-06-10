@@ -4368,7 +4368,10 @@ function renderReporte(){
   const promedioOrg = (tot.organico / divisorPromedio).toFixed(1);
   const promedioPag = (tot.pagado / divisorPromedio).toFixed(1);
 
-  // Comparativa con periodo anterior (mismo N de días, inmediatamente anteriores)
+  // Comparativa con periodo anterior — formato legible estilo CRM serio.
+  // Olga 2026-06-10: "+508%" no se entiende cuando la base es muy chica.
+  // Solución: si crece ≥2x mostrar "×N más", si cae ≥50% mostrar "÷N",
+  // si está cerca de cero cambio decir "Estable", siempre con diff absoluto.
   let comparativaHtml = '';
   const etiquetaPrev = singleDay
     ? (reporteRange === 'today' ? 'ayer' : 'el día previo')
@@ -4376,21 +4379,49 @@ function renderReporte(){
   if (nDias && rowsPrev.length){
     const byDayPrev = agruparReporte(rowsPrev);
     const totPrev = Object.values(byDayPrev).reduce((a,b) => ({total:a.total+b.total}), {total:0});
-    const promedioPrev = (totPrev.total / nDias).toFixed(1);
-    const delta = totPrev.total ? Math.round(100*(tot.total - totPrev.total)/totPrev.total) : 0;
-    const color = delta > 0 ? '#15803d' : (delta < 0 ? '#b91c1c' : '#64748b');
-    const arrow = delta > 0 ? '🟢 +' : (delta < 0 ? '🔴 ' : '⚪ ');
+    const promedioPrevN = totPrev.total / nDias;
+    const promedioPrev = promedioPrevN.toFixed(1);
+    const promedioActN = parseFloat(promedio);
+    const diffDiaria = (promedioActN - promedioPrevN).toFixed(1);
+    const diffSign = diffDiaria > 0 ? '+' : '';
+    // Calcular formato según magnitud del cambio
+    let comparTxt, color;
+    if (promedioPrevN === 0){
+      comparTxt = `🚀 Nuevo: de 0 a ${promedio}/día`;
+      color = '#15803d';
+    } else {
+      const ratio = promedioActN / promedioPrevN;
+      const pctChange = Math.round(100 * (promedioActN - promedioPrevN) / promedioPrevN);
+      if (Math.abs(pctChange) < 5){
+        comparTxt = '⚪ Estable (similar al periodo anterior)';
+        color = '#64748b';
+      } else if (ratio >= 2){
+        const veces = ratio.toFixed(1).replace(/\.0$/, '');
+        comparTxt = `🚀 ×${veces} más leads`;
+        color = '#15803d';
+      } else if (ratio <= 0.5 && ratio > 0){
+        const inv = (1/ratio).toFixed(1).replace(/\.0$/, '');
+        comparTxt = `🔴 ÷${inv} menos (cayó a ${Math.round(100*ratio)}%)`;
+        color = '#b91c1c';
+      } else if (pctChange > 0){
+        comparTxt = `🟢 +${pctChange}% más`;
+        color = '#15803d';
+      } else {
+        comparTxt = `🔴 ${pctChange}%`;
+        color = '#b91c1c';
+      }
+    }
     let rangoTxt;
     if (singleDay){
       const prevDate = new Date(new Date(singleDay + 'T12:00:00').getTime() - dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
-      rangoTxt = `${totPrev.total} leads · ${prevDate}`;
+      rangoTxt = `${etiquetaPrev}: ${totPrev.total} lead${totPrev.total === 1 ? '' : 's'} (${prevDate})`;
     } else {
       const desdePrev = new Date(Date.now() - (2*nDias-1)*dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
       const hastaPrev = new Date(Date.now() - nDias*dayMs).toLocaleDateString('es-MX', { timeZone: TZ_MX, day:'numeric', month:'short' });
-      rangoTxt = `${promedioPrev}/día · ${desdePrev} – ${hastaPrev}`;
+      rangoTxt = `Antes: ${promedioPrev}/día (${desdePrev} – ${hastaPrev})`;
     }
-    comparativaHtml = `<div style="font-size:12px;color:${color};font-weight:700;margin-top:2px">${arrow}${delta}% vs ${etiquetaPrev}</div>
-      <div style="font-size:11px;color:#94a3b8;margin-top:1px">${rangoTxt}</div>`;
+    comparativaHtml = `<div style="font-size:12px;color:${color};font-weight:700;margin-top:2px">${comparTxt}</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:1px">${rangoTxt}${promedioPrevN > 0 ? ` · <b style="color:${color}">${diffSign}${diffDiaria}/día</b>` : ''}</div>`;
   } else if (nDias && !rowsPrev.length){
     comparativaHtml = `<div style="font-size:12px;color:#94a3b8;margin-top:2px">Sin datos de ${etiquetaPrev}</div>`;
   }
