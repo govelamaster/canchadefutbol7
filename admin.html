@@ -385,6 +385,7 @@ body.rol-vendedor .stats,                                    /* KPIs (los reempl
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
 body.rol-vendedor .tab-btn[data-tab="urls"],                 /* tab Por URL */
 body.rol-vendedor .tab-btn[data-tab="leaderboard"]{ display:none !important; }
+body.rol-vendedor .tab-btn[data-tab="reporte"]{ display:none !important; }
 /* Tabla más limpia: oculta col 2 (⏱ Tiempo) y col 5 (Status) en vista vendedor.
    Tras el swap Vendedor↔Status: Vendedor pasa a col 4, Status pasa a col 5. */
 body.rol-vendedor .lead-table thead th:nth-child(2),
@@ -1136,6 +1137,7 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
     <button class="tab-btn active" data-tab="leads">📋 Leads <span class="count" id="tabCountLeads">0</span></button>
     <button class="tab-btn" data-tab="vip">👑 VIP <span class="count" id="tabCountVip">0</span></button>
     <button class="tab-btn" data-tab="leaderboard">🏆 Leaderboard</button>
+    <button class="tab-btn" data-tab="reporte">📊 Reporte</button>
     <button class="tab-btn" data-tab="urls">🌐 Por URL</button>
     <button class="tab-btn" data-tab="bot">🤖 Bot en vivo <span id="botLiveDot" style="display:none;width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 #22c55e;animation:botPulse 1.6s infinite;margin-left:6px;display:none"></span></button>
     <button class="tab-btn" data-tab="ia">🟣 IA</button>
@@ -1357,6 +1359,23 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
           <span class="meta" id="srcMeta">—</span>
         </div>
         <div class="section-body" id="srcBreakdown"><div class="src-empty">Cargando…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: REPORTE diario orgánico vs pagado ============ -->
+  <div class="tab-content" data-tab-content="reporte">
+    <div class="section" style="padding:0; margin-bottom:18px;">
+      <div class="section-card">
+        <div class="section-head" style="align-items:center;gap:12px;flex-wrap:wrap">
+          <h2 style="margin:0"><span class="emoji">📊</span> Reporte diario · Orgánico vs Pagado</h2>
+          <div class="filters" id="reporteRange" style="margin-left:auto">
+            <button class="filter-pill active" data-rrange="30d">Últimos 30 días</button>
+            <button class="filter-pill" data-rrange="7d">7 días</button>
+            <button class="filter-pill" data-rrange="all">Todo el histórico</button>
+          </div>
+        </div>
+        <div class="section-body" id="reporteBody"><div class="src-empty">Cargando…</div></div>
       </div>
     </div>
   </div>
@@ -4179,6 +4198,117 @@ function periodFilter(leads){
   return leads.filter(l => (l.fecha || '') >= fromStr);
 }
 
+// === REPORTE diario orgánico vs pagado (Olga 2026-06-10) ===
+// Clasifica cada lead: pagado si tiene gclid, o fuente "google_ads_*" / "fbads_*" /
+// "facebook_ads_*", o campania numérica (id Google Ads). Resto = orgánico.
+function esPagado(l){
+  if ((l.gclid || '').trim()) return true;
+  const f = (l.fuente || '').toLowerCase();
+  if (f.startsWith('google_ads') || f.startsWith('fbads') || f.startsWith('facebook_ads')) return true;
+  if (/^\d{6,}$/.test((l.campania || '').trim())) return true; // id de campaña Google
+  return false;
+}
+let reporteRange = '30d';
+function renderReporte(){
+  const body = document.getElementById('reporteBody');
+  if (!body) return;
+  if (!allLeads || !allLeads.length){
+    body.innerHTML = '<div class="src-empty">Aún no hay leads en el sistema.</div>';
+    return;
+  }
+  // Ventana
+  let rows = allLeads.filter(l => l.fecha);
+  if (reporteRange === '30d'){
+    const cutoff = new Date(Date.now() - 29*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX });
+    rows = rows.filter(l => ymdMx(l.fecha) >= cutoff);
+  } else if (reporteRange === '7d'){
+    const cutoff = new Date(Date.now() - 6*864e5).toLocaleDateString('en-CA', { timeZone: TZ_MX });
+    rows = rows.filter(l => ymdMx(l.fecha) >= cutoff);
+  }
+  // Agrupar por día MX
+  const byDay = {};
+  rows.forEach(l => {
+    const d = ymdMx(l.fecha);
+    if (!d) return;
+    if (!byDay[d]) byDay[d] = {organico:0, pagado:0, total:0};
+    if (esPagado(l)) byDay[d].pagado++; else byDay[d].organico++;
+    byDay[d].total++;
+  });
+  const dias = Object.keys(byDay).sort().reverse(); // más reciente primero
+  if (!dias.length){
+    body.innerHTML = '<div class="src-empty">Sin leads en este rango.</div>';
+    return;
+  }
+  // Totales del periodo
+  const tot = dias.reduce((a, d) => {
+    a.organico += byDay[d].organico; a.pagado += byDay[d].pagado; a.total += byDay[d].total;
+    return a;
+  }, {organico:0, pagado:0, total:0});
+  const pctPag = tot.total ? Math.round(100*tot.pagado/tot.total) : 0;
+  const pctOrg = tot.total ? Math.round(100*tot.organico/tot.total) : 0;
+  // Formato fecha "Lun 10 jun"
+  const fmtDia = ymd => {
+    const d = new Date(ymd + 'T12:00:00');
+    return d.toLocaleDateString('es-MX', { weekday:'short', day:'numeric', month:'short' });
+  };
+  const filas = dias.map(d => {
+    const r = byDay[d];
+    const pctP = r.total ? Math.round(100*r.pagado/r.total) : 0;
+    return `<tr>
+      <td style="padding:10px 14px;font-weight:700;color:#0f172a">${fmtDia(d)}<div style="font-size:11px;color:#94a3b8;font-weight:500;margin-top:2px">${d}</div></td>
+      <td style="padding:10px 14px;text-align:right;color:#15803d;font-weight:800;font-variant-numeric:tabular-nums">${r.organico}</td>
+      <td style="padding:10px 14px;text-align:right;color:#1d4ed8;font-weight:800;font-variant-numeric:tabular-nums">${r.pagado}</td>
+      <td style="padding:10px 14px;text-align:right;font-weight:800;color:#0f172a;font-variant-numeric:tabular-nums">${r.total}</td>
+      <td style="padding:10px 14px;text-align:right;color:#64748b;font-size:12px">${pctP}% pago</td>
+    </tr>`;
+  }).join('');
+  body.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 16px">
+        <div style="font-size:11.5px;color:#15803d;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total orgánico</div>
+        <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${tot.organico}</div>
+        <div style="font-size:12px;color:#64748b">${pctOrg}% del total</div>
+      </div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px">
+        <div style="font-size:11.5px;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total pagado</div>
+        <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${tot.pagado}</div>
+        <div style="font-size:12px;color:#64748b">${pctPag}% del total</div>
+      </div>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px">
+        <div style="font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total leads</div>
+        <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${tot.total}</div>
+        <div style="font-size:12px;color:#64748b">${dias.length} día${dias.length===1?'':'s'} con tráfico</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+        <thead>
+          <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0">
+            <th style="padding:10px 14px;text-align:left;font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Día</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#15803d;text-transform:uppercase;letter-spacing:.05em;font-weight:700">🌱 Orgánico</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;font-weight:700">💰 Pagado</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Total</th>
+            <th style="padding:10px 14px;text-align:right;font-size:11.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600">%</th>
+          </tr>
+        </thead>
+        <tbody>${filas}</tbody>
+      </table>
+    </div>
+    <p style="font-size:11.5px;color:#94a3b8;margin-top:12px">
+      <b>Pagado</b> = lead con gclid, fuente <code>google_ads_*</code> / <code>fbads_*</code>, o campaign id Google.
+      <b>Orgánico</b> = chatbot, formularios, Cliengo, SEO, directo.
+    </p>`;
+}
+// Listeners de los pills de rango (registrados una vez)
+document.addEventListener('click', e => {
+  const b = e.target.closest('#reporteRange .filter-pill[data-rrange]');
+  if (!b) return;
+  document.querySelectorAll('#reporteRange .filter-pill').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  reporteRange = b.dataset.rrange;
+  renderReporte();
+});
+
 function renderLeaderboard(){
   const filtered = periodFilter(allLeads);
   const stats = {};
@@ -4329,6 +4459,7 @@ function activateTab(tab){
     if (tab === 'bot') iniciarBotLive();
     if (tab === 'plantillas') loadPlantillasEditor();
     if (tab === 'trafico') renderTraficoAds();
+    if (tab === 'reporte') renderReporte();
   }
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -4341,7 +4472,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // On load, check hash
 window.addEventListener('load', () => {
   const hash = location.hash.replace('#','');
-  if (['leads','vip','leaderboard','ia'].includes(hash)) activateTab(hash);
+  if (['leads','vip','leaderboard','reporte','ia'].includes(hash)) activateTab(hash);
 });
 
 /* =========================================================
