@@ -637,5 +637,6 @@ function buildWhatsAppUrl(intent){const message=['Hola Sportmaster 👋','Vengo 
 document.querySelectorAll('[data-wa-intent]').forEach((link)=>{link.href=buildWhatsAppUrl(link.dataset.waIntent);});
 window.addEventListener('scroll',()=>{const showCtas=window.scrollY>650;sticky.classList.toggle('show',showCtas);document.getElementById('quoteForm').addEventListener('submit',(event)=>{event.preventDefault();const name=document.getElementById('name').value.trim();const field=document.getElementById('field').value;const details=document.getElementById('details').value.trim();const text=['Hola Sportmaster 👋','Vengo de su página:',canonicalUrl,'Quiero informes de renovación de cancha de pasto sintético. Me interesa lo siguiente:',`Nombre: ${name}`,`Tipo de cancha: ${field}`,`Medidas, ciudad y estado actual: ${details||'por definir'}`].join('\n');window.location.href=`https://api.whatsapp.com/send/?phone=525539887615&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;});
 </script>
+<script src="/assets/js/aeo-footer.js" defer></script>
 </body>
 </html>

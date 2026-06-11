@@ -460,4 +460,5 @@ largo.addEventListener('input',calcular);ancho.addEventListener('input',calcular
 window.addEventListener('scroll',()=>{const showCtas=window.scrollY>600;sticky.classList.toggle('show',showCtas);if(whatsappFloat)whatsappFloat.classList.toggle('show',showCtas);});
 // Form
 document.getElementById('quoteForm').addEventListener('submit',(event)=>{event.preventDefault();const name=document.getElementById('name').value.trim();const field=document.getElementById('field').value;const details=document.getElementById('details').value.trim();const text=['Hola Sportmaster 👋','Vengo de su página:',canonicalUrl,'Quiero saber cuánto cuesta una cancha de futbol 7. Me interesa lo siguiente:',`Nombre: ${name}`,`Tipo de cancha: ${field}`,`Medidas, ciudad y objetivo: ${details||'por definir'}`].join('\n');window.location.href=`https://api.whatsapp.com/send/?phone=525539887615&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;});
-</script></body></html>
+</script><script src="/assets/js/aeo-footer.js" defer></script>
+</body></html>
