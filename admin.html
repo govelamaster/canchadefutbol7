@@ -4532,9 +4532,124 @@ function renderReporte(){
       <b>Pagado</b> = lead con gclid, fuente <code>google_ads_*</code> / <code>fbads_*</code>, o campaign id Google.
       <b>Orgánico</b> = chatbot, formularios, Cliengo, SEO, directo.<br>
       <b>Comparativa:</b> ${singleDay ? (reporteRange === 'today' ? 'hoy vs ayer.' : 'el día seleccionado vs el día anterior.') : (nDias ? `compara los últimos ${nDias} días con los ${nDias} días inmediatamente anteriores (rolling, NO semana calendario).` : 'no aplica al elegir "Todo el histórico".')}
-    </p>`;
+    </p>
+    ${renderKeywordsAgregadas(rows)}`;
   // Guardar referencia para que exportarReporteCSV() sepa qué rango y datos usar
   window.__reporteData = { dias, byDay, range: reporteRange };
+}
+
+// Agregación de palabras clave de los leads PAGADOS del periodo (Olga 2026-06-11).
+// Permite ver qué keywords convierten más para decidir dónde subir budget.
+function renderKeywordsAgregadas(rowsDelPeriodo){
+  const pagados = rowsDelPeriodo.filter(esPagado);
+  if (!pagados.length) return '';
+  const byKw = {};
+  pagados.forEach(l => {
+    const kw = ((l.gads_keyword || '').trim()) || '(sin clasificar)';
+    if (!byKw[kw]){
+      byKw[kw] = {
+        leads: 0, costo: 0, costoCount: 0,
+        ganados: 0, atendidos: 0,
+        campaign: l.gads_campaign || '',
+        ad_group: l.gads_ad_group || '',
+      };
+    }
+    const k = byKw[kw];
+    k.leads++;
+    const cpl = parseFloat(l.gads_cpl_estimate);
+    if (!isNaN(cpl) && cpl > 0){ k.costo += cpl; k.costoCount++; }
+    if ((l.status_proyecto || '') === 'Ganado') k.ganados++;
+    if (l.atendido_fecha || (l.status_proyecto && l.status_proyecto !== 'Sin atender')) k.atendidos++;
+  });
+  const sorted = Object.entries(byKw).sort((a,b) => b[1].leads - a[1].leads);
+  const totLeads = pagados.length;
+  const totCosto = sorted.reduce((s, [_, k]) => s + k.costo, 0);
+  const totGanados = sorted.reduce((s, [_, k]) => s + k.ganados, 0);
+  // Guardar para export CSV
+  window.__keywordsAgg = { rows: sorted, range: reporteRange };
+  const filas = sorted.map(([kw, k]) => {
+    const cplProm = k.costoCount > 0 ? (k.costo / k.costoCount) : null;
+    const tasaCierre = k.leads > 0 ? Math.round(100 * k.ganados / k.leads) : 0;
+    const isSinClasif = kw === '(sin clasificar)';
+    return `<tr>
+      <td style="padding:8px 12px;font-size:13px;color:${isSinClasif ? '#94a3b8' : '#0f172a'};font-weight:${isSinClasif ? 500 : 700}">${escapeHtml(kw)}<div style="font-size:11px;color:#94a3b8;margin-top:2px;font-weight:500">${escapeHtml((k.campaign || '').slice(0, 60))}</div></td>
+      <td style="padding:8px 12px;text-align:right;font-weight:800;color:#0f172a;font-variant-numeric:tabular-nums">${k.leads}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:600;color:#1d4ed8;font-variant-numeric:tabular-nums">${k.costo > 0 ? '$' + k.costo.toFixed(0) : '—'}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:600;color:#64748b;font-variant-numeric:tabular-nums">${cplProm !== null ? '$' + cplProm.toFixed(0) : '—'}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:800;color:#15803d;font-variant-numeric:tabular-nums">${k.ganados}</td>
+      <td style="padding:8px 12px;text-align:right;font-size:12px;color:${tasaCierre > 0 ? '#15803d' : '#94a3b8'};font-variant-numeric:tabular-nums">${k.ganados > 0 ? tasaCierre + '%' : '—'}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div style="margin-top:28px;padding-top:24px;border-top:1px dashed #e2e8f0">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+        <div>
+          <h3 style="margin:0;font-size:16px;font-weight:800;color:#0f172a">🔑 Top Keywords (Pagado) · periodo activo</h3>
+          <p style="margin:4px 0 0;font-size:12px;color:#64748b">${totLeads} leads pagados · $${totCosto.toFixed(0)} MXN invertidos · ${totGanados} ganados. Ordenado por más buscadas.</p>
+        </div>
+        <button onclick="exportarKeywordsCSV()" class="filter-pill" style="background:#0b0f14;color:#fff;border:none;font-weight:700">⬇ CSV Keywords</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+          <thead>
+            <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0">
+              <th style="padding:10px 12px;text-align:left;font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;font-weight:700">🔑 Keyword</th>
+              <th style="padding:10px 12px;text-align:right;font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Leads</th>
+              <th style="padding:10px 12px;text-align:right;font-size:11.5px;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;font-weight:700">💰 Costo total</th>
+              <th style="padding:10px 12px;text-align:right;font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;font-weight:700">CPL prom</th>
+              <th style="padding:10px 12px;text-align:right;font-size:11.5px;color:#15803d;text-transform:uppercase;letter-spacing:.05em;font-weight:700">🏆 Ganados</th>
+              <th style="padding:10px 12px;text-align:right;font-size:11.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;font-weight:600">% cierre</th>
+            </tr>
+          </thead>
+          <tbody>${filas}</tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:#94a3b8;margin-top:10px;line-height:1.5">
+        <b>Costo total</b> y <b>CPL</b> son estimados (Google Ads no expone costo por gclid individual; calculamos cost/clicks del keyword en su día).
+        <b>(sin clasificar)</b> = leads pagados que aún no tienen enrichment de Supermetrics. <b>% cierre</b> = ganados / leads de esa keyword.
+      </p>
+    </div>`;
+}
+
+// Descarga keywords agregadas como CSV (UTF-8 con BOM).
+function exportarKeywordsCSV(){
+  const data = window.__keywordsAgg;
+  if (!data || !data.rows || !data.rows.length){
+    alert('No hay keywords para exportar.');
+    return;
+  }
+  const headers = ['Keyword', 'Campania', 'Ad_Group', 'Leads', 'Costo_Total_MXN', 'CPL_Promedio_MXN', 'Ganados', 'Pct_Cierre'];
+  const rows = data.rows.map(([kw, k]) => {
+    const cplProm = k.costoCount > 0 ? (k.costo / k.costoCount) : '';
+    const tasaCierre = k.leads > 0 ? Math.round(100 * k.ganados / k.leads) : 0;
+    return [
+      kw,
+      k.campaign || '',
+      k.ad_group || '',
+      k.leads,
+      k.costo > 0 ? k.costo.toFixed(2) : '',
+      cplProm !== '' ? cplProm.toFixed(2) : '',
+      k.ganados,
+      tasaCierre,
+    ];
+  });
+  const csv = [headers, ...rows].map(row =>
+    row.map(cell => {
+      const s = String(cell == null ? '' : cell);
+      if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }).join(',')
+  ).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: TZ_MX });
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `keywords-pagado-${data.range}-${today}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // Toggle de detalle al click en un número de Orgánico/Pagado en la tabla del Reporte.
