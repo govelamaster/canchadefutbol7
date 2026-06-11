@@ -386,12 +386,10 @@ body.rol-vendedor .insights-grid,                            /* analítica (Cort
 body.rol-vendedor .tab-btn[data-tab="urls"],                 /* tab Por URL */
 body.rol-vendedor .tab-btn[data-tab="leaderboard"]{ display:none !important; }
 body.rol-vendedor .tab-btn[data-tab="reporte"]{ display:none !important; }
-/* Tabla más limpia: oculta col 2 (⏱ Tiempo) y col 5 (Status) en vista vendedor.
-   Tras el swap Vendedor↔Status: Vendedor pasa a col 4, Status pasa a col 5. */
-body.rol-vendedor .lead-table thead th:nth-child(2),
-body.rol-vendedor .lead-table tbody td:nth-child(2),
-body.rol-vendedor .lead-table thead th:nth-child(5),
-body.rol-vendedor .lead-table tbody td:nth-child(5){ display:none; }
+/* Tabla más limpia para vendedor: oculta col Status (Olga 2026-06-10: ya no existe col Tiempo).
+   Estructura actual: 1=Lead, 2=Origen, 3=Vendedor, 4=Status, 5=Acciones. */
+body.rol-vendedor .lead-table thead th:nth-child(4),
+body.rol-vendedor .lead-table tbody td:nth-child(4){ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"], body.rol-admin .tab-btn[data-tab="bot"],
@@ -1220,7 +1218,6 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
         <thead>
           <tr>
             <th>Lead</th>
-            <th style="white-space:nowrap">⏱ Tiempo</th>
             <th>🌐 Origen</th>
             <th id="thVendedor" style="cursor:pointer;user-select:none" title="Ordenar por nº de asignaciones (mayor/menor)">Vendedor <span style="color:#cbd5e1">↕</span></th>
             <th>Status</th>
@@ -3672,7 +3669,6 @@ function renderLeadRow(l, vip){
         </div>
       </div>
     </td>
-    <td class="tiempo-cell">${slaBadge(l) || '<span class="tiempo-vacio">—</span>'}</td>
     <td class="origen-cell">${origenCell(l)}</td>
     <td>${selectVendedor(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
