@@ -39,7 +39,8 @@ export async function onRequestGet(context) {
              url, gclid, campania, landing,
              vendedor, tipo_cliente, status_proyecto, notas_internas, tocado_por, tocado_fecha, estado_manual,
              recurrente, dup_de,
-             asignado_fecha, compromiso_min, compromiso_fecha, atendido_fecha, recordatorios
+             asignado_fecha, compromiso_min, compromiso_fecha, atendido_fecha, recordatorios,
+             gads_campaign, gads_ad_group, gads_keyword, gads_cpl_estimate
       FROM leads
       ORDER BY fecha DESC
       LIMIT 5000
