@@ -63,6 +63,20 @@ export async function onRequestPost(context) {
     }
 
     if (!changed) {
+      // 🛡️ FILTRO ANTI-SPAM (Olga 2026-06-13): aplicar mismas reglas que el Email Worker
+      // a chatbot + formularios externos. Si detecta spam, retorna 200 silencio
+      // (para no alertar al spammer) sin grabar en D1.
+      if (esSpamLead({
+        nombre: payload.nombre,
+        whatsapp: payload.whatsapp,
+        url: payload.url,
+        comentarios: payload.comentarios,
+      })) {
+        return new Response(JSON.stringify({ ok: true, filtered: true }), {
+          status: 200,
+          headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' }
+        });
+      }
       await env.DB.prepare(`
         INSERT INTO leads
           (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, fuente, url, gclid, campania, wa_norm, ip, user_agent)
@@ -320,4 +334,51 @@ function jsonError(msg, status) {
     status,
     headers: corsHeaders('application/json')
   });
+}
+
+/* =========================================================
+   FILTRO ANTI-SPAM — espejo del email-leads-worker (Olga 2026-06-13)
+   Cualquier cambio aquí debe hacerse también en email-leads-worker/src/index.js
+   para mantener coherencia (chatbot + form + email todos protegidos igual).
+========================================================= */
+function esSpamLead({ nombre, whatsapp, url, comentarios }) {
+  // Señal 1: URL claramente corrupta por bot
+  if (url && /^\s*Agente de usuario:/i.test(url)) return true;
+  // Señal 2: WhatsApp inválido cuando está presente
+  const digits = (whatsapp || '').replace(/\D/g, '');
+  if (digits) {
+    if (digits.length < 7) return true;
+    if (/^0+$/.test(digits)) return true;
+    if (/^(\d)\1+$/.test(digits)) return true; // 1111111111
+  }
+  // (Si no hay whatsapp aún, no rechazar — chatbot manda leads parciales.)
+  const nombreTrim = (nombre || '').trim();
+  // Señal 3: nombre puro dígitos (bot llenó campo nombre con el teléfono)
+  if (nombreTrim && /^\d+$/.test(nombreTrim) && nombreTrim.length >= 7) return true;
+  // Señal 4: nombre con marcas spam conocidas
+  const n = nombreTrim.toLowerCase();
+  if (n) {
+    const SPAM_KEYWORDS = [
+      '1win','1xbet','bet365','casino','poker','viagra','cialis','crypto',
+      'bitcoin','forex','traffic','seo offer','backlink','adult','escort',
+      'pharmacy','penis','sex',
+    ];
+    if (SPAM_KEYWORDS.some(k => n.includes(k))) return true;
+    // Señal 5: nombre patrón "palabra_palabra" sin espacios (1win_ypkt, seo_master)
+    if (/^[a-z0-9]{2,10}_[a-z0-9]{2,10}$/i.test(nombreTrim)) return true;
+  }
+  // Señal 6: pitch de SEO services en inglés (2+ frases típicas)
+  const m = (comentarios || '').toLowerCase();
+  if (m && m.length > 50) {
+    const PITCH_PHRASES = [
+      'noticed online','rank higher','search pages','keywords your customers',
+      'keyword suggestions','boost traffic','your competition','above the competition',
+      'businesses struggle','search engines','help your business grow','few clients',
+      'monthly retainer','seo services','dofollow backlinks','outranking',
+      'increase your traffic','first page of google','top of google',
+    ];
+    const hits = PITCH_PHRASES.filter(p => m.includes(p)).length;
+    if (hits >= 2) return true;
+  }
+  return false;
 }
