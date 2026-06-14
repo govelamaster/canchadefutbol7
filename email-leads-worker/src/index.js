@@ -349,6 +349,12 @@ function decodeEntities(s) {
     .replace(/&iexcl;/g, '¡').replace(/&iquest;/g, '¿')
     .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#39;/g, "'")
     .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    // Bug Olga 2026-06-14: medidas tipo "25 &times; 45" salían en crudo en el
+    // dashboard. Cliengo codifica × como &times;. Cubrimos la familia medida/mate.
+    .replace(/&times;/gi, '×').replace(/&divide;/gi, '÷').replace(/&deg;/gi, '°')
+    .replace(/&middot;/gi, '·').replace(/&minus;/gi, '−')
+    .replace(/&frac12;/gi, '½').replace(/&frac14;/gi, '¼').replace(/&frac34;/gi, '¾')
+    .replace(/&mdash;/gi, '—').replace(/&ndash;/gi, '–').replace(/&hellip;/gi, '…')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
     .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
     .replace(/&amp;/g, '&'); // último para no re-decodificar

@@ -2010,9 +2010,38 @@ function enterDash(data){
   if (CURRENT_ROLE === 'super_admin') { loadFrases(); loadEquipo(); }
 }
 
+// Decodifica entities HTML que Cliengo/chatbot deja crudas en el texto del
+// cliente (acentos + medida/mate). Bug Olga 2026-06-14: "25 &times; 45" salía
+// literal porque escapeHtml escapaba el & a &amp; sin decodificar antes.
+// Espejo del decodeEntities del email-leads-worker. Corrige leads ya guardados.
+function decodeEntities(s){
+  if (s == null) return s;
+  return String(s)
+    .replace(/&aacute;/gi,'á').replace(/&eacute;/gi,'é').replace(/&iacute;/gi,'í')
+    .replace(/&oacute;/gi,'ó').replace(/&uacute;/gi,'ú').replace(/&ntilde;/gi,'ñ')
+    .replace(/&Aacute;/g,'Á').replace(/&Eacute;/g,'É').replace(/&Iacute;/g,'Í')
+    .replace(/&Oacute;/g,'Ó').replace(/&Uacute;/g,'Ú').replace(/&Ntilde;/g,'Ñ')
+    .replace(/&uuml;/gi,'ü').replace(/&Uuml;/g,'Ü')
+    .replace(/&iexcl;/g,'¡').replace(/&iquest;/g,'¿')
+    .replace(/&times;/gi,'×').replace(/&divide;/gi,'÷').replace(/&deg;/gi,'°')
+    .replace(/&middot;/gi,'·').replace(/&minus;/gi,'−')
+    .replace(/&frac12;/gi,'½').replace(/&frac14;/gi,'¼').replace(/&frac34;/gi,'¾')
+    .replace(/&mdash;/gi,'—').replace(/&ndash;/gi,'–').replace(/&hellip;/gi,'…')
+    .replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&#39;/g,"'")
+    .replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+    .replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(parseInt(n,10)))
+    .replace(/&#x([0-9a-fA-F]+);/g,(_,n)=>String.fromCharCode(parseInt(n,16)))
+    .replace(/&amp;/g,'&'); // último para no re-decodificar
+}
+
 function normalizeLead(l){
   return {
     ...l,
+    nombre: decodeEntities(l.nombre || ''),
+    ciudad: decodeEntities(l.ciudad || ''),
+    m2: decodeEntities(l.m2 || ''),
+    comentarios: decodeEntities(l.comentarios || ''),
+    timeline: decodeEntities(l.timeline || ''),
     vendedor: l.vendedor || '',
     recurrente: l.recurrente || 0,
     asignado_fecha: l.asignado_fecha || '',
@@ -2024,7 +2053,7 @@ function normalizeLead(l){
     tipo_cliente: l.tipo_cliente || '',
     status_proyecto: l.status_proyecto || 'Sin atender',
     notas_internas: l.notas_internas || '',
-    nombre_real: l.nombre_real || '',
+    nombre_real: decodeEntities(l.nombre_real || ''),
     proxima_accion: l.proxima_accion || '',
     proxima_fecha: l.proxima_fecha || '',
     razon_perdida: l.razon_perdida || '',
