@@ -1,0 +1,107 @@
+{
+  "personal": [
+    "nuestro personal experto",
+    "nuestro equipo de instaladores profesionales",
+    "nuestra mano de obra calificada",
+    "nuestro equipo profesional de instalación",
+    "nuestros instaladores certificados por el fabricante de pasto",
+    "nuestros técnicos en instalación"
+  ],
+  "cobertura": [
+    "instalamos en {ciudad} y en {estadoA}",
+    "realizamos instalaciones en {ciudad} y en {estadoA}",
+    "trabajamos en {ciudad} y en {estadoA}",
+    "damos servicio en {ciudad} y en {estadoA}",
+    "cubrimos {ciudad} y su región en {estadoA}",
+    "instalamos canchas en {ciudad} y en {estadoA}"
+  ],
+  "precio": [
+    "La cotización incluye flete de materiales y colocación del pasto en {ciudad}",
+    "Nuestro precio incluye flete y mano de obra de instalación",
+    "El precio incluye el flete de los materiales y la colocación del pasto en tu cancha",
+    "Te entregamos un precio que ya incluye flete y mano de obra de instalación"
+  ],
+  "incluye": [
+    "Colocamos el pasto sintético, la línea blanca del mismo material, la arena sílica y el caucho",
+    "Instalamos pasto sintético, líneas del mismo pasto, relleno de arena sílica y caucho",
+    "Ponemos el pasto, las líneas integradas del mismo material, arena sílica y caucho"
+  ],
+  "base_cliente": [
+    "Tú solo preparas la base y nosotros dejamos tu cancha lista para jugar",
+    "Si ya tienes la base lista, llegamos e instalamos el pasto en tiempo récord",
+    "Tú pones la base, nosotros colocamos el pasto y dejamos la cancha lista"
+  ],
+  "tiempos": [
+    "Instalamos en tiempos cortos: desde 7 días una cancha de futbol 7 y hasta 15 días una de soccer",
+    "En 7 días puedes tener tu cancha de futbol 7 lista, y hasta 15 una de soccer",
+    "Trabajamos en tiempo récord: 7 días una de futbol 7, 15 días una de soccer",
+    "Tiempo express de instalación: desde 7 días (futbol 7) y hasta 15 días (soccer)"
+  ],
+  "tiempo_express": [
+    "Dinos cuándo la necesitas y nos adaptamos a tu tiempo de entrega",
+    "¿Tienes prisa? Coméntanos tu fecha y ajustamos el tiempo de entrega",
+    "Nos adaptamos a tu calendario: tu cancha lista cuando la necesitas"
+  ],
+  "drenaje": [
+    "Su backing auto-drenante ayuda a que el agua salga rápido de la superficie",
+    "El respaldo perforado con sistema self drain desaloja el agua de lluvia en minutos",
+    "Cuenta con una tela base perforada que drena el agua de lluvia más rápido, para volver a jugar antes",
+    "Gracias a su sistema de auto-drenaje self drain, el agua de la lluvia se evacúa veloz y la cancha se reutiliza enseguida",
+    "El backing viene perforado por el sistema self drain: el agua escurre rápido y vuelves a jugar en el menor tiempo posible",
+    "Su respaldo auto-drenante bombea el agua fuera de la superficie, así la lluvia no detiene el juego",
+    "La tela base con tecnología self drain deja salir el agua rápidamente y la cancha queda lista enseguida",
+    "Pasto perforado en el backing: el sistema self drain acelera el desalojo del agua tras la lluvia",
+    "Después del aguacero, su sistema self drain saca el agua veloz y vuelves a la cancha en mucho menos tiempo",
+    "El agua de lluvia no se queda: el respaldo perforado self drain la drena rápido para retomar el partido",
+    "Con su backing auto-drenante, el agua fluye y se va — menos espera, más juego",
+    "Self drain en la tela base: drenaje veloz del agua de lluvia y cancha reutilizable en poco tiempo"
+  ],
+  "arido": [
+    "Al no requerir agua, es una gran alternativa donde cada gota cuenta",
+    "Olvídate de regar: ahorras agua todo el año y bajas tu recibo mensual",
+    "Cero riego, cero manguera: el pasto sintético llegó para quedarse",
+    "No necesita una sola gota: reduce el consumo y el recibo de agua mes con mes",
+    "Donde el agua escasea, una cancha que no pide riego es la opción inteligente"
+  ],
+  "uv": [
+    "Viene tratado para resistir la decoloración por rayos UV",
+    "Protección UV que conserva su color pese al sol intenso",
+    "Tratado contra el sol: no se decolora ni se apaga con la exposición diaria",
+    "Su tratamiento anti-UV mantiene el verde temporada tras temporada"
+  ],
+  "confort": [
+    "Sus rellenos de arena sílica y caucho emulan la sensación de una superficie natural",
+    "El relleno de arena y caucho amortigua el impacto y cuida las articulaciones",
+    "Superficie amortiguante: arena y caucho que protegen rodillas y tobillos",
+    "Pisada cómoda y segura: el sistema de arena y caucho suaviza cada movimiento"
+  ],
+  "ahorro": [
+    "Olvídate de regar y dar mantenimiento: menos trabajo, menos gasto",
+    "Sin podar, sin regar, sin resembrar: el mantenimiento al mínimo",
+    "Baja tu recibo de agua y el costo de mantenimiento todo el año"
+  ],
+  "cancha_lista": [
+    "cancha lista para jugar",
+    "tu cancha siempre lista, apta para juego 24/7",
+    "lista para jugar en cualquier momento, sin esperas",
+    "una cancha apta para juego 24/7",
+    "lista para rodar el balón en el menor tiempo posible"
+  ],
+  "vecinas": [
+    "También instalamos en {lista}",
+    "Otras ciudades donde también instalamos: {lista}",
+    "En estas ciudades también hemos realizado instalaciones: {lista}",
+    "También cubrimos ciudades como {lista}",
+    "Hemos trabajado en otras ciudades como {lista}",
+    "Nuestro trabajo también llega a {lista}",
+    "Cerca de {ciudad} también instalamos en {lista}"
+  ],
+  "trayectoria": [
+    "Cubrimos todo México desde hace 20 años",
+    "20 años instalando canchas en todo el país",
+    "Dos décadas de experiencia y cobertura nacional",
+    "Desde hace 20 años llevamos pasto sintético a cada rincón de México",
+    "20 años de trayectoria respaldando cada instalación",
+    "Experiencia de 20 años y presencia en todo México"
+  ]
+}

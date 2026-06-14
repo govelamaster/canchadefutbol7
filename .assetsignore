@@ -4,4 +4,6 @@ _*.py
 *.bak
 *.bak-*
 audit/
+_backups-seo/
 PENDIENTES-TRACKING-GROWTH.md
+_motor-seo/

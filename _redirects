@@ -39,3 +39,8 @@
 /alumbrado-cancha-futbol-7        /alumbrado-para-canchas-de-futbol/      301
 /malla-ciclonica-cancha-futbol-7/ /malla-ciclonica-para-canchas-de-futbol/ 301
 /malla-ciclonica-cancha-futbol-7  /malla-ciclonica-para-canchas-de-futbol/ 301
+
+# Página fantasma: hub interno "Programático" publicado por error (slug roto, H1 vacío).
+# No existe pillar real; nadie la enlaza. 301 a home + fuera del sitemap.
+/construccion-de-canchas-de-futbol-en/  /  301
+/construccion-de-canchas-de-futbol-en   /  301

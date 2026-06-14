@@ -1,0 +1,1398 @@
+{
+ "acambaro": {
+  "label": "Acámbaro",
+  "estado": "Guanajuato"
+ },
+ "acaponeta": {
+  "label": "Acaponeta",
+  "estado": "Nayarit"
+ },
+ "acapulco": {
+  "label": "Acapulco",
+  "estado": "Guerrero"
+ },
+ "acolman": {
+  "label": "Acolman",
+  "estado": "Estado de México"
+ },
+ "acoxpa": {
+  "label": "Acoxpa",
+  "estado": "Ciudad de México"
+ },
+ "actopan": {
+  "label": "Actopan",
+  "estado": "Hidalgo"
+ },
+ "agua-prieta": {
+  "label": "Agua Prieta",
+  "estado": "Sonora"
+ },
+ "aguascalientes": {
+  "label": "Aguascalientes",
+  "estado": "Aguascalientes"
+ },
+ "ahuacatlan": {
+  "label": "Ahuacatlán",
+  "estado": "Nayarit"
+ },
+ "akumal": {
+  "label": "Akumal",
+  "estado": "Quintana Roo"
+ },
+ "allende-coahuila": {
+  "label": "Allende",
+  "estado": "Coahuila"
+ },
+ "altamira": {
+  "label": "Altamira",
+  "estado": "Tamaulipas"
+ },
+ "alvaro-obregon-cdmx": {
+  "label": "Álvaro Obregón",
+  "estado": "Ciudad de México"
+ },
+ "amozoc": {
+  "label": "Amozoc",
+  "estado": "Puebla"
+ },
+ "anahuac-cdmx": {
+  "label": "Anáhuac",
+  "estado": "Ciudad de México"
+ },
+ "angostura": {
+  "label": "Angostura",
+  "estado": "Sinaloa"
+ },
+ "apan": {
+  "label": "Apan",
+  "estado": "Hidalgo"
+ },
+ "apatzingan": {
+  "label": "Apatzingán",
+  "estado": "Michoacán"
+ },
+ "apizaco": {
+  "label": "Apizaco",
+  "estado": "Tlaxcala"
+ },
+ "apodaca": {
+  "label": "Apodaca",
+  "estado": "Nuevo León"
+ },
+ "aragon-cdmx": {
+  "label": "Aragón",
+  "estado": "Ciudad de México"
+ },
+ "armeria": {
+  "label": "Armería",
+  "estado": "Colima"
+ },
+ "atizapan-de-zaragoza": {
+  "label": "Atizapán de Zaragoza",
+  "estado": "Estado de México"
+ },
+ "atlixco": {
+  "label": "Atlixco",
+  "estado": "Puebla"
+ },
+ "azcapotzalco": {
+  "label": "Azcapotzalco",
+  "estado": "Ciudad de México"
+ },
+ "bacalar": {
+  "label": "Bacalar",
+  "estado": "Quintana Roo"
+ },
+ "bahia-de-banderas": {
+  "label": "Bahía de Banderas",
+  "estado": "Nayarit"
+ },
+ "benito-juarez-cdmx": {
+  "label": "Benito Juárez",
+  "estado": "Ciudad de México"
+ },
+ "boca-del-rio": {
+  "label": "Boca del Río",
+  "estado": "Veracruz"
+ },
+ "bosque-real": {
+  "label": "Bosque Real",
+  "estado": "Estado de México"
+ },
+ "bosques-de-las-lomas": {
+  "label": "Bosques de las Lomas",
+  "estado": "Ciudad de México"
+ },
+ "boulevares": {
+  "label": "Boulevares",
+  "estado": "Estado de México"
+ },
+ "caborca": {
+  "label": "Caborca",
+  "estado": "Sonora"
+ },
+ "cadereyta-jimenez": {
+  "label": "Cadereyta Jiménez",
+  "estado": "Nuevo León"
+ },
+ "calacoaya": {
+  "label": "Calacoaya",
+  "estado": "Estado de México"
+ },
+ "calera": {
+  "label": "Calera",
+  "estado": "Zacatecas"
+ },
+ "calkini": {
+  "label": "Calkiní",
+  "estado": "Campeche"
+ },
+ "calvillo": {
+  "label": "Calvillo",
+  "estado": "Aguascalientes"
+ },
+ "camargo-chihuahua": {
+  "label": "Camargo",
+  "estado": "Chihuahua"
+ },
+ "campeche-capital": {
+  "label": "Campeche",
+  "estado": "Campeche"
+ },
+ "cancun": {
+  "label": "Cancún",
+  "estado": "Quintana Roo"
+ },
+ "cardenas-slp": {
+  "label": "Cárdenas",
+  "estado": "San Luis Potosí"
+ },
+ "cardenas-tabasco": {
+  "label": "Cárdenas",
+  "estado": "Tabasco"
+ },
+ "cdmx": {
+  "label": "CDMX",
+  "estado": "Ciudad de México"
+ },
+ "celaya": {
+  "label": "Celaya",
+  "estado": "Guanajuato"
+ },
+ "centla": {
+  "label": "Centla",
+  "estado": "Tabasco"
+ },
+ "centro-historico-cdmx": {
+  "label": "Centro Histórico",
+  "estado": "Ciudad de México"
+ },
+ "chalco": {
+  "label": "Chalco",
+  "estado": "Estado de México"
+ },
+ "champoton": {
+  "label": "Champotón",
+  "estado": "Campeche"
+ },
+ "chetumal": {
+  "label": "Chetumal",
+  "estado": "Quintana Roo"
+ },
+ "chiapa-de-corzo": {
+  "label": "Chiapa de Corzo",
+  "estado": "Chiapas"
+ },
+ "chiautempan": {
+  "label": "Chiautempan",
+  "estado": "Tlaxcala"
+ },
+ "chihuahua": {
+  "label": "Chihuahua",
+  "estado": "Chihuahua"
+ },
+ "chilpancingo-de-los-bravo": {
+  "label": "Chilpancingo de los Bravo",
+  "estado": "Guerrero"
+ },
+ "chimalhuacan": {
+  "label": "Chimalhuacán",
+  "estado": "Estado de México"
+ },
+ "cintalapa": {
+  "label": "Cintalapa",
+  "estado": "Chiapas"
+ },
+ "ciudad-acuna": {
+  "label": "Ciudad Acuña",
+  "estado": "Coahuila"
+ },
+ "ciudad-brisa": {
+  "label": "Ciudad Brisa",
+  "estado": "Estado de México"
+ },
+ "ciudad-constitucion": {
+  "label": "Ciudad Constitución",
+  "estado": "Baja California Sur"
+ },
+ "ciudad-del-carmen": {
+  "label": "Ciudad del Carmen",
+  "estado": "Campeche"
+ },
+ "ciudad-guzman": {
+  "label": "Ciudad Guzmán",
+  "estado": "Jalisco"
+ },
+ "ciudad-hidalgo-michoacan": {
+  "label": "Ciudad Hidalgo",
+  "estado": "Michoacán"
+ },
+ "ciudad-juarez": {
+  "label": "Ciudad Juárez",
+  "estado": "Chihuahua"
+ },
+ "ciudad-madero": {
+  "label": "Ciudad Madero",
+  "estado": "Tamaulipas"
+ },
+ "ciudad-obregon": {
+  "label": "Ciudad Obregón",
+  "estado": "Sonora"
+ },
+ "ciudad-valles": {
+  "label": "Ciudad Valles",
+  "estado": "San Luis Potosí"
+ },
+ "ciudad-victoria": {
+  "label": "Ciudad Victoria",
+  "estado": "Tamaulipas"
+ },
+ "coacalco": {
+  "label": "Coacalco",
+  "estado": "Estado de México"
+ },
+ "coapa": {
+  "label": "Coapa",
+  "estado": "Ciudad de México"
+ },
+ "coatzacoalcos": {
+  "label": "Coatzacoalcos",
+  "estado": "Veracruz"
+ },
+ "colima": {
+  "label": "Colima",
+  "estado": "Colima"
+ },
+ "comala": {
+  "label": "Comala",
+  "estado": "Colima"
+ },
+ "comalcalco": {
+  "label": "Comalcalco",
+  "estado": "Tabasco"
+ },
+ "comitan-de-dominguez": {
+  "label": "Comitán de Domínguez",
+  "estado": "Chiapas"
+ },
+ "compostela": {
+  "label": "Compostela",
+  "estado": "Nayarit"
+ },
+ "condesa": {
+  "label": "Condesa",
+  "estado": "Ciudad de México"
+ },
+ "coquimatlan": {
+  "label": "Coquimatlán",
+  "estado": "Colima"
+ },
+ "cordoba": {
+  "label": "Córdoba",
+  "estado": "Veracruz"
+ },
+ "corregidora": {
+  "label": "Corregidora",
+  "estado": "Querétaro"
+ },
+ "coyoacan": {
+  "label": "Coyoacán",
+  "estado": "Ciudad de México"
+ },
+ "cozumel": {
+  "label": "Cozumel",
+  "estado": "Quintana Roo"
+ },
+ "cuajimalpa": {
+  "label": "Cuajimalpa",
+  "estado": "Ciudad de México"
+ },
+ "cuauhtemoc-cdmx": {
+  "label": "Cuauhtémoc",
+  "estado": "Ciudad de México"
+ },
+ "cuauhtemoc-chihuahua": {
+  "label": "Cuauhtémoc",
+  "estado": "Chihuahua"
+ },
+ "cuauhtemoc-colima": {
+  "label": "Cuauhtémoc",
+  "estado": "Colima"
+ },
+ "cuautitlan-izcalli": {
+  "label": "Cuautitlán Izcalli",
+  "estado": "Estado de México"
+ },
+ "cuautitlan": {
+  "label": "Cuautitlán",
+  "estado": "Estado de México"
+ },
+ "cuautla": {
+  "label": "Cuautla",
+  "estado": "Morelos"
+ },
+ "cuautlancingo": {
+  "label": "Cuautlancingo",
+  "estado": "Puebla"
+ },
+ "cuencame": {
+  "label": "Cuencamé",
+  "estado": "Durango"
+ },
+ "cuernavaca": {
+  "label": "Cuernavaca",
+  "estado": "Morelos"
+ },
+ "culiacan": {
+  "label": "Culiacán",
+  "estado": "Sinaloa"
+ },
+ "cumbres-naucalpan": {
+  "label": "Cumbres",
+  "estado": "Estado de México"
+ },
+ "del-valle-cdmx": {
+  "label": "Del Valle",
+  "estado": "Ciudad de México"
+ },
+ "delicias": {
+  "label": "Delicias",
+  "estado": "Chihuahua"
+ },
+ "doctores-cdmx": {
+  "label": "Doctores",
+  "estado": "Ciudad de México"
+ },
+ "durango": {
+  "label": "Durango",
+  "estado": "Durango"
+ },
+ "ebano": {
+  "label": "Ébano",
+  "estado": "San Luis Potosí"
+ },
+ "ecatepec-de-morelos": {
+  "label": "Ecatepec de Morelos",
+  "estado": "Estado de México"
+ },
+ "echegaray": {
+  "label": "Echegaray",
+  "estado": "Estado de México"
+ },
+ "eje-central": {
+  "label": "Eje Central",
+  "estado": "Ciudad de México"
+ },
+ "el-fuerte": {
+  "label": "El Fuerte",
+  "estado": "Sinaloa"
+ },
+ "el-mante": {
+  "label": "El Mante",
+  "estado": "Tamaulipas"
+ },
+ "el-marques": {
+  "label": "El Marqués",
+  "estado": "Querétaro"
+ },
+ "el-rosario": {
+  "label": "El Rosario",
+  "estado": "Sinaloa"
+ },
+ "el-salto-jalisco": {
+  "label": "El Salto",
+  "estado": "Jalisco"
+ },
+ "empalme": {
+  "label": "Empalme",
+  "estado": "Sonora"
+ },
+ "ensenada": {
+  "label": "Ensenada",
+  "estado": "Baja California"
+ },
+ "escandon": {
+  "label": "Escandón",
+  "estado": "Ciudad de México"
+ },
+ "escarcega": {
+  "label": "Escárcega",
+  "estado": "Campeche"
+ },
+ "escuinapa": {
+  "label": "Escuinapa",
+  "estado": "Sinaloa"
+ },
+ "felipe-carrillo-puerto": {
+  "label": "Felipe Carrillo Puerto",
+  "estado": "Quintana Roo"
+ },
+ "fresnillo": {
+  "label": "Fresnillo",
+  "estado": "Zacatecas"
+ },
+ "frontera-coahuila": {
+  "label": "Frontera",
+  "estado": "Coahuila"
+ },
+ "garcia-nuevo-leon": {
+  "label": "García",
+  "estado": "Nuevo León"
+ },
+ "general-escobedo": {
+  "label": "General Escobedo",
+  "estado": "Nuevo León"
+ },
+ "gomez-palacio": {
+  "label": "Gómez Palacio",
+  "estado": "Durango"
+ },
+ "granada-cdmx": {
+  "label": "Granada",
+  "estado": "Ciudad de México"
+ },
+ "guadalajara": {
+  "label": "Guadalajara",
+  "estado": "Jalisco"
+ },
+ "guadalupe-nuevo-leon": {
+  "label": "Guadalupe",
+  "estado": "Nuevo León"
+ },
+ "guadalupe-zacatecas": {
+  "label": "Guadalupe",
+  "estado": "Zacatecas"
+ },
+ "guamuchil": {
+  "label": "Guamúchil",
+  "estado": "Sinaloa"
+ },
+ "guanajuato-capital": {
+  "label": "Guanajuato",
+  "estado": "Guanajuato"
+ },
+ "guasave": {
+  "label": "Guasave",
+  "estado": "Sinaloa"
+ },
+ "guaymas": {
+  "label": "Guaymas",
+  "estado": "Sonora"
+ },
+ "gustavo-a-madero": {
+  "label": "Gustavo A. Madero",
+  "estado": "Ciudad de México"
+ },
+ "hacienda-de-las-palmas": {
+  "label": "Hacienda de las Palmas",
+  "estado": "Estado de México"
+ },
+ "hacienda-de-valle-escondido": {
+  "label": "Hacienda de Valle Escondido",
+  "estado": "Estado de México"
+ },
+ "hacienda-del-pedregal": {
+  "label": "Hacienda del Pedregal",
+  "estado": "Estado de México"
+ },
+ "hermosillo": {
+  "label": "Hermosillo",
+  "estado": "Sonora"
+ },
+ "hidalgo-del-parral": {
+  "label": "Hidalgo del Parral",
+  "estado": "Chihuahua"
+ },
+ "hopelchen": {
+  "label": "Hopelchén",
+  "estado": "Campeche"
+ },
+ "huajuapan-de-leon": {
+  "label": "Huajuapan de León",
+  "estado": "Oaxaca"
+ },
+ "huamantla": {
+  "label": "Huamantla",
+  "estado": "Tlaxcala"
+ },
+ "huatulco": {
+  "label": "Huatulco",
+  "estado": "Oaxaca"
+ },
+ "huauchinango": {
+  "label": "Huauchinango",
+  "estado": "Puebla"
+ },
+ "huehuetoca": {
+  "label": "Huehuetoca",
+  "estado": "Estado de México"
+ },
+ "huejutla": {
+  "label": "Huejutla",
+  "estado": "Hidalgo"
+ },
+ "huimanguillo": {
+  "label": "Huimanguillo",
+  "estado": "Tabasco"
+ },
+ "huixquilucan": {
+  "label": "Huixquilucan",
+  "estado": "Estado de México"
+ },
+ "iguala": {
+  "label": "Iguala",
+  "estado": "Guerrero"
+ },
+ "insurgentes-cdmx": {
+  "label": "Insurgentes",
+  "estado": "Ciudad de México"
+ },
+ "insurgentes-sur": {
+  "label": "Insurgentes Sur",
+  "estado": "Ciudad de México"
+ },
+ "interlomas": {
+  "label": "Interlomas",
+  "estado": "Estado de México"
+ },
+ "irapuato": {
+  "label": "Irapuato",
+  "estado": "Guanajuato"
+ },
+ "isla-mujeres": {
+  "label": "Isla Mujeres",
+  "estado": "Quintana Roo"
+ },
+ "ixmiquilpan": {
+  "label": "Ixmiquilpan",
+  "estado": "Hidalgo"
+ },
+ "ixtapaluca": {
+  "label": "Ixtapaluca",
+  "estado": "Estado de México"
+ },
+ "ixtlan-del-rio": {
+  "label": "Ixtlán del Río",
+  "estado": "Nayarit"
+ },
+ "iztacalco": {
+  "label": "Iztacalco",
+  "estado": "Ciudad de México"
+ },
+ "iztapalapa": {
+  "label": "Iztapalapa",
+  "estado": "Ciudad de México"
+ },
+ "izucar-de-matamoros": {
+  "label": "Izúcar de Matamoros",
+  "estado": "Puebla"
+ },
+ "jalpa-de-mendez": {
+  "label": "Jalpa de Méndez",
+  "estado": "Tabasco"
+ },
+ "jerez": {
+  "label": "Jerez",
+  "estado": "Zacatecas"
+ },
+ "jesus-maria-aguascalientes": {
+  "label": "Jesús María",
+  "estado": "Aguascalientes"
+ },
+ "jimenez-chihuahua": {
+  "label": "Jiménez",
+  "estado": "Chihuahua"
+ },
+ "jiutepec": {
+  "label": "Jiutepec",
+  "estado": "Morelos"
+ },
+ "juarez-nuevo-leon": {
+  "label": "Juárez",
+  "estado": "Nuevo León"
+ },
+ "juchitan": {
+  "label": "Juchitán",
+  "estado": "Oaxaca"
+ },
+ "kanasin": {
+  "label": "Kanasín",
+  "estado": "Yucatán"
+ },
+ "la-herradura": {
+  "label": "La Herradura",
+  "estado": "Estado de México"
+ },
+ "la-paz-edomex": {
+  "label": "La Paz",
+  "estado": "Estado de México"
+ },
+ "la-paz": {
+  "label": "La Paz",
+  "estado": "Baja California Sur"
+ },
+ "la-piedad": {
+  "label": "La Piedad",
+  "estado": "Michoacán"
+ },
+ "lago-de-guadalupe": {
+  "label": "Lago de Guadalupe",
+  "estado": "Estado de México"
+ },
+ "lagos-de-moreno": {
+  "label": "Lagos de Moreno",
+  "estado": "Jalisco"
+ },
+ "las-aguilas-naucalpan": {
+  "label": "Las Águilas",
+  "estado": "Estado de México"
+ },
+ "lazaro-cardenas": {
+  "label": "Lázaro Cárdenas",
+  "estado": "Michoacán"
+ },
+ "leon": {
+  "label": "León",
+  "estado": "Guanajuato"
+ },
+ "lerdo-durango": {
+  "label": "Lerdo",
+  "estado": "Durango"
+ },
+ "lindavista": {
+  "label": "Lindavista",
+  "estado": "Ciudad de México"
+ },
+ "lomas-anahuac": {
+  "label": "Lomas Anáhuac",
+  "estado": "Estado de México"
+ },
+ "lomas-country": {
+  "label": "Lomas Country",
+  "estado": "Estado de México"
+ },
+ "lomas-de-chapultepec": {
+  "label": "Lomas de Chapultepec",
+  "estado": "Ciudad de México"
+ },
+ "lomas-verdes": {
+  "label": "Lomas Verdes",
+  "estado": "Estado de México"
+ },
+ "loreto-bcs": {
+  "label": "Loreto",
+  "estado": "Baja California Sur"
+ },
+ "loreto-zacatecas": {
+  "label": "Loreto",
+  "estado": "Zacatecas"
+ },
+ "los-cabos": {
+  "label": "Los Cabos",
+  "estado": "Baja California Sur"
+ },
+ "los-mochis": {
+  "label": "Los Mochis",
+  "estado": "Sinaloa"
+ },
+ "macuspana": {
+  "label": "Macuspana",
+  "estado": "Tabasco"
+ },
+ "madera-chihuahua": {
+  "label": "Madera",
+  "estado": "Chihuahua"
+ },
+ "magdalena-contreras": {
+  "label": "Magdalena Contreras",
+  "estado": "Ciudad de México"
+ },
+ "manzanillo": {
+  "label": "Manzanillo",
+  "estado": "Colima"
+ },
+ "matamoros": {
+  "label": "Matamoros",
+  "estado": "Tamaulipas"
+ },
+ "matehuala": {
+  "label": "Matehuala",
+  "estado": "San Luis Potosí"
+ },
+ "mazatlan": {
+  "label": "Mazatlán",
+  "estado": "Sinaloa"
+ },
+ "meoqui": {
+  "label": "Meoqui",
+  "estado": "Chihuahua"
+ },
+ "merida": {
+  "label": "Mérida",
+  "estado": "Yucatán"
+ },
+ "metepec-edomex": {
+  "label": "Metepec",
+  "estado": "Estado de México"
+ },
+ "mexicali": {
+  "label": "Mexicali",
+  "estado": "Baja California"
+ },
+ "miguel-hidalgo-cdmx": {
+  "label": "Miguel Hidalgo",
+  "estado": "Ciudad de México"
+ },
+ "milpa-alta": {
+  "label": "Milpa Alta",
+  "estado": "Ciudad de México"
+ },
+ "minatitlan-veracruz": {
+  "label": "Minatitlán",
+  "estado": "Veracruz"
+ },
+ "mineral-de-la-reforma": {
+  "label": "Mineral de la Reforma",
+  "estado": "Hidalgo"
+ },
+ "mixcoac": {
+  "label": "Mixcoac",
+  "estado": "Ciudad de México"
+ },
+ "monclova": {
+  "label": "Monclova",
+  "estado": "Coahuila"
+ },
+ "monterrey": {
+  "label": "Monterrey",
+  "estado": "Nuevo León"
+ },
+ "morelia": {
+  "label": "Morelia",
+  "estado": "Michoacán"
+ },
+ "mulege": {
+  "label": "Mulegé",
+  "estado": "Baja California Sur"
+ },
+ "napoles-cdmx": {
+  "label": "Nápoles",
+  "estado": "Ciudad de México"
+ },
+ "narvarte": {
+  "label": "Narvarte",
+  "estado": "Ciudad de México"
+ },
+ "naucalpan-de-juarez": {
+  "label": "Naucalpan de Juárez",
+  "estado": "Estado de México"
+ },
+ "navojoa": {
+  "label": "Navojoa",
+  "estado": "Sonora"
+ },
+ "navolato": {
+  "label": "Navolato",
+  "estado": "Sinaloa"
+ },
+ "nezahualcoyotl": {
+  "label": "Nezahualcóyotl",
+  "estado": "Estado de México"
+ },
+ "nicolas-romero": {
+  "label": "Nicolás Romero",
+  "estado": "Estado de México"
+ },
+ "nogales": {
+  "label": "Nogales",
+  "estado": "Sonora"
+ },
+ "nuevo-casas-grandes": {
+  "label": "Nuevo Casas Grandes",
+  "estado": "Chihuahua"
+ },
+ "nuevo-ideal": {
+  "label": "Nuevo Ideal",
+  "estado": "Durango"
+ },
+ "nuevo-laredo": {
+  "label": "Nuevo Laredo",
+  "estado": "Tamaulipas"
+ },
+ "oaxaca": {
+  "label": "Oaxaca",
+  "estado": "Oaxaca"
+ },
+ "ocosingo": {
+  "label": "Ocosingo",
+  "estado": "Chiapas"
+ },
+ "ocotlan-jalisco": {
+  "label": "Ocotlán",
+  "estado": "Jalisco"
+ },
+ "ojocaliente": {
+  "label": "Ojocaliente",
+  "estado": "Zacatecas"
+ },
+ "olivar-de-los-padres": {
+  "label": "Olivar de los Padres",
+  "estado": "Ciudad de México"
+ },
+ "orizaba": {
+  "label": "Orizaba",
+  "estado": "Veracruz"
+ },
+ "pabellon-de-arteaga": {
+  "label": "Pabellón de Arteaga",
+  "estado": "Aguascalientes"
+ },
+ "pachuca": {
+  "label": "Pachuca",
+  "estado": "Hidalgo"
+ },
+ "palenque": {
+  "label": "Palenque",
+  "estado": "Chiapas"
+ },
+ "papantla": {
+  "label": "Papantla",
+  "estado": "Veracruz"
+ },
+ "paraiso": {
+  "label": "Paraíso",
+  "estado": "Tabasco"
+ },
+ "patzcuaro": {
+  "label": "Pátzcuaro",
+  "estado": "Michoacán"
+ },
+ "pedregal-cdmx": {
+  "label": "Pedregal",
+  "estado": "Ciudad de México"
+ },
+ "pedregal-de-santa-ursula": {
+  "label": "Pedregal de Santa Úrsula",
+  "estado": "Ciudad de México"
+ },
+ "pedro-escobedo": {
+  "label": "Pedro Escobedo",
+  "estado": "Pedro Escobedo"
+ },
+ "periferico-cdmx": {
+  "label": "Periférico",
+  "estado": "Ciudad de México"
+ },
+ "piedras-negras": {
+  "label": "Piedras Negras",
+  "estado": "Coahuila"
+ },
+ "pinos": {
+  "label": "Pinos",
+  "estado": "Zacatecas"
+ },
+ "pinotepa-nacional": {
+  "label": "Pinotepa Nacional",
+  "estado": "Oaxaca"
+ },
+ "playa-del-carmen": {
+  "label": "Playa del Carmen",
+  "estado": "Quintana Roo"
+ },
+ "pochutla": {
+  "label": "Pochutla",
+  "estado": "Oaxaca"
+ },
+ "polanco": {
+  "label": "Polanco",
+  "estado": "Ciudad de México"
+ },
+ "poza-rica": {
+  "label": "Poza Rica",
+  "estado": "Veracruz"
+ },
+ "progreso": {
+  "label": "Progreso",
+  "estado": "Yucatán"
+ },
+ "puebla": {
+  "label": "Puebla",
+  "estado": "Puebla"
+ },
+ "puerto-aventuras": {
+  "label": "Puerto Aventuras",
+  "estado": "Quintana Roo"
+ },
+ "puerto-escondido": {
+  "label": "Puerto Escondido",
+  "estado": "Oaxaca"
+ },
+ "puerto-penasco": {
+  "label": "Puerto Peñasco",
+  "estado": "Sonora"
+ },
+ "puerto-vallarta": {
+  "label": "Puerto Vallarta",
+  "estado": "Jalisco"
+ },
+ "queretaro": {
+  "label": "Querétaro",
+  "estado": "Querétaro"
+ },
+ "ramos-arizpe": {
+  "label": "Ramos Arizpe",
+  "estado": "Coahuila"
+ },
+ "real-hacienda": {
+  "label": "Real Hacienda",
+  "estado": "Estado de México"
+ },
+ "reforma-cdmx": {
+  "label": "Reforma",
+  "estado": "Ciudad de México"
+ },
+ "reynosa": {
+  "label": "Reynosa",
+  "estado": "Tamaulipas"
+ },
+ "rincon-de-romos": {
+  "label": "Rincón de Romos",
+  "estado": "Aguascalientes"
+ },
+ "rio-bravo": {
+  "label": "Río Bravo",
+  "estado": "Tamaulipas"
+ },
+ "rio-grande": {
+  "label": "Río Grande",
+  "estado": "Zacatecas"
+ },
+ "rio-verde": {
+  "label": "Río Verde",
+  "estado": "San Luis Potosí"
+ },
+ "roma-cdmx": {
+  "label": "Roma",
+  "estado": "Ciudad de México"
+ },
+ "rosarito": {
+  "label": "Rosarito",
+  "estado": "Baja California"
+ },
+ "sabinas": {
+  "label": "Sabinas",
+  "estado": "Coahuila"
+ },
+ "sahuayo": {
+  "label": "Sahuayo",
+  "estado": "Michoacán"
+ },
+ "salamanca": {
+  "label": "Salamanca",
+  "estado": "Guanajuato"
+ },
+ "salina-cruz": {
+  "label": "Salina Cruz",
+  "estado": "Oaxaca"
+ },
+ "salinas-slp": {
+  "label": "Salinas",
+  "estado": "San Luis Potosí"
+ },
+ "saltillo": {
+  "label": "Saltillo",
+  "estado": "Coahuila"
+ },
+ "san-angel": {
+  "label": "San Ángel",
+  "estado": "Ciudad de México"
+ },
+ "san-blas": {
+  "label": "San Blas",
+  "estado": "Nayarit"
+ },
+ "san-cristobal-de-las-casas": {
+  "label": "San Cristóbal de las Casas",
+  "estado": "Chiapas"
+ },
+ "san-francisco-de-los-romo": {
+  "label": "San Francisco de los Romo",
+  "estado": "Aguascalientes"
+ },
+ "san-jeronimo-cdmx": {
+  "label": "San Jerónimo",
+  "estado": "Ciudad de México"
+ },
+ "san-juan-del-rio": {
+  "label": "San Juan del Río",
+  "estado": "Querétaro"
+ },
+ "san-luis-potosi": {
+  "label": "San Luis Potosí",
+  "estado": "San Luis Potosí"
+ },
+ "san-luis-rio-colorado": {
+  "label": "San Luis Río Colorado",
+  "estado": "Sonora"
+ },
+ "san-martin-texmelucan": {
+  "label": "San Martín Texmelucan",
+  "estado": "Puebla"
+ },
+ "san-miguel-de-allende": {
+  "label": "San Miguel de Allende",
+  "estado": "Guanajuato"
+ },
+ "san-nicolas-de-los-garza": {
+  "label": "San Nicolás de los Garza",
+  "estado": "Nuevo León"
+ },
+ "san-pedro-cholula": {
+  "label": "San Pedro Cholula",
+  "estado": "Puebla"
+ },
+ "san-pedro-coahuila": {
+  "label": "San Pedro",
+  "estado": "Coahuila"
+ },
+ "san-pedro-garza-garcia": {
+  "label": "San Pedro Garza García",
+  "estado": "Nuevo León"
+ },
+ "santa-catarina": {
+  "label": "Santa Catarina",
+  "estado": "Nuevo León"
+ },
+ "santa-fe-cdmx": {
+  "label": "Santa Fe",
+  "estado": "Ciudad de México"
+ },
+ "santiago-de-queretaro": {
+  "label": "Querétaro",
+  "estado": "Querétaro"
+ },
+ "santiago-ixcuintla": {
+  "label": "Santiago Ixcuintla",
+  "estado": "Nayarit"
+ },
+ "satelite": {
+  "label": "Satélite",
+  "estado": "Estado de México"
+ },
+ "silao": {
+  "label": "Silao",
+  "estado": "Guanajuato"
+ },
+ "soledad-de-graciano-sanchez": {
+  "label": "Soledad de Graciano Sánchez",
+  "estado": "San Luis Potosí"
+ },
+ "sombrerete": {
+  "label": "Sombrerete",
+  "estado": "Zacatecas"
+ },
+ "tamazunchale": {
+  "label": "Tamazunchale",
+  "estado": "San Luis Potosí"
+ },
+ "tampico": {
+  "label": "Tampico",
+  "estado": "Tamaulipas"
+ },
+ "tamuin": {
+  "label": "Tamuín",
+  "estado": "San Luis Potosí"
+ },
+ "tapachula": {
+  "label": "Tapachula",
+  "estado": "Chiapas"
+ },
+ "taxco": {
+  "label": "Taxco",
+  "estado": "Guerrero"
+ },
+ "teapa": {
+  "label": "Teapa",
+  "estado": "Tabasco"
+ },
+ "tecamac": {
+  "label": "Tecámac",
+  "estado": "Estado de México"
+ },
+ "tecamachalco": {
+  "label": "Tecamachalco",
+  "estado": "Estado de México"
+ },
+ "tecate": {
+  "label": "Tecate",
+  "estado": "Baja California"
+ },
+ "tecoman": {
+  "label": "Tecomán",
+  "estado": "Colima"
+ },
+ "tehuacan": {
+  "label": "Tehuacán",
+  "estado": "Puebla"
+ },
+ "tehuantepec": {
+  "label": "Tehuantepec",
+  "estado": "Oaxaca"
+ },
+ "temixco": {
+  "label": "Temixco",
+  "estado": "Morelos"
+ },
+ "tenosique": {
+  "label": "Tenosique",
+  "estado": "Tabasco"
+ },
+ "tepeji-del-rio": {
+  "label": "Tepeji del Río",
+  "estado": "Hidalgo"
+ },
+ "tepic": {
+  "label": "Tepic",
+  "estado": "Nayarit"
+ },
+ "tepotzotlan-edomex": {
+  "label": "Tepotzotlán",
+  "estado": "Estado de México"
+ },
+ "tepoztlan": {
+  "label": "Tepoztlán",
+  "estado": "Morelos"
+ },
+ "tequisquiapan": {
+  "label": "Tequisquiapan",
+  "estado": "Querétaro"
+ },
+ "texcoco": {
+  "label": "Texcoco",
+  "estado": "Estado de México"
+ },
+ "teziutlan": {
+  "label": "Teziutlán",
+  "estado": "Puebla"
+ },
+ "tijuana": {
+  "label": "Tijuana",
+  "estado": "Baja California"
+ },
+ "tizayuca": {
+  "label": "Tizayuca",
+  "estado": "Hidalgo"
+ },
+ "tizimin": {
+  "label": "Tizimín",
+  "estado": "Yucatán"
+ },
+ "tlahuac": {
+  "label": "Tláhuac",
+  "estado": "Ciudad de México"
+ },
+ "tlajomulco-de-zuniga": {
+  "label": "Tlajomulco de Zúñiga",
+  "estado": "Jalisco"
+ },
+ "tlalnepantla-de-baz": {
+  "label": "Tlalnepantla de Baz",
+  "estado": "Estado de México"
+ },
+ "tlalpan": {
+  "label": "Tlalpan",
+  "estado": "Ciudad de México"
+ },
+ "tlapa": {
+  "label": "Tlapa",
+  "estado": "Guerrero"
+ },
+ "tlaquepaque": {
+  "label": "Tlaquepaque",
+  "estado": "Jalisco"
+ },
+ "tlaxcala-capital": {
+  "label": "Tlaxcala",
+  "estado": "Tlaxcala"
+ },
+ "toluca": {
+  "label": "Toluca",
+  "estado": "Estado de México"
+ },
+ "tonala-chiapas": {
+  "label": "Tonalá",
+  "estado": "Chiapas"
+ },
+ "tonala-jalisco": {
+  "label": "Tonalá",
+  "estado": "Jalisco"
+ },
+ "torreon": {
+  "label": "Torreón",
+  "estado": "Coahuila"
+ },
+ "tula-de-allende": {
+  "label": "Tula de Allende",
+  "estado": "Hidalgo"
+ },
+ "tulancingo": {
+  "label": "Tulancingo",
+  "estado": "Hidalgo"
+ },
+ "tultepec": {
+  "label": "Tultepec",
+  "estado": "Estado de México"
+ },
+ "tultitlan": {
+  "label": "Tultitlán",
+  "estado": "Estado de México"
+ },
+ "tulum": {
+  "label": "Tulum",
+  "estado": "Quintana Roo"
+ },
+ "tuxpan-nayarit": {
+  "label": "Tuxpan",
+  "estado": "Nayarit"
+ },
+ "tuxpan-veracruz": {
+  "label": "Tuxpan",
+  "estado": "Veracruz"
+ },
+ "tuxtepec": {
+  "label": "Tuxtepec",
+  "estado": "Oaxaca"
+ },
+ "tuxtla-gutierrez": {
+  "label": "Tuxtla Gutiérrez",
+  "estado": "Chiapas"
+ },
+ "uman": {
+  "label": "Umán",
+  "estado": "Yucatán"
+ },
+ "uruapan": {
+  "label": "Uruapan",
+  "estado": "Michoacán"
+ },
+ "valladolid": {
+  "label": "Valladolid",
+  "estado": "Yucatán"
+ },
+ "valle-de-bravo": {
+  "label": "Valle de Bravo",
+  "estado": "Estado de México"
+ },
+ "valle-de-chalco": {
+  "label": "Valle de Chalco",
+  "estado": "Estado de México"
+ },
+ "valle-de-santiago": {
+  "label": "Valle de Santiago",
+  "estado": "Guanajuato"
+ },
+ "venustiano-carranza-cdmx": {
+  "label": "Venustiano Carranza",
+  "estado": "Ciudad de México"
+ },
+ "veracruz": {
+  "label": "Veracruz",
+  "estado": "Veracruz"
+ },
+ "viaducto-cdmx": {
+  "label": "Viaducto",
+  "estado": "Ciudad de México"
+ },
+ "vicente-guerrero-durango": {
+  "label": "Vicente Guerrero",
+  "estado": "Durango"
+ },
+ "villa-de-alvarez": {
+  "label": "Villa de Álvarez",
+  "estado": "Colima"
+ },
+ "villaflores": {
+  "label": "Villaflores",
+  "estado": "Chiapas"
+ },
+ "villahermosa": {
+  "label": "Villahermosa",
+  "estado": "Tabasco"
+ },
+ "vista-hermosa-cuajimalpa": {
+  "label": "Vista Hermosa",
+  "estado": "Ciudad de México"
+ },
+ "xalapa": {
+  "label": "Xalapa",
+  "estado": "Veracruz"
+ },
+ "xalisco": {
+  "label": "Xalisco",
+  "estado": "Nayarit"
+ },
+ "xochimilco": {
+  "label": "Xochimilco",
+  "estado": "Ciudad de México"
+ },
+ "yautepec": {
+  "label": "Yautepec",
+  "estado": "Morelos"
+ },
+ "zacatecas": {
+  "label": "Zacatecas",
+  "estado": "Zacatecas"
+ },
+ "zacatelco": {
+  "label": "Zacatelco",
+  "estado": "Tlaxcala"
+ },
+ "zamora": {
+  "label": "Zamora",
+  "estado": "Michoacán"
+ },
+ "zapopan": {
+  "label": "Zapopan",
+  "estado": "Jalisco"
+ },
+ "zihuatanejo": {
+  "label": "Zihuatanejo",
+  "estado": "Guerrero"
+ },
+ "zinacantepec": {
+  "label": "Zinacantepec",
+  "estado": "Estado de México"
+ },
+ "zitacuaro": {
+  "label": "Zitácuaro",
+  "estado": "Michoacán"
+ },
+ "zona-esmeralda": {
+  "label": "Zona Esmeralda",
+  "estado": "Estado de México"
+ },
+ "zumpango": {
+  "label": "Zumpango",
+  "estado": "Estado de México"
+ }
+}
