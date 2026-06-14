@@ -361,7 +361,7 @@ function decodeEntities(s) {
 //   - whatsapp: "0", "00", "1111111111"
 //   - url: empieza con "Agente de usuario:" (mal parseo por bot que rompe el form)
 // Estrategia conservadora: rechazar SOLO si hay señales claras de bot.
-function esSpamElementor({ nombre, whatsapp, url }){
+function esSpamElementor({ nombre, whatsapp, url, mensaje }){
   // Señal 1: URL claramente corrupta por bot
   if (url && /^\s*Agente de usuario:/i.test(url)) return true;
   // Señal 2: WhatsApp inválido (0, 00, 000, 1111111111, vacío)
@@ -369,18 +369,39 @@ function esSpamElementor({ nombre, whatsapp, url }){
   if (!digits || digits.length < 7) return true; // muy corto, no es teléfono real
   if (/^0+$/.test(digits)) return true;
   if (/^(\d)\1+$/.test(digits)) return true; // 1111111111
-  // Señal 3: nombre con marcas spam conocidas
-  const n = (nombre || '').toLowerCase();
-  if (!n) return false; // sin nombre no es señal de spam por sí solo
-  const SPAM_KEYWORDS = [
-    '1win','1xbet','bet365','casino','poker','viagra','cialis','crypto',
-    'bitcoin','forex','traffic','seo offer','backlink','adult','escort',
-    'pharmacy','penis','sex',
-  ];
-  if (SPAM_KEYWORDS.some(k => n.includes(k))) return true;
-  // Señal 4: nombre patrón "palabra_palabra" sin espacios y corto (típico de bots)
-  // Ej: "1win_ypkt", "seo_master", "user_xyz123"
-  if (/^[a-z0-9]{2,10}_[a-z0-9]{2,10}$/i.test((nombre || '').trim())) return true;
+  const nombreTrim = (nombre || '').trim();
+  // Señal 3 (Olga 2026-06-13): nombre puro dígitos (típico de bot que copió el WhatsApp como nombre)
+  // Ej: "8054002077" como nombre
+  if (nombreTrim && /^\d+$/.test(nombreTrim)) return true;
+  // Señal 4 (Olga 2026-06-13): nombre IDÉNTICO al WhatsApp (bot llenó el mismo campo en ambos)
+  if (nombreTrim && digits && nombreTrim.replace(/\D/g, '') === digits && /^\d+$/.test(nombreTrim)) return true;
+  // Señal 5: nombre con marcas spam conocidas
+  const n = nombreTrim.toLowerCase();
+  if (n) {
+    const SPAM_KEYWORDS = [
+      '1win','1xbet','bet365','casino','poker','viagra','cialis','crypto',
+      'bitcoin','forex','traffic','seo offer','backlink','adult','escort',
+      'pharmacy','penis','sex',
+    ];
+    if (SPAM_KEYWORDS.some(k => n.includes(k))) return true;
+    // Señal 6: nombre patrón "palabra_palabra" sin espacios y corto (típico de bots)
+    if (/^[a-z0-9]{2,10}_[a-z0-9]{2,10}$/i.test(nombreTrim)) return true;
+  }
+  // Señal 7 (Olga 2026-06-13): pitch de SEO services en inglés ("Most businesses struggle to get
+  // noticed online... rank higher... keywords your customers are typing... send keyword suggestions").
+  // Si el mensaje contiene 2+ frases típicas de ese pitch → spam comercial.
+  const m = (mensaje || '').toLowerCase();
+  if (m && m.length > 50) {
+    const PITCH_PHRASES = [
+      'noticed online','rank higher','search pages','keywords your customers',
+      'keyword suggestions','boost traffic','your competition','above the competition',
+      'businesses struggle','search engines','help your business grow','few clients',
+      'monthly retainer','seo services','dofollow backlinks','outranking',
+      'increase your traffic','first page of google','top of google',
+    ];
+    const hits = PITCH_PHRASES.filter(p => m.includes(p)).length;
+    if (hits >= 2) return true; // claro pitch comercial
+  }
   return false;
 }
 
@@ -519,9 +540,9 @@ function parseElementor({ subject, body, sessionId }) {
   const ua = pick(body, /^\s*Agente de usuario:\s*(.+)$/im) || '';
   const ip = pick(body, /^\s*IP remota:\s*(.+)$/im) || '';
 
-  // FILTRO ANTI-SPAM (Olga 2026-06-10): bots tipo "1win_ypkt" con WhatsApp "0"
-  // y URL con "Agente de usuario" ensuciaban el dashboard. Rechazamos antes de DB.
-  if (esSpamElementor({ nombre, whatsapp, url })) return null;
+  // FILTRO ANTI-SPAM (Olga 2026-06-10, ampliado 2026-06-13): bots tipo "1win_ypkt" con WhatsApp "0",
+  // URL con "Agente de usuario", nombre puro dígitos, y pitches de SEO services en inglés.
+  if (esSpamElementor({ nombre, whatsapp, url, mensaje })) return null;
 
   const params = parseQueryParams(url);
   const gclid = params.gclid || '';
