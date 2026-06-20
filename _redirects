@@ -13,6 +13,9 @@
 /canchas/futbol-rapido/*  /                 301
 /canchas/*                /                 301
 
+# Canonical: sin trailing slash → con trailing slash (evita duplicado que divide autoridad)
+/medidas-cancha-futbol-7   /medidas-cancha-futbol-7/   301
+
 # Slug viejo con "una" (89 páginas de ciudad lo enlazaban) → página real de costo
 /cuanto-cuesta-una-cancha-de-futbol-7/  /cuanto-cuesta-cancha-futbol-7/  301
 /cuanto-cuesta-una-cancha-de-futbol-7   /cuanto-cuesta-cancha-futbol-7/  301
