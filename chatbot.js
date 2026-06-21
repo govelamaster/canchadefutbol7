@@ -182,7 +182,7 @@ const Cot = (function(){
   const __IS_PRIMARY = /(^|\.)canchadefutbol7\./.test(__HOST);
   const __ORIGIN = __IS_PRIMARY ? '' : 'https://canchadefutbol7.mx';
   const CONFIG = {
-    whatsapp: "525539887615",   // número del negocio (mismo que los CTA del sitio)
+    whatsapp: "528116296384",   // número del negocio (mismo que los CTA del sitio)
     empresa: "Sportmaster",
     domain: __HOST,             // multi-tenant: dominio donde corre el chatbot
     leadApi: __ORIGIN + "/api/lead",       // guarda el lead en D1 → Panel de Leads
