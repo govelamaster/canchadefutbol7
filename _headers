@@ -4,11 +4,12 @@
 
 # ────────────────────────────────────────────────────────
 # GLOBAL · security + HTML cache default
-# 5 min browser · 1h edge · 24h stale-while-revalidate
+# 60s browser · 60s edge — agresivo para que cambios al WA/tel
+# se propaguen rápido (Olga 2026-06-22: lead llegó al cel viejo por cache)
 # (Cache-Control aqui se aplica a HTML; assets lo overridean abajo)
 # ────────────────────────────────────────────────────────
 /*
-  Cache-Control: public, max-age=300, s-maxage=3600, stale-while-revalidate=86400
+  Cache-Control: public, max-age=60, s-maxage=60, stale-while-revalidate=60
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
