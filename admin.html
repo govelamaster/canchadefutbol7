@@ -2507,6 +2507,14 @@ async function tryLogin(user, pwd, silent){
     setAsistente(nombre);
     applyRoleUI();
     enterDash(data);
+    // Cargar seguimientos en segundo plano (no bloquea el dashboard)
+    if (typeof cargarSeguimientos === 'function') {
+      cargarSeguimientos().then(() => {
+        if (typeof currentTab !== 'undefined' && currentTab === 'oportunidades' && typeof renderOportunidades === 'function') {
+          try { renderOportunidades(); } catch(e){}
+        }
+      });
+    }
   } catch (err) {
     if (!silent) { loginErr.classList.add('show'); loginErr.textContent = 'Error: ' + err.message; }
   }
@@ -6748,10 +6756,17 @@ function renderOportunidades(){
       <div class="vd-table-wrap" style="margin:0">
         <table class="vd-table">
           <thead>
-            <tr><th>Lead</th><th>Marca</th><th>Tamaño</th><th>Status</th><th></th></tr>
+            <tr>
+              <th>Contacto</th>
+              <th>Teléfono</th>
+              <th>Ciudad</th>
+              <th>Concepto</th>
+              <th>Último seguimiento</th>
+              <th style="text-align:right">Acciones</th>
+            </tr>
           </thead>
           <tbody>
-            ${pool.map(l => vdRenderLeadCard(l)).join('')}
+            ${pool.map(l => renderOportunidadFila(l)).join('')}
           </tbody>
         </table>
       </div>
@@ -6886,7 +6901,158 @@ function renderTareas(){
   `;
 }
 
+// ============================================================
+// SISTEMA DE SEGUIMIENTOS (Olga 2026-06-27)
+// Quick Actions: 1 tap = guardar tipo + timestamp + vendedor
+// Backend: POST /api/seguimiento-create, GET /api/seguimientos
+// ============================================================
+let SEGUIMIENTOS_CACHE = {}; // {lead_id: [seg1, seg2, ...] ordenados DESC}
+
+async function cargarSeguimientos(){
+  const pwd = localStorage.getItem('sm_admin_pwd') || '';
+  if (!pwd) return;
+  try {
+    const r = await fetch('/api/seguimientos?limit=2000&p=' + encodeURIComponent(pwd));
+    const j = await r.json().catch(()=>({}));
+    if (!j || !j.ok) return;
+    const cache = {};
+    for (const s of (j.seguimientos || [])) {
+      const lid = s.lead_id;
+      if (!cache[lid]) cache[lid] = [];
+      cache[lid].push(s);
+    }
+    SEGUIMIENTOS_CACHE = cache;
+  } catch (e) { console.warn('[seguimientos] cargar error:', e); }
+}
+
+function getUltimoSeguimiento(leadId){
+  const arr = SEGUIMIENTOS_CACHE[leadId];
+  return arr && arr.length ? arr[0] : null;
+}
+
+function fmtSegTiempo(timestamp){
+  if (!timestamp) return '';
+  // D1 devuelve "YYYY-MM-DD HH:MM:SS" en UTC
+  const past = new Date(String(timestamp).replace(' ', 'T') + 'Z').getTime();
+  if (!past || isNaN(past)) return '';
+  const ago = Date.now() - past;
+  const min = Math.floor(ago / 60000);
+  if (min < 1) return 'ahora';
+  if (min < 60) return 'hace ' + min + 'm';
+  const h = Math.floor(min / 60);
+  if (h < 24) return 'hace ' + h + 'h';
+  const d = Math.floor(h / 24);
+  if (d < 7) return 'hace ' + d + 'd';
+  return new Date(past).toLocaleDateString('es-MX', { day:'2-digit', month:'short' });
+}
+
+const SEG_TIPOS_LABEL = { llamada:'Llamada', whatsapp:'WhatsApp', email:'Email', reunion:'Reunión', visita:'Visita', otro:'Seguimiento' };
+const SEG_TIPOS_COLOR = { llamada:'#16a34a', whatsapp:'#22c55e', email:'#7c3aed', reunion:'#d97706', visita:'#0ea5e9', otro:'#64748b' };
+
+function fmtUltimoSeguimiento(seg){
+  if (!seg) return '<span style="color:#cbd5e1;font-size:12px">Sin seguimiento</span>';
+  const label = SEG_TIPOS_LABEL[seg.tipo] || seg.tipo;
+  const color = SEG_TIPOS_COLOR[seg.tipo] || '#64748b';
+  const ago = fmtSegTiempo(seg.created_at);
+  const result = seg.resultado ? ' · <span style="color:#0b0f14">' + escapeHtml(seg.resultado) + '</span>' : '';
+  const desc = seg.descripcion ? escapeAttr(seg.descripcion) : '';
+  return '<span title="' + desc + '" style="font-size:12.5px"><span style="color:' + color + ';font-weight:700">' + label + '</span> · <span style="color:#6b7280">' + ago + '</span>' + result + '</span>';
+}
+
+async function quickRegistrarSeguimiento(leadId, tipo, btnEl){
+  const pwd = localStorage.getItem('sm_admin_pwd') || '';
+  if (!pwd) { alert('Sesión expirada — recarga la página'); return; }
+  if (btnEl) { btnEl.disabled = true; btnEl.style.opacity = '0.5'; }
+  try {
+    const r = await fetch('/api/seguimiento-create', {
+      method: 'POST', headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ password: pwd, lead_id: leadId, tipo })
+    });
+    const j = await r.json().catch(()=>({}));
+    if (!j || !j.ok) {
+      alert('Error: ' + (j && j.error || 'desconocido'));
+      if (btnEl) { btnEl.disabled = false; btnEl.style.opacity = '1'; }
+      return;
+    }
+    // Agregar al cache local (al frente del array porque está ordenado DESC)
+    const nuevo = {
+      id: j.id, lead_id: leadId, vendedor: j.vendedor || '',
+      tipo, descripcion: null, resultado: null, proximo_paso: null,
+      fecha_proxima_accion: null,
+      created_at: new Date().toISOString().slice(0,19).replace('T',' ')
+    };
+    if (!SEGUIMIENTOS_CACHE[leadId]) SEGUIMIENTOS_CACHE[leadId] = [];
+    SEGUIMIENTOS_CACHE[leadId].unshift(nuevo);
+    // Feedback visual: verde brevemente
+    if (btnEl) {
+      btnEl.style.background = '#16a34a';
+      btnEl.style.color = '#fff';
+      btnEl.style.borderColor = '#16a34a';
+      setTimeout(() => {
+        btnEl.style.background = '';
+        btnEl.style.color = '';
+        btnEl.style.borderColor = '';
+        btnEl.disabled = false;
+        btnEl.style.opacity = '1';
+      }, 800);
+    }
+    // Re-render la vista actual si es Oportunidades
+    if (typeof currentTab !== 'undefined' && currentTab === 'oportunidades') {
+      try { renderOportunidades(); } catch(e) { console.warn(e); }
+    }
+  } catch (e) {
+    alert('Error de conexión: ' + e.message);
+    if (btnEl) { btnEl.disabled = false; btnEl.style.opacity = '1'; }
+  }
+}
+
+function renderOportunidadFila(l){
+  const ult = getUltimoSeguimiento(l.id);
+  const tel = (l.whatsapp || '—').toString();
+  const concepto = [(l.m2 || '').toString().trim(), (l.comentarios || '').toString().trim()].filter(Boolean).join(' · ') || '—';
+  return `
+    <tr class="vd-row" data-lead-id="${l.id}">
+      <td class="vd-cell-lead" onclick="vdShowLeadDetail(${l.id})" style="cursor:pointer">
+        <div style="font-weight:700;color:#0b0f14;font-size:14px">${escapeHtml(l.nombre || 'Sin nombre')}</div>
+        <div style="font-size:11.5px;color:#6b7280;margin-top:2px">${escapeHtml(l.status_proyecto || '')}</div>
+      </td>
+      <td style="white-space:nowrap;font-size:13px">${escapeHtml(tel)}</td>
+      <td style="white-space:nowrap;font-size:13px">${escapeHtml(l.ciudad || '—')}</td>
+      <td style="font-size:12.5px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(concepto)}">${escapeHtml(concepto)}</td>
+      <td style="white-space:nowrap">${fmtUltimoSeguimiento(ult)}</td>
+      <td style="white-space:nowrap;text-align:right">
+        <div style="display:inline-flex;gap:5px">
+          <button class="opo-qbtn" title="Registrar llamada" onclick="quickRegistrarSeguimiento(${l.id}, 'llamada', this)">📞</button>
+          <button class="opo-qbtn" title="Registrar WhatsApp" onclick="quickRegistrarSeguimiento(${l.id}, 'whatsapp', this)">💬</button>
+          <button class="opo-qbtn" title="Registrar email" onclick="quickRegistrarSeguimiento(${l.id}, 'email', this)">📧</button>
+          <button class="opo-qbtn" title="Registrar reunión" onclick="quickRegistrarSeguimiento(${l.id}, 'reunion', this)">📅</button>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
 </script>
+<style>
+.opo-qbtn {
+  width: 34px; height: 34px;
+  border: 1px solid #e5e7eb; background: #fff;
+  border-radius: 8px; cursor: pointer; font-size: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all .15s ease;
+  padding: 0;
+}
+.opo-qbtn:hover:not(:disabled) {
+  border-color: #16a34a; background: #f0fdf4;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(22,163,74,.15);
+}
+.opo-qbtn:active:not(:disabled) { transform: translateY(0); }
+.opo-qbtn:disabled { cursor: default; }
+@media (max-width: 700px) {
+  .opo-qbtn { width: 30px; height: 30px; font-size: 13px; }
+}
+</style>
 <div id="tplMenu" class="tpl-menu" style="display:none"></div>
 </body>
 </html>
