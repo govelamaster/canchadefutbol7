@@ -7021,11 +7021,13 @@ function renderOportunidadFila(l){
       <td style="font-size:12.5px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(concepto)}">${escapeHtml(concepto)}</td>
       <td style="white-space:nowrap">${fmtUltimoSeguimiento(ult)}</td>
       <td style="white-space:nowrap;text-align:right">
-        <div style="display:inline-flex;gap:5px">
+        <div style="display:inline-flex;gap:5px;align-items:center">
           <button class="opo-qbtn" title="Registrar llamada" onclick="quickRegistrarSeguimiento(${l.id}, 'llamada', this)">📞</button>
           <button class="opo-qbtn" title="Registrar WhatsApp" onclick="quickRegistrarSeguimiento(${l.id}, 'whatsapp', this)">💬</button>
           <button class="opo-qbtn" title="Registrar email" onclick="quickRegistrarSeguimiento(${l.id}, 'email', this)">📧</button>
           <button class="opo-qbtn" title="Registrar reunión" onclick="quickRegistrarSeguimiento(${l.id}, 'reunion', this)">📅</button>
+          <span style="width:1px;height:20px;background:#e5e7eb;margin:0 2px"></span>
+          <button class="opo-qbtn-detail" title="Más detalle (descripción, resultado, próximo paso)" onclick="openSeguimientoModal(${l.id})">＋</button>
         </div>
       </td>
     </tr>
@@ -7054,5 +7056,305 @@ function renderOportunidadFila(l){
 }
 </style>
 <div id="tplMenu" class="tpl-menu" style="display:none"></div>
+
+<!-- ============================================ -->
+<!-- MODAL: Registrar seguimiento con detalle    -->
+<!-- ============================================ -->
+<div id="segModal" class="seg-modal" style="display:none" onclick="if(event.target===this)closeSeguimientoModal()">
+  <div class="seg-modal-card" role="dialog" aria-modal="true" aria-labelledby="segModalTitle">
+    <div class="seg-modal-head">
+      <div>
+        <h3 id="segModalTitle" class="seg-modal-title">Registrar seguimiento</h3>
+        <p class="seg-modal-sub" id="segModalSub">Captura el detalle de tu interacción con el cliente</p>
+      </div>
+      <button class="seg-modal-close" onclick="closeSeguimientoModal()" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="seg-modal-body">
+      <!-- Tipos -->
+      <div class="seg-field-label">Tipo de seguimiento <span style="color:#dc2626">*</span></div>
+      <div class="seg-tipo-grid">
+        <button type="button" class="seg-tipo-btn" data-tipo="llamada" onclick="segTipoToggle(this)"><span class="seg-tipo-emoji">📞</span><span>Llamada</span></button>
+        <button type="button" class="seg-tipo-btn" data-tipo="whatsapp" onclick="segTipoToggle(this)"><span class="seg-tipo-emoji">💬</span><span>WhatsApp</span></button>
+        <button type="button" class="seg-tipo-btn" data-tipo="email" onclick="segTipoToggle(this)"><span class="seg-tipo-emoji">📧</span><span>Email</span></button>
+        <button type="button" class="seg-tipo-btn" data-tipo="reunion" onclick="segTipoToggle(this)"><span class="seg-tipo-emoji">📅</span><span>Reunión</span></button>
+        <button type="button" class="seg-tipo-btn" data-tipo="visita" onclick="segTipoToggle(this)"><span class="seg-tipo-emoji">📍</span><span>Visita</span></button>
+        <button type="button" class="seg-tipo-btn" data-tipo="otro" onclick="segTipoToggle(this)"><span class="seg-tipo-emoji">⋯</span><span>Otro</span></button>
+      </div>
+
+      <!-- Descripción -->
+      <div class="seg-field-label" style="margin-top:18px">Descripción</div>
+      <textarea id="segDescripcion" class="seg-textarea" rows="3" placeholder="¿De qué se trató? (opcional)"></textarea>
+
+      <!-- Resultado -->
+      <div class="seg-field-label" style="margin-top:18px">Resultado</div>
+      <select id="segResultado" class="seg-input">
+        <option value="">— Selecciona —</option>
+        <option>Positivo</option>
+        <option>Informativo</option>
+        <option>Negativo</option>
+        <option>Cotización enviada</option>
+        <option>Sin respuesta</option>
+        <option>Cliente interesado</option>
+        <option>Cliente no interesado</option>
+        <option>Reagendar</option>
+        <option>Ganado</option>
+        <option>Perdido</option>
+      </select>
+
+      <!-- Próximo paso -->
+      <div class="seg-field-row">
+        <div style="flex:2">
+          <div class="seg-field-label" style="margin-top:18px">Próximo paso</div>
+          <input id="segProximoPaso" class="seg-input" placeholder="Ej: Mandar propuesta final" maxlength="200" />
+        </div>
+        <div style="flex:1">
+          <div class="seg-field-label" style="margin-top:18px">Fecha próxima acción</div>
+          <input id="segFechaProxima" class="seg-input" type="date" />
+        </div>
+      </div>
+    </div>
+    <div class="seg-modal-foot">
+      <button type="button" class="seg-btn-cancel" onclick="closeSeguimientoModal()">Cancelar</button>
+      <button type="button" id="segGuardarBtn" class="seg-btn-save" onclick="guardarSeguimientoDetallado()">Guardar seguimiento</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.seg-modal {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(11,15,20,.55);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: segFadeIn .15s ease-out;
+}
+@keyframes segFadeIn { from { opacity:0 } to { opacity:1 } }
+.seg-modal.show { display: flex !important; }
+.seg-modal-card {
+  background: #fff; border-radius: 16px;
+  width: 100%; max-width: 540px; max-height: 92vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 32px 64px rgba(11,15,20,.32);
+  animation: segSlideUp .2s ease-out;
+}
+@keyframes segSlideUp { from { transform: translateY(20px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+.seg-modal-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 20px 22px 14px; border-bottom: 1px solid #f1f5f9;
+}
+.seg-modal-title { margin: 0 0 4px; font-size: 18px; font-weight: 800; color: #0b0f14; letter-spacing: -.01em; }
+.seg-modal-sub { margin: 0; font-size: 13px; color: #6b7280; }
+.seg-modal-close {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid #e5e7eb; background: #fff; cursor: pointer;
+  font-size: 14px; color: #64748b; transition: all .12s;
+}
+.seg-modal-close:hover { background: #f8fafc; color: #0b0f14; }
+.seg-modal-body { padding: 20px 22px; overflow-y: auto; }
+.seg-field-label {
+  font-size: 12px; font-weight: 700; color: #0b0f14;
+  text-transform: uppercase; letter-spacing: .04em;
+  margin-bottom: 8px;
+}
+.seg-tipo-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.seg-tipo-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+  padding: 12px 6px;
+  background: #fff; border: 1.5px solid #e5e7eb;
+  border-radius: 10px; cursor: pointer;
+  font-size: 12px; font-weight: 600; color: #475569;
+  transition: all .12s;
+  font-family: inherit;
+}
+.seg-tipo-btn:hover { border-color: #cbd5e1; background: #f8fafc; }
+.seg-tipo-btn.active {
+  border-color: #16a34a; background: #f0fdf4; color: #166534;
+  box-shadow: 0 0 0 3px rgba(22,163,74,.12);
+}
+.seg-tipo-emoji { font-size: 22px; line-height: 1; }
+.seg-textarea, .seg-input {
+  width: 100%; box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb; border-radius: 8px;
+  font-family: inherit; font-size: 14px; color: #0b0f14;
+  background: #fff; outline: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.seg-textarea { resize: vertical; min-height: 70px; }
+.seg-textarea:focus, .seg-input:focus {
+  border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.1);
+}
+.seg-field-row { display: flex; gap: 12px; }
+.seg-modal-foot {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 16px 22px; border-top: 1px solid #f1f5f9;
+  background: #fafbfc; border-radius: 0 0 16px 16px;
+}
+.seg-btn-cancel {
+  padding: 10px 18px; border-radius: 8px;
+  border: 1.5px solid #e5e7eb; background: #fff;
+  font-weight: 600; font-size: 14px; color: #475569; cursor: pointer;
+  transition: all .12s; font-family: inherit;
+}
+.seg-btn-cancel:hover { background: #f8fafc; }
+.seg-btn-save {
+  padding: 10px 22px; border-radius: 8px;
+  border: none; background: #16a34a; color: #fff;
+  font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: all .12s; font-family: inherit;
+  box-shadow: 0 2px 6px rgba(22,163,74,.25);
+}
+.seg-btn-save:hover:not(:disabled) { background: #15803d; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(22,163,74,.32); }
+.seg-btn-save:disabled { opacity: .6; cursor: default; }
+@media (max-width: 540px) {
+  .seg-modal { padding: 12px; align-items: flex-end; }
+  .seg-modal-card { max-height: 95vh; border-radius: 16px 16px 0 0; }
+  .seg-field-row { flex-direction: column; gap: 0; }
+  .seg-tipo-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.opo-qbtn-detail {
+  width: 34px; height: 34px;
+  border: 1.5px dashed #cbd5e1; background: #fff;
+  border-radius: 8px; cursor: pointer; font-size: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all .15s ease;
+  padding: 0;
+  color: #64748b;
+  font-weight: 700;
+}
+.opo-qbtn-detail:hover:not(:disabled) {
+  border-color: #16a34a; border-style: solid;
+  background: #f0fdf4; color: #166534;
+  transform: translateY(-1px);
+}
+@media (max-width: 700px) {
+  .opo-qbtn-detail { width: 30px; height: 30px; font-size: 14px; }
+}
+</style>
+
+<script>
+// ============================================
+// SEGUIMIENTO MODAL DETALLE (Fase 3)
+// ============================================
+function openSeguimientoModal(leadId, tipoPreset){
+  const modal = document.getElementById('segModal');
+  if (!modal) return;
+  modal.dataset.leadId = leadId;
+  // Reset
+  modal.querySelectorAll('.seg-tipo-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('segDescripcion').value = '';
+  document.getElementById('segResultado').value = '';
+  document.getElementById('segProximoPaso').value = '';
+  document.getElementById('segFechaProxima').value = '';
+  if (tipoPreset) {
+    const btn = modal.querySelector('.seg-tipo-btn[data-tipo="' + tipoPreset + '"]');
+    if (btn) btn.classList.add('active');
+  }
+  // Mostrar nombre del lead en subtítulo si tenemos los datos
+  const sub = document.getElementById('segModalSub');
+  if (sub && typeof allLeads !== 'undefined' && Array.isArray(allLeads)) {
+    const lead = allLeads.find(l => l.id === leadId);
+    if (lead) sub.textContent = 'Cliente: ' + (lead.nombre || 'Sin nombre') + (lead.ciudad ? ' · ' + lead.ciudad : '');
+    else sub.textContent = 'Captura el detalle de tu interacción con el cliente';
+  }
+  modal.style.display = 'flex';
+  modal.classList.add('show');
+  // Foco al primer campo después del paint
+  setTimeout(() => {
+    const firstBtn = modal.querySelector('.seg-tipo-btn');
+    if (firstBtn) firstBtn.focus();
+  }, 50);
+}
+
+function closeSeguimientoModal(){
+  const modal = document.getElementById('segModal');
+  if (!modal) return;
+  modal.classList.remove('show');
+  modal.style.display = 'none';
+}
+
+function segTipoToggle(btn){
+  const modal = document.getElementById('segModal');
+  if (!modal) return;
+  modal.querySelectorAll('.seg-tipo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function guardarSeguimientoDetallado(){
+  const modal = document.getElementById('segModal');
+  const leadId = parseInt(modal.dataset.leadId, 10);
+  if (!leadId) { alert('Lead inválido'); return; }
+  const activeTipo = modal.querySelector('.seg-tipo-btn.active');
+  if (!activeTipo) { alert('Selecciona el tipo de seguimiento'); return; }
+  const tipo = activeTipo.dataset.tipo;
+  const descripcion = document.getElementById('segDescripcion').value.trim();
+  const resultado = document.getElementById('segResultado').value;
+  const proximoPaso = document.getElementById('segProximoPaso').value.trim();
+  const fechaProxima = document.getElementById('segFechaProxima').value;
+  const pwd = localStorage.getItem('sm_admin_pwd') || '';
+  if (!pwd) { alert('Sesión expirada — recarga la página'); return; }
+  const saveBtn = document.getElementById('segGuardarBtn');
+  const orig = saveBtn.textContent;
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Guardando…';
+  try {
+    const r = await fetch('/api/seguimiento-create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password: pwd,
+        lead_id: leadId,
+        tipo,
+        descripcion,
+        resultado,
+        proximo_paso: proximoPaso,
+        fecha_proxima_accion: fechaProxima
+      })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!j || !j.ok) {
+      alert('Error: ' + ((j && j.error) || 'desconocido'));
+      saveBtn.disabled = false;
+      saveBtn.textContent = orig;
+      return;
+    }
+    // Agregar al cache local (frente)
+    const nuevo = {
+      id: j.id, lead_id: leadId, vendedor: j.vendedor || '',
+      tipo, descripcion: descripcion || null, resultado: resultado || null,
+      proximo_paso: proximoPaso || null, fecha_proxima_accion: fechaProxima || null,
+      created_at: new Date().toISOString().slice(0,19).replace('T',' ')
+    };
+    if (typeof SEGUIMIENTOS_CACHE !== 'undefined') {
+      if (!SEGUIMIENTOS_CACHE[leadId]) SEGUIMIENTOS_CACHE[leadId] = [];
+      SEGUIMIENTOS_CACHE[leadId].unshift(nuevo);
+    }
+    closeSeguimientoModal();
+    saveBtn.disabled = false;
+    saveBtn.textContent = orig;
+    // Re-render vista actual
+    if (typeof currentTab !== 'undefined' && currentTab === 'oportunidades' && typeof renderOportunidades === 'function') {
+      try { renderOportunidades(); } catch(e){}
+    }
+  } catch (e) {
+    alert('Error de conexión: ' + e.message);
+    saveBtn.disabled = false;
+    saveBtn.textContent = orig;
+  }
+}
+
+// ESC cierra el modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('segModal');
+    if (modal && modal.classList.contains('show')) closeSeguimientoModal();
+  }
+});
+</script>
+
 </body>
 </html>
