@@ -5953,7 +5953,9 @@ function fmtM2Detallado(raw){
   if (!raw) return '—';
   const s = String(raw).trim();
   if (!s) return '—';
-  const baseFmt = escapeHtml(fmtM2(raw, '—'));
+  // Si el raw ya termina en m/m²/m2/mts/metros, no agregamos sufijo (evita "m m²" doble)
+  const needsSuffix = !/m(?:²|2|ts?|etros?)?\s*$/i.test(s);
+  const baseFmt = escapeHtml(s) + (needsSuffix ? ' m²' : '');
   const cleaned = s.toLowerCase().replace(/,/g,'').replace(/\bm2\b|\bm²\b|\bmts?\b|\bmetros?\b|\bml\b|\bcuadrados?\b|\baprox\.?\b|\bancho\b|\blargo\b|\bfondo\b|\bfrente\b|\bde\b/g, ' ');
   const mult = cleaned.match(/(\d+(?:\.\d+)?)[^\d×x*\-–a]*(?:[x×*]|\bpor\b)[^\d]*(\d+(?:\.\d+)?)/);
   if (mult) {
