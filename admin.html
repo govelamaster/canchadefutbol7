@@ -5771,8 +5771,8 @@ function activateTab(tab){
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('show'));
   const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
   const content = document.querySelector(`[data-tab-content="${tab}"]`);
-  if (btn && content) {
-    btn.classList.add('active');
+  if (content) {
+    if (btn) btn.classList.add('active');
     content.classList.add('show');
     currentTab = tab;
     if (tab === 'ia') renderIA();
