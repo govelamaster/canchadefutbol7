@@ -4311,7 +4311,7 @@ function renderLeadRow(l, vip){
       <td>${nombreCell(l)}</td>
       <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
       <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
-      <td style="font-weight:800;">${escapeHtml(fmtM2(l.m2, "—"))}</td>
+      <td style="font-weight:800;">${fmtM2Detallado(l.m2)}</td>
       <td>${selectVendedor(l)}</td>
       <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
       <td><div class="action-cell">${cliengoBtn(l)}${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
@@ -5944,6 +5944,35 @@ function fmtM2(v, fallback){
   if (/m[²2]\b/i.test(x)) return x;
   return x + ' m²';
 }
+// Como fmtM2 pero AGREGA el m² total calculado cuando detecta multiplicación o rango.
+// "80 × 60 m" → "80 × 60 m² = 4,800 m²" (verde)
+// "30-50" → "30-50 m² ≈ 40 m²" (gris)
+// "3938" → "3938 m²" (sin cambio)
+// Devuelve HTML — no envolver en escapeHtml externamente.
+function fmtM2Detallado(raw){
+  if (!raw) return '—';
+  const s = String(raw).trim();
+  if (!s) return '—';
+  const baseFmt = escapeHtml(fmtM2(raw, '—'));
+  const cleaned = s.toLowerCase().replace(/,/g,'').replace(/\bm2\b|\bm²\b|\bmts?\b|\bmetros?\b|\bml\b|\bcuadrados?\b|\baprox\.?\b|\bancho\b|\blargo\b|\bfondo\b|\bfrente\b|\bde\b/g, ' ');
+  const mult = cleaned.match(/(\d+(?:\.\d+)?)[^\d×x*\-–a]*(?:[x×*]|\bpor\b)[^\d]*(\d+(?:\.\d+)?)/);
+  if (mult) {
+    const a = parseFloat(mult[1]), b = parseFloat(mult[2]);
+    if (a > 0 && b > 0) {
+      const total = Math.round(a * b);
+      return baseFmt + ' <span style="color:#16a34a;font-weight:800;font-size:11.5px;margin-left:6px;background:#f0fdf4;padding:2px 7px;border-radius:6px">= ' + total.toLocaleString('es-MX') + ' m²</span>';
+    }
+  }
+  const range = cleaned.match(/(\d+(?:\.\d+)?)\s*(?:[-–]|\ba\b|\bhasta\b)\s*(\d+(?:\.\d+)?)/);
+  if (range) {
+    const lo = parseFloat(range[1]), hi = parseFloat(range[2]);
+    if (lo > 0 && hi > 0 && hi >= lo) {
+      const avg = Math.round((lo + hi) / 2);
+      return baseFmt + ' <span style="color:#6b7280;font-weight:700;font-size:11.5px;margin-left:6px;background:#f1f5f9;padding:2px 7px;border-radius:6px">≈ ' + avg.toLocaleString('es-MX') + ' m²</span>';
+    }
+  }
+  return baseFmt;
+}
 function escapeAttr(s){
   return escapeHtml(s).replace(/"/g,'&quot;');
 }
@@ -6514,6 +6543,14 @@ function vdShowLeadDetail(id){
             <div style="background:#f8fafc;border-left:3px solid #22c55e;padding:12px 14px;border-radius:8px;font-size:13px;color:#0b0f14;white-space:pre-wrap;line-height:1.55">${escapeHtml(l.comentarios)}</div>
           </div>
         ` : ''}
+        <!-- Timeline de seguimientos (Fase 4) -->
+        <div style="margin-bottom:18px" id="vdSegSection-${l.id}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Historial de seguimientos</div>
+            <button type="button" onclick="event.stopPropagation();openSeguimientoModal(${l.id})" style="background:#16a34a;color:#fff;border:0;padding:6px 12px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px" title="Registrar seguimiento con detalle">＋ Registrar</button>
+          </div>
+          <div id="vdSegTimeline-${l.id}">${renderSeguimientosTimeline(l.id)}</div>
+        </div>
         <div>
           <label style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Mis notas (privadas)</label>
           <textarea id="vdNotesArea" data-lead-id="${l.id}" placeholder="Anota lo que platicaste con el cliente: precio que mencionó, cuándo lo vuelves a llamar, objeciones, etc." style="width:100%;min-height:90px;margin-top:6px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:13px;resize:vertical">${escapeHtml(l.notas_internas || '')}</textarea>
@@ -6981,6 +7018,42 @@ function fmtSegTiempo(timestamp){
 const SEG_TIPOS_LABEL = { llamada:'Llamada', whatsapp:'WhatsApp', email:'Email', reunion:'Reunión', visita:'Visita', otro:'Seguimiento' };
 const SEG_TIPOS_COLOR = { llamada:'#16a34a', whatsapp:'#22c55e', email:'#7c3aed', reunion:'#d97706', visita:'#0ea5e9', otro:'#64748b' };
 
+// Timeline del lead — usado en vdShowLeadDetail (Fase 4)
+function renderSeguimientosTimeline(leadId){
+  const list = (SEGUIMIENTOS_CACHE && SEGUIMIENTOS_CACHE[leadId]) || [];
+  if (!list.length) {
+    return '<div style="background:#f8fafc;border:1px dashed #e2e8f0;border-radius:10px;padding:18px;text-align:center;color:#94a3b8;font-size:13px">Aún no hay seguimientos. Click <strong style="color:#16a34a">＋ Registrar</strong> para agregar el primero.</div>';
+  }
+  return '<div class="seg-timeline">' + list.map((s, idx) => {
+    const tipoEmoji = { llamada:'📞', whatsapp:'💬', email:'📧', reunion:'📅', visita:'📍', otro:'⋯' }[s.tipo] || '⋯';
+    const tipoColor = (typeof SEG_TIPOS_COLOR !== 'undefined' && SEG_TIPOS_COLOR[s.tipo]) || '#64748b';
+    const tipoLabel = (typeof SEG_TIPOS_LABEL !== 'undefined' && SEG_TIPOS_LABEL[s.tipo]) || s.tipo;
+    const ago = fmtSegTiempo(s.created_at);
+    const fechaCompleta = s.created_at ? new Date(String(s.created_at).replace(' ', 'T') + 'Z').toLocaleString('es-MX', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+    const desc = s.descripcion ? '<div style="font-size:13px;color:#0b0f14;line-height:1.5;margin-top:6px;white-space:pre-wrap">' + escapeHtml(s.descripcion) + '</div>' : '';
+    const resBlock = s.resultado ? '<div style="font-size:11.5px;color:#475569;margin-top:6px"><span style="color:#94a3b8;font-weight:700">Resultado: </span><span style="color:' + tipoColor + ';font-weight:700">' + escapeHtml(s.resultado) + '</span></div>' : '';
+    const proxBlock = s.proximo_paso ? '<div style="font-size:11.5px;color:#475569;margin-top:4px"><span style="color:#94a3b8;font-weight:700">Próximo: </span>' + escapeHtml(s.proximo_paso) + (s.fecha_proxima_accion ? ' · ' + escapeHtml(s.fecha_proxima_accion) : '') + '</div>' : '';
+    const isLast = idx === list.length - 1;
+    return '<div class="seg-tl-item">' +
+      '<div class="seg-tl-bullet" style="background:' + tipoColor + '">' + tipoEmoji + '</div>' +
+      (isLast ? '' : '<div class="seg-tl-line"></div>') +
+      '<div class="seg-tl-card">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">' +
+          '<div><span style="color:' + tipoColor + ';font-weight:800;font-size:13px">' + tipoLabel + '</span> <span style="color:#94a3b8;font-size:11.5px">· ' + escapeHtml(s.vendedor || '') + '</span></div>' +
+          '<div style="color:#94a3b8;font-size:11px;font-weight:600" title="' + escapeAttr(fechaCompleta) + '">' + ago + '</div>' +
+        '</div>' +
+        desc + resBlock + proxBlock +
+      '</div>' +
+    '</div>';
+  }).join('') + '</div>';
+}
+
+// Refresca el timeline si el modal del lead está abierto
+function refreshSeguimientosTimeline(leadId){
+  const el = document.getElementById('vdSegTimeline-' + leadId);
+  if (el) el.innerHTML = renderSeguimientosTimeline(leadId);
+}
+
 function fmtUltimoSeguimiento(seg){
   if (!seg) return '<span style="color:#cbd5e1;font-size:12px">Sin seguimiento</span>';
   const label = SEG_TIPOS_LABEL[seg.tipo] || seg.tipo;
@@ -7032,6 +7105,8 @@ async function quickRegistrarSeguimiento(leadId, tipo, btnEl){
     if (typeof currentTab !== 'undefined' && currentTab === 'oportunidades') {
       try { renderOportunidades(); } catch(e) { console.warn(e); }
     }
+    // Refresca timeline del side panel del lead si está abierto (Fase 4)
+    if (typeof refreshSeguimientosTimeline === 'function') refreshSeguimientosTimeline(leadId);
   } catch (e) {
     alert('Error de conexión: ' + e.message);
     if (btnEl) { btnEl.disabled = false; btnEl.style.opacity = '1'; }
@@ -7266,6 +7341,43 @@ function renderOportunidadFila(l){
 @media (max-width: 700px) {
   .opo-qbtn-detail { width: 30px; height: 30px; font-size: 14px; }
 }
+/* Timeline de seguimientos (Fase 4) */
+.seg-timeline { position: relative; }
+.seg-tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+.seg-tl-item:last-child { padding-bottom: 0; }
+.seg-tl-bullet {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 4px #e2e8f0;
+  z-index: 2;
+}
+.seg-tl-line {
+  position: absolute;
+  left: 15.5px; top: 36px; bottom: 0;
+  width: 1px; background: #e2e8f0;
+  z-index: 1;
+}
+.seg-tl-card {
+  background: #fff;
+  border: 1px solid #eef2f6;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.seg-tl-card:hover { border-color: #cbd5e1; }
+@media (max-width: 540px) {
+  .seg-tl-item { grid-template-columns: 28px 1fr; gap: 10px; }
+  .seg-tl-bullet { width: 28px; height: 28px; font-size: 13px; }
+  .seg-tl-line { left: 13.5px; top: 32px; }
+}
 </style>
 
 <script>
@@ -7372,6 +7484,8 @@ async function guardarSeguimientoDetallado(){
     if (typeof currentTab !== 'undefined' && currentTab === 'oportunidades' && typeof renderOportunidades === 'function') {
       try { renderOportunidades(); } catch(e){}
     }
+    // Refresca timeline del side panel del lead si está abierto (Fase 4)
+    if (typeof refreshSeguimientosTimeline === 'function') refreshSeguimientosTimeline(leadId);
   } catch (e) {
     alert('Error de conexión: ' + e.message);
     saveBtn.disabled = false;
