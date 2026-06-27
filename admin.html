@@ -380,20 +380,288 @@ body.rol-vendedor #abandonedPill{ display:none; }
 .origen-dom{ font-size:11.5px; font-weight:700; color:#0f172a; }
 .origen-slug{ font-size:11px; color:#64748b; font-family:ui-monospace,Menlo,monospace; max-width:230px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .origen-url:hover .origen-slug{ white-space:normal; word-break:break-all; max-width:none; }
+
+
+/* ============ VISTAS NUEVAS (Resumen / Oportunidades / Tareas) ============ */
+.rv-hero {
+  background: linear-gradient(135deg, #0b0f14, #1c2532);
+  color: #fff; border-radius: 18px;
+  padding: 26px 24px; margin-bottom: 18px;
+}
+.rv-hero h1 { font-size: 26px; font-weight: 800; margin: 4px 0 4px; letter-spacing: -.02em; }
+.rv-hero .rv-sub { font-size: 13px; opacity: .75; }
+.rv-kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px; margin-bottom: 18px;
+}
+.rv-kpi {
+  background: #fff; border-radius: 14px; padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(11,15,20,.04);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.rv-kpi .rv-kpi-label {
+  font-size: 11px; font-weight: 700; color: #6b7280;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.rv-kpi .rv-kpi-num {
+  font-size: 30px; font-weight: 800; color: #0b0f14;
+  letter-spacing: -.02em; line-height: 1;
+}
+.rv-kpi.rv-kpi-attn { background: #fff7ed; border: 1px solid #fed7aa; }
+.rv-kpi.rv-kpi-attn .rv-kpi-num { color: #c2410c; }
+.rv-kpi.rv-kpi-ok .rv-kpi-num { color: #16a34a; }
+
+.rv-cols {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+@media (max-width: 900px) { .rv-cols { grid-template-columns: 1fr; } }
+.rv-card {
+  background: #fff; border-radius: 14px; padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(11,15,20,.04);
+}
+.rv-card h2 {
+  font-size: 14px; font-weight: 800; margin: 0 0 14px;
+  color: #0b0f14;
+  display: flex; align-items: center; gap: 8px;
+}
+/* Embudo */
+.funnel {
+  display: flex; flex-direction: column; gap: 6px; padding: 4px 0;
+}
+.funnel-stage {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 10px;
+  background: #f8fafc;
+  font-size: 13px; font-weight: 600;
+  position: relative;
+}
+.funnel-bar {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  background: linear-gradient(90deg, var(--funnel-color, #22c55e), var(--funnel-color2, #16a34a));
+  border-radius: 10px; opacity: .14; z-index: 0;
+}
+.funnel-stage > * { position: relative; z-index: 1; }
+.funnel-stage .funnel-emoji { font-size: 18px; }
+.funnel-stage .funnel-label { flex: 1; }
+.funnel-stage .funnel-count { font-weight: 800; font-size: 16px; color: #0b0f14; }
+.funnel-stage .funnel-pct { font-size: 11px; color: #6b7280; min-width: 42px; text-align: right; }
+/* Timeline de actividad */
+.timeline { display: flex; flex-direction: column; gap: 12px; max-height: 360px; overflow-y: auto; }
+.tl-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.tl-item:last-child { border-bottom: 0; }
+.tl-icon {
+  flex-shrink: 0; width: 32px; height: 32px;
+  border-radius: 50%; background: #dcfce7; color: #16a34a;
+  display: grid; place-items: center; font-size: 14px;
+}
+.tl-icon.tl-warn { background: #fef3c7; color: #b45309; }
+.tl-icon.tl-info { background: #dbeafe; color: #1d4ed8; }
+.tl-body { flex: 1; min-width: 0; }
+.tl-title { font-size: 13px; font-weight: 700; color: #0b0f14; }
+.tl-sub { font-size: 11.5px; color: #6b7280; margin-top: 2px; }
+/* Tareas */
+.tareas-grid { display: grid; gap: 10px; }
+.tarea-card {
+  background: #fff; border-radius: 12px; padding: 14px 16px;
+  border-left: 4px solid var(--ta-color, #94a3b8);
+  box-shadow: 0 1px 3px rgba(11,15,20,.04);
+  display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+}
+.tarea-card .ta-check {
+  width: 22px; height: 22px;
+  border: 2px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+  background: #fff;
+}
+.tarea-card.ta-done .ta-check {
+  background: #22c55e; border-color: #22c55e;
+  position: relative;
+}
+.tarea-card.ta-done .ta-check::after {
+  content: '✓'; color: #fff; font-weight: 800;
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 14px;
+}
+.tarea-card.ta-done .ta-title { text-decoration: line-through; opacity: .6; }
+.tarea-card .ta-title { font-size: 14px; font-weight: 700; color: #0b0f14; }
+.tarea-card .ta-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+.tarea-card .ta-pill {
+  font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;
+  background: var(--ta-pill-bg, #fee2e2); color: var(--ta-pill-color, #dc2626);
+  text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
+}
+.tarea-card .ta-due { font-size: 11.5px; color: #94a3b8; margin-top: 2px; }
+.tarea-section-title {
+  font-size: 12px; font-weight: 800; color: #6b7280;
+  text-transform: uppercase; letter-spacing: .06em;
+  margin: 18px 0 10px 4px;
+}
+.tarea-empty {
+  background: #fff; padding: 30px; text-align: center; border-radius: 14px;
+  color: #94a3b8; font-size: 14px;
+}
+
+/* ============ SIDEBAR (Olga 2026-06-24) ============
+   Sidebar izquierdo tipo CRM moderno. Reemplaza visualmente a la nav superior
+   de tabs (que queda oculta). Mobile colapsa a drawer con hamburger.
+*/
+:root { --sb-w: 232px; }
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sb-w);
+  background: linear-gradient(180deg, #1c2532, #0e1521);
+  color: #fff;
+  z-index: 50;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  transition: transform .25s ease;
+  padding: 0;
+}
+.sidebar-brand {
+  padding: 20px 18px 12px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.sidebar-brand .sb-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-radius: 9px;
+  display: grid; place-items: center;
+  font-size: 16px;
+}
+.sidebar-brand .sb-name {
+  font-size: 14px; font-weight: 800; letter-spacing: -.01em;
+  color: #fff;
+}
+.sidebar-brand .sb-sub { font-size: 11px; color: #94a3b8; }
+
+.sb-section { padding: 12px 10px 4px; }
+.sb-section-title {
+  font-size: 10.5px; font-weight: 800; color: #64748b;
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 4px 12px 8px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; margin: 1px 2px;
+  border-radius: 9px;
+  color: #cbd5e1; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  background: transparent; border: 0; width: calc(100% - 4px);
+  text-align: left; text-decoration: none;
+  transition: background .12s, color .12s;
+}
+.sb-item:hover { background: rgba(255,255,255,.05); color: #fff; }
+.sb-item.active {
+  background: rgba(34,197,94,.14);
+  color: #fff;
+  position: relative;
+}
+.sb-item.active::before {
+  content: ''; position: absolute; left: 0; top: 50%;
+  width: 3px; height: 60%; background: #22c55e;
+  border-radius: 0 3px 3px 0; transform: translateY(-50%);
+}
+.sb-item .sb-icon { font-size: 16px; width: 20px; display: inline-flex; justify-content: center; }
+.sb-item .sb-label { flex: 1; }
+.sb-item .sb-badge {
+  background: rgba(255,255,255,.1); color: #fff;
+  font-size: 10.5px; font-weight: 800;
+  padding: 2px 8px; border-radius: 99px; min-width: 22px;
+  text-align: center;
+}
+.sb-item.active .sb-badge { background: #22c55e; color: #fff; }
+
+.sb-divider { height: 1px; background: rgba(255,255,255,.06); margin: 8px 14px; }
+
+.sb-footer {
+  margin-top: auto; padding: 14px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sb-footer .sb-foot-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.25);
+  border-radius: 10px;
+  color: #fff; font-size: 12px; font-weight: 700;
+  text-decoration: none; justify-content: space-between;
+}
+.sb-footer .sb-foot-link:hover { background: rgba(34,197,94,.2); }
+
+/* Layout: el body recibe padding-left = ancho del sidebar.
+   Así TODOS los hijos (incluyendo header, tabs, modales, banners) quedan
+   correctamente al lado del sidebar — antes el margin-left selectivo dejaba
+   tapada la primera columna de la tabla. Olga 2026-06-24. */
+body.has-sidebar { padding-left: var(--sb-w); }
+/* Banner preview alineado a la DERECHA del sidebar — no se monta encima */
+body.has-sidebar #previewBanner { left: var(--sb-w) !important; }
+@media (max-width: 900px) {
+  body.has-sidebar #previewBanner { left: 0 !important; }
+}
+body.has-sidebar nav.tabs { display: none !important; }
+/* Elementos position:fixed o absolute deben anclarse al viewport, no al body.
+   Los compensamos con left: var(--sb-w) cuando corresponda. */
+body.has-sidebar #previewBanner,
+body.has-sidebar .sb-hamburger,
+body.has-sidebar .sb-backdrop,
+body.has-sidebar #waPrefModal { /* todos son fixed, no se ven afectados por padding */ }
+
+/* Hamburger button (oculto en desktop) */
+.sb-hamburger {
+  position: fixed; top: 12px; left: 12px;
+  z-index: 60;
+  background: #0b0f14; color: #fff; border: 0;
+  width: 40px; height: 40px; border-radius: 10px;
+  display: none; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.sb-hamburger svg { width: 22px; height: 22px; }
+.sb-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  z-index: 49; opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.sb-backdrop.show { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); box-shadow: 6px 0 24px rgba(0,0,0,.18); }
+  .sidebar.open { transform: translateX(0); }
+  body.has-sidebar { padding-left: 0; }
+  .sb-hamburger { display: inline-flex; }
+  body.has-sidebar > header { padding-left: 60px; }
+}
+
+/* Vendedor: ocultar grupos admin del sidebar */
+body.rol-vendedor #sbChatbotsLink { display: none !important; }
+body.rol-vendedor .sb-group-analisis,
+body.rol-vendedor .sb-group-config,
+body.rol-vendedor .sb-divider-admin { display: none !important; }
+
 /* ===== Vista VENDEDOR: limpia y enfocada en SUS prospectos ===== */
 body.rol-vendedor .stats,                                    /* KPIs (los reemplaza el saludo) */
 body.rol-vendedor .insights-grid,                            /* analítica (Corte/URL) */
 body.rol-vendedor .tab-btn[data-tab="urls"],                 /* tab Por URL */
 body.rol-vendedor .tab-btn[data-tab="leaderboard"]{ display:none !important; }
 body.rol-vendedor .tab-btn[data-tab="reporte"]{ display:none !important; }
-/* Tabla más limpia para vendedor: oculta col Status (Olga 2026-06-10: ya no existe col Tiempo).
+/* Vendedor solo necesita 3 columnas: Lead, Status, Acciones (Olga 2026-06-24).
+   Oculta Origen (col 2) y Vendedor (col 3 — redundante, todos los leads son suyos).
    Estructura actual: 1=Lead, 2=Origen, 3=Vendedor, 4=Status, 5=Acciones. */
-body.rol-vendedor .lead-table thead th:nth-child(4),
-body.rol-vendedor .lead-table tbody td:nth-child(4){ display:none; }
+body.rol-vendedor .lead-table thead th:nth-child(2),
+body.rol-vendedor .lead-table tbody td:nth-child(2),
+body.rol-vendedor .lead-table thead th:nth-child(3),
+body.rol-vendedor .lead-table tbody td:nth-child(3){ display:none; }
 body.rol-vendedor .cell-select[data-field="vendedor"]{ opacity:.7; cursor:not-allowed; }
 /* Admin (operativo) y Vendedor: OCULTAR tabs de dinero (Google Ads / Facebook) y el borrar */
 body.rol-admin .tab-btn[data-tab="gads"], body.rol-admin .tab-btn[data-tab="fbads"], body.rol-admin .tab-btn[data-tab="frases"], body.rol-admin .tab-btn[data-tab="plantillas"], body.rol-admin .tab-btn[data-tab="equipo"], body.rol-admin .tab-btn[data-tab="ia"], body.rol-admin .tab-btn[data-tab="bot"],
 body.rol-vendedor .tab-btn[data-tab="gads"], body.rol-vendedor .tab-btn[data-tab="fbads"], body.rol-vendedor .tab-btn[data-tab="frases"], body.rol-vendedor .tab-btn[data-tab="plantillas"], body.rol-vendedor .tab-btn[data-tab="equipo"], body.rol-vendedor .tab-btn[data-tab="ia"], body.rol-vendedor .tab-btn[data-tab="bot"]{ display:none !important; }
+/* Vendedor: también oculta Audiencias y el botón flotante "Centro de Chatbots" */
+body.rol-vendedor .tab-btn[data-tab="trafico"]{ display:none !important; }
+body.rol-vendedor .tab-btn[onclick*="chatbots"]{ display:none !important; }
 @keyframes botPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(34,197,94,.5); } 50%{ box-shadow:0 0 0 6px rgba(34,197,94,0); } }
 /* Botón basurero inline por fila: ya no se usa (reemplazado por bulk en toolbar) */
 .del-btn{ display:none !important; }
@@ -886,6 +1154,17 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
 }
 .wa-btn:hover{ background:#1ebe57; transform:translateY(-1px); }
 .wa-btn svg{ width:11px; height:11px; }
+.cliengo-btn{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 9px;
+  background:#7c3aed; color:#fff;
+  font-size:11px; font-weight:700;
+  border-radius:7px; text-decoration:none;
+  white-space:nowrap;
+  transition:all .15s;
+}
+.cliengo-btn:hover{ background:#6d28d9; transform:translateY(-1px); }
+.cliengo-btn svg{ width:11px; height:11px; }
 
 .empty{ text-align:center; padding:60px 20px; color:#9ca3af; }
 .empty h3{ margin:0 0 6px; color:#6b7280; font-size:16px; }
@@ -1083,230 +1362,249 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
   .tabs{ padding:0 14px; }
 }
 
+/* ============ VENDEDOR DASHBOARD v2 — Olga 2026-06-24 ============
+   Reemplaza la vista de tabla por un dashboard mobile-first orientado a ACCIÓN.
+   Lo activamos cuando body.rol-vendedor + #vendedorDash visible.
+*/
+body.rol-vendedor #vendedorDash { display: block !important; }
+/* Cuando el vendedor está activo, ocultamos TODO lo demás dentro del tab "leads":
+   speed-alert, stats, filter row, vendor tray, table-wrap. Dejamos solo #vendedorDash. */
+body.rol-vendedor .tab-content[data-tab-content="leads"] > *:not(#vendedorDash):not(#vendorHello) {
+  display: none !important;
+}
+body.rol-vendedor #vendorHello { display: none !important; }
+/* Vendedor: ocultar herramientas admin del header (URL builder, CSV, Refrescar).
+   Olga 2026-06-24: el vendedor no necesita ni le sirve generar URLs ni exportar CSVs. */
+body.rol-vendedor #urlBuilderBtn,
+body.rol-vendedor #exportBtn,
+body.rol-vendedor #refreshBtn { display: none !important; }
 
-/* ============ LEADS LIST REDISEÑO (Pipedrive/Folk/Attio inspired) ============ */
-.lead-list-v2 {
-  display: flex; flex-direction: column; gap: 8px;
-  padding: 4px 16px 24px;
+#vendedorDash { padding: 4px 0 60px; max-width: 720px; margin: 0 auto; }
+
+.vd-hero {
+  background: linear-gradient(135deg, #0b0f14 0%, #1f2937 100%);
+  color: #fff;
+  border-radius: 20px;
+  margin: 14px 16px 18px;
+  padding: 26px 22px 22px;
+  box-shadow: 0 12px 40px rgba(11,15,20,.18);
 }
-.ll-card {
+.vd-time { font-size: 13px; opacity: .7; margin-bottom: 4px; letter-spacing: .02em; }
+.vd-hero h1 { font-size: 28px; font-weight: 800; margin: 0 0 6px; letter-spacing: -.02em; }
+.vd-subtitle { font-size: 14px; opacity: .85; line-height: 1.4; }
+.vd-subtitle b { color: #fbbf24; font-weight: 700; }
+.vd-goal { margin-top: 22px; }
+.vd-goal-row { display: flex; justify-content: space-between; font-size: 12px; opacity: .8; margin-bottom: 8px; }
+.vd-goal-pct { font-weight: 800; color: #fbbf24; }
+.vd-bar {
+  height: 10px; background: rgba(255,255,255,.1);
+  border-radius: 99px; overflow: hidden;
+}
+.vd-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+  border-radius: 99px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+
+.vd-priority {
   background: #fff;
-  border: 1px solid #eef2f6;
-  border-radius: 14px;
-  padding: 14px 18px;
-  display: grid;
-  grid-template-columns: 44px 1fr auto;
-  gap: 14px;
-  align-items: center;
-  cursor: pointer;
-  transition: box-shadow .15s, transform .12s, border-color .15s;
+  border-radius: 18px;
+  margin: 12px 16px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 14px rgba(11,15,20,.06);
+  border-left: 5px solid var(--vd-priority-color, #94a3b8);
+  position: relative;
+  overflow: hidden;
 }
-.ll-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 16px rgba(11,15,20,.06);
-  transform: translateY(-1px);
+.vd-priority::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--vd-priority-color, #94a3b8), transparent);
+  opacity: .15;
 }
-.ll-card.ll-urgent {
-  border-left: 3px solid #dc2626;
+.vd-priority h3 {
+  font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em;
+  margin: 0 0 8px; color: var(--vd-priority-color, #94a3b8); font-weight: 800;
+  display: flex; align-items: center; gap: 6px;
 }
-.ll-card.ll-hot { border-left: 3px solid #f59e0b; }
-.ll-avatar {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--ll-color, #e2e8f0);
-  color: #fff; font-weight: 800; font-size: 16px;
-  display: grid; place-items: center;
-  letter-spacing: -.02em;
+.vd-priority .vd-title {
+  font-size: 18px; font-weight: 800; margin: 4px 0 6px; letter-spacing: -.01em; color: #0b0f14;
 }
-.ll-body { min-width: 0; }
-.ll-row-top {
-  display: flex; align-items: center; gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 4px;
+.vd-priority .vd-meta-row {
+  font-size: 13px; color: #6b7280; margin-bottom: 6px;
 }
-.ll-name {
-  font-size: 14.5px; font-weight: 700; color: #0b0f14;
-  letter-spacing: -.01em;
+.vd-priority .vd-msg {
+  font-size: 13px; color: #0b0f14; font-style: italic;
+  background: #f8fafc; padding: 10px 12px; border-radius: 10px;
+  margin: 10px 0 14px; line-height: 1.4;
+  border-left: 3px solid #e2e8f0;
 }
-.ll-marca-pill {
-  font-size: 11px; font-weight: 800; padding: 2px 9px;
+.vd-action-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; width: 100%; margin-top: 12px;
+  background: #25d366; color: #fff; border: 0;
+  padding: 14px 16px; border-radius: 12px;
+  font-weight: 800; font-size: 14.5px; cursor: pointer;
+  text-decoration: none; transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 14px rgba(37,211,102,.35);
+}
+.vd-action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,211,102,.45); }
+.vd-action-btn svg { width: 16px; height: 16px; }
+.vd-action-btn.amber { background: #f59e0b; box-shadow: 0 4px 14px rgba(245,158,11,.35); }
+.vd-action-btn.amber:hover { box-shadow: 0 6px 18px rgba(245,158,11,.45); }
+
+.vd-sub-leads { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.vd-sub-lead {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: #f8fafc;
+  border-radius: 10px;
+}
+.vd-sub-lead .vd-sub-info { flex: 1; min-width: 0; }
+.vd-sub-lead .vd-sub-name { font-weight: 700; font-size: 13.5px; color: #0b0f14; }
+.vd-sub-lead .vd-sub-meta { font-size: 11.5px; color: #6b7280; margin-top: 2px; }
+.vd-sub-lead .vd-notes-btn {
+  flex: none; width: 36px; height: 36px;
+  border: 1px solid #e2e8f0; background: #fff;
+  border-radius: 9px; cursor: pointer; font-size: 14px;
+  transition: .15s; line-height: 1;
+}
+.vd-notes-btn:hover { background: #f0fdf4; border-color: #86efac; }
+.vd-mini-action {
+  flex-shrink: 0; background: #25d366; color: #fff;
+  border: 0; padding: 8px 14px; border-radius: 8px;
+  font-weight: 800; font-size: 12px; cursor: pointer;
+  text-decoration: none; white-space: nowrap;
+}
+
+.vd-list-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 22px 10px; margin: 0;
+}
+.vd-list-header h2 {
+  font-size: 14px; text-transform: uppercase; letter-spacing: .06em;
+  font-weight: 800; color: #6b7280; margin: 0;
+}
+.vd-list-header .vd-search {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+  padding: 8px 12px; font-size: 13px; width: 200px;
+  outline: none; transition: border-color .15s;
+}
+.vd-list-header .vd-search:focus { border-color: #3f922a; }
+
+.vd-lead-list { padding: 0 16px; }
+.vd-lead-card {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; padding: 14px 16px;
+  border-radius: 14px; margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(11,15,20,.04);
+  border-left: 4px solid var(--vd-lead-color, #cbd5e1);
+  cursor: pointer; transition: transform .15s, box-shadow .15s;
+}
+.vd-lead-card:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(11,15,20,.08); }
+.vd-lead-card .vd-temp { font-size: 22px; flex-shrink: 0; }
+.vd-lead-card .vd-info { flex: 1; min-width: 0; }
+.vd-lead-card .vd-name { font-weight: 700; font-size: 14px; color: #0b0f14; }
+.vd-lead-card .vd-meta {
+  font-size: 11.5px; color: #6b7280; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.vd-lead-card .vd-card-msg {
+  font-size: 12px; color: #0b0f14; font-style: italic; margin-top: 4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.vd-marca-row {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;
+}
+.vd-marca-pill {
+  font-size: 11px; font-weight: 800; padding: 3px 9px;
   border-radius: 99px; letter-spacing: .02em;
   display: inline-flex; align-items: center; gap: 4px;
 }
-.ll-size-pill {
-  font-size: 11px; font-weight: 700; padding: 2px 9px;
+.vd-m2-pill {
+  font-size: 11px; font-weight: 800; padding: 3px 9px;
   border-radius: 99px; background: #0b0f14; color: #fff;
+  letter-spacing: .02em;
 }
-.ll-status-pill {
-  font-size: 11px; font-weight: 700; padding: 2px 9px;
-  border-radius: 99px;
+.vd-acc-pill {
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 99px; background: #fed7aa; color: #9a3412;
+  letter-spacing: .02em;
 }
-.ll-meta {
-  font-size: 12.5px; color: #6b7280;
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+.vd-status-pill {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 99px; letter-spacing: .04em;
+  display: inline-block; margin-left: 6px;
+  background: rgba(11,15,20,.06); color: #475569;
 }
-.ll-meta .ll-dot { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; }
-.ll-msg {
-  font-size: 12.5px; color: #475569; margin-top: 6px;
-  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
-  overflow: hidden; font-style: italic;
-}
-.ll-actions {
-  display: flex; align-items: center; gap: 6px;
-  opacity: 0; transition: opacity .15s;
-}
-.ll-card:hover .ll-actions { opacity: 1; }
-.ll-card .ll-actions { opacity: 0.65; } /* siempre algo visible */
-@media (max-width: 700px) {
-  .ll-card .ll-actions { opacity: 1; }
-}
-.ll-act-btn {
-  width: 34px; height: 34px;
-  border: 1px solid #e5e7eb; background: #fff;
-  border-radius: 9px; cursor: pointer; font-size: 14px;
-  display: grid; place-items: center;
-  transition: .15s;
-  text-decoration: none; color: #0b0f14;
-}
-.ll-act-btn:hover { background: #f0fdf4; border-color: #86efac; }
-.ll-act-btn.ll-act-wa { background: #25d366; color: #fff; border-color: #25d366; }
-.ll-act-btn.ll-act-wa:hover { background: #1ebe57; }
-
-/* List section header */
-.ll-section-head {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 18px 8px;
-  margin: 0 16px;
-}
-.ll-section-head h2 {
-  font-size: 18px; font-weight: 800; margin: 0;
-  letter-spacing: -.01em; color: #0b0f14; flex: 1;
-}
-.ll-section-head .ll-search {
-  flex: 0 1 280px;
-  padding: 9px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 13px;
-  background: #fff;
-}
-
-/* ====== SIDE PANEL DETALLE (Pipedrive style) ======
-   Se desliza desde la derecha. Ocupa ~480px en desktop, fullscreen en mobile. */
-.side-panel-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(11,15,20,.4);
-  z-index: 11000;
-  opacity: 0; pointer-events: none;
-  transition: opacity .25s;
-}
-.side-panel-backdrop.show { opacity: 1; pointer-events: auto; }
-.side-panel {
-  position: fixed; top: 0; bottom: 0; right: 0;
-  width: 480px; max-width: 100vw;
-  background: #fff;
-  z-index: 11001;
-  transform: translateX(100%);
-  transition: transform .25s ease;
-  box-shadow: -8px 0 32px rgba(11,15,20,.18);
-  display: flex; flex-direction: column;
+.vd-table-wrap {
+  margin: 0 16px; background: #fff; border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(11,15,20,.04);
   overflow: hidden;
 }
-.side-panel.show { transform: translateX(0); }
-.side-panel-head {
-  padding: 18px 22px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #fafbfc;
-  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+.vd-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
 }
-.side-panel-head h2 {
-  font-size: 20px; font-weight: 800; margin: 4px 0 0;
-  color: #0b0f14; letter-spacing: -.01em;
+.vd-table thead th {
+  text-align: left; padding: 12px 14px; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .06em; font-weight: 800;
+  color: #94a3b8; border-bottom: 1px solid #f1f5f9; background: #fafbfc;
+  white-space: nowrap;
 }
-.side-panel-head .sp-eyebrow {
-  font-size: 10.5px; font-weight: 800; color: #94a3b8;
-  text-transform: uppercase; letter-spacing: .06em;
+.vd-table tbody td {
+  padding: 14px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top;
 }
-.side-panel-close {
-  background: none; border: 0; font-size: 24px;
-  cursor: pointer; color: #94a3b8; padding: 0; line-height: 1;
+.vd-table tbody tr:last-child td { border-bottom: 0; }
+.vd-table tbody tr { cursor: pointer; transition: background .12s; }
+.vd-table tbody tr:hover { background: #f8fafc; }
+.vd-cell-lead { min-width: 220px; }
+.vd-lead-line { font-weight: 700; color: #0b0f14; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+.vd-lead-line .vd-temp { font-size: 16px; }
+.vd-lead-sub { font-size: 11.5px; color: #6b7280; margin-top: 3px; }
+.vd-lead-msg {
+  font-size: 12px; color: #0b0f14; font-style: italic; margin-top: 6px;
+  max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.side-panel-close:hover { color: #0b0f14; }
-.side-panel-body {
-  flex: 1; overflow-y: auto; padding: 18px 22px;
-}
-.side-panel-foot {
-  padding: 14px 22px;
-  border-top: 1px solid #f1f5f9;
-  background: #fafbfc;
-  display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
-}
-.sp-pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.sp-info-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 16px 18px; margin-bottom: 18px;
-}
-.sp-info-label {
-  font-size: 11px; color: #94a3b8; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .04em;
-}
-.sp-info-value {
-  color: #0b0f14; margin-top: 3px;
-  font-size: 13px; font-weight: 500;
-}
-.sp-msg-box {
-  background: #f8fafc; border-left: 3px solid #22c55e;
-  padding: 12px 14px; border-radius: 8px;
-  font-size: 13px; color: #0b0f14;
-  white-space: pre-wrap; line-height: 1.55;
-  margin-bottom: 18px;
-}
-.sp-section-title {
-  font-size: 11px; color: #94a3b8; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .04em;
-  margin-bottom: 6px;
-}
-.sp-notes-area {
-  width: 100%; min-height: 100px;
-  padding: 12px 14px;
-  border: 1px solid #e2e8f0; border-radius: 10px;
-  font-family: inherit; font-size: 13px;
-  resize: vertical; line-height: 1.55;
-}
-.sp-notes-area:focus { outline: 2px solid #22c55e; outline-offset: 0; border-color: #22c55e; }
-.sp-quick-row {
-  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;
-}
-.sp-quick-btn {
-  background: #f1f5f9; border: 1px solid #e2e8f0;
-  padding: 7px 12px; border-radius: 99px;
-  font-size: 12px; font-weight: 600; color: #475569;
-  cursor: pointer; transition: .15s;
-}
-.sp-quick-btn:hover { background: #e2e8f0; border-color: #cbd5e1; color: #0b0f14; }
-.sp-quick-btn.active { background: #dcfce7; border-color: #86efac; color: #166534; }
-.sp-action-primary {
-  background: #25d366; color: #fff; border: 0;
-  padding: 11px 22px; border-radius: 10px;
-  font-weight: 800; font-size: 13px; cursor: pointer;
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.sp-action-primary:hover { background: #1ebe57; }
-.sp-action-secondary {
-  background: #0b0f14; color: #fff; border: 0;
-  padding: 10px 18px; border-radius: 10px;
-  font-weight: 700; font-size: 13px; cursor: pointer;
-}
-.sp-action-tertiary {
-  background: #fff; color: #6b7280; border: 1px solid #e5e7eb;
-  padding: 10px 16px; border-radius: 10px;
-  font-weight: 700; font-size: 13px; cursor: pointer;
-}
+.vd-cell-marca { white-space: nowrap; }
+.vd-cell-tamano { font-weight: 700; color: #0b0f14; white-space: nowrap; }
+.vd-cell-status { white-space: nowrap; }
+.vd-cell-action { text-align: right; white-space: nowrap; }
+.vd-cell-action .vd-mini-action { padding: 8px 14px; font-size: 12px; }
 @media (max-width: 700px) {
-  .side-panel { width: 100vw; }
-  .side-panel-body { padding: 14px 16px; }
+  .vd-table-wrap { margin: 0 8px; border-radius: 10px; }
+  .vd-table thead { display: none; }
+  .vd-table, .vd-table tbody, .vd-table tr, .vd-table td { display: block; width: 100%; }
+  .vd-table tbody tr {
+    padding: 14px 14px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "lead action" "marca tamano" "status status";
+    column-gap: 10px;
+    row-gap: 8px;
+  }
+  .vd-table tbody td { padding: 0; border: 0; }
+  .vd-cell-lead { grid-area: lead; }
+  .vd-cell-marca { grid-area: marca; }
+  .vd-cell-tamano { grid-area: tamano; text-align: right; }
+  .vd-cell-status { grid-area: status; }
+  .vd-cell-action { grid-area: action; }
+  .vd-lead-msg { max-width: 100%; white-space: normal; }
 }
+.vd-empty {
+  text-align: center; padding: 60px 20px; color: #94a3b8;
+  background: #fff; border-radius: 18px; margin: 14px 16px;
+}
+.vd-empty .vd-empty-emoji { font-size: 44px; margin-bottom: 12px; }
 
+@media (max-width: 600px) {
+  .vd-hero { padding: 22px 18px; }
+  .vd-hero h1 { font-size: 24px; }
+  .vd-priority { padding: 18px 18px; margin: 10px 12px; }
+  .vd-priority .vd-title { font-size: 16px; }
+  .vd-lead-list { padding: 0 12px; }
+  .vd-list-header { padding: 18px 18px 8px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .vd-list-header .vd-search { width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -1331,6 +1629,54 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
 
 <!-- ============ DASHBOARD ============ -->
 <div class="dash" id="dashView">
+  <button type="button" class="sb-hamburger" onclick="toggleSidebar()" title="Menú">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="sb-backdrop" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sb-logo">⚽</div>
+      <div>
+        <div class="sb-name">Cotizador F7</div>
+        <div class="sb-sub" id="sbSub">Cargando…</div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <button class="sb-item" data-sb-tab="resumen" data-sb-default="1" onclick="sbClick(this)"><span class="sb-icon">🏠</span><span class="sb-label">Resumen</span></button>
+      <button class="sb-item" data-sb-tab="leads" onclick="sbClick(this)"><span class="sb-icon">📋</span><span class="sb-label">Leads</span><span class="sb-badge" id="sbBadgeLeads">0</span></button>
+      <button class="sb-item" data-sb-tab="vip" onclick="sbClick(this)"><span class="sb-icon">👑</span><span class="sb-label">VIP</span><span class="sb-badge" id="sbBadgeVip">0</span></button>
+      <button class="sb-item" data-sb-tab="oportunidades" onclick="sbClick(this)"><span class="sb-icon">⚡</span><span class="sb-label">Oportunidades</span><span class="sb-badge" id="sbBadgeOpor">0</span></button>
+      <button class="sb-item" data-sb-tab="tareas" onclick="sbClick(this)"><span class="sb-icon">📅</span><span class="sb-label">Tareas</span><span class="sb-badge" id="sbBadgeTareas">0</span></button>
+      <button class="sb-item" data-sb-tab="leaderboard" onclick="sbClick(this)"><span class="sb-icon">🏆</span><span class="sb-label">Leaderboard</span></button>
+    </div>
+
+    <div class="sb-divider sb-divider-admin"></div>
+
+    <div class="sb-section sb-group-analisis">
+      <div class="sb-section-title">Análisis</div>
+      <button class="sb-item" data-sb-tab="reporte" onclick="sbClick(this)"><span class="sb-icon">📊</span><span class="sb-label">Reporte</span></button>
+      <button class="sb-item" data-sb-tab="urls" onclick="sbClick(this)"><span class="sb-icon">🌐</span><span class="sb-label">Por URL</span></button>
+      <button class="sb-item" data-sb-tab="bot" onclick="sbClick(this)"><span class="sb-icon">🤖</span><span class="sb-label">Bot en vivo</span></button>
+      <button class="sb-item" data-sb-tab="ia" onclick="sbClick(this)"><span class="sb-icon">🟣</span><span class="sb-label">IA</span></button>
+      <button class="sb-item" data-sb-tab="trafico" onclick="sbClick(this)"><span class="sb-icon">🎯</span><span class="sb-label">Audiencias</span></button>
+      <button class="sb-item" data-sb-tab="gads" onclick="sbClick(this)"><span class="sb-icon">🎯</span><span class="sb-label">Google Ads</span></button>
+      <button class="sb-item" data-sb-tab="fbads" onclick="sbClick(this)"><span class="sb-icon">📘</span><span class="sb-label">Facebook</span></button>
+    </div>
+
+    <div class="sb-section sb-group-config">
+      <div class="sb-section-title">Configuración</div>
+      <button class="sb-item" data-sb-tab="frases" onclick="sbClick(this)"><span class="sb-icon">💬</span><span class="sb-label">Frases</span></button>
+      <button class="sb-item" data-sb-tab="plantillas" onclick="sbClick(this)"><span class="sb-icon">📝</span><span class="sb-label">Plantillas</span></button>
+      <button class="sb-item" data-sb-tab="equipo" onclick="sbClick(this)"><span class="sb-icon">👥</span><span class="sb-label">Equipo</span></button>
+    </div>
+
+    <div class="sb-footer">
+      <button type="button" class="sb-foot-link" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);width:100%;margin-bottom:8px;cursor:pointer;text-align:left" onclick="abrirToggleWa()" title="Cómo abrir WhatsApp"><span>💬 WhatsApp: <span id="sbWaPrefLabel">Web</span></span><span>⚙️</span></button>
+      <a class="sb-foot-link" href="/chatbots" id="sbChatbotsLink">🤖 Centro de Chatbots <span>→</span></a>
+      <button type="button" class="sb-foot-link" id="sbLogoutBtn" style="background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.3);color:#fecaca;width:100%;margin-top:8px;cursor:pointer;text-align:left" onclick="document.getElementById('logoutBtn').click()" title="Cerrar sesión"><span>🚪 Salir</span><span>→</span></button>
+    </div>
+  </aside>
   <header class="dash-header">
     <div class="brand">
       <div class="brand-mark">
@@ -1351,6 +1697,8 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <button id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
       <button id="unparsedBtn" style="display:none" title="Correos que el Email Worker no clasificó"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Sin clasificar <span id="unparsedCount" style="background:#fef3c7;color:#92400e;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;margin-left:4px">0</span></button>
       <button id="usersBtn" style="display:none" title="Gestionar usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Usuarios</button>
+      <button id="previewVendBtn" style="display:none;background:#7c3aed;color:#fff;border:0;font-weight:700" title="Ver el dashboard como lo ve un vendedor" onclick="openPreviewMenu()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Ver como vendedor</button>
+      <button type="button" id="waPrefBtn" onclick="abrirToggleWa()" title="Cómo abrir WhatsApp (Web o Escritorio)" style="background:#fff;color:#0b0f14;border:1px solid #e5e7eb;padding:0 12px;font-weight:700;font-size:12px;height:36px;border-radius:10px;display:inline-flex;align-items:center;gap:5px;cursor:pointer">💬 <span id="waPrefLabel">WhatsApp</span></button>
       <button id="logoutBtn" class="logout">Salir</button>
     </div>
   </header>
@@ -1379,6 +1727,9 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
 
     <!-- Saludo personal (solo vendedores) -->
     <div id="vendorHello" style="display:none"></div>
+
+    <!-- Vendedor Dashboard v2 (Olga 2026-06-24): vista action-first del vendedor -->
+    <div id="vendedorDash" style="display:none"></div>
 
     <!-- ⏱ Speed-to-lead: prospectos frescos sin contactar -->
     <div id="speedAlert" style="display:none"></div>
@@ -1594,12 +1945,26 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       <div class="section-card">
         <div class="section-head" style="align-items:center;gap:12px;flex-wrap:wrap">
           <h2 style="margin:0"><span class="emoji">📊</span> Reporte diario · Orgánico vs Pagado</h2>
-          <div class="filters" id="reporteRange" style="margin-left:auto">
+          <select class="vendedor-filter" id="reporteVendedor" title="Filtrar el reporte por vendedor (ajusta conteos y desglose)" style="margin-left:auto">
+            <option value="all">👥 Todos los vendedores</option>
+          </select>
+          <div class="filters" id="reporteRange">
             <button class="filter-pill" data-rrange="today">📅 Hoy</button>
             <button class="filter-pill" data-rrange="yesterday">Ayer</button>
             <button class="filter-pill" data-rrange="7d">7 días</button>
             <button class="filter-pill active" data-rrange="30d">Últimos 30 días</button>
             <button class="filter-pill" data-rrange="all">Todo el histórico</button>
+          </div>
+          <div class="filters" style="width:100%;margin-top:8px;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="filter-pill" onclick="navegarPeriodo(-1)" title="Ir al periodo anterior, del mismo tamaño que el que ves ahora">◀ Anterior</button>
+            <button class="filter-pill" onclick="navegarPeriodo(1)" title="Ir al periodo siguiente">Siguiente ▶</button>
+            <span id="periodoLabel" style="font-size:12.5px;color:#0f172a;font-weight:700;padding:0 4px"></span>
+            <span style="margin-left:auto;font-size:12px;color:#64748b;font-weight:700">📆 Periodo exacto:</span>
+            <input type="date" id="reporteDesde" title="Fecha desde" style="padding:7px 9px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;background:#fff" />
+            <span style="color:#94a3b8;font-weight:700">→</span>
+            <input type="date" id="reporteHasta" title="Fecha hasta" style="padding:7px 9px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;background:#fff" />
+            <button class="filter-pill" onclick="aplicarRangoCustom()" title="Aplicar rango de fechas personalizado">Aplicar rango</button>
+            <button class="filter-pill" id="btnListaCompleta" onclick="toggleListaCompleta()" title="Ver TODOS los leads del periodo en una sola tabla (nombre, teléfono, vendedor, campaña, keyword) + exportar a Excel" style="margin-left:6px">📋 Lista completa + Excel</button>
           </div>
         </div>
         <div class="section-body" id="reporteBody"><div class="src-empty">Cargando…</div></div>
@@ -1802,6 +2167,22 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
       </div>
     </div>
   </div>
+
+  <!-- ============ TAB: RESUMEN (Olga 2026-06-24) ============ -->
+  <div class="tab-content" data-tab-content="resumen">
+    <div id="resumenView" style="padding: 24px 22px;">Cargando…</div>
+  </div>
+
+  <!-- ============ TAB: OPORTUNIDADES (Olga 2026-06-24) ============ -->
+  <div class="tab-content" data-tab-content="oportunidades">
+    <div id="oportunidadesView" style="padding: 24px 22px;">Cargando…</div>
+  </div>
+
+  <!-- ============ TAB: TAREAS (Olga 2026-06-24) ============ -->
+  <div class="tab-content" data-tab-content="tareas">
+    <div id="tareasView" style="padding: 24px 22px;">Cargando…</div>
+  </div>
+
 
 </div>
 
@@ -2136,10 +2517,14 @@ async function tryLogin(user, pwd, silent){
 
 function applyRoleUI(){
   document.body.classList.remove('rol-super','rol-admin','rol-vendedor');
+  try { if (typeof restorePreviewBannerIfActive === 'function') restorePreviewBannerIfActive(); } catch(e){}
   const cls = CURRENT_ROLE === 'super_admin' ? 'rol-super' : (CURRENT_ROLE === 'admin' ? 'rol-admin' : 'rol-vendedor');
   document.body.classList.add(cls);
   const ub = document.getElementById('usersBtn');
   if (ub) ub.style.display = (CURRENT_ROLE === 'super_admin') ? '' : 'none';
+  // Botón "Ver como vendedor": visible solo a admin/super_admin (Olga 2026-06-24).
+  const pv = document.getElementById('previewVendBtn');
+  if (pv) pv.style.display = (CURRENT_ROLE === 'super_admin' || CURRENT_ROLE === 'admin') ? '' : 'none';
   const upb = document.getElementById('unparsedBtn');
   if (upb) {
     upb.style.display = (CURRENT_ROLE === 'super_admin') ? '' : 'none';
@@ -2149,6 +2534,16 @@ function applyRoleUI(){
   const dt = document.getElementById('dashTitle');
   if (dt) dt.textContent = (CURRENT_ROLE === 'vendedor') ? ('Hola, ' + (currentUser() || '')) : 'Leads · Cotizador F7';
   renderVendorHello();
+  try { renderVendedorDash(); } catch(e){ console.warn('vd render error', e); }
+  // Activar sidebar (Olga 2026-06-24)
+  try { activarSidebar(); } catch(e){}
+  // Reflejar la preferencia WhatsApp en el botón del header (Olga 2026-06-24)
+  try {
+    const lbl = document.getElementById('waPrefLabel');
+    if (lbl) lbl.textContent = getWaPref() === 'desktop' ? 'Escritorio' : 'Web';
+    const lbl2 = document.getElementById('sbWaPrefLabel');
+    if (lbl2) lbl2.textContent = getWaPref() === 'desktop' ? 'Escritorio' : 'Web';
+  } catch(e){}
 }
 // Saludo limpio tipo Apple para el vendedor: su nombre + 3 números clave de SUS prospectos.
 function renderVendorHello(){
@@ -2395,6 +2790,8 @@ function leadsDelRango(){
   return { leads: _filtrarLeadsVisibles(leads), label };
 }
 function renderVendorTray(){
+  try { renderVendedorDash(); } catch(e){}
+  try { actualizarBadgesSidebar(); } catch(e){}
   const tray = document.getElementById('vendorTray');
   const meta = document.getElementById('vendorTrayMeta');
   const titleEl = document.getElementById('vendorTrayTitle');
@@ -2480,6 +2877,17 @@ function populateVendedorFilter(){
     <option value="">⏳ Sin asignar</option>
     ${vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}${cnt[v] ? ` · ${cnt[v]}` : ''}</option>`).join('')}`;
   sel.value = current || 'all';
+}
+// Llena el dropdown de vendedor del Reporte diario (Olga 2026-06-17), preservando la selección.
+function populateReporteVendedor(){
+  const sel = document.getElementById('reporteVendedor');
+  if (!sel) return;
+  const current = sel.value;
+  const cnt = vendedorCounts();
+  sel.innerHTML = `<option value="all">👥 Todos los vendedores</option>
+    <option value="">⏳ Sin asignar</option>
+    ${vendedoresOrdered().map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}${cnt[v] ? ` · ${cnt[v]}` : ''}</option>`).join('')}`;
+  sel.value = [...sel.options].some(o => o.value === current) ? current : 'all';
 }
 // Filtro por origen (Olga 2026-06-10)
 // El conteo respeta el RANGO activo (Hoy/Ayer/7d/Histórico) para que matche la tabla.
@@ -2744,7 +3152,7 @@ function botConversacion(l){
     if (tipo) out.push(['cli', tipo]);
   }
   if (l.ciudad){ out.push(['bot', '¿En qué ciudad la quieres?']); out.push(['cli', l.ciudad]); }
-  if (l.m2){    out.push(['bot', '¿Cuántos m² tiene tu terreno?']); out.push(['cli', l.m2 + ' m²']); }
+  if (l.m2){    out.push(['bot', '¿Cuántos m² tiene tu terreno?']); out.push(['cli', fmtM2(l.m2)]); }
   if (l.timeline){ out.push(['bot', '¿En qué tiempo quieres comenzar?']); out.push(['cli', l.timeline]); }
   if (l.comentarios){
     const acc = (String(l.comentarios).match(/Accesorios:\s*(.+)$/i)||[,''])[1].trim();
@@ -2775,7 +3183,7 @@ function botCard(l, ahoraMs){
     </div>
     <div style="background:#fafbfc;border:1px solid #f1f5f9;border-radius:10px;padding:8px 10px;max-height:200px;overflow-y:auto">${conv}</div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#64748b">
-      <div><b style="color:#0f172a">${escapeHtml(l.nombre||'(sin nombre)')}</b>${l.ciudad ? ' · 📍 '+escapeHtml(l.ciudad) : ''}${l.m2 ? ' · '+escapeHtml(l.m2)+' m²' : ''}</div>
+      <div><b style="color:#0f172a">${escapeHtml(l.nombre||'(sin nombre)')}</b>${l.ciudad ? ' · 📍 '+escapeHtml(l.ciudad) : ''}${l.m2 ? ' · '+escapeHtml(fmtM2(l.m2)) : ''}</div>
       ${waBtnH}
     </div>
   </div>`;
@@ -3666,7 +4074,7 @@ function renderEsperaItem(l){
     <div class="hoy-item ${urgente ? 'overdue' : ''}">
       <span class="hoy-badge">${urgente ? `🚨 ${ago}` : `📥 ${ago}`}</span>
       <div class="hoy-info">
-        <div class="hoy-name">${escapeHtml(display)} <span style="color:#9ca3af; font-weight:600; font-size:12px;">· ${escapeHtml(l.ciudad || '—')} · ${escapeHtml(l.m2 || '?')}m²</span></div>
+        <div class="hoy-name">${escapeHtml(display)} <span style="color:#9ca3af; font-weight:600; font-size:12px;">· ${escapeHtml(l.ciudad || '—')} · ${escapeHtml(fmtM2(l.m2, '? m²'))}</span></div>
         <div class="hoy-meta">${escapeHtml(l.vendedor || 'Sin vendedor')} · ${escapeHtml(l.status_proyecto)}</div>
         <div class="hoy-accion">📥 Cliente escribió hace ${ago} — esperando tu respuesta</div>
       </div>
@@ -3749,7 +4157,7 @@ function renderHoyItem(l){
     <div class="hoy-item ${overdue ? 'overdue' : ''}">
       <span class="hoy-badge">${dayLabel}</span>
       <div class="hoy-info">
-        <div class="hoy-name">${escapeHtml(display)} <span style="color:#9ca3af; font-weight:600; font-size:12px;">· ${escapeHtml(l.ciudad || '—')} · ${escapeHtml(l.m2 || '?')}m²</span></div>
+        <div class="hoy-name">${escapeHtml(display)} <span style="color:#9ca3af; font-weight:600; font-size:12px;">· ${escapeHtml(l.ciudad || '—')} · ${escapeHtml(fmtM2(l.m2, '? m²'))}</span></div>
         <div class="hoy-meta">${escapeHtml(l.vendedor || 'Sin vendedor')} · ${escapeHtml(l.status_proyecto)}</div>
         <div class="hoy-accion">📌 ${escapeHtml(l.proxima_accion || 'Sin descripción')}</div>
       </div>
@@ -3898,17 +4306,17 @@ function renderLeadRow(l, vip){
       <td>${nombreCell(l)}</td>
       <td class="whats-cell">${escapeHtml(l.whatsapp || '—')}</td>
       <td class="ciudad-cell">${escapeHtml(l.ciudad || '—')}</td>
-      <td style="font-weight:800;">${escapeHtml(l.m2 || '—')}</td>
+      <td style="font-weight:800;">${escapeHtml(fmtM2(l.m2, "—"))}</td>
       <td>${selectVendedor(l)}</td>
       <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-      <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
+      <td><div class="action-cell">${cliengoBtn(l)}${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
     </tr>`;
   }
 
   const urgente = /lo antes posible/i.test(l.timeline || '');
   const rowClass = isOverdue(l) ? 'row-overdue' : (esperaRespuesta(l) ? 'row-espera' : '');
   const ciudad = escapeHtml(l.ciudad || '—');
-  const m2 = escapeHtml(l.m2 || '?');
+  const m2 = escapeHtml(fmtM2(l.m2, '?'));
   const mensajeClaro = mensajeClaroDeLead(l, urgente);
   const subWa = waNum ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="lead-wa">${escapeHtml(l.whatsapp)}</a>` : '';
   const recBadge = (l.recurrente == 1) ? '<span class="rec-badge" title="Cliente que ya había contactado antes (mismo WhatsApp). Re-asignado a su vendedor.">🔁 Recurrente</span>' : '';
@@ -3932,7 +4340,7 @@ function renderLeadRow(l, vip){
     <td class="origen-cell">${origenCell(l)}</td>
     <td>${selectVendedor(l)}</td>
     <td>${selectStatus(l)}${razonPerdidaBadge(l)}</td>
-    <td><div class="action-cell">${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
+    <td><div class="action-cell">${cliengoBtn(l)}${waNum ? plantillasBtn(l.id) + waBtn(waLink, l.id) : ''}</div></td>
   </tr>`;
 }
 
@@ -4194,7 +4602,25 @@ function nombreCell(l){
     </div>
   `;
 }
+function cliengoBtn(l){
+  // Vendedor NO ve el botón Cliengo (no tiene acceso al CRM Cliengo, solo responde
+  // por WhatsApp). Solo admin/super_admin lo necesitan. Olga 2026-06-24.
+  if (CURRENT_ROLE === 'vendedor') return '';
+  const f = (l.fuente || '').toLowerCase();
+  if (!f.startsWith('cliengo_')) return '';
+  const url = (l.cliengo_url || '').trim() || 'https://app.cliengo.com/contacts';
+  return `<a href="${url}" target="_blank" class="cliengo-btn" title="Abrir conversación en Cliengo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.04 2 11c0 2.84 1.51 5.36 3.86 7.01L5 22l4.31-2.3c.85.2 1.75.3 2.69.3 5.52 0 10-4.04 10-9s-4.48-9-10-9z"/></svg>Cliengo</a>`;
+}
 function waBtn(href, id){
+  // Respeta la preferencia Web/Desktop del usuario (Olga 2026-06-24).
+  try {
+    const m = String(href || '').match(/wa\.me\/(\d+)(?:\?text=([^&]*))?/);
+    if (m && typeof buildWaUrl === 'function'){
+      const text = m[2] ? decodeURIComponent(m[2]) : '';
+      const built = buildWaUrl(m[1], text);
+      if (built) href = built;
+    }
+  } catch(e){}
   // Al presionar Responder marcamos auto "Contactando…" (1 clic, sin fricción)
   const onClick = id ? `onclick="marcarContactando(${id})"` : '';
   return `<a class="wa-btn" target="_blank" ${onClick} href="${href}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>Responder</a>`;
@@ -4587,6 +5013,10 @@ function esPagado(l){
   return false;
 }
 let reporteRange = '30d';
+let reporteVendedor = 'all'; // Filtro por vendedor del Reporte diario ('all' = todos, '' = sin asignar)
+let reporteDesde = '';       // Rango personalizado: fecha desde (YYYY-MM-DD), vacío = sin custom
+let reporteHasta = '';       // Rango personalizado: fecha hasta (YYYY-MM-DD)
+let mostrarListaCompleta = false; // Mostrar lista plana de todos los leads del periodo
 
 // Agrupa una lista de leads por día MX con conteos org/pag/total + ganados.
 function agruparReporte(leads){
@@ -4617,6 +5047,8 @@ function renderReporte(){
   }
   const todosConFecha = allLeads.filter(l => l.fecha);
 
+  populateReporteVendedor();
+
   // Determinar ventana actual y ventana anterior para comparativa
   const dayMs = 864e5;
   let nDias = null;
@@ -4638,6 +5070,20 @@ function renderReporte(){
     const cutoffPrev = new Date(Date.now() - (2*nDias-1)*dayMs).toLocaleDateString('en-CA', { timeZone: TZ_MX });
     rows     = todosConFecha.filter(l => ymdMx(l.fecha) >= cutoff);
     rowsPrev = todosConFecha.filter(l => ymdMx(l.fecha) >= cutoffPrev && ymdMx(l.fecha) < cutoff);
+  }
+
+  // Rango de fechas personalizado (Olga 2026-06-17): desde–hasta inclusivo, sin comparativa.
+  if (reporteRange === 'custom' && reporteDesde && reporteHasta){
+    rows     = todosConFecha.filter(l => { const d = ymdMx(l.fecha); return d >= reporteDesde && d <= reporteHasta; });
+    rowsPrev = [];
+  }
+
+  // Filtro por vendedor (Olga 2026-06-17): ajusta conteos diarios Y desglose por URL.
+  // 'all' = todos; '' = sin asignar; cualquier otro = ese vendedor exacto.
+  if (reporteVendedor !== 'all'){
+    const vmatch = l => (l.vendedor || '').trim() === reporteVendedor;
+    rows     = rows.filter(vmatch);
+    rowsPrev = rowsPrev.filter(vmatch);
   }
 
   const byDay = agruparReporte(rows);
@@ -4768,7 +5214,9 @@ function renderReporte(){
       <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 16px">
         <div style="font-size:11.5px;color:#b45309;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Promedio</div>
         <div style="font-size:26px;font-weight:800;color:#0f172a;margin-top:2px">${promedio}<span style="font-size:14px;color:#94a3b8">/día</span></div>
-        ${comparativaHtml || '<div style="font-size:12px;color:#94a3b8;margin-top:2px">Todo el histórico</div>'}
+        ${comparativaHtml || (reporteRange === 'custom' && reporteDesde && reporteHasta
+          ? `<div style="font-size:12px;color:#94a3b8;margin-top:2px">${reporteDesde} → ${reporteHasta}</div>`
+          : '<div style="font-size:12px;color:#94a3b8;margin-top:2px">Todo el histórico</div>')}
       </div>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
@@ -4793,9 +5241,146 @@ function renderReporte(){
       <b>Orgánico</b> = chatbot, formularios, Cliengo, SEO, directo.<br>
       <b>Comparativa:</b> ${singleDay ? (reporteRange === 'today' ? 'hoy vs ayer.' : 'el día seleccionado vs el día anterior.') : (nDias ? `compara los últimos ${nDias} días con los ${nDias} días inmediatamente anteriores (rolling, NO semana calendario).` : 'no aplica al elegir "Todo el histórico".')}
     </p>
+    ${mostrarListaCompleta ? renderListaCompletaPeriodo(rows) : ''}
     ${renderKeywordsAgregadas(rows)}`;
   // Guardar referencia para que exportarReporteCSV() sepa qué rango y datos usar
   window.__reporteData = { dias, byDay, range: reporteRange };
+  // Guardar los leads del periodo (ya filtrados por rango + vendedor) para el export plano
+  window.__reporteLeadRows = rows;
+  // Etiqueta "viendo: …" junto a los botones Anterior/Siguiente
+  const lbl = document.getElementById('periodoLabel');
+  if (lbl){
+    if (reporteRange === 'all'){ lbl.textContent = 'Viendo: todo el histórico'; }
+    else { const sp = periodoActualSpan(); lbl.textContent = 'Viendo: ' + (sp.desde === sp.hasta ? sp.desde : (sp.desde + ' → ' + sp.hasta)); }
+  }
+}
+
+// Helpers de fecha YYYY-MM-DD en UTC (sin líos de zona horaria al sumar/restar días).
+function ymdToUTC(ymd){ const [y,m,d] = ymd.split('-').map(Number); return Date.UTC(y, m-1, d); }
+function addDaysYmd(ymd, n){ return new Date(ymdToUTC(ymd) + n*864e5).toISOString().slice(0,10); }
+
+// Devuelve {desde, hasta} (YYYY-MM-DD) del periodo que se está viendo ahora.
+function periodoActualSpan(){
+  if (reporteRange === 'custom' && reporteDesde && reporteHasta) return { desde: reporteDesde, hasta: reporteHasta };
+  const h = hoyMx();
+  if (reporteRange === 'today')     return { desde: h, hasta: h };
+  if (reporteRange === 'yesterday'){ const a = ayerMx(); return { desde: a, hasta: a }; }
+  if (reporteRange === '7d')  return { desde: addDaysYmd(h, -6),  hasta: h };
+  if (reporteRange === '30d') return { desde: addDaysYmd(h, -29), hasta: h };
+  // 'all' (histórico) → base de últimos 30 días para poder navegar hacia atrás
+  return { desde: addDaysYmd(h, -29), hasta: h };
+}
+
+// Navega al periodo anterior (-1) o siguiente (+1), conservando el tamaño del periodo (Olga 2026-06-18).
+function navegarPeriodo(dir){
+  const { desde, hasta } = periodoActualSpan();
+  const spanDias = Math.round((ymdToUTC(hasta) - ymdToUTC(desde)) / 864e5) + 1; // inclusivo
+  reporteDesde = addDaysYmd(desde, dir * spanDias);
+  reporteHasta = addDaysYmd(hasta, dir * spanDias);
+  reporteRange = 'custom';
+  document.querySelectorAll('#reporteRange .filter-pill').forEach(x => x.classList.remove('active'));
+  const di = document.getElementById('reporteDesde'), hi = document.getElementById('reporteHasta');
+  if (di) di.value = reporteDesde;
+  if (hi) hi.value = reporteHasta;
+  renderReporte();
+}
+
+// Aplica el rango de fechas personalizado del Reporte (Olga 2026-06-17).
+function aplicarRangoCustom(){
+  const d = document.getElementById('reporteDesde').value;
+  const h = document.getElementById('reporteHasta').value;
+  if (!d || !h){ alert('Elige fecha "desde" y "hasta".'); return; }
+  if (d > h){ alert('La fecha "desde" no puede ser posterior a "hasta".'); return; }
+  reporteDesde = d; reporteHasta = h; reporteRange = 'custom';
+  document.querySelectorAll('#reporteRange .filter-pill').forEach(x => x.classList.remove('active'));
+  renderReporte();
+}
+
+// Muestra/oculta la lista plana de TODOS los leads del periodo.
+function toggleListaCompleta(){
+  mostrarListaCompleta = !mostrarListaCompleta;
+  const b = document.getElementById('btnListaCompleta');
+  if (b) b.classList.toggle('active', mostrarListaCompleta);
+  renderReporte();
+}
+
+// Tabla plana: todos los leads del periodo (ya filtrados por rango + vendedor).
+function renderListaCompletaPeriodo(rows){
+  const leads = [...rows].sort((a,b) => (b.fecha||'').localeCompare(a.fecha||''));
+  const hora = ts => ts ? new Date(String(ts).replace(' ','T')+'Z').toLocaleTimeString('es-MX',{timeZone:TZ_MX,hour:'2-digit',minute:'2-digit'}) : '—';
+  const dia  = ts => ts ? new Date(String(ts).replace(' ','T')+'Z').toLocaleDateString('es-MX',{timeZone:TZ_MX,day:'2-digit',month:'short'}) : '—';
+  const filas = leads.map(l => {
+    const nombre = (l.nombre_real || l.nombre || '—').trim() || '—';
+    const wa = (l.whatsapp || '').replace(/\D/g,'');
+    const tel = wa.startsWith('52') ? wa.slice(2) : wa;
+    const waLink = wa.length >= 10 ? `https://wa.me/52${tel}` : '';
+    const vendedor = (l.vendedor || '').trim() || '— sin asignar';
+    const status = (l.status_proyecto || 'Sin atender').trim();
+    const statusColor = status==='Ganado' ? '#15803d' : (status==='Perdido' ? '#b91c1c' : (status==='Sin atender' ? '#b45309' : '#64748b'));
+    const pagado = esPagado(l);
+    return `<tr style="border-top:1px solid #f1f5f9">
+      <td style="padding:6px 10px;font-size:12px;color:#64748b;white-space:nowrap">${dia(l.fecha)} <span style="color:#cbd5e1">·</span> ${hora(l.fecha)}</td>
+      <td style="padding:6px 10px;font-size:12.5px;color:#0f172a;font-weight:600">${escapeHtml(nombre)}</td>
+      <td style="padding:6px 10px;font-size:12px">${waLink ? `<a href="${waLink}" target="_blank" style="color:#25d366;text-decoration:none;font-weight:600">${escapeHtml(l.whatsapp||'')}</a>` : escapeHtml(l.whatsapp||'—')}</td>
+      <td style="padding:6px 10px;font-size:12px;color:#0f172a">${escapeHtml(vendedor)}</td>
+      <td style="padding:6px 10px;font-size:11.5px"><span style="padding:2px 7px;border-radius:5px;font-weight:700;background:${pagado?'#eff6ff':'#f0fdf4'};color:${pagado?'#1d4ed8':'#15803d'}">${pagado?'💰 Pagado':'🌱 Orgánico'}</span></td>
+      <td style="padding:6px 10px;font-size:11.5px;color:#475569;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(l.gads_campaign||l.campania||'')}">${escapeHtml(l.gads_campaign||'—')}</td>
+      <td style="padding:6px 10px;font-size:11.5px;color:#1d4ed8;font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeAttr(l.gads_keyword||'')}">${escapeHtml(l.gads_keyword||'—')}</td>
+      <td style="padding:6px 10px;font-size:12px;color:${statusColor};font-weight:700">${escapeHtml(status)}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div style="margin-top:18px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff">
+      <div style="padding:10px 14px;background:#0b0f14;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="font-weight:800;font-size:13px">📋 Todos los leads del periodo · ${leads.length} lead${leads.length===1?'':'s'}</span>
+        <button onclick="exportarLeadsPeriodoCSV()" class="filter-pill" style="background:#25d366;color:#fff;border:none;font-weight:700">⬇ Excel (estos leads)</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="background:#f8fafc;font-size:10.5px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;text-align:left">
+            <th style="padding:8px 10px;font-weight:700">Fecha · Hora</th>
+            <th style="padding:8px 10px;font-weight:700">Lead</th>
+            <th style="padding:8px 10px;font-weight:700">Teléfono</th>
+            <th style="padding:8px 10px;font-weight:700">Vendedor</th>
+            <th style="padding:8px 10px;font-weight:700">Origen</th>
+            <th style="padding:8px 10px;font-weight:700">🎯 Campaña</th>
+            <th style="padding:8px 10px;font-weight:700">🔑 Keyword</th>
+            <th style="padding:8px 10px;font-weight:700">Status</th>
+          </tr></thead>
+          <tbody>${filas || '<tr><td colspan="8" style="padding:14px;text-align:center;color:#94a3b8;font-size:12px">Sin leads en el periodo.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// Exporta los leads del periodo a CSV (UTF-8 BOM para abrir directo en Excel).
+function exportarLeadsPeriodoCSV(){
+  const rows = window.__reporteLeadRows || [];
+  if (!rows.length){ alert('No hay leads en el periodo para exportar.'); return; }
+  const leads = [...rows].sort((a,b) => (b.fecha||'').localeCompare(a.fecha||''));
+  const headers = ['Fecha','Hora','Nombre','Telefono','Vendedor','Origen','Campania','Keyword','Status','Ciudad','URL'];
+  const fmt = ts => ts ? new Date(String(ts).replace(' ','T')+'Z') : null;
+  const lines = leads.map(l => {
+    const dt = fmt(l.fecha);
+    const fecha = dt ? dt.toLocaleDateString('en-CA',{timeZone:TZ_MX}) : '';
+    const horaTxt = dt ? dt.toLocaleTimeString('es-MX',{timeZone:TZ_MX,hour:'2-digit',minute:'2-digit'}) : '';
+    const nombre = (l.nombre_real || l.nombre || '').trim();
+    return [
+      csvEsc(fecha), csvEsc(horaTxt), csvEsc(nombre), csvEsc(l.whatsapp||''),
+      csvEsc((l.vendedor||'').trim() || 'Sin asignar'),
+      csvEsc(esPagado(l) ? 'Pagado' : 'Organico'),
+      csvEsc(l.gads_campaign||''), csvEsc(l.gads_keyword||''),
+      csvEsc(l.status_proyecto||'Sin atender'), csvEsc(l.ciudad||''),
+      csvEsc(urlKeyOf(l))
+    ].join(',');
+  });
+  const csv = '﻿' + [headers.join(','), ...lines].join('\r\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const sufijo = (reporteRange === 'custom' && reporteDesde && reporteHasta) ? `${reporteDesde}_a_${reporteHasta}` : reporteRange;
+  a.download = `leads-periodo-${sufijo}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 // Agregación de palabras clave de los leads PAGADOS del periodo (Olga 2026-06-11).
@@ -4924,7 +5509,8 @@ function toggleReporteDetalle(cellEl, day, type){
   document.querySelectorAll('tr.reporte-detalle').forEach(r => { r.style.display = 'none'; r.dataset.openType = ''; });
   if (wasOpen) return;
   // Filtrar leads de ese día + ese origen
-  const wanted = allLeads.filter(l => ymdMx(l.fecha) === day && (type === 'pag' ? esPagado(l) : !esPagado(l)));
+  const wanted = allLeads.filter(l => ymdMx(l.fecha) === day && (type === 'pag' ? esPagado(l) : !esPagado(l))
+    && (reporteVendedor === 'all' || (l.vendedor || '').trim() === reporteVendedor));
   // Agrupar por URL normalizada (sin query string para juntar utm variants)
   const byUrl = {};
   wanted.forEach(l => {
@@ -5038,6 +5624,14 @@ document.addEventListener('click', e => {
   b.classList.add('active');
   reporteRange = b.dataset.rrange;
   renderReporte();
+});
+
+// Listener del filtro por vendedor del Reporte (Olga 2026-06-17)
+document.addEventListener('change', e => {
+  if (e.target && e.target.id === 'reporteVendedor'){
+    reporteVendedor = e.target.value;
+    renderReporte();
+  }
 });
 
 function renderLeaderboard(){
@@ -5191,6 +5785,10 @@ function activateTab(tab){
     if (tab === 'plantillas') loadPlantillasEditor();
     if (tab === 'trafico') renderTraficoAds();
     if (tab === 'reporte') renderReporte();
+    // Nuevos tabs Olga 2026-06-24
+    if (tab === 'resumen') { try { renderResumen(); } catch(e){ console.warn(e); } }
+    if (tab === 'oportunidades') { try { renderOportunidades(); } catch(e){ console.warn(e); } }
+    if (tab === 'tareas') { try { renderTareas(); } catch(e){ console.warn(e); } }
   }
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -5228,6 +5826,87 @@ function buildReplyMsg(l){
 function escapeHtml(s){
   if (s == null) return '';
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// ====== WhatsApp Web vs Desktop (Olga 2026-06-24) =======================
+// Cada usuario elige UNA vez si quiere que el botón "Responder" abra WhatsApp
+// Web (default, funciona en cualquier máquina sin app) o WhatsApp Desktop
+// (más cómodo si ya está instalada). Se guarda en localStorage por navegador.
+const WA_PREF_KEY = 'sm_wa_pref';
+function getWaPref(){
+  const v = (localStorage.getItem(WA_PREF_KEY) || 'web').toLowerCase();
+  return (v === 'desktop' || v === 'app') ? 'desktop' : 'web';
+}
+function setWaPref(v){
+  localStorage.setItem(WA_PREF_KEY, v === 'desktop' ? 'desktop' : 'web');
+}
+function buildWaUrl(phone, text){
+  const tel = String(phone || '').replace(/\D/g, '');
+  if (tel.length < 8) return '';
+  const num = tel.startsWith('52') ? tel : ('52' + tel);
+  const t = text ? '?text=' + encodeURIComponent(text) : '';
+  if (getWaPref() === 'desktop'){
+    // Esquema de WhatsApp Desktop. Funciona si la app está instalada.
+    return 'whatsapp://send?phone=' + num + (text ? '&text=' + encodeURIComponent(text) : '');
+  }
+  return 'https://wa.me/' + num + t;
+}
+function abrirToggleWa(){
+  let m = document.getElementById('waPrefModal');
+  if (!m){
+    m = document.createElement('div');
+    m.id = 'waPrefModal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(11,15,20,.5);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)';
+    m.onclick = (e) => { if (e.target === m) m.style.display = 'none'; };
+    document.body.appendChild(m);
+  }
+  const pref = getWaPref();
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:18px;max-width:380px;width:100%;padding:24px 24px 20px;box-shadow:0 30px 60px rgba(0,0,0,.25)">
+      <div style="font-size:18px;font-weight:800;color:#0b0f14;margin-bottom:4px">Cómo abrir WhatsApp</div>
+      <div style="font-size:13px;color:#6b7280;margin-bottom:18px">Esta preferencia es solo para tu navegador. La puedes cambiar cuando quieras.</div>
+      <label style="display:flex;align-items:center;gap:14px;padding:14px;border:2px solid ${pref==='web'?'#25d366':'#e5e7eb'};border-radius:12px;cursor:pointer;margin-bottom:10px;background:${pref==='web'?'#f0fdf4':'#fff'}">
+        <input type="radio" name="waPref" value="web" ${pref==='web'?'checked':''} style="margin:0">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#0b0f14">🌐 WhatsApp Web</div>
+          <div style="font-size:12px;color:#6b7280;margin-top:2px">Abre en el navegador. Funciona en cualquier máquina.</div>
+        </div>
+      </label>
+      <label style="display:flex;align-items:center;gap:14px;padding:14px;border:2px solid ${pref==='desktop'?'#25d366':'#e5e7eb'};border-radius:12px;cursor:pointer;background:${pref==='desktop'?'#f0fdf4':'#fff'}">
+        <input type="radio" name="waPref" value="desktop" ${pref==='desktop'?'checked':''} style="margin:0">
+        <div style="flex:1">
+          <div style="font-weight:700;color:#0b0f14">💻 WhatsApp Escritorio</div>
+          <div style="font-size:12px;color:#6b7280;margin-top:2px">Abre la app instalada. Requiere WhatsApp Desktop.</div>
+        </div>
+      </label>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px">
+        <button type="button" onclick="document.getElementById('waPrefModal').style.display='none'" style="background:#fff;color:#6b7280;border:1px solid #e5e7eb;padding:10px 18px;border-radius:10px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button type="button" onclick="guardarWaPref()" style="background:#25d366;color:#fff;border:0;padding:10px 20px;border-radius:10px;font-weight:800;cursor:pointer">Guardar</button>
+      </div>
+    </div>
+  `;
+  m.style.display = 'flex';
+}
+function guardarWaPref(){
+  const sel = document.querySelector('#waPrefModal input[name="waPref"]:checked');
+  if (sel) setWaPref(sel.value);
+  document.getElementById('waPrefModal').style.display = 'none';
+  // Refrescar labels y vistas
+  try { const a = document.getElementById('waPrefLabel'); if (a) a.textContent = getWaPref()==='desktop'?'Escritorio':'Web'; } catch(e){}
+  try { const b = document.getElementById('sbWaPrefLabel'); if (b) b.textContent = getWaPref()==='desktop'?'Escritorio':'Web'; } catch(e){}
+  try { if (typeof renderVendedorDash === 'function') renderVendedorDash(); } catch(e){}
+  try { if (typeof renderTareas === 'function') renderTareas(); } catch(e){}
+}
+// Formatea m²/canchas dinámicamente (Olga 2026-06-24): si el valor ya menciona "canchas"
+// (pádel/tenis/pickleball cuentan canchas, no m²) lo muestra tal cual; si es un número
+// le agrega " m²". Si está vacío devuelve el fallback.
+function fmtM2(v, fallback){
+  if (fallback === undefined) fallback = '? m²';
+  const x = String(v == null ? '' : v).trim();
+  if (!x || x === '—') return fallback;
+  if (/canchas?\b/i.test(x)) return x;
+  if (/m[²2]\b/i.test(x)) return x;
+  return x + ' m²';
 }
 function escapeAttr(s){
   return escapeHtml(s).replace(/"/g,'&quot;');
@@ -5378,6 +6057,838 @@ document.addEventListener('keydown', (e) => {
     else if (asistModal.classList.contains('show') && localStorage.getItem(STORAGE_USER)) asistModal.classList.remove('show');
   }
 });
+
+// ====== PREVIEW COMO VENDEDOR (Olga 2026-06-24) =================================
+// Permite al admin/super_admin ver el dashboard tal cual lo ve un vendedor
+// (filtrado a SUS leads, sin pestañas de dinero/equipo/reportes), sin perder
+// su sesión real. El estado original se guarda en sessionStorage y se restaura
+// con el botón "Volver a admin" del banner morado.
+const STORAGE_PREVIEW = 'sm_preview_state';
+function openPreviewMenu(){
+  if (CURRENT_ROLE === 'vendedor') return;
+  let m = document.getElementById('previewMenu');
+  if (!m){
+    m = document.createElement('div');
+    m.id = 'previewMenu';
+    m.style.cssText = 'position:fixed;background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 12px 32px rgba(2,6,23,.18);padding:6px 0;width:240px;z-index:10001;max-height:60vh;overflow-y:auto';
+    document.body.appendChild(m);
+    document.addEventListener('click', (e) => {
+      if (!m.contains(e.target) && e.target.id !== 'previewVendBtn' && !e.target.closest('#previewVendBtn')){
+        m.style.display = 'none';
+      }
+    });
+  }
+  const items = VENDEDORES.map(v => {
+    const safe = v.replace(/'/g, "\\'");
+    return `<button type="button" onclick="previewAsVendedor('${safe}')" style="display:block;width:100%;text-align:left;padding:9px 14px;border:0;background:none;cursor:pointer;font-size:13px;color:#0b0f14;border-bottom:1px solid #f1f5f9">${escapeHtml(v)}</button>`;
+  }).join('');
+  m.innerHTML = `<div style="padding:10px 14px;font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #eef2f6">Ver dashboard como…</div>${items}`;
+  const btn = document.getElementById('previewVendBtn');
+  if (btn){
+    const r = btn.getBoundingClientRect();
+    m.style.right = (window.innerWidth - r.right) + 'px';
+    m.style.top = (r.bottom + 6) + 'px';
+    m.style.left = 'auto';
+  }
+  m.style.display = 'block';
+}
+function previewAsVendedor(nombre){
+  if (CURRENT_ROLE === 'vendedor') return;
+  sessionStorage.setItem(STORAGE_PREVIEW, JSON.stringify({ role: CURRENT_ROLE, user: currentUser() }));
+  CURRENT_ROLE = 'vendedor';
+  localStorage.setItem(STORAGE_ROLE, 'vendedor');
+  localStorage.setItem(STORAGE_USER, nombre);
+  applyRoleUI();
+  showPreviewBanner(nombre);
+  const menu = document.getElementById('previewMenu');
+  if (menu) menu.style.display = 'none';
+  try { refreshAll(); } catch(e){}
+}
+function exitPreview(){
+  const raw = sessionStorage.getItem(STORAGE_PREVIEW);
+  if (!raw) return;
+  let saved;
+  try { saved = JSON.parse(raw); } catch(e){ return; }
+  CURRENT_ROLE = saved.role || 'super_admin';
+  localStorage.setItem(STORAGE_ROLE, CURRENT_ROLE);
+  if (saved.user) localStorage.setItem(STORAGE_USER, saved.user);
+  sessionStorage.removeItem(STORAGE_PREVIEW);
+  applyRoleUI();
+  hidePreviewBanner();
+  try { refreshAll(); } catch(e){}
+}
+function showPreviewBanner(nombre){
+  let b = document.getElementById('previewBanner');
+  if (!b){
+    b = document.createElement('div');
+    b.id = 'previewBanner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:linear-gradient(90deg,#7c3aed,#6d28d9);color:#fff;padding:10px 16px;text-align:center;z-index:10000;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:0 2px 12px rgba(124,58,237,.35)';
+    document.body.appendChild(b);
+  }
+  b.innerHTML = `<span style="font-size:13px">👁️ Vista preview como <b>${escapeHtml(nombre)}</b></span><button type="button" onclick="exitPreview()" style="background:#fff;color:#7c3aed;border:0;border-radius:8px;padding:7px 18px;font-weight:800;cursor:pointer;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15)">← Volver a admin</button>`;
+  b.style.display = 'flex';
+  document.body.style.paddingTop = '46px';
+}
+function hidePreviewBanner(){
+  const b = document.getElementById('previewBanner');
+  if (b) b.style.display = 'none';
+  document.body.style.paddingTop = '';
+}
+// Al cargar el dash, si quedó un preview activo (refresh de página), reanudar el banner.
+function restorePreviewBannerIfActive(){
+  if (sessionStorage.getItem(STORAGE_PREVIEW) && CURRENT_ROLE === 'vendedor'){
+    showPreviewBanner(currentUser());
+  }
+}
+
+
+// =============== VENDEDOR DASHBOARD v2 (Olga 2026-06-24) ===============
+// Vista action-first para vendedor: hero con meta del mes + 3 prioridades
+// (Atiende ahora / Cierra esta semana / Tibios) + lista de leads como tarjetas
+// con calor 🔥/🌡/🧊. Reemplaza la tabla tradicional cuando role===vendedor.
+
+function vdGreetingByHour(){
+  const h = new Date().getHours();
+  if (h < 12) return 'Buenos días';
+  if (h < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}
+function vdParseFecha(fecha){
+  try { return Date.parse(String(fecha).replace(' ', 'T') + 'Z') || 0; } catch(e){ return 0; }
+}
+function vdTiempoSinAtender(fecha){
+  const t = vdParseFecha(fecha); if (!t) return '';
+  const mins = Math.max(0, Math.round((Date.now() - t) / 60000));
+  if (mins < 60) return mins + ' min';
+  if (mins < 1440) return Math.floor(mins/60) + ' h';
+  return Math.floor(mins/1440) + ' d';
+}
+function vdTiempoTranscurrido(fecha){
+  const t = vdParseFecha(fecha); if (!t) return '';
+  const mins = Math.max(0, Math.round((Date.now() - t) / 60000));
+  if (mins < 60) return `hace ${mins} min`;
+  if (mins < 1440) return `hace ${Math.floor(mins/60)} h`;
+  return `hace ${Math.floor(mins/1440)} d`;
+}
+function vdEsteMes(fecha){
+  const t = vdParseFecha(fecha); if (!t) return false;
+  const d = new Date(t); const n = new Date();
+  return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+}
+function vdLeadTemp(l){
+  // Score: WA real, m², ciudad, mensaje, frescura.
+  let s = 0;
+  if ((l.whatsapp || '').replace(/\D/g,'').length >= 10) s += 1;
+  const m2v = (l.m2 || '').toString().trim();
+  if (m2v && m2v !== '—') s += 1;
+  if ((l.ciudad || '').trim()) s += 1;
+  if ((l.comentarios || '').length > 30) s += 1;
+  const t = vdParseFecha(l.fecha);
+  if (t){
+    const horas = (Date.now() - t) / 3600000;
+    if (horas < 4) s += 2;
+    else if (horas < 24) s += 1;
+  }
+  if (s >= 5) return { emoji: '🔥', label: 'Caliente', color: '#dc2626' };
+  if (s >= 3) return { emoji: '🌡️', label: 'Tibio', color: '#f59e0b' };
+  return { emoji: '🧊', label: 'Frío', color: '#64748b' };
+}
+function vdExtractoMensaje(l){
+  const c = (l.comentarios || '').trim();
+  if (!c) return '';
+  const m = c.match(/Mensaje del cliente:\s*"([^"]+)"/i);
+  if (m) return m[1].slice(0, 90);
+  return c.split(/\n/)[0].slice(0, 90);
+}
+function vdWaLink(l){
+  return buildWaUrl(l.whatsapp || '', '');
+}
+// Detectar marca/producto del lead (Olga 2026-06-24). Mapeo:
+//   Sportmaster  = pasto sintético + canchas de fútbol (sportmaster.mx, canchadefutbol7.mx, pasto-sintetico)
+//   Padelcenter  = canchas de pádel (padelcenter.mx, canchasdepadel)
+//   Pickleball   = canchas de pickleball (canchasdepickleball, pickleball.*)
+//   Accesorios   = leads que SOLO son accesorios (porterías, bancas, gradas, alumbrado) sin cancha
+function vdDetectMarca(l){
+  const landing = (l.landing || '').toLowerCase();
+  const tipo = (l.tipo_cliente || '').toLowerCase().trim();
+  const com = (l.comentarios || '').toLowerCase();
+  const url = (l.url || '').toLowerCase();
+  const haystack = landing + ' ' + url + ' ' + com + ' ' + tipo;
+
+  // 1) Pickleball
+  if (/pickleball|canchasdepickleball/.test(haystack))
+    return { label: 'Pickleball', color: '#a855f7', bg: '#f3e8ff', cancha: 'canchas' };
+  // 2) Pádel
+  if (/p[aá]del|padelcenter|canchasdepadel|padel-/.test(haystack))
+    return { label: 'Padelcenter', color: '#3b82f6', bg: '#dbeafe', cancha: 'canchas' };
+  // 3) Accesorios SOLO (sin cancha): bancas-futbol, gradas, porterías sin pasto/cancha
+  const esPuroAccesorio = /sportmaster-bancas|gradasdefutbol|gradas-deportiv|porterias-?futbol/.test(haystack) || (
+    /^(porter[ií]as?|bancas?|gradas?|alumbrado|malla)/i.test(tipo)
+  );
+  if (esPuroAccesorio)
+    return { label: 'Accesorios', color: '#f97316', bg: '#fed7aa', cancha: null };
+  // 4) Sportmaster por default (cancha fútbol / pasto sintético)
+  return { label: 'Sportmaster', color: '#16a34a', bg: '#dcfce7', cancha: 'm²' };
+}
+// Lista de accesorios mencionados (porterías, bancas, gradas, alumbrado, malla).
+function vdAccesoriosList(l){
+  const t = ((l.comentarios || '') + ' ' + (l.tipo_cliente || '')).toLowerCase();
+  const list = [];
+  if (/porter[ií]a/.test(t)) list.push('Porterías');
+  if (/banca/.test(t)) list.push('Bancas');
+  if (/grada/.test(t)) list.push('Gradas');
+  if (/alumbrado/.test(t)) list.push('Alumbrado');
+  if (/\bmalla\b/.test(t)) list.push('Malla');
+  return list;
+}
+function vdStatusPillCSS(stp){
+  switch ((stp || '').trim()) {
+    case 'Ganado':       return 'background:#dcfce7;color:#166534';
+    case 'Perdido':      return 'background:#fee2e2;color:#991b1b';
+    case 'Cotizado':     return 'background:#dbeafe;color:#1e40af';
+    case 'Contactando':  return 'background:#fef3c7;color:#92400e';
+    case 'Contactado':   return 'background:#fef3c7;color:#92400e';
+    default:             return 'background:rgba(11,15,20,.06);color:#475569';
+  }
+}
+function vdTuPrioridades(urg, cot, tib){
+  const partes = [];
+  if (urg) partes.push(`<b>${urg}</b> ${urg === 1 ? 'urgente' : 'urgentes'}`);
+  if (cot) partes.push(`<b>${cot}</b> por cerrar`);
+  if (tib) partes.push(`<b>${tib}</b> ${tib === 1 ? 'tibio' : 'tibios'}`);
+  if (!partes.length) return 'Día tranquilo. Aprovecha para reactivar leads históricos.';
+  return 'Hoy: ' + partes.join(' · ');
+}
+function renderVendedorDash(){
+  const root = document.getElementById('vendedorDash');
+  if (!root) return;
+  if (CURRENT_ROLE !== 'vendedor'){ root.style.display = 'none'; return; }
+
+  const yo = (currentUser() || '').trim().toLowerCase();
+  const utiles = _filtrarLeadsVisibles(allLeads);
+  const mios = utiles.filter(l => (l.vendedor || '').trim().toLowerCase() === yo);
+
+  const ganadosMes = mios.filter(l => (l.status_proyecto || '') === 'Ganado' && vdEsteMes(l.fecha)).length;
+  const META = parseInt(localStorage.getItem('sm_meta_mes_' + yo) || '8', 10);
+  const pct = META > 0 ? Math.min(100, Math.round(ganadosMes / META * 100)) : 0;
+
+  const sinAtender = mios.filter(l => !l.status_proyecto || l.status_proyecto === 'Sin atender')
+    .sort((a,b) => vdParseFecha(a.fecha) - vdParseFecha(b.fecha));
+  const cotizados = mios.filter(l => (l.status_proyecto || '') === 'Cotizado')
+    .sort((a,b) => vdParseFecha(a.fecha) - vdParseFecha(b.fecha));
+  const tibios = mios.filter(l => {
+    const stp = l.status_proyecto || '';
+    if (stp !== 'Contactando' && stp !== 'Contactado') return false;
+    const t = vdParseFecha(l.fecha); if (!t) return false;
+    return (Date.now() - t) > 24*3600*1000;
+  });
+  const masUrgente = sinAtender[0];
+
+  const nombre = currentUser() || 'vendedor';
+  let html = `
+    <div class="vd-hero">
+      <div class="vd-time" style="display:flex;align-items:center;justify-content:space-between"><span>${vdGreetingByHour()} 👋</span><button type="button" onclick="abrirToggleWa()" title="Cómo abrir WhatsApp (Web o Escritorio)" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">${getWaPref()==='desktop'?'💻 Escritorio':'🌐 Web'} <span style="opacity:.6">⚙️</span></button></div>
+      <h1>Hola, ${escapeHtml(nombre)}</h1>
+      <div class="vd-subtitle">${vdTuPrioridades(sinAtender.length, cotizados.length, tibios.length)}</div>
+      <div class="vd-goal">
+        <div class="vd-goal-row">
+          <span>${ganadosMes} / ${META} ventas del mes</span>
+          <span class="vd-goal-pct">${pct}%</span>
+        </div>
+        <div class="vd-bar"><div class="vd-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>
+  `;
+
+  if (masUrgente){
+    const wa = vdWaLink(masUrgente);
+    const m2d = (typeof fmtM2 === 'function') ? fmtM2(masUrgente.m2, '? m²') : (masUrgente.m2 || '? m²');
+    html += `
+      <div class="vd-priority" style="--vd-priority-color:#dc2626">
+        <h3>🔥 Atiende ahora · ${vdTiempoSinAtender(masUrgente.fecha)} sin contactar</h3>
+        <div class="vd-title">${escapeHtml(masUrgente.nombre || 'Sin nombre')}</div>
+        <div class="vd-marca-row" style="margin-bottom:8px">
+          <span class="vd-marca-pill" style="background:${vdDetectMarca(masUrgente).bg};color:${vdDetectMarca(masUrgente).color}">${escapeHtml(vdDetectMarca(masUrgente).label)}</span>
+          ${(masUrgente.m2 || '').toString().trim() && m2d && m2d !== '? m²' ? `<span class="vd-m2-pill">${escapeHtml(m2d)}</span>` : ''}
+          ${vdAccesoriosList(masUrgente).length ? `<span class="vd-acc-pill">${vdDetectMarca(masUrgente).label === 'Accesorios' ? '' : '+ '}${vdAccesoriosList(masUrgente).join(', ')}</span>` : ''}
+        </div>
+        <div class="vd-meta-row">${escapeHtml(masUrgente.ciudad || '—')} · ${escapeHtml(masUrgente.whatsapp || '—')}</div>
+        ${vdExtractoMensaje(masUrgente) ? `<div class="vd-msg">"${escapeHtml(vdExtractoMensaje(masUrgente))}"</div>` : ''}
+        ${wa ? `<a class="vd-action-btn" href="${wa}" target="_blank" onclick="marcarContactando(${masUrgente.id})">💬 Responder por WhatsApp</a>` : '<div style="color:#94a3b8;font-size:13px;margin-top:10px">Sin WhatsApp válido</div>'}
+      </div>
+    `;
+  }
+
+  if (cotizados.length){
+    html += `
+      <div class="vd-priority" style="--vd-priority-color:#16a34a">
+        <h3>💰 Cierra esta semana</h3>
+        <div class="vd-title">${cotizados.length} ${cotizados.length === 1 ? 'lead cotizado esperando seguimiento' : 'leads cotizados esperando seguimiento'}</div>
+        <div class="vd-sub-leads">
+          ${cotizados.slice(0, 4).map(l => {
+            const wa = vdWaLink(l);
+            return `
+              <div class="vd-sub-lead">
+                <div class="vd-sub-info">
+                  <div class="vd-sub-name">${escapeHtml(l.nombre || 'Sin nombre')}</div>
+                  <div class="vd-sub-meta">Cotizado · ${vdTiempoTranscurrido(l.fecha)}</div>
+                </div>
+                ${wa ? `<a class="vd-mini-action" href="${wa}" target="_blank" onclick="marcarContactando(${l.id})">💬 Recordar</a>` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  if (tibios.length){
+    html += `
+      <div class="vd-priority" style="--vd-priority-color:#f59e0b">
+        <h3>🌡️ Tibios — revisa hoy</h3>
+        <div class="vd-title">${tibios.length} ${tibios.length === 1 ? 'lead sin moverse' : 'leads sin moverse'} en >24h</div>
+        <div class="vd-meta-row">Contactaste pero el cliente no respondió. Vuelve a intentar.</div>
+        <button class="vd-action-btn amber" onclick="document.getElementById('vdLeadList').scrollIntoView({behavior:'smooth'})">Ver todos →</button>
+      </div>
+    `;
+  }
+
+  if (!mios.length){
+    html += `
+      <div class="vd-empty">
+        <div class="vd-empty-emoji">🎯</div>
+        <div style="font-weight:800;color:#0b0f14;font-size:16px;margin-bottom:6px">Sin leads asignados aún</div>
+        <div style="font-size:13px">Cuando llegue un lead nuevo te avisamos.</div>
+      </div>
+    `;
+  } else {
+    // Sort all leads by temp (caliente primero), then by recencia
+    const sorted = [...mios].sort((a,b) => {
+      const ta = vdLeadTemp(a), tb = vdLeadTemp(b);
+      const order = { '🔥': 0, '🌡️': 1, '🧊': 2 };
+      const dif = order[ta.emoji] - order[tb.emoji];
+      if (dif !== 0) return dif;
+      return vdParseFecha(b.fecha) - vdParseFecha(a.fecha);
+    });
+    html += `
+      <div class="vd-list-header">
+        <h2 id="vdLeadList">Todos mis leads (${mios.length})</h2>
+        <input class="vd-search" id="vdSearchInput" type="search" placeholder="Buscar nombre, ciudad, marca…" oninput="filterVdList(this.value)">
+      </div>
+      <div class="vd-table-wrap">
+        <table class="vd-table">
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>Marca</th>
+              <th>Tamaño</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="vdLeadListWrap">
+            ${sorted.map(l => vdRenderLeadCard(l)).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  root.innerHTML = html;
+  root.style.display = 'block';
+}
+
+function vdRenderLeadCard(l){
+  const temp = vdLeadTemp(l);
+  const wa = vdWaLink(l);
+  const m2v = (l.m2 || '').toString().trim();
+  const m2d = (typeof fmtM2 === 'function') ? fmtM2(l.m2, '') : m2v;
+  const msg = vdExtractoMensaje(l);
+  const stp = l.status_proyecto || 'Sin atender';
+  const marca = vdDetectMarca(l);
+  const accesorios = vdAccesoriosList(l);
+  const searchKey = (l.nombre + ' ' + l.ciudad + ' ' + l.whatsapp + ' ' + l.comentarios + ' ' + marca.label).toLowerCase();
+  const tamanoCelda = m2d || (accesorios.length ? accesorios.join(', ') : '—');
+  // Status como dropdown editable (vendedor puede cambiar Sin atender → Contactado → Cotizado → Ganado/Perdido)
+  // Plantillas WhatsApp + Responder + Notas — funciones reales del vendedor
+  return `
+    <tr class="vd-row" data-lead-id="${l.id}" data-search="${escapeAttr(searchKey)}">
+      <td class="vd-cell-lead" onclick="vdShowLeadDetail(${l.id})" style="cursor:pointer">
+        <div class="vd-lead-line"><span class="vd-temp" title="${temp.label}">${temp.emoji}</span> ${escapeHtml(l.nombre || 'Sin nombre')}</div>
+        <div class="vd-lead-sub">${escapeHtml(l.ciudad || '—')} · ${escapeHtml(l.whatsapp || '—')} · ${vdTiempoTranscurrido(l.fecha)}</div>
+        ${msg ? `<div class="vd-lead-msg">"${escapeHtml(msg)}"</div>` : ''}
+      </td>
+      <td class="vd-cell-marca"><span class="vd-marca-pill" style="background:${marca.bg};color:${marca.color}">${escapeHtml(marca.label)}</span></td>
+      <td class="vd-cell-tamano">${escapeHtml(tamanoCelda)}</td>
+      <td class="vd-cell-status">${typeof selectStatus === 'function' ? selectStatus(l) : '<span>'+escapeHtml(stp)+'</span>'}</td>
+      <td class="vd-cell-action">
+        <div style="display:inline-flex;gap:6px;align-items:center">
+          ${typeof plantillasBtn === 'function' ? plantillasBtn(l.id) : ''}
+          <button type="button" class="vd-notes-btn" onclick="event.stopPropagation();vdShowLeadDetail(${l.id})" title="Ver detalle y notas">📝</button>
+          ${wa ? `<a class="vd-mini-action" href="${wa}" target="_blank" onclick="event.stopPropagation();if(typeof marcarContactando==='function')marcarContactando(${l.id})">💬 Responder</a>` : '<span style="color:#cbd5e1;font-size:11px">Sin WA</span>'}
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+// Modal de detalle de lead (Olga 2026-06-24): vendedor puede ver info completa,
+// historia de comentarios, y editar notas internas. Se abre desde la celda Lead
+// o desde el botón 📝.
+function vdShowLeadDetail(id){
+  const l = (allLeads || []).find(x => x.id === id);
+  if (!l) return;
+  let m = document.getElementById('vdDetailModal');
+  if (!m){
+    m = document.createElement('div');
+    m.id = 'vdDetailModal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(11,15,20,.55);z-index:11000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);overflow-y:auto';
+    m.onclick = (e) => { if (e.target === m) m.style.display = 'none'; };
+    document.body.appendChild(m);
+  }
+  const wa = vdWaLink(l);
+  const marca = vdDetectMarca(l);
+  const accesorios = vdAccesoriosList(l);
+  const stp = l.status_proyecto || 'Sin atender';
+  const m2d = (typeof fmtM2 === 'function') ? fmtM2(l.m2, '—') : (l.m2 || '—');
+  m.innerHTML = `
+    <div style="background:#fff;border-radius:18px;max-width:540px;width:100%;padding:0;box-shadow:0 30px 80px rgba(0,0,0,.25);max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+      <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;background:#fafbfc;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div>
+          <div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em">Lead #${l.id}</div>
+          <h2 style="font-size:20px;font-weight:800;margin:4px 0 0;color:#0b0f14;letter-spacing:-.01em">${escapeHtml(l.nombre || 'Sin nombre')}</h2>
+        </div>
+        <button type="button" onclick="document.getElementById('vdDetailModal').style.display='none'" style="background:none;border:0;font-size:24px;cursor:pointer;color:#94a3b8;padding:0;line-height:1" title="Cerrar">×</button>
+      </div>
+      <div style="padding:18px 22px;flex:1;overflow-y:auto">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span class="vd-marca-pill" style="background:${marca.bg};color:${marca.color}">${escapeHtml(marca.label)}</span>
+          ${l.m2 ? `<span class="vd-m2-pill">${escapeHtml(m2d)}</span>` : ''}
+          ${accesorios.length ? `<span class="vd-acc-pill">${accesorios.join(', ')}</span>` : ''}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px 18px;font-size:13px;margin-bottom:18px">
+          <div><div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Ciudad</div><div style="color:#0b0f14;margin-top:2px">${escapeHtml(l.ciudad || '—')}</div></div>
+          <div><div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">WhatsApp</div><div style="color:#0b0f14;margin-top:2px;font-family:ui-monospace,Menlo,monospace">${escapeHtml(l.whatsapp || '—')}</div></div>
+          <div><div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Origen</div><div style="color:#0b0f14;margin-top:2px;font-size:12px">${escapeHtml(l.fuente || '—')}</div></div>
+          <div><div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Fecha</div><div style="color:#0b0f14;margin-top:2px;font-size:12px">${vdTiempoTranscurrido(l.fecha)}</div></div>
+        </div>
+        ${l.comentarios ? `
+          <div style="margin-bottom:18px">
+            <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Mensaje del cliente</div>
+            <div style="background:#f8fafc;border-left:3px solid #22c55e;padding:12px 14px;border-radius:8px;font-size:13px;color:#0b0f14;white-space:pre-wrap;line-height:1.55">${escapeHtml(l.comentarios)}</div>
+          </div>
+        ` : ''}
+        <div>
+          <label style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Mis notas (privadas)</label>
+          <textarea id="vdNotesArea" data-lead-id="${l.id}" placeholder="Anota lo que platicaste con el cliente: precio que mencionó, cuándo lo vuelves a llamar, objeciones, etc." style="width:100%;min-height:90px;margin-top:6px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:13px;resize:vertical">${escapeHtml(l.notas_internas || '')}</textarea>
+        </div>
+      </div>
+      <div style="padding:14px 22px;border-top:1px solid #f1f5f9;background:#fafbfc;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+        <button type="button" onclick="document.getElementById('vdDetailModal').style.display='none'" style="background:#fff;color:#6b7280;border:1px solid #e5e7eb;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer">Cerrar</button>
+        <button type="button" onclick="vdSaveNotes(${l.id})" style="background:#0b0f14;color:#fff;border:0;padding:10px 18px;border-radius:10px;font-weight:800;cursor:pointer">Guardar nota</button>
+        ${wa ? `<a href="${wa}" target="_blank" onclick="if(typeof marcarContactando==='function')marcarContactando(${l.id})" style="background:#25d366;color:#fff;border:0;padding:10px 18px;border-radius:10px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px">💬 Responder</a>` : ''}
+      </div>
+    </div>
+  `;
+  m.style.display = 'flex';
+}
+
+async function vdSaveNotes(id){
+  const area = document.getElementById('vdNotesArea');
+  if (!area) return;
+  const val = area.value;
+  const pwd = (typeof localStorage !== 'undefined' && localStorage.getItem('sm_admin_pwd')) || '';
+  try {
+    const r = await fetch('/api/lead-update', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id, password: pwd, notas_internas: val })
+    });
+    const j = await r.json();
+    if (j && j.ok){
+      const lead = (allLeads || []).find(x => x.id === id);
+      if (lead) lead.notas_internas = val;
+      const btn = area.closest('div').parentNode.querySelector('button[onclick*="vdSaveNotes"]');
+      if (btn){ btn.textContent = '✓ Guardado'; btn.style.background = '#16a34a'; setTimeout(() => { btn.textContent = 'Guardar nota'; btn.style.background = '#0b0f14'; }, 1500); }
+    } else {
+      alert('Error guardando nota: ' + (j.error || 'desconocido'));
+    }
+  } catch(e){ alert('Error de conexión: ' + e.message); }
+}
+
+
+function vdToggleCard(id){
+  // Por ahora abrimos WhatsApp si tiene; futuro: abrir modal con detalle completo
+  const l = allLeads.find(x => x.id === id);
+  if (!l) return;
+  const wa = vdWaLink(l);
+  if (wa) window.open(wa, '_blank');
+}
+
+function filterVdList(q){
+  q = (q || '').toLowerCase().trim();
+  const rows = document.querySelectorAll('#vdLeadListWrap .vd-row');
+  rows.forEach(r => {
+    const match = !q || (r.dataset.search || '').includes(q);
+    r.style.display = match ? '' : 'none';
+  });
+}
+
+
+// ====== SIDEBAR (Olga 2026-06-24) =================================
+// Navegación lateral que reemplaza visualmente las tabs superiores.
+// Cada item llama activateTab() (el sistema viejo sigue intacto debajo).
+function sbClick(btn){
+  const tab = btn.dataset.sbTab;
+  if (!tab) return;
+  // Marcar activo en sidebar
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  btn.classList.add('active');
+  // Disparar el tab original
+  if (typeof activateTab === 'function') activateTab(tab);
+  // Aplicar filtro especial si lo hay (oportunidades / tareas)
+  const filt = btn.dataset.sbFilter || '';
+  if (filt === 'oportunidades') aplicarFiltroOportunidades();
+  else if (filt === 'tareas') aplicarFiltroTareas();
+  // Cerrar sidebar en mobile
+  if (window.innerWidth < 900) toggleSidebar(false);
+  // Update URL hash
+  try { history.replaceState(null, '', '#' + (filt || tab)); } catch(e){}
+}
+function toggleSidebar(force){
+  const sb = document.getElementById('sidebar');
+  const bd = document.querySelector('.sb-backdrop');
+  if (!sb) return;
+  const willOpen = (typeof force === 'boolean') ? force : !sb.classList.contains('open');
+  sb.classList.toggle('open', willOpen);
+  if (bd) bd.classList.toggle('show', willOpen);
+}
+function activarSidebar(){
+  document.body.classList.add('has-sidebar');
+  // Marcar el item por default si nada está activo
+  const anyActive = document.querySelector('.sb-item.active');
+  if (!anyActive) {
+    const def = document.querySelector('.sb-item[data-sb-default="1"]');
+    if (def) def.classList.add('active');
+  }
+  // Llenar nombre en sub
+  try {
+    const sub = document.getElementById('sbSub');
+    if (sub) sub.textContent = (typeof currentUser === 'function') ? currentUser() : '';
+  } catch(e){}
+  // Actualizar badges
+  actualizarBadgesSidebar();
+}
+function actualizarBadgesSidebar(){
+  try {
+    if (typeof allLeads === 'undefined') return;
+    const vis = (typeof _filtrarLeadsVisibles === 'function') ? _filtrarLeadsVisibles(allLeads) : allLeads;
+    const yo = (typeof currentUser === 'function' ? currentUser() : '').trim().toLowerCase();
+    const pool = (CURRENT_ROLE === 'vendedor')
+      ? vis.filter(l => (l.vendedor||'').trim().toLowerCase() === yo)
+      : vis;
+    const setBadge = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = String(n); };
+    setBadge('sbBadgeLeads', pool.length);
+    setBadge('sbBadgeVip', pool.filter(l => (parseFloat(l.m2)||0) >= 3000).length);
+    const oport = pool.filter(l => ['Cotizado','Negociando','Negociación'].includes(l.status_proyecto||''));
+    setBadge('sbBadgeOpor', oport.length);
+    const tareas = pool.filter(l => {
+      const stp = l.status_proyecto || 'Sin atender';
+      if (['Ganado','Perdido'].includes(stp)) return false;
+      const ageH = (Date.now() - (typeof parseFecha === 'function' ? parseFecha(l.fecha) : Date.parse(String(l.fecha).replace(' ','T')+'Z'))) / 3600000;
+      return ageH > 24; // sin moverse >24h = tarea pendiente
+    });
+    setBadge('sbBadgeTareas', tareas.length);
+  } catch(e){}
+}
+function aplicarFiltroOportunidades(){
+  // Simple: redirige a leads tab y scrollea hasta la lista. El filtro real
+  // se haría con un store global de filtro; por ahora lo dejamos abierto.
+  try { window.scrollTo({top:0, behavior:'smooth'}); } catch(e){}
+}
+function aplicarFiltroTareas(){
+  try { window.scrollTo({top:0, behavior:'smooth'}); } catch(e){}
+}
+
+
+// ====== VISTAS RESUMEN / OPORTUNIDADES / TAREAS (Olga 2026-06-24) ===========
+function rvMiPool(){
+  const vis = (typeof _filtrarLeadsVisibles === 'function') ? _filtrarLeadsVisibles(allLeads) : allLeads;
+  if (CURRENT_ROLE === 'vendedor'){
+    const yo = (currentUser() || '').trim().toLowerCase();
+    return vis.filter(l => (l.vendedor||'').trim().toLowerCase() === yo);
+  }
+  return vis;
+}
+function rvParseFecha(fecha){
+  try { return Date.parse(String(fecha).replace(' ','T') + 'Z') || Date.now(); }
+  catch { return Date.now(); }
+}
+function rvEsHoy(fecha){
+  try {
+    const d = new Date(rvParseFecha(fecha));
+    const n = new Date();
+    return d.toDateString() === n.toDateString();
+  } catch { return false; }
+}
+function rvEsEsteMes(fecha){
+  try {
+    const d = new Date(rvParseFecha(fecha));
+    const n = new Date();
+    return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+  } catch { return false; }
+}
+function rvTiempoTranscurrido(fecha){
+  const mins = Math.round((Date.now() - rvParseFecha(fecha)) / 60000);
+  if (mins < 60) return 'hace ' + mins + ' min';
+  if (mins < 1440) return 'hace ' + Math.floor(mins/60) + ' h';
+  return 'hace ' + Math.floor(mins/1440) + ' días';
+}
+
+// ===== RESUMEN =====
+function renderResumen(){
+  const root = document.getElementById('resumenView');
+  if (!root) return;
+  const pool = rvMiPool();
+  const hoy = pool.filter(l => rvEsHoy(l.fecha));
+  const mes = pool.filter(l => rvEsEsteMes(l.fecha));
+  const sinAtender = pool.filter(l => !l.status_proyecto || l.status_proyecto === 'Sin atender');
+  const cotizados = pool.filter(l => (l.status_proyecto||'') === 'Cotizado');
+  const negociando = pool.filter(l => ['Negociando','Negociación'].includes(l.status_proyecto||''));
+  const ganadosMes = mes.filter(l => (l.status_proyecto||'') === 'Ganado');
+  const perdidosMes = mes.filter(l => (l.status_proyecto||'') === 'Perdido');
+  const tasaConv = mes.length ? Math.round(ganadosMes.length / mes.length * 100) : 0;
+  // Embudo
+  const total = pool.length || 1;
+  const etapas = [
+    { e: '📥', l: 'Sin atender',  n: sinAtender.length, c: '#dc2626' },
+    { e: '📞', l: 'Contactado',   n: pool.filter(l => ['Contactando','Contactado'].includes(l.status_proyecto||'')).length, c: '#f59e0b' },
+    { e: '📋', l: 'Cotizado',     n: cotizados.length, c: '#3b82f6' },
+    { e: '💬', l: 'Negociando',   n: negociando.length, c: '#8b5cf6' },
+    { e: '🏆', l: 'Ganado (mes)', n: ganadosMes.length, c: '#22c55e' },
+  ];
+  const maxN = Math.max(...etapas.map(e => e.n), 1);
+  // Actividad reciente: últimos 12 leads por fecha
+  const recientes = [...pool].sort((a,b) => rvParseFecha(b.fecha) - rvParseFecha(a.fecha)).slice(0, 10);
+  const nombre = (typeof currentUser === 'function') ? (currentUser() || 'usuario') : 'usuario';
+  root.innerHTML = `
+    <div class="rv-hero">
+      <div class="rv-sub">${vdGreetingByHour ? vdGreetingByHour() : 'Hola'} 👋</div>
+      <h1>${escapeHtml(nombre)}</h1>
+      <div class="rv-sub">${pool.length} leads en total · ${hoy.length} nuevos hoy · ${ganadosMes.length} ganados este mes</div>
+    </div>
+    <div class="rv-kpi-grid">
+      <div class="rv-kpi"><div class="rv-kpi-label">Mis leads</div><div class="rv-kpi-num">${pool.length}</div></div>
+      <div class="rv-kpi rv-kpi-attn"><div class="rv-kpi-label">Por atender</div><div class="rv-kpi-num">${sinAtender.length}</div></div>
+      <div class="rv-kpi rv-kpi-ok"><div class="rv-kpi-label">Ganados (mes)</div><div class="rv-kpi-num">${ganadosMes.length}</div></div>
+      <div class="rv-kpi"><div class="rv-kpi-label">Tasa conv. (mes)</div><div class="rv-kpi-num">${tasaConv}%</div></div>
+    </div>
+    <div class="rv-cols">
+      <div class="rv-card">
+        <h2>📊 Embudo de ventas</h2>
+        <div class="funnel">
+          ${etapas.map(et => {
+            const pct = Math.round(et.n / total * 100);
+            const width = Math.round(et.n / maxN * 100);
+            return `
+              <div class="funnel-stage" style="--funnel-color:${et.c}">
+                <div class="funnel-bar" style="width:${width}%"></div>
+                <div class="funnel-emoji">${et.e}</div>
+                <div class="funnel-label">${et.l}</div>
+                <div class="funnel-count">${et.n}</div>
+                <div class="funnel-pct">${pct}%</div>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="rv-card">
+        <h2>⏰ Actividad reciente</h2>
+        <div class="timeline">
+          ${recientes.length ? recientes.map(l => {
+            const stp = l.status_proyecto || 'Sin atender';
+            const iconClass = stp === 'Ganado' ? '' : (stp === 'Sin atender' ? 'tl-warn' : 'tl-info');
+            const icon = stp === 'Ganado' ? '🏆' : (stp === 'Cotizado' ? '📋' : (stp === 'Sin atender' ? '📥' : '💬'));
+            return `
+              <div class="tl-item">
+                <div class="tl-icon ${iconClass}">${icon}</div>
+                <div class="tl-body">
+                  <div class="tl-title">${escapeHtml(l.nombre || 'Sin nombre')} · ${escapeHtml(stp)}</div>
+                  <div class="tl-sub">${escapeHtml(l.ciudad || '—')} · ${rvTiempoTranscurrido(l.fecha)}</div>
+                </div>
+              </div>`;
+          }).join('') : '<div style="color:#94a3b8;font-size:13px;padding:20px;text-align:center">Sin actividad reciente</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ===== OPORTUNIDADES =====
+function renderOportunidades(){
+  const root = document.getElementById('oportunidadesView');
+  if (!root) return;
+  const pool = rvMiPool().filter(l =>
+    ['Cotizado','Negociando','Negociación'].includes(l.status_proyecto||'') &&
+    (l.whatsapp || '').replace(/\D/g,'').length >= 8
+  );
+  // Sort: cotizados más viejos primero (más urgentes de cerrar)
+  pool.sort((a,b) => rvParseFecha(a.fecha) - rvParseFecha(b.fecha));
+  const valorEstimado = pool.reduce((sum, l) => {
+    const m2 = parseFloat(String(l.m2 || '').replace(/[^0-9.]/g,'')) || 0;
+    return sum + (m2 * 280); // ~$280/m² estimado promedio
+  }, 0);
+  root.innerHTML = `
+    <div class="rv-hero" style="background:linear-gradient(135deg,#16a34a,#15803d)">
+      <div class="rv-sub">⚡ A 1 paso del cierre</div>
+      <h1>${pool.length} oportunidad${pool.length === 1 ? '' : 'es'}</h1>
+      <div class="rv-sub">Valor estimado: $${valorEstimado.toLocaleString('es-MX', {maximumFractionDigits:0})}</div>
+    </div>
+    ${pool.length === 0 ? `
+      <div class="tarea-empty">
+        Aún no tienes oportunidades cotizadas. Cuando marques un lead como <b>Cotizado</b> aparecerá aquí.
+      </div>
+    ` : `
+      <div class="vd-table-wrap" style="margin:0">
+        <table class="vd-table">
+          <thead>
+            <tr><th>Lead</th><th>Marca</th><th>Tamaño</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody>
+            ${pool.map(l => vdRenderLeadCard(l)).join('')}
+          </tbody>
+        </table>
+      </div>
+    `}
+  `;
+}
+
+// ===== TAREAS =====
+// Genera tareas automáticamente basadas en el estado de cada lead:
+//   - Lead Sin atender >5min → Tarea ALTA "Contactar ahora"
+//   - Lead Contactando >24h sin avance → Tarea MEDIA "Dar seguimiento"
+//   - Lead Cotizado >2d sin movimiento → Tarea ALTA "Cerrar venta — recordar"
+//   - Lead Cotizado >5d → Tarea ALTA "Cliente perdiéndose"
+const TAREAS_DONE_KEY = 'sm_tareas_done';
+function tareasGetDone(){
+  try { return new Set(JSON.parse(localStorage.getItem(TAREAS_DONE_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+function tareasSetDone(set){
+  try { localStorage.setItem(TAREAS_DONE_KEY, JSON.stringify([...set])); }
+  catch {}
+}
+function tareasToggle(id){
+  const set = tareasGetDone();
+  if (set.has(id)) set.delete(id); else set.add(id);
+  tareasSetDone(set);
+  renderTareas();
+  actualizarBadgesSidebar();
+}
+function tareasGenerar(pool){
+  const tareas = [];
+  const ahora = Date.now();
+  for (const l of pool){
+    const stp = l.status_proyecto || 'Sin atender';
+    if (['Ganado','Perdido'].includes(stp)) continue;
+    const wa = (l.whatsapp || '').replace(/\D/g,'');
+    if (wa.length < 8) continue;
+    const ageH = (ahora - rvParseFecha(l.fecha)) / 3600000;
+    if (stp === 'Sin atender' && ageH * 60 > 5){
+      const prio = ageH > 1 ? 'alta' : 'media';
+      tareas.push({
+        id: 't-atender-' + l.id,
+        leadId: l.id,
+        titulo: 'Contactar a ' + (l.nombre || 'lead'),
+        sub: (l.ciudad || '—') + ' · ' + (l.whatsapp || '—'),
+        prio,
+        due: ageH > 24 ? 'Atrasado' : (ageH > 1 ? 'Hoy' : 'Ahora'),
+        contexto: l
+      });
+    } else if (['Contactando','Contactado'].includes(stp) && ageH > 24){
+      tareas.push({
+        id: 't-seg-' + l.id,
+        leadId: l.id,
+        titulo: 'Dar seguimiento a ' + (l.nombre || 'lead'),
+        sub: 'Sin avance hace ' + Math.floor(ageH/24) + ' días',
+        prio: ageH > 72 ? 'alta' : 'media',
+        due: ageH > 72 ? 'Atrasado' : 'Hoy',
+        contexto: l
+      });
+    } else if (stp === 'Cotizado' && ageH > 48){
+      const dias = Math.floor(ageH / 24);
+      tareas.push({
+        id: 't-cerrar-' + l.id,
+        leadId: l.id,
+        titulo: '🔥 Cerrar venta — ' + (l.nombre || 'lead'),
+        sub: 'Cotizado hace ' + dias + ' días — recuérdale',
+        prio: dias >= 5 ? 'alta' : 'media',
+        due: dias >= 5 ? 'URGENTE' : 'Hoy',
+        contexto: l
+      });
+    }
+  }
+  // Sort: alta primero, luego por antigüedad del lead
+  const prioPeso = { alta: 0, media: 1, baja: 2 };
+  tareas.sort((a,b) => (prioPeso[a.prio] - prioPeso[b.prio]) || (rvParseFecha(a.contexto.fecha) - rvParseFecha(b.contexto.fecha)));
+  return tareas;
+}
+function renderTareas(){
+  const root = document.getElementById('tareasView');
+  if (!root) return;
+  const pool = rvMiPool();
+  const tareas = tareasGenerar(pool);
+  const done = tareasGetDone();
+  const pendientes = tareas.filter(t => !done.has(t.id));
+  const completadas = tareas.filter(t => done.has(t.id));
+  const altas = pendientes.filter(t => t.prio === 'alta').length;
+  const medias = pendientes.filter(t => t.prio === 'media').length;
+  const prioStyle = (p) => p === 'alta'
+    ? '--ta-color:#dc2626;--ta-pill-bg:#fee2e2;--ta-pill-color:#dc2626'
+    : (p === 'media' ? '--ta-color:#f59e0b;--ta-pill-bg:#fef3c7;--ta-pill-color:#b45309'
+                     : '--ta-color:#94a3b8;--ta-pill-bg:#f1f5f9;--ta-pill-color:#475569');
+  const cardHtml = (t) => {
+    const wa = (t.contexto.whatsapp || '').replace(/\D/g,'');
+    const waUrl = wa.length >= 8 ? (typeof buildWaUrl === 'function' ? buildWaUrl(wa, '') : ('https://wa.me/52' + wa)) : '';
+    return `
+      <div class="tarea-card ${done.has(t.id) ? 'ta-done' : ''}" style="${prioStyle(t.prio)}">
+        <div class="ta-check" onclick="tareasToggle('${t.id}')"></div>
+        <div>
+          <div class="ta-title">${escapeHtml(t.titulo)}</div>
+          <div class="ta-sub">${escapeHtml(t.sub)}</div>
+          <div class="ta-due">${escapeHtml(t.due)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="ta-pill">${t.prio}</span>
+          ${waUrl ? `<a class="vd-mini-action" href="${waUrl}" target="_blank">💬</a>` : ''}
+        </div>
+      </div>`;
+  };
+  root.innerHTML = `
+    <div class="rv-hero" style="background:linear-gradient(135deg,#0b0f14,#1e293b)">
+      <div class="rv-sub">📅 Tu día</div>
+      <h1>${pendientes.length} tarea${pendientes.length === 1 ? '' : 's'} pendiente${pendientes.length === 1 ? '' : 's'}</h1>
+      <div class="rv-sub">${altas} alta${altas === 1 ? '' : 's'} prioridad · ${medias} media${medias === 1 ? '' : 's'} · ${completadas.length} completada${completadas.length === 1 ? '' : 's'}</div>
+    </div>
+    ${pendientes.length === 0 && completadas.length === 0 ? `
+      <div class="tarea-empty">
+        🎉 No tienes tareas pendientes ahora. Cuando tus leads necesiten seguimiento aparecerán aquí.
+      </div>
+    ` : ''}
+    ${pendientes.length ? `
+      <div class="tarea-section-title">Pendientes</div>
+      <div class="tareas-grid">
+        ${pendientes.map(cardHtml).join('')}
+      </div>
+    ` : ''}
+    ${completadas.length ? `
+      <div class="tarea-section-title">Completadas</div>
+      <div class="tareas-grid">
+        ${completadas.map(cardHtml).join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
 </script>
 <div id="tplMenu" class="tpl-menu" style="display:none"></div>
 </body>
