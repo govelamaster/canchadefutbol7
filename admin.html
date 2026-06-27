@@ -6625,7 +6625,8 @@ function actualizarBadgesSidebar(){
       : vis;
     const setBadge = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = String(n); };
     setBadge('sbBadgeLeads', pool.length);
-    setBadge('sbBadgeVip', pool.filter(l => (parseFloat(l.m2)||0) >= 3000).length);
+    // Usa m2Area (parser senior) para coincidir con tabla VIP — antes parseFloat fallaba en "80 × 60", "1000 por 2", etc.
+    setBadge('sbBadgeVip', pool.filter(l => (typeof m2Area === 'function' ? m2Area(l.m2) : (parseFloat(l.m2)||0)) >= 3000).length);
     const oport = pool.filter(l => ['Cotizado','Negociando','Negociación'].includes(l.status_proyecto||''));
     setBadge('sbBadgeOpor', oport.length);
     const tareas = pool.filter(l => {
