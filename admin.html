@@ -831,6 +831,8 @@ body.rol-admin .cell-input.nombre-input{ pointer-events:none; opacity:.85; backg
 .cell-select:focus, .cell-textarea:focus, .cell-input:focus{ border-color:#3f922a; background:#fff; box-shadow:0 0 0 3px rgba(63,146,42,.10); }
 /* El nombre del vendedor debe caber completo (ej. "Blanca López") */
 .cell-select[data-field="vendedor"]{ min-width:120px; }
+/* Status_proyecto debe caber completo ("Negociación" = 11 chars) */
+.cell-select[data-field="status_proyecto"]{ min-width:130px; }
 .cell-textarea{
   resize:vertical; min-height:32px; max-height:160px;
   cursor:text; font-size:12px; font-weight:500;
