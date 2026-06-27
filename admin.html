@@ -4906,14 +4906,45 @@ async function bulkDeleteLeads(){
 /* =========================================================
    VIP TAB
 ========================================================= */
-// Calcula el área en m² aunque venga como "60x50", "30 × 50 m", "1,925", etc.
+// Calcula el área en m² aunque venga como "60x50", "30 × 50 m", "1,925", "30-50", "1000 por 2", etc.
+// Devuelve el m² real para filtros (VIP = ≥3000). Bug fix Olga 2026-06-27:
+// - "30-50" antes daba 3050 (falso VIP). Ahora da 40 (promedio del rango).
+// - "1000 ml por 2 mts" antes daba 10002 (falso VIP). Ahora da 2000 (1000×2).
 function m2Area(raw){
   if(!raw) return 0;
-  const s = String(raw).toLowerCase().replace(/m2|m²|mts|metros/g,'').replace(/,/g,'').trim();
-  const m = s.match(/(\d+(?:\.\d+)?)\s*[x×*]\s*(\d+(?:\.\d+)?)/);
-  if(m) return Math.round(parseFloat(m[1]) * parseFloat(m[2]));
-  const n = parseFloat(s.replace(/[^\d.]/g,''));
-  return isNaN(n) ? 0 : Math.round(n);
+  const s = String(raw).toLowerCase().replace(/,/g,'').trim();
+  if (!s) return 0;
+
+  // Limpiar unidades/palabras de relleno ANTES de detectar patrones
+  // para que "1000 ml por 2 mts" → "1000  por 2 " y la regex de mult matchee
+  const cleanedForOps = s.replace(/\bm2\b|\bm²\b|\bmts?\b|\bmetros?\b|\bml\b|\bcuadrados?\b|\baprox\.?\b|\bancho\b|\blargo\b|\bfondo\b|\bfrente\b|\bde\b/g, ' ');
+
+  // Caso 1 — Multiplicación: "60x50", "30 × 50", "1000 por 2"
+  // Permite cualquier separador (palabras incluidas) entre los 2 números
+  const mult = cleanedForOps.match(/(\d+(?:\.\d+)?)[^\d×x*\-–a]*(?:[x×*]|\bpor\b)[^\d]*(\d+(?:\.\d+)?)/);
+  if (mult) {
+    const a = parseFloat(mult[1]);
+    const b = parseFloat(mult[2]);
+    if (a > 0 && b > 0) return Math.round(a * b);
+  }
+
+  // Caso 2 — Rango: "30-50", "30 a 50", "30 hasta 50"
+  const range = cleanedForOps.match(/(\d+(?:\.\d+)?)\s*(?:[-–]|\ba\b|\bhasta\b)\s*(\d+(?:\.\d+)?)/);
+  if (range) {
+    const lo = parseFloat(range[1]);
+    const hi = parseFloat(range[2]);
+    if (lo > 0 && hi > 0 && hi >= lo) return Math.round((lo + hi) / 2);
+  }
+
+  // Caso 3 — Un número (con o sin unidad)
+  // Limpia palabras de relleno típicas y captura el PRIMER número
+  const cleaned = s.replace(/\bm2\b|\bm²\b|\bmts?\b|\bmetros?\b|\bml\b|\bcuadrados?\b|\baprox\.?\b/g, ' ');
+  const single = cleaned.match(/(\d+(?:\.\d+)?)/);
+  if (single) {
+    const n = parseFloat(single[1]);
+    if (!isNaN(n)) return Math.round(n);
+  }
+  return 0;
 }
 function vipLeads(){
   return allLeads.filter(l => m2Area(l.m2) >= 3000);
