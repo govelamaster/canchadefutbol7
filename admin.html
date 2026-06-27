@@ -2456,19 +2456,14 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   asistChip.addEventListener('click', () => asistModal.classList.add('show'));
 
-  // Auto-login DE EMERGENCIA — entrada garantizada para la jefa
-  // TODO: quitar después de que Olga confirme acceso normal
+  // Auto-login con credenciales guardadas o desde URL params
+  // (sin hardcoded passwords — seguridad senior)
   const params = new URLSearchParams(location.search);
   const urlPwd = params.get('p');
-  const urlUsr = params.get('u');
-  if (urlPwd) {
-    tryLogin(urlUsr || 'Olga', urlPwd, /*silent*/ false);
-  } else {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(STORAGE_USER);
-    localStorage.removeItem(STORAGE_ROLE);
-    tryLogin('Olga', 'govelamaster2611', /*silent*/ false);
-  }
+  const saved  = localStorage.getItem(STORAGE_KEY);
+  const pwd    = urlPwd || saved;
+  const usr    = params.get('u') || localStorage.getItem(STORAGE_USER) || '';
+  if (pwd) tryLogin(usr, pwd, /*silent*/ true);
 });
 
 function setAsistente(name){
