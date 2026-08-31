@@ -120,8 +120,8 @@ export default {
       // explícita "session_id_conflict" → ya no es silencioso (Olga bug #3 del reporte).
       const insertRes = await env.DB.prepare(`
         INSERT OR IGNORE INTO leads
-          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, notas_internas, fuente, tipo_cliente, url, gclid, campania, wa_norm, ip, user_agent, landing)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          (session_id, estado, nombre, whatsapp, ciudad, m2, timeline, comentarios, notas_internas, fuente, tipo_cliente, url, gclid, campania, wa_norm, ip, user_agent, landing, cliengo_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         lead.session_id,
         lead.estado || '',
@@ -140,7 +140,8 @@ export default {
         lead.wa_norm || '',
         lead.ip || '',
         lead.user_agent || '',
-        lead.landing || ''
+        lead.landing || '',
+        lead.cliengo_url || ''
       ).run();
 
       // Si OR IGNORE silenció el INSERT (session_id duplicado), no hubo cambios.
@@ -155,24 +156,35 @@ export default {
 };
 
 function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
+  // Asunto: aceptar "Tienes un nuevo contacto en X" (oficial) o "Nuevo lead desde X" (template
+  // alterno que Cliengo a veces deja por default). Body fallback acepta punto, exclamación o salto de línea.
   const subjMatch = subject.match(/Tienes un nuevo contacto en\s+(.+?)!?\s*$/i)
-    || body.match(/¡?Tienes un nuevo contacto en\s+(.+?)!/i);
+    || subject.match(/Nuevo lead desde\s+(.+?)\s*$/i)
+    || body.match(/¡?Tienes un nuevo contacto en\s+(.+?)\s*[!.\n]/i);
   if (!subjMatch) return null;
 
   const landing = subjMatch[1].replace(/\/+$/, '').trim();
   // Conversación parseada: respuestas del Contacto asociadas a preguntas del Asesor
   const chat = parseCliengoChat(body);
 
-  const nombre = decodeEntities(pick(body, /^\s*Nombre:\s*(.+)$/im)
+  // OJO (Olga 2026-08-31): usar [ \t]* y NO \s* después de la etiqueta. \s* incluye el salto
+  // de línea, así que cuando una etiqueta venía vacía (ej. correos de Facebook/Instagram con
+  // "Teléfono:" sin valor en su línea) el regex se comía el \n y agarraba la ETIQUETA siguiente
+  // ("Ubicación:") como valor. Con [ \t]* exige el valor en la MISMA línea; si está vacío cae al chat.
+  const nombre = decodeEntities(pick(body, /^[ \t]*Nombre:[ \t]*(.+)$/im)
     || chat.nombre
     || '');
-  const telefono = pick(body, /^\s*Tel[eé]fono:\s*(.+)$/im)
+  const telefono = pick(body, /^[ \t]*Tel[eé]fono:[ \t]*(.+)$/im)
     || chat.telefono
     || extractPhoneFromChat(body);
-  const ubicacion = limpiarPrefijoUbicacion(decodeEntities(pick(body, /^\s*Ubicaci[oó]n:\s*(.+)$/im) || chat.ciudad || ''));
-  const page = pick(body, /^\s*Page:\s*(.+)$/im);
-  const fuenteCliengo = (pick(body, /^\s*Fuente:\s*(.+)$/im) || '').toLowerCase();
-  const medio = (pick(body, /^\s*Medio:\s*(.+)$/im) || '').toLowerCase();
+  // Ciudad: la respuesta del CHAT gana sobre la geo-IP de Cliengo (Olga 2026-06-24).
+  // Bug Liliana: el cliente dijo "Calera Zacatecas" en el chat pero el admin mostraba
+  // "Fresnillo" porque Cliengo detecta la ciudad por IP y la mete en `Ubicacion:`.
+  // Lo que el cliente TIPEA es lo que importa.
+  const ubicacion = limpiarPrefijoUbicacion(decodeEntities(chat.ciudad || pick(body, /^[ \t]*Ubicaci[oó]n:[ \t]*(.+)$/im) || ''));
+  const page = pick(body, /^[ \t]*Page:[ \t]*(.+)$/im);
+  const fuenteCliengo = (pick(body, /^[ \t]*Fuente:[ \t]*(.+)$/im) || '').toLowerCase();
+  const medio = (pick(body, /^[ \t]*Medio:[ \t]*(.+)$/im) || '').toLowerCase();
 
   let fuente = 'cliengo_web';
   if (fuenteCliengo.includes('facebook') || medio.includes('facebook')) fuente = 'cliengo_facebook';
@@ -191,9 +203,14 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
   // Bug Olga 2026-06-10: el dashboard mostraba "hola" pero el chat tenía m²,
   // tipo de cancha, altura. Ahora capturamos eso y lo estructuramos.
   const allCliente = chat.allCliente || '';
-  const m2 = extractM2(allCliente);
+  const m2Raw = extractM2(allCliente);
   const altura = extractAltura(allCliente);
   const tipoCancha = extractTipoCancha(allCliente);
+  // Para pádel/tenis/pickleball el cliente cuenta CANCHAS, no m² (Olga 2026-06-24).
+  // Si detectamos "3 canchas" y el tipo es de los que se miden por unidad, usamos eso.
+  const cantidadCanchas = extractCantidadCanchas(allCliente);
+  const TIPOS_POR_CANCHA = new Set(['Pádel', 'Tenis', 'Pickleball']);
+  const m2 = (TIPOS_POR_CANCHA.has(tipoCancha) && cantidadCanchas) ? cantidadCanchas : (m2Raw || cantidadCanchas);
 
   // Comentarios estructurados con TODO lo relevante. Decode entities en todos.
   const lineas = [];
@@ -202,8 +219,20 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
   if (m2) lineas.push(`m²: ${m2}`);
   if (altura) lineas.push(`Altura del pasto: ${altura}`);
   if (chat.mensajeCliente) lineas.push(`Mensaje del cliente: "${decodeEntities(chat.mensajeCliente)}"`);
-  if (chat.extras && chat.extras.length) lineas.push(`Notas: ${chat.extras.map(decodeEntities).join(' · ')}`);
+  // Notas: una por línea para que se lean bien en el admin (Olga 2026-06-24).
+  // Antes se juntaban con ' · ' y eran ilegibles cuando había 3+ extras.
+  if (chat.extras && chat.extras.length) {
+    const notas = chat.extras.map(decodeEntities).join('\n• ');
+    lineas.push(`Notas:\n• ${notas}`);
+  }
   const comentariosEstructurados = lineas.join('\n');
+
+  // Extraer URL de Cliengo CRM si viene en el body (default template incluye
+  // "Gestiona tu contacto desde CRM" con link; templates custom pueden incluir
+  // {{trigger.contact.url}} o similar). Si no aparece, dejamos vacío y el admin
+  // cae al inbox genérico de Cliengo.
+  const cliengoUrlMatch = body.match(/https?:\/\/(?:app|my|www)\.cliengo\.com\/[^\s"'<>)]+/i);
+  const cliengoUrl = cliengoUrlMatch ? cliengoUrlMatch[0].replace(/[.,;!?]+$/, '') : '';
 
   return {
     session_id: sessionId,
@@ -220,7 +249,8 @@ function parseCliengo({ subject, body, sessionId, fromAddr, to, date }) {
     campania: '',  // antes ponía landing → causaba duplicación en columna ORIGEN
     comentarios: comentariosEstructurados,
     user_agent: '',
-    ip: ''
+    ip: '',
+    cliengo_url: cliengoUrl
   };
 }
 
@@ -237,8 +267,14 @@ function parseCliengoChat(body) {
   const turnos = [];
   let current = null;
   for (const ln of lines) {
-    if (/^Datos de contacto/i.test(ln) || /^Gestiona tu contacto/i.test(ln)) break;
-    const m = ln.match(/^(Asesor|Contacto):\s*(.*)$/i);
+    if (/^Datos de contacto/i.test(ln) || /^Gestiona tu contacto/i.test(ln) || /^Ver conversaci[oó]n completa/i.test(ln)) break;
+    // Rol al inicio de línea. Acepta los 2 formatos de correo Cliengo (Olga 2026-08-31):
+    //   VIEJO:  "Contacto: mensaje"   → rol + dos puntos + texto en la MISMA línea
+    //   NUEVO:  "Contacto\nmensaje"   → burbujas de chat: el rol va SOLO en su línea y el
+    //                                   mensaje en la(s) línea(s) siguiente(s), sin dos puntos.
+    // El bug: el regex viejo exigía ":" → con el template nuevo no armaba turnos y se perdían
+    // nombre, ciudad y toda la conversación (lead #3101 canchadepadel.mx cayó vacío).
+    const m = ln.match(/^(Asesor|Contacto)\b\s*:?\s*(.*)$/i);
     if (m) {
       current = { rol: m[1].toLowerCase(), txt: m[2].trim() };
       turnos.push(current);
@@ -252,7 +288,11 @@ function parseCliengoChat(body) {
   const RE_NOMBRE = /(nombre|llamas|c[oó]mo te dices|qui[eé]n eres|a que.\s*nombre|a qu[eé] nombre)/i;
   const RE_CIUDAD = /(ciudad|donde te encuentras|d[oó]nde est[aá]s|localidad|estado|ubicaci[oó]n|d[oó]nde ser[ií]a|d[oó]nde sera)/i;
   const RE_TELEFONO = /(whatsapp|tel[eé]fono|n[uú]mero|celular)/i;
-  const RE_EXTRA = /(algo m[aá]s|consulta adicional|quieres agregar|comentar|cu[aá]ntas|cuantas|en cu[aá]nto tiempo|cuando|presupuesto)/i;
+  // RE_EXTRA ampliada (Olga 2026-06-24): captura más patrones de pregunta abierta
+  // del bot — "otro detalle", "compartir", "agregar", "tiempo", "proyecto", "empezar".
+  // Bug: chat de Jose Alberto Budar perdía "PASTO SINTETICO DE 45mm... POLIETILENO"
+  // porque "Hay algun otro detalle que quieras compartirnos?" no matcheaba.
+  const RE_EXTRA = /(algo m[aá]s|otro detalle|detalle|compartir|consulta adicional|quieres agregar|agregar|comentar|cu[aá]ntas|cuantas|en cu[aá]nto tiempo|tiempo|cuando|cu[aá]ndo|empez|comenzar|proyecto|presupuesto)/i;
   const RE_INTERES_DIRECT = /(te interesa|qu[eé] buscas|qu[eé] necesitas|c[oó]mo te puedo ayudar|en qu[eé] podemos ayudarte|qu[eé] tipo)/i;
 
   const contactoLibre = []; // mensajes del Contacto que no respondieron a una pregunta específica
@@ -279,32 +319,54 @@ function parseCliengoChat(body) {
       if (picked) out.telefono = picked;
     } else if (RE_EXTRA.test(t.txt) && !['nada','no','ninguno','ninguna'].includes(nextContacto.txt.toLowerCase())) {
       out.extras.push(nextContacto.txt);
+    } else if (
+      // CATCH-ALL (Olga 2026-06-24): cualquier respuesta del cliente a una pregunta
+      // del bot que NO sea nombre/ciudad/telefono se guarda como extra con su contexto.
+      // Esto evita perder respuestas valiosas como "ANDO BUSCANDO UNOS MOBILIARIOS"
+      // o "PASTO SINTETICO DE 45mm... POLIETILENO" cuando la pregunta del bot no entra
+      // en los patrones anteriores. Ignoramos preguntas estructuradas (ya consumidas
+      // arriba) y respuestas ruidosas tipo "si/no/hola/gracias".
+      !RE_NOMBRE.test(t.txt) && !RE_CIUDAD.test(t.txt) && !RE_TELEFONO.test(t.txt)
+    ) {
+      const ans = nextContacto.txt.trim();
+      const noise = /^(s[ií]|no|ok|okay|gracias|perfecto|bien|hola|buenos\s*d[ií]as|buenas\s*tardes|buenas\s*noches|image|ninguno|ninguna|nada)$/i;
+      if (ans && ans.length > 1 && !noise.test(ans) && !out.extras.includes(ans)) {
+        // Acorta la pregunta del bot quitando emojis/saludos para usar como label.
+        const q = t.txt
+          .replace(/[👉🦱✓✅🤖💬👋✨🎯🔥]/g, '')
+          .replace(/^(perfecto|gracias|excelente|genial|s[uú]per|listo|ok)[,.\s]+/i, '')
+          .trim()
+          .slice(0, 90);
+        out.extras.push(q ? `${q} → ${ans}` : ans);
+      }
     }
   }
 
-  // Primer Contacto = mensaje inicial libre del cliente (ANTES de cualquier pregunta del Asesor)
+  // Mensaje "útil" del cliente: el cliente suele empezar con saludo/genérico
+  // tipo "Quiero cotizar" / "Buenos días" / "Hola" — eso NO es información valiosa.
+  // Buscamos la primera respuesta SUSTANTIVA del cliente (>3 palabras O con palabras
+  // de producto/medida) y la usamos como mensajeCliente. Si no hay nada sustantivo,
+  // dejamos el genérico (mejor algo que nada).
+  // Olga 2026-06-24: bug Liliana — "Quiero cotizar" tapaba el "Fut bol pasto sintético"
+  // y la "instalación caucho o todo lo que implica".
+  const GENERICO = /^(hola|buenos?\s*d[ií]as|buenas?\s*tardes|buenas?\s*noches|saludos|hey|qu[eé] tal|quiero cotizar|cotizar|cotizaci[oó]n|info|informaci[oó]n|precio|precios|gracias|s[ií]|no|ok|okay|listo|perfecto|bien|image)\.?\s*$/i;
+  const SUSTANTIVO = /(\d|pasto|sint[eé]tico|cancha|cesped|c[eé]sped|f[uú]tbol|fut\s*bol|padel|p[aá]del|tenis|pickleball|m2|m²|metros?|cm|mm|cm|mm|altura|inst[ae]l|caucho|garant|cotiz.*proyecto|cotiz.*cancha|necesit|busc|propone|querer|quiero comprar|para mi)/i;
+  let mensajeUtil = '';
+  let mensajeGenerico = '';
   for (const t of turnos) {
-    if (t.rol === 'contacto') {
-      if (t.txt && !out.mensajeCliente && t.txt.length > 1) {
-        out.mensajeCliente = t.txt;
-      }
-      break;
-    }
-    if (t.rol === 'asesor') break; // ya empezó el bot, no hay mensaje inicial
-  }
-  // Si no hubo mensaje inicial, usar el primer mensaje libre que no sea datos básicos
-  if (!out.mensajeCliente) {
-    for (const t of turnos) {
-      if (t.rol !== 'contacto') continue;
-      const x = t.txt.trim();
-      if (!x) continue;
-      if (x === out.nombre || x === out.ciudad || x === out.telefono) continue;
-      if (/^\d{8,}$/.test(x.replace(/\D/g,''))) continue;
-      if (['si','sí','no','ok','gracias','perfecto','bien'].includes(x.toLowerCase())) continue;
-      out.mensajeCliente = x;
-      break;
+    if (t.rol !== 'contacto') continue;
+    const x = t.txt.trim();
+    if (!x) continue;
+    if (x === out.nombre || x === out.ciudad || x === out.telefono) continue;
+    if (/^\d{6,}$/.test(x.replace(/\D/g,''))) continue;
+    if (!mensajeGenerico && GENERICO.test(x)) mensajeGenerico = x;
+    // Sustantivo = más de 3 palabras O contiene palabra de producto/medida
+    const palabras = x.split(/\s+/).length;
+    if (palabras > 3 || SUSTANTIVO.test(x)) {
+      if (!GENERICO.test(x)) { mensajeUtil = x; break; }
     }
   }
+  out.mensajeCliente = mensajeUtil || mensajeGenerico;
 
   // Interés: detectar por palabras clave en TODO lo que dijo el Contacto.
   // También exponemos allCliente para que parseCliengo pueda extraer m²/tipo/altura.
@@ -431,6 +493,11 @@ function limpiarPrefijoUbicacion(s) {
 function extractM2(text) {
   if (!text) return '';
   const T = String(text);
+  // Patrón 0 (Olga 2026-06-24): rango "30-50" después de "M2:" o "metros cuadrados"
+  // como en "VENTA MINIMA 30 M2: 30-50" (form Elementor con label-pregunta).
+  const re0 = /(?:m[²2]|metros?\s*cuadrados?)\s*:?\s*(\d{1,4}\s*[\-–a]\s*\d{1,4})\b/i;
+  const m0 = T.match(re0);
+  if (m0) return m0[1].replace(/\s+/g, '');
   // Patrón 1 (más confiable): número + m² / m2 / metros cuadrados / mts
   const re1 = /(\d{1,5}(?:[.,]\d+)?)\s*(?:m[²2³³2³]|mts?\.?|metros?\s*cuadrados?)/i;
   const m1 = T.match(re1);
@@ -440,6 +507,28 @@ function extractM2(text) {
   const re2 = /(\d{2,5})\s*metros?\b/i;
   const m2 = T.match(re2);
   if (m2 && parseInt(m2[1], 10) >= 10) return m2[1];
+  return '';
+}
+
+// Cantidad de canchas (pádel/tenis/pickleball/fútbol múltiple). Reconoce:
+// "3 canchas", "2 canchas de padel", "una cancha". Olga 2026-06-24: para pádel
+// el cliente piensa en CANCHAS, no en m².
+function extractCantidadCanchas(text) {
+  if (!text) return '';
+  const T = String(text).toLowerCase();
+  // Forma "(\d+) cancha[s]"
+  const m = T.match(/(\d+)\s*canchas?\b/);
+  if (m) {
+    const n = parseInt(m[1], 10);
+    return `${n} cancha${n === 1 ? '' : 's'}`;
+  }
+  // Palabras "una/un/dos/tres/cuatro/cinco cancha[s]"
+  const palabras = { una: 1, un: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10 };
+  const w = T.match(/\b(una?|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)\s+canchas?\b/);
+  if (w && palabras[w[1]]) {
+    const n = palabras[w[1]];
+    return `${n} cancha${n === 1 ? '' : 's'}`;
+  }
   return '';
 }
 
@@ -454,7 +543,9 @@ function extractAltura(text) {
 // Detecta el tipo de cancha mencionado en el chat / mensaje. Devuelve canonical name.
 function extractTipoCancha(text) {
   if (!text) return '';
-  const T = String(text).toLowerCase();
+  // Normaliza "fut bol" / "fut-bol" → "futbol" (Olga 2026-06-24: cliente Liliana
+  // escribió "Fut bol pasto sintético" y el parser no detectaba el tipo).
+  const T = String(text).toLowerCase().replace(/\bfut\s*[\-]?\s*bol\b/g, 'futbol');
   // Orden importa: más específicos primero
   if (/f[uú]tbol\s*(?:r[aá]pido|5)/.test(T)) return 'Fútbol Rápido';
   if (/f[uú]tbol\s*(?:siete|7)/.test(T)) return 'Fútbol 7';
@@ -531,20 +622,60 @@ function titleCaseCity(s) {
 }
 
 function parseElementor({ subject, body, sessionId }) {
-  if (!/Funciona con:\s*Elementor/i.test(body) && !/URL de la p[aá]gina:/i.test(body)) return null;
+  // Gate: Elementor en español ("Funciona con: Elementor" / "URL de la página:")
+  // o en inglés ("Powered by: Elementor" / "Page URL:") — canchasfutbol.mx usa inglés.
+  if (
+    !/Funciona con:\s*Elementor/i.test(body) &&
+    !/URL de la p[aá]gina:/i.test(body) &&
+    !/Powered by:\s*Elementor/i.test(body) &&
+    !/^\s*Page URL:/im.test(body)
+  ) return null;
 
   // decodeEntities en TODOS los campos de texto. Bug Olga 2026-06-10:
   // leads Elementor con acentos llegaban como "Jes&uacute;s" / "sint&eacute;tico".
-  const nombre = decodeEntities(pick(body, /^\s*Nombre:\s*(.+)$/im));
+  let nombre = decodeEntities(pick(body, /^\s*Nombre:\s*(.+)$/im));
+  // FALLBACK nombre (Olga 2026-06-24): formularios donde el label es una pregunta larga
+  // tipo "Por favor danos tu nombre completo:: Esperanza Riquelme". Buscamos "nombre completo".
+  if (!nombre) {
+    nombre = decodeEntities(pick(body, /^.*?nombre\s+completo\s*:+\s*(.+?)\s*$/im));
+  }
   const email = decodeEntities(pick(body, /^\s*Email:\s*(.+)$/im));
-  const whatsapp = pick(body, /^\s*(?:WhatsApp|Tel[eé]fono|Phone):\s*(.+)$/im);
+  let whatsapp = pick(body, /^\s*(?:WhatsApp|Tel[eé]fono|Phone):\s*(.+)$/im);
+  // Ciudad estructurada (Olga 2026-06-24): forms con "Ciudad: Monterrey" la perdían
+  // porque parseElementor antes no la capturaba.
+  let ciudadElem = decodeEntities(pick(body, /^\s*Ciudad:\s*(.+)$/im));
   // Mensaje: capturar TODO hasta el siguiente campo conocido o el separador "---".
   // ⚠️ NO cortar en línea vacía (eso truncaba mensajes multilínea como "Solicito cotización\n\nCliente potencial...").
   // Olga 2026-06-10: bug Salvador Torres — el "Cliente potencial obtenido desde la Landing Page" se perdía.
-  const mensaje = decodeEntities(pick(body, /^\s*(?:Mensaje|Comentarios|Message|Comments):\s*([\s\S]+?)(?=\n\s*---\s*\n|\n\s*Fecha:|\n\s*URL de la p[aá]gina:|\n\s*Agente de usuario:|\n\s*IP remota:|\n\s*Funciona con:|$)/im));
-  const url = pick(body, /^\s*URL de la p[aá]gina:\s*(.+)$/im) || '';
-  const ua = pick(body, /^\s*Agente de usuario:\s*(.+)$/im) || '';
-  const ip = pick(body, /^\s*IP remota:\s*(.+)$/im) || '';
+  let mensaje = decodeEntities(pick(body, /^\s*(?:Mensaje|Comentarios|Message|Comments):\s*([\s\S]+?)(?=\n\s*---\s*\n|\n\s*Fecha:|\n\s*URL de la p[aá]gina:|\n\s*Agente de usuario:|\n\s*IP remota:|\n\s*Funciona con:|\n\s*Date:|\n\s*Time:|\n\s*Page URL:|\n\s*User Agent:|\n\s*Remote IP:|\n\s*Powered by:|$)/im));
+  const url = pick(body, /^\s*URL de la p[aá]gina:\s*(.+)$/im) || pick(body, /^\s*Page URL:\s*(.+)$/im) || '';
+  const ua = pick(body, /^\s*Agente de usuario:\s*(.+)$/im) || pick(body, /^\s*User Agent:\s*(.+)$/im) || '';
+  const ip = pick(body, /^\s*IP remota:\s*(.+)$/im) || pick(body, /^\s*Remote IP:\s*(.+)$/im) || '';
+
+  // FALLBACK: form sin labels (canchasfutbol.mx manda 3 líneas crudas antes de "---").
+  // Ej: "olga\n5539887615\njjj\n\n---\n..." → nombre=olga, wa=5539887615, mensaje=jjj.
+  // Solo aplica si los labels estructurados no capturaron nada.
+  if (!nombre && !whatsapp && !mensaje) {
+    // Tomar el bloque ANTES del primer "---" en una línea sola.
+    const beforeSep = body.split(/\n\s*---\s*\n/)[0] || '';
+    // Quitar líneas de header de reenvío Gmail/Airmail ("On X at Y, foo@bar wrote:").
+    const lines = beforeSep
+      .split(/\r?\n/)
+      .map(l => l.trim())
+      .filter(l => l && !/wrote:\s*$/i.test(l) && !/^>+/.test(l) && !/^On\s+\d/i.test(l));
+    // Línea que es SOLO dígitos (con +/espacios opcionales), >= 8 dígitos = whatsapp.
+    const phoneIdx = lines.findIndex(l => /^[+\d][\d\s\-().]{7,}$/.test(l) && l.replace(/\D/g, '').length >= 8);
+    if (phoneIdx >= 0) {
+      whatsapp = lines[phoneIdx];
+      // Nombre = primera línea ANTES del teléfono que no sean puros dígitos.
+      for (let i = 0; i < phoneIdx; i++) {
+        if (lines[i] && !/^\d+$/.test(lines[i])) { nombre = decodeEntities(lines[i]); break; }
+      }
+      // Mensaje = resto de líneas después del teléfono, unidas.
+      const rest = lines.slice(phoneIdx + 1).filter(l => l && !/^---$/.test(l));
+      if (rest.length) mensaje = decodeEntities(rest.join('\n'));
+    }
+  }
 
   // FILTRO ANTI-SPAM (Olga 2026-06-10, ampliado 2026-06-13): bots tipo "1win_ypkt" con WhatsApp "0",
   // URL con "Agente de usuario", nombre puro dígitos, y pitches de SEO services en inglés.
@@ -561,10 +692,18 @@ function parseElementor({ subject, body, sessionId }) {
   const waNorm = (whatsapp || '').replace(/\D/g, '').slice(-10);
 
   // Extraer m²/altura/tipo de cancha del mensaje (Olga 2026-06-10: Homer "20 metros")
-  const fullText = `${mensaje || ''} ${path || ''}`;
-  const m2 = extractM2(fullText);
+  // Olga 2026-06-24: incluimos TODO el body porque forms con labels-pregunta tipo
+  // "¿Cuanto metros cuadrados estas buscando? VENTA MINIMA 30 M2: 30-50" tienen los
+  // datos fuera del campo Mensaje, dentro del label/respuesta de Elementor.
+  const fullText = `${mensaje || ''} ${path || ''} ${body || ''}`;
+  const m2Raw = extractM2(fullText);
   const altura = extractAltura(fullText);
   const tipoCancha = extractTipoCancha(fullText);
+  // Pádel/tenis/pickleball cuentan canchas, no m² (Olga 2026-06-24: Alejandro pidió
+  // 3 canchas de padel y aparecía "?m²" porque no había metros sino unidades).
+  const cantidadCanchas = extractCantidadCanchas(fullText);
+  const TIPOS_POR_CANCHA = new Set(['Pádel', 'Tenis', 'Pickleball']);
+  const m2 = (TIPOS_POR_CANCHA.has(tipoCancha) && cantidadCanchas) ? cantidadCanchas : (m2Raw || cantidadCanchas);
 
   // Comentarios enriquecidos
   const lineasC = [];
@@ -582,7 +721,7 @@ function parseElementor({ subject, body, sessionId }) {
     nombre: nombre || '',
     whatsapp: whatsapp || '',
     wa_norm: waNorm,
-    ciudad: '',
+    ciudad: titleCaseCity(ciudadElem || ''),
     estado: '',
     m2: m2 || '',                // ← Olga 2026-06-10: capturar m² del mensaje
     tipo_cliente: tipoCancha,    // ← tipo de cancha si se detectó
