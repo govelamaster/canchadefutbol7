@@ -2785,6 +2785,20 @@ function refreshAll(){
   renderLeaderboard();
   document.getElementById('tabCountLeads').textContent = allLeads.length;
   document.getElementById('tabCountVip').textContent = vipLeads().length;
+  // Bug #2 fix: recargar SEGUIMIENTOS_CACHE en cada refresh (crítico al entrar/salir
+  // de preview vendedor; sin esto la cache del admin contamina la vista del vendedor).
+  if (typeof cargarSeguimientos === 'function') {
+    cargarSeguimientos().then(() => {
+      try {
+        if (typeof actualizarBadgesSidebar === 'function') actualizarBadgesSidebar();
+        if (typeof currentTab !== 'undefined') {
+          if (currentTab === 'oportunidades' && typeof renderOportunidades === 'function') renderOportunidades();
+          else if (currentTab === 'seguimientos' && typeof renderSeguimientosDashboard === 'function') renderSeguimientosDashboard();
+          else if (currentTab === 'alertas' && typeof renderAlertasView === 'function') renderAlertasView();
+        }
+      } catch(e){}
+    });
+  }
 }
 
 /* =========================================================
@@ -7372,16 +7386,28 @@ function fmtUltimoSeguimiento(seg){
 async function quickRegistrarSeguimiento(leadId, tipo, btnEl){
   const pwd = localStorage.getItem('sm_admin_pwd') || '';
   if (!pwd) { alert('Sesión expirada — recarga la página'); return; }
+  // Bug #3 fix: race condition — doble tap rápido 📞 → 💬 en el mismo lead creaba 2 seguimientos.
+  // Bandera compartida por leadId bloquea cualquier botón del mismo lead mientras hay uno guardándose.
+  if (typeof window._segSaving === 'undefined') window._segSaving = {};
+  if (window._segSaving[leadId]) {
+    if (btnEl) { btnEl.style.opacity = '0.4'; setTimeout(() => { if (btnEl) btnEl.style.opacity = '1'; }, 400); }
+    return;
+  }
+  window._segSaving[leadId] = true;
   if (btnEl) { btnEl.disabled = true; btnEl.style.opacity = '0.5'; }
   try {
+    // Bug #1 fix: enviar username actual (crítico en modo preview vendedor)
+    // Sin esto, el master password guardaba TODOS los seguimientos como 'Admin'
+    const _username = (typeof currentUser === 'function' ? currentUser() : '') || '';
     const r = await fetch('/api/seguimiento-create', {
       method: 'POST', headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify({ password: pwd, lead_id: leadId, tipo })
+      body: JSON.stringify({ password: pwd, lead_id: leadId, tipo, username: _username })
     });
     const j = await r.json().catch(()=>({}));
     if (!j || !j.ok) {
       alert('Error: ' + (j && j.error || 'desconocido'));
       if (btnEl) { btnEl.disabled = false; btnEl.style.opacity = '1'; }
+      window._segSaving[leadId] = false;
       return;
     }
     // Agregar al cache local (al frente del array porque está ordenado DESC)
@@ -7406,6 +7432,8 @@ async function quickRegistrarSeguimiento(leadId, tipo, btnEl){
         btnEl.style.opacity = '1';
       }, 800);
     }
+    // Bug #3 fix: liberar flag DESPUÉS del feedback (800ms) para evitar clicks repetidos
+    setTimeout(() => { window._segSaving[leadId] = false; }, 800);
     // Re-render la vista actual si es Oportunidades
     if (typeof currentTab !== 'undefined' && currentTab === 'oportunidades') {
       try { renderOportunidades(); } catch(e) { console.warn(e); }
@@ -7415,6 +7443,7 @@ async function quickRegistrarSeguimiento(leadId, tipo, btnEl){
   } catch (e) {
     alert('Error de conexión: ' + e.message);
     if (btnEl) { btnEl.disabled = false; btnEl.style.opacity = '1'; }
+    window._segSaving[leadId] = false;
   }
 }
 
@@ -7771,6 +7800,8 @@ async function guardarSeguimientoDetallado(){
   saveBtn.disabled = true;
   saveBtn.textContent = 'Guardando…';
   try {
+    // Bug #1 fix: enviar username actual (crítico en modo preview vendedor)
+    const _username = (typeof currentUser === 'function' ? currentUser() : '') || '';
     const r = await fetch('/api/seguimiento-create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -7781,7 +7812,8 @@ async function guardarSeguimientoDetallado(){
         descripcion,
         resultado,
         proximo_paso: proximoPaso,
-        fecha_proxima_accion: fechaProxima
+        fecha_proxima_accion: fechaProxima,
+        username: _username
       })
     });
     const j = await r.json().catch(() => ({}));
